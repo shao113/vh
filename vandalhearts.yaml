@@ -1,0 +1,74 @@
+options:
+  platform: psx
+  basename: vandalhearts
+
+  base_path: .
+  target_path: vandalhearts.psx
+  asm_path: asm
+  asset_path: assets
+  src_path: src
+
+  compiler: GCC
+
+  generated_c_preamble: "#include \"include_asm.h\""
+  symbol_addrs_path: symbol_addrs.vandalhearts.txt
+  undefined_funcs_auto_path: undefined_funcs_auto.vandalhearts.txt
+  undefined_syms_auto_path: undefined_syms_auto.vandalhearts.txt
+  find_file_boundaries: True
+  enable_ld_alignment_hack: False
+  auto_decompile_empty_functions: False
+  use_legacy_include_asm: False
+  use_function_labels: True
+  use_legacy_include_asm: False
+  gp_value: 0x80122e10
+  auto_all_sections: [".data", ".rodata", ".rdata", ".bss"]
+  #linker_discard_section: False
+  #migrate_rodata_to_functions: no
+  #create_elf_section_list_auto: True
+  section_order:
+  - .rodata
+  - .rdata
+  - .text
+  - .data
+  - .bss
+segments:
+  - [0x0, header]
+  - [0x80, bin]
+  - type: code
+    start: 0x800
+    vram: 0x80010000
+    subalign: 4
+    subsegments:
+    - [0x000800, rodata]           # 0x80010000
+  
+    - [0x006580, .rdata, audio_1]     #80015d80 
+
+    - [0x6990, data]           #
+
+    #- [0x0069b0, bin]           # 800161b0 end of audio jtbls
+    - [0x007690, bin]           # 0x80016e90
+    
+    # Splitting to avoid bad relocations
+    # Update: elf-fixup.py allowed merging these back into audio_1.c
+    #- [0x0b5178, c, audio_2]        # 0x800c4978 InitAudio ...
+    #- [0x0b52bc, c, audio_3]        # 0x800c4abc WaitForAudio ...
+    #- [0x0b547c, c, audio_4]        # 0x800c4c7c PlaySoundEffect ... 
+    #- [0x0b588c, c, audio_5]        # 0x800c508c AudioJob_PrepareCda ... 
+    #- [0x0b5c74, c, audio_6]        # 0x800c5474 AudioJob_PlayPreparedCda ...
+    #- [0x0b5e68, c, audio_7]        # 0x800c5668 AudioJob_PlayCda ... 
+
+    - [0x0b4e60, c, audio_1]        # 0x800c4660 SetSeqDataPtr ... #TARGET_POINT
+
+    - [0xb7000, c, audio_asm_auto] #END_POINT
+
+    - [0x0b7ac0, bin]  # 0x800c72c0 End of audio functions?
+    - [0x0d4dc8, asm]  # 0x800e45c8 Data?
+
+    - [0x0f780c, .data, audio_data] # 0x8010700c
+    - [0x0f91d0, asm]               # 0x801089d0 lib data
+
+    # TODO: Unknown relocation type 30? data?
+    #- [0x01156fc, .data, audio_1]      # 0x80124efc
+    #- [0x0115704, bin]
+    - [0x01d5ac4, bin] # 0x801e52c4 (More functions)
+  - [0x1e7800] # TBD end of file
