@@ -23,16 +23,27 @@ AS              := mips-elf-as -EL
 LD              := mips-elf-ld -EL
 OBJCOPY         := mips-elf-objcopy
 #CC		     	:= $(TOOLS_DIR)/wine-cc.sh
-CC		     	:= cc1_v258_messyhack2
+CC		     	:= cc1_v263
 SPLAT           := $(PYTHON) $(TOOLS_DIR)/splat/split.py
 SORT_SYM        := $(PYTHON) $(TOOLS_DIR)/sortSymbols.py > symbol_addrs.$(BASENAME).txt
 
 AS_FLAGS        := -march=r3000 -mtune=r3000 -Iinclude -G0
 D_FLAGS       	:= -Dmips -D__GNUC__=2 -D__OPTIMIZE__ -D__mips__ -D__mips -Dpsx -D__psx__ -D__psx -D_PSYQ -D__EXTENSIONS__ -D_MIPSEL -D__CHAR_UNSIGNED__ -D_LANGUAGE_C -DLANGUAGE_C
-CC_FLAGS        := -G0 -O2 -Wall -mgas -mgpopt -msoft-float -fno-builtin -ffunction-cse -fpcc-struct-return -fgnu-linker
+
+OPT_FLAGS       := -O1
+CC_FLAGS        = -G0 $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -fshort-enums -fno-builtin -ffunction-cse -fpcc-struct-return -fgnu-linker
+
 CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -nostdinc
 OBJCOPY_FLAGS   := -O binary
 LD_FLAGS    	:= --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined_syms_auto.$(BASENAME).txt -T undefined_funcs_auto.$(BASENAME).txt --no-check-sections
+
+
+
+
+build/src/audio_1.c.s: CC := cc1_v258_messyhack2
+build/src/audio_1.c.s: OPT_FLAGS := -O2
+
+
 
 
 default: dirs check

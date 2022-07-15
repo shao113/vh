@@ -41,12 +41,18 @@ segments:
     subsegments:
     - [0x000800, rodata]           # 0x80010000
   
-    - [0x006580, .rdata, audio_1]     #80015d80 
+    - [0x006580, .rdata, audio_1]  # 0x80015d80 
 
     - [0x6990, data]           #
 
-    #- [0x0069b0, bin]           # 800161b0 end of audio jtbls
-    - [0x007690, bin]           # 0x80016e90
+    #- [0x0069b0, bin]             # 800161b0 end of audio jtbls
+    - [0x007690, bin]              # 0x80016e90
+    
+    - [0x00e184, c, evtf574]       # 0x8001d984 Evtf574_DisplayIcon
+    - [0x00e584, bin]              # 0x8001dd84
+
+    - [0x028814, c, evtf581]       # 0x80038014 Evtf581_AudioCommand
+    - [0x02889c, bin]              # 0x8003809c
     
     # Splitting to avoid bad relocations
     # Update: elf-fixup.py allowed merging these back into audio_1.c
@@ -64,11 +70,19 @@ segments:
     - [0x0b7ac0, bin]  # 0x800c72c0 End of audio functions?
     - [0x0d4dc8, asm]  # 0x800e45c8 Data?
 
-    - [0x0f780c, .data, audio_data] # 0x8010700c
-    - [0x0f91d0, asm]               # 0x801089d0 lib data
+    - [0x0db758, .data, gCharacterNames]  # 0x800eaf58
+    - [0xdc314, asm]  #800ebb14
 
-    # TODO: Unknown relocation type 30? data?
+    - [0x0e1384, .data, glyphs]     # 0x800f0b84
+
+    - [0x0e1ed8, bin]
+    - [0x0e3914, .data, gCdFiles]   # 0x800f3114
+    - [0x0e5a74, bin]
+    - [0x0f780c, .data, audio_data] # 0x8010700c
+    - [0x0f91d0, bin]               # 0x801089d0 lib data
+
+    # TODO: Unknown relocation type 30? data? sdata?
     #- [0x01156fc, .data, audio_1]      # 0x80124efc
-    #- [0x0115704, bin]
+    - [0x0115704, bin]
     - [0x01d5ac4, bin] # 0x801e52c4 (More functions)
   - [0x1e7800] # TBD end of file

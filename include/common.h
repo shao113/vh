@@ -3,19 +3,16 @@
 
 #define NULL 0
 
-/*
- * <PSYQ>
- */
-
 #include "sys/types.h"
 #include "PsyQ/libetc.h"
 
-/*
- * </PSYQ>
- */
-
 #include "types.h"
 /*#include "include_asm.h"*/
-#include "audio.h"
+
+typedef u16 BigInt[8];
+
+extern void *gScratch1_801317c0;
+extern void *gScratch2_8013e054;
+extern void *gScratch3_80180210;
 
 #endif

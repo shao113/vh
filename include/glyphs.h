@@ -1,0 +1,233 @@
+#ifndef GLYPHS_H
+#define GLYPHS_H
+
+#include "common.h"
+
+typedef enum GlyphIndex {
+   GLYPH_BLANK = 0,
+   GLYPH_BG = 1,
+   GLYPH_CHAR_0 = 2,
+   GLYPH_CHAR_1 = 3,
+   GLYPH_CHAR_2 = 4,
+   GLYPH_CHAR_3 = 5,
+   GLYPH_CHAR_4 = 6,
+   GLYPH_CHAR_5 = 7,
+   GLYPH_CHAR_6 = 8,
+   GLYPH_CHAR_7 = 9,
+   GLYPH_CHAR_8 = 10,
+   GLYPH_CHAR_9 = 11,
+   GLYPH_CHAR_UPPERCASE_A = 68,
+   GLYPH_CHAR_UPPERCASE_B = 69,
+   GLYPH_CHAR_UPPERCASE_C = 70,
+   GLYPH_CHAR_UPPERCASE_D = 71,
+   GLYPH_CHAR_UPPERCASE_E = 72,
+   GLYPH_CHAR_UPPERCASE_F = 73,
+   GLYPH_CHAR_UPPERCASE_G = 74,
+   GLYPH_CHAR_UPPERCASE_H = 75,
+   GLYPH_CHAR_UPPERCASE_I = 76,
+   GLYPH_CHAR_UPPERCASE_J = 77,
+   GLYPH_CHAR_UPPERCASE_K = 78,
+   GLYPH_CHAR_UPPERCASE_L = 79,
+   GLYPH_CHAR_UPPERCASE_M = 80,
+   GLYPH_CHAR_UPPERCASE_N = 81,
+   GLYPH_CHAR_UPPERCASE_O = 82,
+   GLYPH_CHAR_UPPERCASE_P = 83,
+   GLYPH_CHAR_UPPERCASE_Q = 84,
+   GLYPH_CHAR_UPPERCASE_R = 85,
+   GLYPH_CHAR_UPPERCASE_S = 86,
+   GLYPH_CHAR_UPPERCASE_T = 87,
+   GLYPH_CHAR_UPPERCASE_U = 88,
+   GLYPH_CHAR_UPPERCASE_V = 89,
+   GLYPH_CHAR_UPPERCASE_W = 90,
+   GLYPH_CHAR_UPPERCASE_X = 91,
+   GLYPH_CHAR_UPPERCASE_Y = 92,
+   GLYPH_CHAR_UPPERCASE_Z = 93,
+   GLYPH_CHAR_PERIOD = 94,
+   GLYPH_CHAR_COMMA = 95,
+   GLYPH_CHAR_COLON = 96,
+   GLYPH_CHAR_EXCLAMATION = 97,
+   GLYPH_CHAR_QUESTION = 98,
+   GLYPH_CHAR_PERCENT = 99,
+   GLYPH_CHAR_EQUAL = 100,
+   GLYPH_CHAR_SLASH = 101,
+   GLYPH_CHAR_PLUS = 102,
+   GLYPH_ROUNDED_BORDER_TOP_LEFT = 103,
+   GLYPH_ROUNDED_BORDER_TOP = 104,
+   GLYPH_ROUNDED_BORDER_TOP_RIGHT = 105,
+   GLYPH_ROUNDED_BORDER_LEFT = 106,
+   GLYPH_ROUNDED_BORDER_RIGHT = 107,
+   GLYPH_ROUNDED_BORDER_BOTTOM_LEFT = 108,
+   GLYPH_ROUNDED_BORDER_BOTTOM = 109,
+   GLYPH_ROUNDED_BORDER_BOTTOM_RIGHT = 110,
+   GLYPH_CROSSED_BORDER_TOP_LEFT = 156,
+   GLYPH_CROSSED_BORDER_TOP = 157,
+   GLYPH_CROSSED_BORDER_TOP_RIGHT = 158,
+   GLYPH_CROSSED_BORDER_LEFT = 159,
+   GLYPH_CROSSED_BORDER_RIGHT = 160,
+   GLYPH_CROSSED_BORDER_BOTTOM_LEFT = 161,
+   GLYPH_CROSSED_BORDER_BOTTOM = 162,
+   GLYPH_CROSSED_BORDER_BOTTOM_RIGHT = 163,
+   GLYPH_LDRAGON_TOP_1 = 164,
+   GLYPH_LDRAGON_TOP_2 = 165,
+   GLYPH_LDRAGON_TOP_3 = 166,
+   GLYPH_LDRAGON_MID_1 = 167,
+   GLYPH_LDRAGON_MID_2 = 168,
+   GLYPH_LDRAGON_MID_3 = 169,
+   GLYPH_LDRAGON_TAIL = 170,
+   GLYPH_LDRAGON_TAIL_TIP = 171,
+   GLYPH_RDRAGON_TAIL_TIP = 172,
+   GLYPH_RDRAGON_TAIL = 173,
+   GLYPH_RDRAGON_MID_1 = 174,
+   GLYPH_RDRAGON_MID_2 = 175,
+   GLYPH_RDRAGON_MID_3 = 176,
+   GLYPH_RDRAGON_BOTTOM_1 = 177,
+   GLYPH_RDRAGON_BOTTOM_2 = 178,
+   GLYPH_RDRAGON_BOTTOM_3 = 179,
+   GLYPH_CHAR_ALT_0 = 180,
+   GLYPH_CHAR_ALT_1 = 181,
+   GLYPH_CHAR_ALT_2 = 182,
+   GLYPH_CHAR_ALT_3 = 183,
+   GLYPH_CHAR_ALT_4 = 184,
+   GLYPH_CHAR_ALT_5 = 185,
+   GLYPH_CHAR_ALT_6 = 186,
+   GLYPH_CHAR_ALT_7 = 187,
+   GLYPH_CHAR_ALT_8 = 188,
+   GLYPH_CHAR_ALT_9 = 189,
+   GLYPH_CHAR_ALT_SLASH = 190,
+   GLYPH_HP_BAR_0_PX = 191,
+   GLYPH_HP_BAR_1_PX = 192,
+   GLYPH_HP_BAR_2_PX = 193,
+   GLYPH_HP_BAR_3_PX = 194,
+   GLYPH_HP_BAR_4_PX = 195,
+   GLYPH_HP_BAR_5_PX = 196,
+   GLYPH_HP_BAR_6_PX = 197,
+   GLYPH_HP_BAR_7_PX = 198,
+   GLYPH_HP_BAR_8_PX = 199,
+   GLYPH_EXP_BAR_0_PX = 200,
+   GLYPH_EXP_BAR_1_PX = 201,
+   GLYPH_EXP_BAR_2_PX = 202,
+   GLYPH_EXP_BAR_3_PX = 203,
+   GLYPH_EXP_BAR_4_PX = 204,
+   GLYPH_EXP_BAR_5_PX = 205,
+   GLYPH_EXP_BAR_6_PX = 206,
+   GLYPH_EXP_BAR_7_PX = 207,
+   GLYPH_EXP_BAR_8_PX = 208,
+   GLYPH_CHAR_EXP_1 = 209,
+   GLYPH_CHAR_EXP_2 = 210,
+   GLYPH_CHAR_NEXT_1 = 211,
+   GLYPH_CHAR_NEXT_2 = 212,
+   GLYPH_CHAR_AGL_1 = 213,
+   GLYPH_CHAR_AGL_2 = 214,
+   GLYPH_EQUIP_1 = 215,
+   GLYPH_EQUIP_2 = 216,
+   GLYPH_WEAPON = 217,
+   GLYPH_HELMET = 218,
+   GLYPH_ARMOR = 219,
+   GLYPH_CLASS_KNIGHT_1 = 220, /* top-left */
+   GLYPH_CLASS_KNIGHT_2 = 221, /* top-right */
+   GLYPH_CLASS_KNIGHT_3 = 222, /* bottom-left */
+   GLYPH_CLASS_KNIGHT_4 = 223, /* bottom-right */
+   GLYPH_CLASS_ARCHER_1 = 224,
+   GLYPH_CLASS_ARCHER_2 = 225,
+   GLYPH_CLASS_ARCHER_3 = 226,
+   GLYPH_CLASS_ARCHER_4 = 227,
+   GLYPH_CLASS_ARMOR_1 = 228,
+   GLYPH_CLASS_ARMOR_2 = 229,
+   GLYPH_CLASS_ARMOR_3 = 230,
+   GLYPH_CLASS_ARMOR_4 = 231,
+   GLYPH_CLASS_AIRMAN_1 = 232,
+   GLYPH_CLASS_AIRMAN_2 = 233,
+   GLYPH_CLASS_AIRMAN_3 = 234,
+   GLYPH_CLASS_AIRMAN_4 = 235,
+   GLYPH_CLASS_MAGE_1 = 236,
+   GLYPH_CLASS_MAGE_2 = 237,
+   GLYPH_CLASS_MAGE_3 = 238,
+   GLYPH_CLASS_MAGE_4 = 239,
+   GLYPH_CLASS_PRIEST_1 = 240,
+   GLYPH_CLASS_PRIEST_2 = 241,
+   GLYPH_CLASS_PRIEST_3 = 242,
+   GLYPH_CLASS_PRIEST_4 = 243,
+   GLYPH_CLASS_MONK_1 = 244,
+   GLYPH_CLASS_MONK_2 = 245,
+   GLYPH_CLASS_MONK_3 = 246,
+   GLYPH_CLASS_MONK_4 = 247,
+   GLYPH_CLASS_VANDALIER_1 = 248,
+   GLYPH_CLASS_VANDALIER_2 = 249,
+   GLYPH_CLASS_VANDALIER_3 = 250,
+   GLYPH_CLASS_VANDALIER_4 = 251,
+   GLYPH_TERMINATOR = 255
+} GlyphIndex;
+
+extern u8 gGlyphStripGroup_800f0b84[];
+extern u8 gGlyphStripGroup_800f0b94[];
+extern u8 gGlyphStripGroup_800f0b9c[];
+extern u8 gGlyphStripGroup_800f0ba4[];
+extern u8 gGlyphStripGroup_800f0ba8[];
+extern u8 gGlyphStripGroup_800f0bb0[];
+extern u8 gGlyphStripGroup_800f0bb8[];
+extern u8 gGlyphStripGroup_800f0bc0[];
+extern u8 gGlyphStripGroup_800f0bd4[];
+extern u8 gGlyphStripGroup_800f0bf0[];
+extern u8 *gGlyphStripGroups[];
+extern GlyphIndex gGlyphStrip_01[];
+extern GlyphIndex gGlyphStrip_02[];
+extern GlyphIndex gGlyphStrip_03[];
+extern GlyphIndex gGlyphStrip_04[];
+extern GlyphIndex gGlyphStrip_05[];
+extern GlyphIndex gGlyphStrip_06[];
+extern GlyphIndex gGlyphStrip_07[];
+extern GlyphIndex gGlyphStrip_08[];
+extern GlyphIndex gGlyphStrip_09[];
+extern GlyphIndex gGlyphStrip_0A[];
+extern GlyphIndex gGlyphStrip_0B[];
+extern GlyphIndex gGlyphStrip_0C[];
+extern GlyphIndex gGlyphStrip_4B[];
+extern GlyphIndex gGlyphStrip_4C[];
+extern GlyphIndex gGlyphStrip_4D[];
+extern GlyphIndex gGlyphStrip_4E[];
+extern GlyphIndex gGlyphStrip_4F[];
+extern GlyphIndex gGlyphStrip_50[];
+extern GlyphIndex gGlyphStrip_51[];
+extern GlyphIndex gGlyphStrip_52[];
+extern GlyphIndex gGlyphStrip_53[];
+extern GlyphIndex gGlyphStrip_54[];
+extern GlyphIndex gGlyphStrip_55[];
+extern GlyphIndex gGlyphStrip_56[];
+extern GlyphIndex gGlyphStrip_57[];
+extern GlyphIndex gGlyphStrip_58[];
+extern GlyphIndex gGlyphStrip_59[];
+extern GlyphIndex gGlyphStrip_5A[];
+extern GlyphIndex gGlyphStrip_5B[];
+extern GlyphIndex gGlyphStrip_5C[];
+extern GlyphIndex gGlyphStrip_5D[];
+extern GlyphIndex gGlyphStrip_5E[];
+extern GlyphIndex gGlyphStrip_5F[];
+extern GlyphIndex gGlyphStrip_60[];
+extern GlyphIndex gGlyphStrip_61[];
+extern GlyphIndex gGlyphStrip_62[];
+extern GlyphIndex gGlyphStrip_63[];
+extern GlyphIndex gGlyphStrip_64[];
+extern GlyphIndex gGlyphStrip_65[];
+extern GlyphIndex gGlyphStrip_66[];
+extern GlyphIndex gGlyphStrip_67[];
+extern GlyphIndex gGlyphStrip_68[];
+extern GlyphIndex gGlyphStrip_C8[];
+extern GlyphIndex gGlyphStrip_C9[];
+extern GlyphIndex gGlyphStrip_CA[];
+extern GlyphIndex gGlyphStrip_CB[];
+extern GlyphIndex gGlyphStrip_CC[];
+extern GlyphIndex gGlyphStrip_CD[];
+extern GlyphIndex gGlyphStrip_CE[];
+extern GlyphIndex gGlyphStrip_CF[];
+extern GlyphIndex gGlyphStrip_D0[];
+extern GlyphIndex gGlyphStrip_D1[];
+extern GlyphIndex gGlyphStrip_D2[];
+extern GlyphIndex gGlyphStrip_D3[];
+extern GlyphIndex gGlyphStrip_D4[];
+extern GlyphIndex gGlyphStrip_D5[];
+extern GlyphIndex gGlyphStrip_D6[];
+extern GlyphIndex gGlyphStrip_D7[];
+extern GlyphIndex *gGlyphStrips[];
+extern GlyphIndex gClassIconStartingGlyph[];
+
+#endif

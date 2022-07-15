@@ -2,18 +2,9 @@
 #define AUDIO_H
 
 #include "common.h"
-
-/*
- * <PSYQ>
- */
-
 #include "PsyQ/libcd.h"
 #include "PsyQ/libsnd.h"
 #include "PsyQ/libspu.h"
-
-/*
- * </PSYQ>
- */
 
 #define STARTING_SECTOR 150
 #define SECTORS_PER_SECOND 75
