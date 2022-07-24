@@ -116,27 +116,28 @@ extern s16 gCdaCurrentVolume;
 extern s16 gCdaFadeInState;
 extern u8 gCdaIdToPrepare;
 extern u8 gCdaIdToPlay;
-extern s8 gCdaLoopEnabled;
+extern u8 gCdaLoopEnabled;
 extern s16 gCdaMaxVolume;
-extern s8 gCdaPauseInProgress;
-extern s16 gCdaVolumeState;
+extern u8 gCdaPauseInProgress;
 extern s16 gSeqCurrentVolume;
 extern s16 gSeqMaxVolume;
 extern s16 gVolumeCurve[128];
-extern s8 gVolumeFadeInMode;
-extern s8 gVolumeFadeOutMode;
+extern u8 gVolumeFadeInMode;
+extern u8 gVolumeFadeOutMode;
 extern s16 gVolumeFadePauseCounter;
 extern s32 gCdaDuration;
 extern s32 gCdaStartTime;
 extern s8 gClearedSpuIRQ;
 extern u8 gSeqIDToPlay;
 extern u8 gSeqReverb;
-extern s16 gCdaReducedVolumeTarget;
+extern s16 gVolumeFadeCounter;
 
-extern volatile u16 gCdaAdjustedVolume;
+/* TBD volatile? */
+extern s16 gCdaReducedVolumeTarget;
+extern s16 gCdaVolumeState;
+extern volatile s16 gCdaAdjustedVolume;
 extern volatile s16 gVolumeFadeInSpeed;
 extern volatile s16 gVolumeFadeOutSpeed;
-extern s16 gVolumeFadeCounter;
 
 extern CdaProperties gCdaProperties[188];
 extern SfxProperties gSfxProperties[269];
@@ -178,11 +179,18 @@ void AudioJob_Unused_0x8(void);
 void QueuePlaySeq(s8);
 void AudioJob_PlaySeq(void);
 void QueueStopSeq(void);
+void AudioJob_StopSeq(void);
 void SetupVolumeFadeOut(s16, s16);
 void SetupVolumeFadeIn(s16, u8);
 void StopSound(void);
 void PerformParamlessAudioCommand(s32);
 void PerformAudioCommand(s16);
 void AudioJobQueue_ProcessNext(void);
+void HandleVolumeFadeIn(void);
+void HandleVolumeFadeOut(void);
+void HandleCdaCompletion(void);
+void AdjustCdaVolume(void);
+void UpdateAudio(void);
+void Noop_800c72c0(void);
 
 #endif

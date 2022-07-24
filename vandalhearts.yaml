@@ -41,37 +41,27 @@ segments:
     subsegments:
     - [0x000800, rodata]           # 0x80010000
   
-    - [0x006580, .rdata, audio_1]  # 0x80015d80 
-
-    - [0x6990, data]           #
-
-    #- [0x0069b0, bin]             # 800161b0 end of audio jtbls
+    - [0x006580, .rdata, audio]    # 0x80015d80 
+    - [0x0069b0, bin]              # 0x800161b0 end of audio jtbls
     - [0x007690, bin]              # 0x80016e90
     
-    - [0x00e184, c, evtf574]       # 0x8001d984 Evtf574_DisplayIcon
+    - [0x00e184, c, evtf574]       # 0x8001d984 Evtf574_DisplayIcon ...
     - [0x00e584, bin]              # 0x8001dd84
 
     - [0x028814, c, evtf581]       # 0x80038014 Evtf581_AudioCommand
     - [0x02889c, bin]              # 0x8003809c
+    - [0x028ba8, c, Evt_Execute]   # 0x800383a8 Evt_Execute ...
+    - [0x028f2c, bin]              # 0x8003872c
+    - [0x0318b4, c, battle_eval]   # 0x800410b4 FindUnitByNameIdx ...
+    - [0x031b90, bin]              # 
     
-    # Splitting to avoid bad relocations
-    # Update: elf-fixup.py allowed merging these back into audio_1.c
-    #- [0x0b5178, c, audio_2]        # 0x800c4978 InitAudio ...
-    #- [0x0b52bc, c, audio_3]        # 0x800c4abc WaitForAudio ...
-    #- [0x0b547c, c, audio_4]        # 0x800c4c7c PlaySoundEffect ... 
-    #- [0x0b588c, c, audio_5]        # 0x800c508c AudioJob_PrepareCda ... 
-    #- [0x0b5c74, c, audio_6]        # 0x800c5474 AudioJob_PlayPreparedCda ...
-    #- [0x0b5e68, c, audio_7]        # 0x800c5668 AudioJob_PlayCda ... 
-
-    - [0x0b4e60, c, audio_1]        # 0x800c4660 SetSeqDataPtr ... #TARGET_POINT
-
-    - [0xb7000, c, audio_asm_auto] #END_POINT
-
-    - [0x0b7ac0, bin]  # 0x800c72c0 End of audio functions?
+    - [0x0b4e60, c, audio]         # 0x800c4660 SetSeqDataPtr ...
+    - [0x0b7ac8, bin]              # 0x800c72c8 End of audio functions
+    
     - [0x0d4dc8, asm]  # 0x800e45c8 Data?
 
     - [0x0db758, .data, gCharacterNames]  # 0x800eaf58
-    - [0xdc314, asm]  #800ebb14
+    - [0x0dc314, asm]  #0x800ebb14
 
     - [0x0e1384, .data, glyphs]     # 0x800f0b84
 
@@ -81,8 +71,8 @@ segments:
     - [0x0f780c, .data, audio_data] # 0x8010700c
     - [0x0f91d0, bin]               # 0x801089d0 lib data
 
-    # TODO: Unknown relocation type 30? data? sdata?
-    #- [0x01156fc, .data, audio_1]      # 0x80124efc
-    - [0x0115704, bin]
-    - [0x01d5ac4, bin] # 0x801e52c4 (More functions)
+    - [0x113610, asm]               # 0x80122e10 _gp_1
+    #- [0x1156fc, .data, audio]      # 0x80124efc TODO sdata?
+    - [0x115704, bin]
+    - [0x1d5ac4, bin] # 0x801e52c4 (More functions)
   - [0x1e7800] # TBD end of file

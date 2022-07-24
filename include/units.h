@@ -2,6 +2,9 @@
 #define UNITS_H
 
 #include "common.h"
+#include "evt.h"
+
+#define UNIT_CT 40
 
 typedef enum SpellIdx {
    SPELL_NULL = 0,
@@ -77,9 +80,6 @@ typedef enum SpellIdx {
    SPELL_SHIVBOOK = 70,
    SPELL_NCKLACE = 71
 } SpellIdx;
-typedef u8 SpellIdx1;
-typedef u16 SpellIdx2;
-typedef u32 SpellIdx4;
 
 typedef enum ItemIdx {
    ITEM_NULL = 0,
@@ -222,9 +222,6 @@ typedef enum ItemIdx {
    ITEM_HOLY_HELM = 137,
    ITEM_VALHALA_MAIL = 138,
 } ItemIdx;
-typedef u8 ItemIdx1;
-typedef u16 ItemIdx2;
-typedef u32 ItemIdx4;
 
 typedef enum UnitNameIdx {
    UNIT_ASH = 1,
@@ -253,14 +250,8 @@ typedef enum UnitNameIdx {
    UNIT_CLIVE = 31,
    UNIT_KIRA_2 = 34
 } UnitNameIdx;
-typedef u8 UnitNameIdx1;
-typedef u16 UnitNameIdx2;
-typedef u32 UnitNameIdx4;
 
 typedef enum UnitTeam { TEAM_NULL = 0, TEAM_PLAYER = 1, TEAM_ENEMY = 2 } UnitTeam;
-typedef u8 UnitTeam1;
-typedef u16 UnitTeam2;
-typedef u32 UnitTeam4;
 
 typedef enum UnitType {
    UNIT_TYPE_NULL = 0,
@@ -350,9 +341,6 @@ typedef enum UnitType {
    UNIT_TYPE_MEGA_GUARD = 84,
    UNIT_TYPE_M_CANNON = 85
 } UnitType;
-typedef u8 UnitType1;
-typedef u16 UnitType2;
-typedef u32 UnitType4;
 
 typedef enum UnitClass {
    CLASS_KNIGHT = 0,
@@ -365,14 +353,11 @@ typedef enum UnitClass {
    CLASS_7 = 7,
    CLASS_VANDALIER = 8
 } UnitClass;
-typedef u8 UnitClass1;
-typedef u16 UnitClass2;
-typedef u32 UnitClass4;
 
 typedef struct UnitStatus {
    u8 idx;
    s8 level;
-   UnitTeam team;
+   s8 team;
    u8 field3_0x3;
    EvtData *evtBattler;
    EvtData *evtSprite;
@@ -401,23 +386,23 @@ typedef struct UnitStatus {
    s16 agiVar100;
    s16 direction;
    u8 stripIdx;
-   SpellIdx spells[10];
+   u8 spells[10];
    u8 done;
    u8 field33_0x56;
    u8 field34_0x57;
-   ItemIdx2 item1;
-   ItemIdx2 item2;
-   ItemIdx2 droppedItem;
-   ItemIdx2 helmet;
-   ItemIdx2 armor;
-   ItemIdx2 weapon;
+   u16 item1;
+   u16 item2;
+   u16 droppedItem;
+   u16 helmet;
+   u16 armor;
+   u16 weapon;
    s16 unitId; // ?: 0..143
    u8 travelRange;
    u8 attackRange;
-   UnitNameIdx1 name;
-   UnitType unitType; // See: {@sym 800eb050}
-   u8 advantage;      // See: {@sym 800f16e4}
-   UnitClass class;
+   u8 name;
+   u8 unitType;  // See: {@sym 800eb050}
+   u8 advantage; // See: {@sym 800f16e4}
+   u8 class;
    u8 step;
    u8 magicSusceptibility;
    u8 ailmentSusceptibility;
@@ -435,5 +420,6 @@ typedef struct UnitStatus {
 extern s8 gCharacterNames[35][7];
 extern s8 gUnitTypeNames[86][11];
 extern s8 gItemNames[139][13];
+extern UnitStatus gUnits[UNIT_CT];
 
 #endif

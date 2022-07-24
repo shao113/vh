@@ -2,8 +2,8 @@
 #define GRAPHICS_H
 
 #include "common.h"
+#include "PsyQ/libgte.h"
 #include "PsyQ/libgpu.h"
-//#include "PsyQ/libgte.h"
 
 typedef struct Graphics {
    DRAWENV drawEnv;
@@ -13,5 +13,9 @@ typedef struct Graphics {
 } Graphics;
 
 extern Graphics *gGraphicsPtr;
+extern SVECTOR gLightRotation;
+extern s16 gLightRotation_vy, gLightRotation_vz; /* FIXME */
+
+void DecodeUnitSprites(void);
 
 #endif

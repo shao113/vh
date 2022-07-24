@@ -2,9 +2,10 @@
 #define EVT_H
 
 #include "common.h"
-#include "PsyQ/libgte.h"
+#include "graphics.h"
 
 #define EVT_DATA_CT 350
+#define EVT_DATA_LAST_IDX 349
 
 typedef struct SVectorXZY {
    s16 x;
@@ -12,20 +13,12 @@ typedef struct SVectorXZY {
    s16 y;
 } SVectorXZY;
 
-/* TBD Not necessary? Can just cast to s8? */
-typedef struct CoordinateParts {
-   s8 frac;
-   s8 tile;
-} CoordinateParts;
-
-typedef union Coordinate {
-   s16 n;
-   CoordinateParts c;
-} Coordinate;
-
 typedef enum {
    EVTF_NULL = 0,
    EVTF_NOOP = 1, /* TBD Used only for sprites? */
+   EVTF_UNIT_SPRITES_DECODER = 50,
+   EVTF_EVALUATE_BATTLE_10 = 426,
+   EVTF_EVALUATE_BATTLE_08 = 438,
    EVTF_DISPLAY_ICON = 574,
    EVTF_AUDIO_CMD = 581
 } EvtFunctionIdx;
@@ -65,9 +58,16 @@ typedef struct EvtData_Sprite {
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_Sprite;
 
+/* Evaluate Battle 08 */
+typedef struct EvtData_438 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 delay;
+   /* :0x25 */ u8 unk_0x25[59];
+} EvtData_438;
+
 /* Audio Command */
 typedef struct EvtData_581 {
-   /* :0x10 */ u8 unk_0x0E[20];
+   /* :0x10 */ u8 unk_0x10[20];
    /* :0x24 */ s16 cmd;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s8 delay;
@@ -82,12 +82,34 @@ typedef struct EvtData {
    /* 0x0E */ s16 state2;
    /* 0x10: */
    union {
+      u8 bytes[80];
       EvtData_Sprite sprite;
+      EvtData_438 evtf438;
       EvtData_581 evtf581;
    } d;
-   //} d  __attribute__((__packed__));
 } EvtData;
 
+typedef void (*EvtFunction)(EvtData *evt);
+
 extern EvtData gEvtDataArray[EVT_DATA_CT];
+extern EvtFunction gEvtFunctionPointers[804];
+extern EvtData gEvtData050_UnitSpritesDecoder;
+extern EvtData *gTempEvt;
+
+void Evt_Execute(void);
+void Evtf001_Noop(EvtData *evt);
+void Evt_ResetFromIdx10(void);
+void Evt_ResetAll(void);
+EvtData *Evt_GetUnused(void);
+EvtData *Evt_GetFirstUnused(void);
+EvtData *Evt_GetLastUnused(void);
+EvtData *Evt_GetLastUnusedSkippingTail(s32);
+s32 Evt_CountUnused(void);
+
+void Evtf426_EvaluateBattle10(EvtData *);
+void Evtf427_EvaluateBattle11(EvtData *);
+void Evtf438_EvaluateBattle08(EvtData *);
+void Evtf574_DisplayIcon(EvtData *);
+void Evtf581_AudioCommand(EvtData *);
 
 #endif

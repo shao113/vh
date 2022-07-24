@@ -973,3 +973,252 @@ void AudioJobQueue_ProcessNext(void) {
       return;
    }
 }
+
+void HandleVolumeFadeIn(void) {
+   if (gVolumeFadeInSpeed == 0) {
+      return;
+   }
+   if (++gVolumeFadePauseCounter != 4) {
+      return;
+   }
+   gVolumeFadePauseCounter = 0;
+
+   switch (gVolumeFadeInMode) {
+   case VOLUME_FADE_IN_MODE_CDA:
+      if (gCdaFadeInState == CDA_FADE_IN_STATE_PENDING) {
+         return;
+      }
+      if (gCdaFadeInState == CDA_FADE_IN_STATE_FADING) {
+         gVolumeFadeCounter++;
+         if (gCdaCurrentVolume <= gCdaMaxVolume) {
+            gCdaCurrentVolume = (gCdaMaxVolume * gVolumeFadeInSpeed * gVolumeFadeCounter) / 512;
+            SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaCurrentVolume, gCdaCurrentVolume);
+         } else {
+            gCdaCurrentVolume = gCdaMaxVolume;
+            SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaCurrentVolume, gCdaCurrentVolume);
+            gCdaFadeInState = CDA_FADE_IN_STATE_NONE;
+            gVolumeFadeInSpeed = 0;
+         }
+      }
+      break;
+   case VOLUME_FADE_IN_MODE_SEQ:
+      gVolumeFadeCounter++;
+      if (gSeqCurrentVolume <= gSeqMaxVolume) {
+         gSeqCurrentVolume = (gSeqMaxVolume * gVolumeFadeInSpeed * gVolumeFadeCounter) / 512;
+         SsSeqSetVol(gSeqAccessNum, gSeqCurrentVolume, gSeqCurrentVolume);
+      } else {
+         gSeqCurrentVolume = gSeqMaxVolume;
+         SsSeqSetVol(gSeqAccessNum, gSeqCurrentVolume, gSeqCurrentVolume);
+         gVolumeFadeInSpeed = 0;
+      }
+      break;
+   case VOLUME_FADE_IN_MODE_MAIN:
+      gVolumeFadeCounter++;
+      if (gCurrentVolume <= gMaxVolume) {
+         gCurrentVolume = (gMaxVolume * gVolumeFadeInSpeed * gVolumeFadeCounter) / 512;
+         SsSetMVol(gCurrentVolume, gCurrentVolume);
+      } else {
+         gCurrentVolume = gMaxVolume;
+         SsSetMVol(gCurrentVolume, gCurrentVolume);
+         gVolumeFadeInSpeed = 0;
+      }
+      break;
+   }
+}
+
+void HandleVolumeFadeOut(void) {
+   if (gVolumeFadeOutSpeed == 0) {
+      return;
+   }
+   gVolumeFadeCounter++;
+
+   switch (gVolumeFadeOutMode) {
+   case 1:
+      if (gCdaCurrentVolume < 1) {
+         gCdaCurrentVolume = 0;
+      } else {
+         gCdaCurrentVolume =
+             gCdaMaxVolume - (gCdaMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
+         if (gCdaCurrentVolume < 1) {
+            gCdaCurrentVolume = 0;
+         }
+      }
+
+      SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaCurrentVolume, gCdaCurrentVolume);
+
+      if (gCdaCurrentVolume == 0) {
+         gVolumeFadeOutSpeed = 0;
+         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+      }
+      break;
+   case 2:
+      if (gSeqCurrentVolume > 0) {
+         gSeqCurrentVolume =
+             gSeqMaxVolume - (gSeqMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
+         if (gSeqCurrentVolume < 1) {
+            gSeqCurrentVolume = 0;
+         }
+      } else {
+         gSeqCurrentVolume = 0;
+      }
+
+      SsSeqSetVol(gSeqAccessNum, gSeqCurrentVolume, gSeqCurrentVolume);
+
+      if (gSeqCurrentVolume == 0) {
+         gVolumeFadeOutSpeed = 0;
+         AudioJobQueue_Insert(AUDIO_JOB_STOP_SEQ);
+      }
+      break;
+   case 3:
+      if (gCdaCurrentVolume < 1) {
+         gCdaCurrentVolume = 0;
+      } else {
+         gCdaCurrentVolume =
+             gCdaMaxVolume - (gCdaMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
+         if (gCdaCurrentVolume < 1) {
+            gCdaCurrentVolume = 0;
+         }
+      }
+
+      SetSerialVolumeFromCurveIdx(0, gCdaCurrentVolume, gCdaCurrentVolume);
+
+      if (gSeqCurrentVolume < 1) {
+         gSeqCurrentVolume = 0;
+      } else {
+         gSeqCurrentVolume =
+             gSeqMaxVolume - (gSeqMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
+         if (gSeqCurrentVolume < 1) {
+            gSeqCurrentVolume = 0;
+         }
+      }
+
+      SsSeqSetVol(gSeqAccessNum, gSeqCurrentVolume, gSeqCurrentVolume);
+
+      if (gCdaCurrentVolume == 0 && gSeqCurrentVolume == 0) {
+         gVolumeFadeOutSpeed = 0;
+         AudioJobQueue_Insert(AUDIO_JOB_STOP_SEQ);
+         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+      }
+      break;
+   case 4:
+      if (gCurrentVolume < 1) {
+         gCurrentVolume = 0;
+      } else {
+         gCurrentVolume =
+             gMaxVolume - (gMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
+         if (gCurrentVolume < 1) {
+            gCurrentVolume = 0;
+         }
+      }
+
+      SsSetMVol(gCurrentVolume, gCurrentVolume);
+
+      if (gCurrentVolume == 0) {
+         StopSound();
+         AudioJobQueue_Insert(AUDIO_JOB_STOP_SEQ);
+         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+         gVolumeFadeOutSpeed = 0;
+      }
+      break;
+   case 8:
+      if (gSeqCurrentVolume < 1) {
+         gSeqCurrentVolume = 0;
+      } else {
+         gSeqCurrentVolume =
+             gSeqMaxVolume - (gSeqMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
+         if (gSeqCurrentVolume < 1) {
+            gSeqCurrentVolume = 0;
+         }
+      }
+
+      SsSeqSetVol(gSeqAccessNum, gSeqCurrentVolume, gSeqCurrentVolume);
+
+      if (gSeqCurrentVolume == 0) {
+         gVolumeFadeOutSpeed = 0;
+         StopSound();
+      }
+      break;
+   }
+}
+
+void HandleCdaCompletion(void) {
+   extern u32 s_cdaElapsedTime;
+   s32 queueContainsPlayCda, currentTime, i;
+
+   if (gCdaCurrentID == 0 || gCdaDuration == 0) {
+      return;
+   }
+
+   currentTime = VSync(-1);
+   s_cdaElapsedTime = currentTime - gCdaStartTime;
+   if (s_cdaElapsedTime > gCdaDuration) {
+      if (!gCdaLoopEnabled) {
+         // Only queue a pause if no plays are currently queued
+         i = 0;
+         queueContainsPlayCda = 0;
+         for (; i < 62; i++) {
+            if (gAudioJobQueue[i] == AUDIO_JOB_PLAY_CDA) {
+               queueContainsPlayCda = 1;
+            }
+         }
+         if (!queueContainsPlayCda) {
+            AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+         }
+      } else {
+         // Looping enabled, so re-queue same cda
+         if (!gCdaPauseInProgress) {
+            gCdaIdToPlay = gCdaCurrentID;
+            AudioJobQueue_Insert(AUDIO_JOB_PLAY_CDA);
+            gCdaStartTime = VSync(-1);
+         }
+      }
+   }
+}
+
+void AdjustCdaVolume(void) {
+   // TBD: Better solution?
+   extern volatile s16 gCdaReducedVolumeTarget;
+   extern volatile s16 gCdaVolumeState;
+
+   if (gCdaVolumeState == 0)
+      return;
+
+   switch (gCdaVolumeState) {
+   case CDA_VOLUME_STATE_DECREASING:
+      if (gCdaAdjustedVolume > gCdaReducedVolumeTarget) {
+         gCdaAdjustedVolume -= 2;
+         if (gCdaAdjustedVolume <= gCdaReducedVolumeTarget) {
+            gCdaAdjustedVolume = gCdaReducedVolumeTarget;
+            gCdaVolumeState = CDA_VOLUME_STATE_DECREASED;
+         }
+         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaAdjustedVolume, gCdaAdjustedVolume);
+      }
+      break;
+   case CDA_VOLUME_STATE_INCREASING:
+      if (gCdaAdjustedVolume < gCdaMaxVolume) {
+         gCdaAdjustedVolume += 2;
+         if (gCdaAdjustedVolume >= gCdaMaxVolume) {
+            gCdaAdjustedVolume = gCdaMaxVolume;
+            gCdaVolumeState = CDA_VOLUME_STATE_NONE;
+         }
+         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaAdjustedVolume, gCdaAdjustedVolume);
+      }
+      break;
+   case CDA_VOLUME_STATE_NONE:
+   case CDA_VOLUME_STATE_DECREASED:
+   default:
+      return;
+   }
+}
+
+void UpdateAudio(void) {
+   if (gAudioEnabled) {
+      AudioJobQueue_ProcessNext();
+      HandleVolumeFadeIn();
+      HandleVolumeFadeOut();
+      AdjustCdaVolume();
+      HandleCdaCompletion();
+   }
+}
+
+void Noop_800c72c0(void) { return; }

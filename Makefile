@@ -40,8 +40,8 @@ LD_FLAGS    	:= --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined
 
 
 
-build/src/audio_1.c.s: CC := cc1_v258_messyhack2
-build/src/audio_1.c.s: OPT_FLAGS := -O2
+build/src/audio.c.s: CC := cc1_v258_messyhack2
+build/src/audio.c.s: OPT_FLAGS := -O2
 
 
 
@@ -49,7 +49,7 @@ build/src/audio_1.c.s: OPT_FLAGS := -O2
 default: dirs check
 	
 clean:
-	mv --backup=numbered src/*_asm_auto.c old/backup
+	#mv --backup=numbered src/*_asm_auto.c old/backup
 	rm -rf batch.tmp asm assets build
 	
 soft-clean:
