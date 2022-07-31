@@ -5,6 +5,7 @@
 #include "evt.h"
 
 #define UNIT_CT 40
+#define PARTY_CT 13
 
 typedef enum SpellIdx {
    SPELL_NULL = 0,
@@ -361,7 +362,7 @@ typedef struct UnitStatus {
    u8 field3_0x3;
    EvtData *evtBattler;
    EvtData *evtSprite;
-   BigInt expLevel;
+   BigInt experience;
    u8 field7_0x1c;
    u8 field8_0x1d;
    u8 expMulti;
@@ -417,9 +418,28 @@ typedef struct UnitStatus {
    u8 field59_0x77;
 } UnitStatus;
 
+typedef struct PartyMember {
+   u8 inParty;
+   u8 advChosePathB;
+   u8 advLevelFirst;
+   u8 advLevelSecond;
+   u8 helmet;
+   u8 armor;
+   u8 weapon;
+   u8 item1;
+   u8 item2;
+   u8 field9_0x9;
+   BigInt experience;
+   s16 hpVar100;
+   s16 atkVar100;
+   s16 defVar100;
+   s16 agiVar100;
+} PartyMember;
+
 extern s8 gCharacterNames[35][7];
 extern s8 gUnitTypeNames[86][11];
 extern s8 gItemNames[139][13];
 extern UnitStatus gUnits[UNIT_CT];
+extern PartyMember gPartyMembers[PARTY_CT];
 
 #endif

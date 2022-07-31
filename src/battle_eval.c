@@ -4,6 +4,7 @@
 #include "audio.h"
 #include "field.h"
 #include "battle.h"
+#include "state.h"
 
 UnitStatus *FindUnitByNameIdx(s16 nameIdx) {
    UnitStatus *p;
@@ -53,22 +54,20 @@ s32 CountUnitsOfTeam(s16 team) {
 }
 
 void Evtf438_EvaluateBattle08(EvtData *evt) {
-   extern u8 D_80140859;
-
    // TBD gLightRotation.vy ?
    gLightRotation_vy = gLightRotation_vy + 0x10;
 
-   if (gMapState.needEval) {
-      gMapState.needEval = 0;
+   if (gState.needEval) {
+      gState.needEval = 0;
    }
 
-   if (gMapState.signal) {
-      gMapState.signal = 0;
+   if (gState.signal) {
+      gState.signal = 0;
    }
 
    switch (evt->state) {
    case 0:
-      if ((D_80140859 != 0) || ((gPadStateNewPresses & PADstart) != 0)) {
+      if ((gState.D_80140859 != 0) || ((gPadStateNewPresses & PADstart) != 0)) {
          FadeOutScreen(2, 6);
          PerformAudioCommand(0x21);
          evt->d.evtf438.delay = 75;
@@ -81,26 +80,26 @@ void Evtf438_EvaluateBattle08(EvtData *evt) {
          gIsEnemyTurn = 0;
          gState.primary = 0x33;
          gState.secondary = 0;
-         gState.field2_0x8 = 0;
-         gState.field3_0xc = 0;
-         gState.field6_0x18 = 1;
+         gState.state3 = 0;
+         gState.state4 = 0;
+         gState.state7 = 1;
       }
       break;
    }
 }
 
 void Evtf426_EvaluateBattle10(EvtData *evt) {
-   if (gMapState.needEval) {
-      gMapState.needEval = 0;
+   if (gState.needEval) {
+      gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_ZOOT)) {
-         gMapState.battleEval = BATTLE_EVAL_VICTORY;
+         gState.battleEval = BATTLE_EVAL_VICTORY;
       }
       if (!FindUnitByNameIdx(UNIT_ASH)) {
-         gMapState.battleEval = BATTLE_EVAL_DEFEAT;
+         gState.battleEval = BATTLE_EVAL_DEFEAT;
       }
    }
-   if (gMapState.signal != 0) {
-      gMapState.signal = 0;
+   if (gState.signal != 0) {
+      gState.signal = 0;
    }
 }
 

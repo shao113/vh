@@ -1,0 +1,114 @@
+#ifndef CARD_H
+#define CARD_H
+
+#include "common.h"
+#include "units.h"
+#include "battle.h"
+#include "field.h"
+
+typedef enum SaveLocation {
+   SAVE_LOC_BATTLE = 0,
+   SAVE_LOC_UNK = 1 /* possibly an unimplemented chapter-end save? */,
+   SAVE_LOC_WORLD_MAP = 2,
+   SAVE_LOC_TOWN = 3
+} SaveLocation;
+
+typedef struct CardFileData_RegularSave {
+   u32 checksum;
+   PartyMember party[13];
+   s16 depot[150];
+   // u8 field3_0x2ea;
+   // u8 field4_0x2eb;
+   u32 frameCounter;
+   s32 gold;
+   u8 textSpeed;
+   u8 cameraMode;
+   u8 mono;
+   u8 worldMapState;
+   u8 townState;
+   u8 worldMapDestination;
+   u8 saveLocation;
+   u8 chapter;
+   u8 section;
+   u8 debug;
+   u8 field17_0x2fe;
+   u8 field18_0x2ff;
+} CardFileData_RegularSave;
+
+typedef struct CardFileData_InBattleSave {
+   u32 checksum;
+   PartyMember party[13];
+   u8 field2_0x1be;
+   u8 field3_0x1bf;
+   UnitStatus units[40];
+   MapObject3 chests[20];
+   MapObject2 crates[10];
+   MapObject2 boulders[10];
+   u8 worldMapState;
+   u8 townState;
+   u8 worldMapDestination;
+   u8 field11_0x14e7;
+   u32 frameCounter;
+   u8 chapter;
+   u8 section;
+   u8 mapState[20];
+   s16 turn;
+   u8 battle;
+   u8 field18_0x1505;
+   s16 depot[150];
+   u8 field20_0x1632;
+   u8 field21_0x1633;
+   s32 gold;
+   u8 zoom;
+   u8 lastSelectedUnit;
+   u8 mono;
+   u8 cameraMode;
+   u8 textSpeed;
+   u8 field28_0x163d;
+   SlainUnit slainUnits[20];
+   u8 partyMemberSlain[12];
+   u8 mapCursorX;
+   u8 mapCursorZ;
+   s16 cameraRotationX;
+   s16 cameraRotationY;
+   u8 debug;
+} CardFileData_InBattleSave;
+
+typedef struct DeferredInBattleSaveData {
+   MapObject3 chests[20];
+   MapObject2 crates[10];
+   MapObject2 boulders[10];
+   u8 worldMapState;
+   u8 townState;
+   u8 worldMapDestination;
+   u8 padding_0x67;
+   u32 frameCounter;
+   u8 chapter;
+   u8 section;
+   u8 mapState[20];
+   s16 turn;
+   u8 battle;
+   u8 padding_0x85;
+   s16 depot[150];
+   u8 padding_0x1b2[2];
+   s32 gold;
+   u8 zoom;
+   u8 lastSelectedUnit;
+   u8 mono;
+   u8 cameraMode;
+   u8 textSpeed;
+   u8 padding_0x1bd;
+   SlainUnit slainUnits[20];
+   u8 partyMemberSlain[12];
+   u8 mapCursorX;
+   u8 mapCursorZ;
+   s16 cameraRotationX;
+   s16 cameraRotationY;
+   u8 debug;
+} DeferredInBattleSaveData;
+
+extern CardFileData_RegularSave gRegularSave;
+extern CardFileData_InBattleSave *gInBattleSaveDataPtr;
+extern DeferredInBattleSaveData gDeferredInBattleSaveData;
+
+#endif

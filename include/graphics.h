@@ -12,9 +12,17 @@ typedef struct Graphics {
    u32 ot[1024];
 } Graphics;
 
+typedef struct DynamicIcon {
+   u16 gfxIdx;
+   s16 x;
+   s16 y;
+} DynamicIcon;
+
 extern Graphics *gGraphicsPtr;
 extern SVECTOR gLightRotation;
 extern s16 gLightRotation_vy, gLightRotation_vz; /* FIXME */
+extern SVECTOR gCameraRotation;
+extern s16 gCameraRotation_vy, gCameraRotation_vz; /* FIXME */
 
 void DecodeUnitSprites(void);
 

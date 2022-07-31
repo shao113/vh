@@ -7,20 +7,23 @@
 #define EVT_DATA_CT 350
 #define EVT_DATA_LAST_IDX 349
 
-typedef struct SVectorXZY {
-   s16 x;
-   s16 z;
-   s16 y;
-} SVectorXZY;
+#define TO_TILE(arg) (*((s8 *)&arg + 1))
+//#define TO_TILE(arg) ((s8)arg)
 
 typedef enum {
    EVTF_NULL = 0,
    EVTF_NOOP = 1, /* TBD Used only for sprites? */
+   EVTF_MAP_OBJECT_CHEST = 40,
+   EVTF_MAP_OBJECT_CRATE = 46,
    EVTF_UNIT_SPRITES_DECODER = 50,
+   EVTF_FILE_SAVE_DIALOG = 341,
+   EVTF_FILE_LOAD_DIALOG = 373,
+   EVTF_FULLSCREEN_IMAGE = 387,
    EVTF_EVALUATE_BATTLE_10 = 426,
    EVTF_EVALUATE_BATTLE_08 = 438,
    EVTF_DISPLAY_ICON = 574,
-   EVTF_AUDIO_CMD = 581
+   EVTF_AUDIO_CMD = 581,
+   EVTF_MAP_OBJECT_BOULDER = 591,
 } EvtFunctionIdx;
 
 typedef struct EvtData_Sprite {
@@ -97,7 +100,6 @@ extern EvtData gEvtData050_UnitSpritesDecoder;
 extern EvtData *gTempEvt;
 
 void Evt_Execute(void);
-void Evtf001_Noop(EvtData *evt);
 void Evt_ResetFromIdx10(void);
 void Evt_ResetAll(void);
 EvtData *Evt_GetUnused(void);
@@ -106,6 +108,7 @@ EvtData *Evt_GetLastUnused(void);
 EvtData *Evt_GetLastUnusedSkippingTail(s32);
 s32 Evt_CountUnused(void);
 
+void Evtf001_Noop(EvtData *evt);
 void Evtf426_EvaluateBattle10(EvtData *);
 void Evtf427_EvaluateBattle11(EvtData *);
 void Evtf438_EvaluateBattle08(EvtData *);

@@ -55,6 +55,11 @@ segments:
     - [0x0318b4, c, battle_eval]   # 0x800410b4 FindUnitByNameIdx ...
     - [0x031b90, bin]              # 
     
+    - [0x039e48, c, card]          # 0x80049648 #TARGET_POINT
+    - [0x03aac4, c, card_asm_auto] #END_POINT
+    
+    - [0x03c94c, bin]              # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
+    
     - [0x0b4e60, c, audio]         # 0x800c4660 SetSeqDataPtr ...
     - [0x0b7ac8, bin]              # 0x800c72c8 End of audio functions
     
@@ -74,5 +79,13 @@ segments:
     - [0x113610, asm]               # 0x80122e10 _gp_1
     #- [0x1156fc, .data, audio]      # 0x80124efc TODO sdata?
     - [0x115704, bin]
+    
+    - [0x130d2c, asm]
+    - [0x131070, bin]
+    - [0x14307f, asm] #TBD alignment?
+    #- [0x160efc, bin]
+    #- [0x16d7bc, asm]
+    - [0x16dac0, bin]
+    
     - [0x1d5ac4, bin] # 0x801e52c4 (More functions)
   - [0x1e7800] # TBD end of file

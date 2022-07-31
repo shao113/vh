@@ -3,6 +3,25 @@
 
 #include "common.h"
 
+typedef enum MovieInfoIdx {
+   MOV_LOGO_USA_STR = 0,
+   MOV_TITLE_WS_STR = 1,
+   MOV_1BU_WS_STR = 2,
+   MOV_EPI1_WS_STR = 3,
+   MOV_2BU_WS_STR = 4,
+   MOV_3BU_WS_STR = 5,
+   MOV_4BU_WS_STR = 6,
+   MOV_5BU_WS_STR = 7,
+   MOV_6BU_WS_STR = 8,
+   MOV_END1_WS_STR = 9,
+   MOV_END2_WS_STR = 10,
+   MOV_EPI2_WS_STR = 11,
+   MOV_EPI3_WS_STR = 12,
+   MOV_EPI4_WS_STR = 13,
+   MOV_EPI5_WS_STR = 14,
+   MOV_EPI6_WS_STR = 15
+} MovieInfoIdx;
+
 typedef enum CdFileInfoIdx {
    CDF_SIBAI1_1_DAT = 8,
    CDF_SIBAI1_2_DAT = 9,

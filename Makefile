@@ -23,7 +23,7 @@ AS              := mips-elf-as -EL
 LD              := mips-elf-ld -EL
 OBJCOPY         := mips-elf-objcopy
 #CC		     	:= $(TOOLS_DIR)/wine-cc.sh
-CC		     	:= cc1_v263
+CC		     	:= cc1_v263_EL
 SPLAT           := $(PYTHON) $(TOOLS_DIR)/splat/split.py
 SORT_SYM        := $(PYTHON) $(TOOLS_DIR)/sortSymbols.py > symbol_addrs.$(BASENAME).txt
 
@@ -43,7 +43,11 @@ LD_FLAGS    	:= --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined
 build/src/audio.c.s: CC := cc1_v258_messyhack2
 build/src/audio.c.s: OPT_FLAGS := -O2
 
-
+# For correct byte order in struct assignments:
+#build/src/card.c.s: CC := cc1_v272
+#build/src/card.c.s: CC_FLAGS += -mel
+# Update: Incomplete match with v272; Re-compiling cc1_v263 with -DBYTES_BIG_ENDIAN=0 also seems to work, but breaks
+# an earlier (dubious) match; just going to hack around that for a bit while things are in flux;
 
 
 default: dirs check
