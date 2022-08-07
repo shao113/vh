@@ -8,6 +8,46 @@
 #include "units.h"
 #include "battle.h"
 
+#include "PsyQ/stdio.h"
+#include "PsyQ/kernel.h"
+#include "PsyQ/memory.h"
+#include "PsyQ/strings.h"
+
+/* .data */
+u8 gCardFilePath[] = "bu00:BASLUS-00447VH";
+// Could be defined here, but leaving external since it contains image data:
+extern CardFileData_Header gCardFileHeader;
+
+/* .sdata (definitions moved further down for proper ordering)
+u8 *gCardFilenameBufferPtr;
+u8 *gCardFileBufferPtr;
+u8 *gCardFileVerifyBufferPtr;
+*/
+
+/* .sbss */
+s32 gEventSwCardIOE;
+s32 gEventSwCardError;
+s32 gEventSwCardTimeout;
+s32 gEventSwCardNew;
+s32 gEventHwCardIOE;
+s32 gEventHwCardError;
+s32 gEventHwCardTimeout;
+s32 gEventHwCardNew;
+s16 gCardEventState;
+s16 gCardState;
+
+typedef struct {
+   u8 bytes[0x300];
+} RawSaveData;
+
+typedef struct {
+   u8 bytes[0x80];
+} RawListingData;
+
+typedef struct {
+   u8 bytes[0x16cc];
+} RawInBattleSaveData;
+
 void ShowFileSaveScreen(void) {
    EvtData *evt;
 
@@ -322,3 +362,383 @@ void Card_PopulateInBattleSave(void) {
 s32 Card_ReadInBattleSaveIntoBuf(void) { return Card_ReadInBattleSaveInto(gInBattleSaveDataPtr); }
 
 s32 Card_WriteInBattleSaveFromBuf(void) { return Card_WriteInBattleSaveFrom(gInBattleSaveDataPtr); }
+
+s32 Card_ReadRegularSaveIntoBuf(u8 fileIdx) {
+   s32 res;
+
+   res = Card_ReadRegularSaveInto(fileIdx, gRegularSaveDataPtr);
+   if (res != 0) {
+      return res;
+   }
+   gRegularSave = *gRegularSaveDataPtr;
+   return res;
+}
+
+s32 Card_WriteRegularSaveFromBuf(u8 fileIdx) {
+   return Card_WriteRegularSaveFrom(fileIdx, &gRegularSave);
+}
+
+s32 Card_WriteFileListingFromBuf(void) { return Card_WriteFileListingFrom(gCardFileListingPtr); }
+
+s32 Card_ReadFileListingIntoBuf(void) { return Card_ReadFileListingInto(gCardFileListingPtr); }
+
+s32 Card_WriteRegularSave(u8 fileIdx) {
+   Card_PopulateRegularSave();
+   return Card_WriteRegularSaveFromBuf(fileIdx);
+}
+
+s32 Card_LoadRegularSave(u8 fileIdx) {
+   s32 res = Card_ReadRegularSaveIntoBuf(fileIdx);
+   if (res == 0) {
+      SwapOutCodeToVram();
+      Card_LoadRegularSave_Internal();
+   }
+   return res;
+}
+
+void ReloadBattle(void) {
+   /* Loads from gRegularSave as prepared by Card_PopulateRegularSave (@800406c0) */
+   Card_LoadRegularSave_Internal();
+}
+
+s32 Card_LoadInBattleSave(void) {
+   s32 res;
+
+   /* TBD: is this redundant? need to check if it's ever actually used;
+      Maybe for preparing gRegularSave in lieu of Card_PopulateRegularSave (for reloading from
+      battle start) */
+   res = Card_ReadRegularSaveIntoBuf(3);
+   if (res != 0) {
+      return res;
+   }
+   res = Card_ReadInBattleSaveIntoBuf();
+   if (res != 0) {
+      return res;
+   }
+   Card_LoadInBattleSaveFromBuf();
+   gState.primary = 0x17;
+   gState.secondary = 0;
+   gState.state3 = 0;
+   gState.state4 = 0;
+   return 0;
+}
+
+s32 Card_WriteInBattleSave(void) {
+   s32 res;
+
+   gState.saveLocation = SAVE_LOC_BATTLE;
+
+   res = Card_WriteRegularSaveFromBuf(3);
+   if (res != 0) {
+      return res;
+   }
+   Card_PopulateInBattleSave();
+   return Card_WriteInBattleSaveFromBuf();
+}
+
+s32 Card_WriteFileListing(void) { return Card_WriteFileListingFromBuf(); }
+
+s32 Card_ReadFileListing(void) { return Card_ReadFileListingIntoBuf(); }
+
+s32 Card_EmbedIntIntoCaption(s32 n, u8 *dest) {
+   s32 i, ct;
+   u8 *p;
+   u8 buffer[64] = "";
+
+   sprintf(buffer, "%d", n);
+   p = &buffer[0];
+   ct = 0;
+   for (i = 0; i < 8; i++) {
+      if (*p == ' ') {
+         p++;
+         continue;
+      }
+      if (*p == '\0') {
+         break;
+      }
+      *(dest++) = *(p++);
+      ct++;
+   }
+   return ct;
+}
+
+s32 Card_EmbedIntIntoSjisCaption(s32 n, u8 *dest) {
+   s32 i, ct;
+   u8 *p;
+   u8 buffer[64] = "";
+
+   sprintf(buffer, "%d", n);
+   p = &buffer[0];
+   ct = 0;
+   if (*p == '-') {
+      *(dest++) = 0x81;
+      *(dest++) = 0x7c;
+      p++;
+      ct++;
+   }
+   for (i = 0; i < 8; i++) {
+      if (*p == ' ') {
+         p++;
+         continue;
+      }
+      if (*p == '\0') {
+         break;
+      }
+      *(dest++) = 0x82;
+      *(dest++) = *(p++) + 0x1f;
+      ct++;
+   }
+   return ct;
+}
+
+void Card_UpdateCaption(u8 fileIdx) {
+   s32 level, hours, minutes, totalSeconds, totalMinutes;
+   u8 *p;
+   u8 chapter, section;
+   u8 unused[48];
+   u8 buffer[40] = "Chap.   Sct.    L      :  ";
+
+   // e.g. Chap. 1 Sct. 1  L5    0:06
+   //      01234567890123456789012345
+
+   level = 0;
+   while (BigIntCompare(gPartyMembers[UNIT_ASH].experience, &gExperienceLevels[level + 2]) < 2) {
+      level++;
+   }
+   if (level > 50) {
+      level = 50;
+   }
+
+   chapter = gState.chapter;
+   section = gState.section;
+   buffer[6] = (chapter & 0xf) + ASCII_DIGIT;
+   buffer[13] = (section & 0xf) + ASCII_DIGIT;
+   Card_EmbedIntIntoCaption(level, &buffer[17]);
+
+   totalSeconds = gState.frameCounter / 60;
+   totalMinutes = totalSeconds / 60;
+   hours = totalMinutes / 60;
+   minutes = totalMinutes % 60;
+
+   p = &buffer[20];
+   if (hours > 999) {
+      hours = 999;
+   }
+   if (hours < 10) {
+      p += 2;
+   } else if (hours < 100) {
+      p++;
+   }
+   Card_EmbedIntIntoCaption(hours, p);
+
+   p = &buffer[24];
+   if (minutes < 10) {
+      Card_EmbedIntIntoCaption(0, p);
+      p++;
+   }
+   Card_EmbedIntIntoCaption(minutes, p);
+
+   strcpy(gCardFileListingPtr->captions[fileIdx], buffer);
+}
+
+u8 *gCardFilenameBufferPtr = gScratch1_801317c0;
+// TODO Generates a relocation currently unsupported by psyq-obj-parser:
+// u8 *gCardFileBufferPtr = &gScratch1_801317c0[64];
+u8 *gCardFileBufferPtr = (u8 *)0x80131800;       // &gScratch1_801317c0[64]
+u8 *gCardFileVerifyBufferPtr = (u8 *)0x80133800; // &gScratch1_801317c0[8256]
+
+s32 Card_WriteRegularSaveFrom(s32 fileIdx, CardFileData_RegularSave *buf) {
+   CardFileData_RegularSave *save;
+   s32 res, size = 0x380;
+   res = Card_FileExists(gCardFilePath);
+   if (res == 0) {
+      res = Card_CreateFile(gCardFilePath, &gCardFileHeader);
+      if (res != 0) {
+         return res;
+      }
+   }
+   memset(gCardFileBufferPtr, '\0', size);
+   *(RawSaveData *)gCardFileBufferPtr = *(RawSaveData *)buf;
+   save = (CardFileData_RegularSave *)gCardFileBufferPtr;
+   // Size/location are adjusted by 4 bytes to exclude previous checksum from calculation
+   save->checksum = CalculateChecksum(sizeof(CardFileData_RegularSave) - 4, gCardFileBufferPtr + 4);
+   // 1 is added to fileIdx since first 0x400 bytes are reserved for listing data
+   return Card_WriteFile(gCardFilePath, gCardFileBufferPtr, size, (fileIdx + 1) * 0x400);
+}
+
+s32 Card_ReadRegularSaveInto(s32 fileIdx, CardFileData_RegularSave *buf) {
+   CardFileData_RegularSave *save;
+   u32 checksum;
+   s32 res, size = 0x380;
+   if (!Card_FileExists(gCardFilePath)) {
+      return 1;
+   }
+   memset(gCardFileBufferPtr, '\0', size);
+   save = (CardFileData_RegularSave *)gCardFileBufferPtr;
+   res = Card_ReadFile(gCardFilePath, gCardFileBufferPtr, size, (fileIdx + 1) * 0x400);
+   if (res != 0) {
+      return res;
+   }
+   checksum = CalculateChecksum(sizeof(CardFileData_RegularSave) - 4, gCardFileBufferPtr + 4);
+   if (save->checksum != checksum) {
+      return 2;
+   } else {
+      *(RawSaveData *)buf = *(RawSaveData *)gCardFileBufferPtr;
+      return 0;
+   }
+}
+
+s32 Card_WriteFileListingFrom(CardFileData_Listing *buf) {
+   CardFileData_Listing *listing;
+   s32 res, size = 0x100;
+   res = Card_FileExists(gCardFilePath);
+   if (res == 0) {
+      res = Card_CreateFile(gCardFilePath, &gCardFileHeader);
+      if (res != 0) {
+         return res;
+      }
+   }
+   memset(gCardFileBufferPtr, '\0', size);
+   *(RawListingData *)gCardFileBufferPtr = *(RawListingData *)buf;
+   listing = (CardFileData_Listing *)gCardFileBufferPtr;
+   listing->checksum = CalculateChecksum(sizeof(CardFileData_Listing) - 4, gCardFileBufferPtr + 4);
+   return Card_WriteFile(gCardFilePath, gCardFileBufferPtr, size, 0);
+}
+
+s32 Card_ReadFileListingInto(CardFileData_Listing *buf) {
+   CardFileData_Listing *listing;
+   u32 checksum;
+   s32 res, size = 0x100;
+   if (!Card_FileExists(gCardFilePath)) {
+      return 1;
+   }
+   memset(gCardFileBufferPtr, '\0', size);
+   listing = (CardFileData_Listing *)gCardFileBufferPtr;
+   res = Card_ReadFile(gCardFilePath, gCardFileBufferPtr, size, 0);
+   if (res != 0) {
+      return res;
+   }
+   checksum = CalculateChecksum(sizeof(CardFileData_Listing) - 4, gCardFileBufferPtr + 4);
+   if (listing->checksum != checksum) {
+      return 2;
+   } else {
+      *(RawListingData *)buf = *(RawListingData *)gCardFileBufferPtr;
+      return 0;
+   }
+}
+
+s32 Card_WriteInBattleSaveFrom(CardFileData_InBattleSave *buf) {
+   CardFileData_InBattleSave *save;
+   s32 res, size = 0x1700;
+   res = Card_FileExists(gCardFilePath);
+   if (res == 0) {
+      res = Card_CreateFile(gCardFilePath, &gCardFileHeader);
+      if (res != 0) {
+         return res;
+      }
+   }
+   memset(gCardFileBufferPtr, '\0', size);
+   *(RawInBattleSaveData *)gCardFileBufferPtr = *(RawInBattleSaveData *)buf;
+   save = (CardFileData_InBattleSave *)gCardFileBufferPtr;
+   save->checksum =
+       CalculateChecksum(sizeof(CardFileData_InBattleSave) - 4, gCardFileBufferPtr + 4);
+   return Card_WriteFile(gCardFilePath, gCardFileBufferPtr, size, 0x2000);
+}
+
+s32 Card_ReadInBattleSaveInto(CardFileData_InBattleSave *buf) {
+   CardFileData_InBattleSave *save;
+   u32 checksum;
+   s32 res, size = 0x1700;
+   if (!Card_FileExists(gCardFilePath)) {
+      return 1;
+   }
+   memset(gCardFileBufferPtr, '\0', size);
+   save = (CardFileData_InBattleSave *)gCardFileBufferPtr;
+   res = Card_ReadFile(gCardFilePath, gCardFileBufferPtr, size, 0x2000);
+   if (res != 0) {
+      return res;
+   }
+   checksum = CalculateChecksum(sizeof(CardFileData_InBattleSave) - 4, gCardFileBufferPtr + 4);
+   if (save->checksum != checksum) {
+      return 2;
+   } else {
+      *(RawInBattleSaveData *)buf = *(RawInBattleSaveData *)gCardFileBufferPtr;
+      return 0;
+   }
+}
+
+void Card_Init(void) {
+   gEventSwCardIOE = OpenEvent(SwCARD, EvSpIOE, EvMdNOINTR, NULL);
+   gEventSwCardError = OpenEvent(SwCARD, EvSpERROR, EvMdNOINTR, NULL);
+   gEventSwCardTimeout = OpenEvent(SwCARD, EvSpTIMOUT, EvMdNOINTR, NULL);
+   gEventSwCardNew = OpenEvent(SwCARD, EvSpNEW, EvMdNOINTR, NULL);
+   gEventHwCardIOE = OpenEvent(HwCARD, EvSpIOE, EvMdNOINTR, NULL);
+   gEventHwCardError = OpenEvent(HwCARD, EvSpERROR, EvMdNOINTR, NULL);
+   gEventHwCardTimeout = OpenEvent(HwCARD, EvSpTIMOUT, EvMdNOINTR, NULL);
+   gEventHwCardNew = OpenEvent(HwCARD, EvSpNEW, EvMdNOINTR, NULL);
+   InitCard(1);
+   StartCard();
+   _bu_init();
+   gCardEventState = 0;
+   gCardState = 0;
+   EnableEvent(gEventSwCardIOE);
+   EnableEvent(gEventSwCardError);
+   EnableEvent(gEventSwCardTimeout);
+   EnableEvent(gEventSwCardNew);
+   EnableEvent(gEventHwCardIOE);
+   EnableEvent(gEventHwCardError);
+   EnableEvent(gEventHwCardTimeout);
+   EnableEvent(gEventHwCardNew);
+}
+
+s32 Card_CheckState(void) {
+   s32 eventType;
+   Card_ClearSwCardEvents();
+   _card_info(0);
+   eventType = Card_WaitForSwCardEvent();
+   if ((gCardEventState == 2 && eventType == CARD_EVENT_TYPE_IOE) ||
+       eventType == CARD_EVENT_TYPE_NEW) {
+      /* successful retry or new card; confirm via _card_clear */
+      Card_ClearHwCardEvents();
+      _card_clear(0);
+      Card_WaitForHwCardEvent();
+   }
+   if (gCardState == 0 || gCardEventState != eventType) {
+      if (eventType == CARD_EVENT_TYPE_IOE || eventType == CARD_EVENT_TYPE_NEW) {
+         Card_ClearSwCardEvents();
+         _card_async_load_directory(0);
+         eventType = Card_WaitForSwCardEvent();
+         switch (eventType) {
+         case CARD_EVENT_TYPE_IOE:
+            gCardEventState = 0;
+            gCardState = -1;
+            break;
+         case CARD_EVENT_TYPE_ERROR:
+            gCardEventState = 1;
+            gCardState = -2;
+            break;
+         case CARD_EVENT_TYPE_TIMEOUT:
+            gCardEventState = 2;
+            gCardState = -3;
+            break;
+         case CARD_EVENT_TYPE_NEW:
+            gCardEventState = 0;
+            gCardState = -4;
+            break;
+         }
+      } else {
+         gCardEventState = eventType;
+         if (eventType == CARD_EVENT_TYPE_ERROR) {
+            gCardState = -2;
+         } else {
+            gCardState = -3;
+         }
+      }
+   }
+   return gCardState;
+}
+
+s32 Card_Format(void) {
+   gCardState = 0;
+   return FormatDevice("bu00:") == 0;
+}

@@ -2,6 +2,7 @@
 #define COMMON_H
 
 #define NULL 0
+#define ASCII_DIGIT 0x30
 
 #include "sys/types.h"
 #include "PsyQ/libetc.h"
@@ -23,9 +24,9 @@ typedef struct SVectorXYZ {
    s16 z;
 } SVectorXYZ;
 
-extern void *gScratch1_801317c0;
-extern void *gScratch2_8013e054;
-extern void *gScratch3_80180210;
+extern u8 gScratch1_801317c0[];
+extern u8 gScratch2_8013e054[];
+extern u8 gScratch3_80180210[];
 
 extern s32 gPadStateNewPresses;
 

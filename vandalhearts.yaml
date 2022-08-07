@@ -31,6 +31,8 @@ options:
   - .text
   - .data
   - .bss
+  - .sdata
+  - .sbss
 segments:
   - [0x0, header]
   - [0x80, bin]
@@ -40,6 +42,9 @@ segments:
     subalign: 4
     subsegments:
     - [0x000800, rodata]           # 0x80010000
+
+    - [0x0041d4, .rdata, card]
+    - [0x0041f4, rdata]
   
     - [0x006580, .rdata, audio]    # 0x80015d80 
     - [0x0069b0, bin]              # 0x800161b0 end of audio jtbls
@@ -56,7 +61,7 @@ segments:
     - [0x031b90, bin]              # 
     
     - [0x039e48, c, card]          # 0x80049648 #TARGET_POINT
-    - [0x03aac4, c, card_asm_auto] #END_POINT
+    - [0x03c258, bin, card_asm_auto] #END_POINT
     
     - [0x03c94c, bin]              # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
     
@@ -70,22 +75,28 @@ segments:
 
     - [0x0e1384, .data, glyphs]     # 0x800f0b84
 
-    - [0x0e1ed8, bin]
+    - [0x0e1ed8, data]
     - [0x0e3914, .data, gCdFiles]   # 0x800f3114
     - [0x0e5a74, bin]
+    - [0x0e5d4c, .data, card]       # 0x800f554c
+    - [0x0e5d60, bin]               # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
+
     - [0x0f780c, .data, audio_data] # 0x8010700c
     - [0x0f91d0, bin]               # 0x801089d0 lib data
 
-    - [0x113610, asm]               # 0x80122e10 _gp_1
+    #- [0x113610, asm]               # 0x80122e10 _gp_1
+    - [0x113710, .sdata, card]       # 0x80122f10
+    - [0x113728, bin]
+    #- [0x113ab0, .sbss, card]       # 0x801232b0
+    - [0x113ad8, bin]
     #- [0x1156fc, .data, audio]      # 0x80124efc TODO sdata?
-    - [0x115704, bin]
+    #- [0x115704, bin]
     
-    - [0x130d2c, asm]
-    - [0x131070, bin]
-    - [0x14307f, asm] #TBD alignment?
+    #- [0x130d2c, asm]
+    #- [0x131070, bin]
     #- [0x160efc, bin]
     #- [0x16d7bc, asm]
-    - [0x16dac0, bin]
+    #- [0x16dac0, bin]
     
     - [0x1d5ac4, bin] # 0x801e52c4 (More functions)
   - [0x1e7800] # TBD end of file

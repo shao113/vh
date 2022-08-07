@@ -17,7 +17,7 @@ typedef struct State {
    u8 saveLocation;
    u8 field10_0xa;
    u8 field11_0xb;
-   u32 frameCounter;
+   s32 frameCounter;
    u8 chapter;
    u8 section;
    u8 D_8014053E;

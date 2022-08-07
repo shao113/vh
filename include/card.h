@@ -6,12 +6,30 @@
 #include "battle.h"
 #include "field.h"
 
+typedef enum CardEventType {
+   CARD_EVENT_TYPE_IOE = 0,
+   CARD_EVENT_TYPE_ERROR = 1,
+   CARD_EVENT_TYPE_TIMEOUT = 2,
+   CARD_EVENT_TYPE_NEW = 3
+} CardEventType;
+
 typedef enum SaveLocation {
    SAVE_LOC_BATTLE = 0,
    SAVE_LOC_UNK = 1 /* possibly an unimplemented chapter-end save? */,
    SAVE_LOC_WORLD_MAP = 2,
    SAVE_LOC_TOWN = 3
 } SaveLocation;
+
+typedef struct CardFileData_Header {
+   u8 magicNumber[2];
+   u8 type;
+   u8 blockCount;
+   u8 sjisName[64];
+   u8 padding[28];
+   u8 clut[32];
+   u8 icon1[128];
+   u8 icon2[128];
+} CardFileData_Header;
 
 typedef struct CardFileData_RegularSave {
    u32 checksum;
@@ -31,15 +49,15 @@ typedef struct CardFileData_RegularSave {
    u8 chapter;
    u8 section;
    u8 debug;
-   u8 field17_0x2fe;
-   u8 field18_0x2ff;
+   // u8 field17_0x2fe;
+   // u8 field18_0x2ff;
 } CardFileData_RegularSave;
 
 typedef struct CardFileData_InBattleSave {
    u32 checksum;
    PartyMember party[13];
-   u8 field2_0x1be;
-   u8 field3_0x1bf;
+   // u8 field2_0x1be;
+   // u8 field3_0x1bf;
    UnitStatus units[40];
    MapObject3 chests[20];
    MapObject2 crates[10];
@@ -47,24 +65,24 @@ typedef struct CardFileData_InBattleSave {
    u8 worldMapState;
    u8 townState;
    u8 worldMapDestination;
-   u8 field11_0x14e7;
+   // u8 field11_0x14e7;
    u32 frameCounter;
    u8 chapter;
    u8 section;
    u8 mapState[20];
    s16 turn;
    u8 battle;
-   u8 field18_0x1505;
+   // u8 field18_0x1505;
    s16 depot[150];
-   u8 field20_0x1632;
-   u8 field21_0x1633;
+   // u8 field20_0x1632;
+   // u8 field21_0x1633;
    s32 gold;
    u8 zoom;
    u8 lastSelectedUnit;
    u8 mono;
    u8 cameraMode;
    u8 textSpeed;
-   u8 field28_0x163d;
+   // u8 field28_0x163d;
    SlainUnit slainUnits[20];
    u8 partyMemberSlain[12];
    u8 mapCursorX;
@@ -81,23 +99,23 @@ typedef struct DeferredInBattleSaveData {
    u8 worldMapState;
    u8 townState;
    u8 worldMapDestination;
-   u8 padding_0x67;
+   // u8 padding_0x67;
    u32 frameCounter;
    u8 chapter;
    u8 section;
    u8 mapState[20];
    s16 turn;
    u8 battle;
-   u8 padding_0x85;
+   // u8 padding_0x85;
    s16 depot[150];
-   u8 padding_0x1b2[2];
+   // u8 padding_0x1b2[2];
    s32 gold;
    u8 zoom;
    u8 lastSelectedUnit;
    u8 mono;
    u8 cameraMode;
    u8 textSpeed;
-   u8 padding_0x1bd;
+   // u8 padding_0x1bd;
    SlainUnit slainUnits[20];
    u8 partyMemberSlain[12];
    u8 mapCursorX;
@@ -107,8 +125,50 @@ typedef struct DeferredInBattleSaveData {
    u8 debug;
 } DeferredInBattleSaveData;
 
+typedef struct CardFileData_Listing {
+   u32 checksum;
+   u8 slots[4];
+   s8 captions[3][40];
+} CardFileData_Listing;
+
 extern CardFileData_RegularSave gRegularSave;
 extern CardFileData_InBattleSave *gInBattleSaveDataPtr;
 extern DeferredInBattleSaveData gDeferredInBattleSaveData;
+extern CardFileData_RegularSave *gRegularSaveDataPtr;
+extern CardFileData_Listing *gCardFileListingPtr;
+
+void ShowFileSaveScreen(void);
+void ShowFileLoadScreen(void);
+void Card_PopulateRegularSave(void);
+void Card_LoadRegularSaveFromBuf(void);
+void Card_LoadRegularSave_Internal(void);
+void CommitPartyMemberStatus(UnitStatus *);
+void Card_LoadInBattleSaveFromBuf(void);
+void Card_PopulateInBattleSave(void);
+s32 Card_ReadInBattleSaveIntoBuf(void);
+s32 Card_WriteInBattleSaveFromBuf(void);
+s32 Card_ReadRegularSaveIntoBuf(u8);
+s32 Card_WriteRegularSaveFromBuf(u8);
+s32 Card_WriteFileListingFromBuf(void);
+s32 Card_ReadFileListingIntoBuf(void);
+s32 Card_WriteRegularSave(u8);
+s32 Card_LoadRegularSave(u8);
+void ReloadBattle(void);
+s32 Card_LoadInBattleSave(void);
+s32 Card_WriteInBattleSave(void);
+s32 Card_WriteFileListing(void);
+s32 Card_ReadFileListing(void);
+s32 Card_EmbedIntIntoCaption(s32, u8 *);
+s32 Card_EmbedIntIntoSjisCaption(s32, u8 *);
+void Card_UpdateCaption(u8);
+s32 Card_WriteRegularSaveFrom(s32, CardFileData_RegularSave *);
+s32 Card_ReadRegularSaveInto(s32, CardFileData_RegularSave *);
+s32 Card_WriteFileListingFrom(CardFileData_Listing *);
+s32 Card_ReadFileListingInto(CardFileData_Listing *);
+s32 Card_WriteInBattleSaveFrom(CardFileData_InBattleSave *);
+s32 Card_ReadInBattleSaveInto(CardFileData_InBattleSave *);
+void Card_Init(void);
+s32 Card_CheckState(void);
+s32 Card_Format(void);
 
 #endif

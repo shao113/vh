@@ -441,5 +441,6 @@ extern s8 gUnitTypeNames[86][11];
 extern s8 gItemNames[139][13];
 extern UnitStatus gUnits[UNIT_CT];
 extern PartyMember gPartyMembers[PARTY_CT];
+extern BigInt gExperienceLevels[];
 
 #endif

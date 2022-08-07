@@ -31,23 +31,25 @@ AS_FLAGS        := -march=r3000 -mtune=r3000 -Iinclude -G0
 D_FLAGS       	:= -Dmips -D__GNUC__=2 -D__OPTIMIZE__ -D__mips__ -D__mips -Dpsx -D__psx__ -D__psx -D_PSYQ -D__EXTENSIONS__ -D_MIPSEL -D__CHAR_UNSIGNED__ -D_LANGUAGE_C -DLANGUAGE_C
 
 OPT_FLAGS       := -O1
-CC_FLAGS        = -G0 $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -fshort-enums -fno-builtin -ffunction-cse -fpcc-struct-return -fgnu-linker
+GP_OPT          := -G0
+CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -fshort-enums -fno-builtin -ffunction-cse -fpcc-struct-return -fgnu-linker
 
-CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -nostdinc
+CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -Iinclude/PsyQ -nostdinc
 OBJCOPY_FLAGS   := -O binary
 LD_FLAGS    	:= --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined_syms_auto.$(BASENAME).txt -T undefined_funcs_auto.$(BASENAME).txt --no-check-sections
-
 
 
 
 build/src/audio.c.s: CC := cc1_v258_messyhack2
 build/src/audio.c.s: OPT_FLAGS := -O2
 
+build/src/card.c.s: GP_OPT := -G8
 # For correct byte order in struct assignments:
 #build/src/card.c.s: CC := cc1_v272
 #build/src/card.c.s: CC_FLAGS += -mel
 # Update: Incomplete match with v272; Re-compiling cc1_v263 with -DBYTES_BIG_ENDIAN=0 also seems to work, but breaks
 # an earlier (dubious) match; just going to hack around that for a bit while things are in flux;
+# Update 2: Re-compiled cc1_v263 with -DTARGET_MEM_FUNCTIONS to generate calls to memset instead of bzero
 
 
 default: dirs check
