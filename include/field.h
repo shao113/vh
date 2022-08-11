@@ -34,8 +34,14 @@ typedef struct MapObject3 {
    s8 item;
 } MapObject3;
 
+typedef struct MapUnit {
+   s8 unitIdx;
+   s8 team;
+} MapUnit;
+
 extern s16 gTerrainBonus[];
 extern TerrainTile (*gTerrainPtr)[65];
+extern MapUnit (*gMapUnitsPtr)[65];
 extern s16 gMapCursorX, gMapCursorZ;
 
 #endif

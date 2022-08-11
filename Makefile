@@ -23,7 +23,10 @@ AS              := mips-elf-as -EL
 LD              := mips-elf-ld -EL
 OBJCOPY         := mips-elf-objcopy
 #CC		     	:= $(TOOLS_DIR)/wine-cc.sh
+
+# Note: cc1_v263 compiled with CFLAGS="-std=gnu89 -m32 -DBYTES_BIG_ENDIAN=0 -DTARGET_MEM_FUNCTIONS"
 CC		     	:= cc1_v263_EL
+
 SPLAT           := $(PYTHON) $(TOOLS_DIR)/splat/split.py
 SORT_SYM        := $(PYTHON) $(TOOLS_DIR)/sortSymbols.py > symbol_addrs.$(BASENAME).txt
 
@@ -32,7 +35,10 @@ D_FLAGS       	:= -Dmips -D__GNUC__=2 -D__OPTIMIZE__ -D__mips__ -D__mips -Dpsx -
 
 OPT_FLAGS       := -O1
 GP_OPT          := -G0
-CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -fshort-enums -fno-builtin -ffunction-cse -fpcc-struct-return -fgnu-linker
+
+# Update: Removed -fno-builtin to enable generation of inline strcpy
+CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -fshort-enums -ffunction-cse -fpcc-struct-return -fgnu-linker
+
 
 CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -Iinclude/PsyQ -nostdinc
 OBJCOPY_FLAGS   := -O binary
@@ -44,12 +50,6 @@ build/src/audio.c.s: CC := cc1_v258_messyhack2
 build/src/audio.c.s: OPT_FLAGS := -O2
 
 build/src/card.c.s: GP_OPT := -G8
-# For correct byte order in struct assignments:
-#build/src/card.c.s: CC := cc1_v272
-#build/src/card.c.s: CC_FLAGS += -mel
-# Update: Incomplete match with v272; Re-compiling cc1_v263 with -DBYTES_BIG_ENDIAN=0 also seems to work, but breaks
-# an earlier (dubious) match; just going to hack around that for a bit while things are in flux;
-# Update 2: Re-compiled cc1_v263 with -DTARGET_MEM_FUNCTIONS to generate calls to memset instead of bzero
 
 
 default: dirs check
@@ -98,7 +98,7 @@ build/%.c.o: build/%.c.s
 # containing "nonmatchings" are from splat-generated c and can be handled by gnu assembler
 
 #temp-disable:
-	if [[ "$$(grep -Fi nonmatchings '$<')" ]]; then \
+	@if [[ "$$(grep -Fi nonmatchings '$<')" ]]; then \
 		$(AS) $(AS_FLAGS) -o $@ $< ;\
 	else \
 		$(TOOLS_DIR)/wine-as.sh $@ $< ;\

@@ -8,10 +8,27 @@
 #include "units.h"
 #include "battle.h"
 
+#include "PsyQ/sys/file.h"
 #include "PsyQ/stdio.h"
 #include "PsyQ/kernel.h"
 #include "PsyQ/memory.h"
 #include "PsyQ/strings.h"
+
+extern void InitCard(s32);
+extern s32 StartCard(void);
+extern void _bu_init(void);
+extern s32 _card_info(s32);
+extern s32 _card_async_load_directory(s32);
+extern s32 _card_clear(s32);
+extern s32 FormatDevice(u8 *);
+extern s32 FileOpen(u8 *, s32);
+extern s32 FileClose(s32);
+extern s32 FileRead(s32, void *, s32);
+extern s32 FileWrite(s32, void *, s32);
+extern s32 FileSeek(s32, s32, s32);
+extern struct DIRENTRY *firstfile(u8 *, struct DIRENTRY *);
+extern struct DIRENTRY *nextfile(struct DIRENTRY *);
+extern s32 TestEvent(s32);
 
 /* .data */
 u8 gCardFilePath[] = "bu00:BASLUS-00447VH";
@@ -35,6 +52,9 @@ s32 gEventHwCardTimeout;
 s32 gEventHwCardNew;
 s16 gCardEventState;
 s16 gCardState;
+
+/* .bss? */
+// extern struct DIRENTRY s_dirEntry;
 
 typedef struct {
    u8 bytes[0x300];
@@ -741,4 +761,230 @@ s32 Card_CheckState(void) {
 s32 Card_Format(void) {
    gCardState = 0;
    return FormatDevice("bu00:") == 0;
+}
+
+s32 Card_CountFreeBlocks(void) {
+   extern struct DIRENTRY s_dirEntry;
+   struct DIRENTRY *dir;
+   s32 usedBlocks;
+   s32 res;
+
+   res = Card_CheckState();
+   if (res != -1) {
+      return res;
+   }
+   usedBlocks = 0;
+   strcpy(gCardFilenameBufferPtr, "bu00:");
+   strcat(gCardFilenameBufferPtr, "*");
+   dir = firstfile(gCardFilenameBufferPtr, &s_dirEntry);
+   while (dir == &s_dirEntry) {
+      usedBlocks += s_dirEntry.size / BYTES_PER_BLOCK;
+      dir = nextfile(&s_dirEntry);
+   }
+   return TOTAL_BLOCKS - usedBlocks;
+}
+
+s32 Card_CreateFile(u8 *filename, CardFileData_Header *hdr) {
+   s32 res, blocks, fd, n;
+
+   res = Card_CheckState();
+   if (res != -1) {
+      return res;
+   }
+   blocks = Card_CountFreeBlocks();
+   if (blocks < REQUIRED_BLOCKS) {
+      return -5;
+   }
+   fd = FileOpen(filename, O_CREAT | (REQUIRED_BLOCKS << 16));
+   if (fd == -1) {
+      return -2;
+   }
+   FileClose(fd);
+   fd = FileOpen(filename, O_WRONLY);
+   if (fd == -1) {
+      return -2;
+   }
+   n = FileWrite(fd, hdr, sizeof(CardFileData_Header));
+   if (n != sizeof(CardFileData_Header)) {
+      FileClose(fd);
+      return -2;
+   }
+   FileClose(fd);
+   fd = FileOpen(filename, O_RDONLY);
+   if (fd == -1) {
+      return -2;
+   }
+   n = FileRead(fd, gCardFileVerifyBufferPtr, sizeof(CardFileData_Header));
+   if (n != sizeof(CardFileData_Header)) {
+      FileClose(fd);
+      return -2;
+   }
+   FileClose(fd);
+   res = memcmp(hdr, gCardFileVerifyBufferPtr, sizeof(CardFileData_Header));
+   if (res != 0) {
+      return -2;
+   }
+   return 0;
+}
+
+s32 Card_FileExists(u8 *filename) {
+   s32 res, fd;
+
+   res = Card_CheckState();
+   if (res != -1) {
+      return res;
+   }
+   fd = FileOpen(filename, O_RDONLY);
+   if (fd == -1) {
+      return 0;
+   }
+   FileClose(fd);
+   return 1;
+}
+
+s32 Card_WriteFile(u8 *filename, void *buf, s32 len, s32 offset) {
+   s32 fd, res, n;
+
+   res = Card_CheckState();
+   if (res != -1) {
+      return res;
+   }
+   fd = FileOpen(filename, O_WRONLY);
+   if (fd == -1) {
+      return -2;
+   }
+   n = FileSeek(fd, offset + sizeof(CardFileData_Header), SEEK_SET);
+   if (n == -1) {
+      FileClose(fd);
+      return -2;
+   }
+   n = FileWrite(fd, buf, len);
+   if (n == -1) {
+      FileClose(fd);
+      return -2;
+   }
+   FileClose(fd);
+   res = Card_ReadFile(filename, gCardFileVerifyBufferPtr, len, offset);
+   if (res != 0) {
+      return res;
+   }
+   res = memcmp(buf, gCardFileVerifyBufferPtr, len);
+   if (res != 0) {
+      return -2;
+   }
+   return 0;
+}
+
+s32 Card_ReadFile(u8 *filename, void *buf, s32 len, s32 offset) {
+   s32 res, fd, n;
+
+   res = Card_CheckState();
+   if (res != -1) {
+      return res;
+   }
+   fd = FileOpen(filename, O_RDONLY);
+   if (fd == -1) {
+      return -2;
+   }
+   n = FileSeek(fd, offset + sizeof(CardFileData_Header), SEEK_SET);
+   if (n == -1) {
+      FileClose(fd);
+      return -2;
+   }
+   n = FileRead(fd, buf, len);
+   if (n == -1) {
+      FileClose(fd);
+      return -2;
+   }
+   FileClose(fd);
+   return 0;
+}
+
+s32 Card_ReadHeadOfArbitraryFile(u8 *filename, void *buf) {
+   /* Reads first 128 bytes of a file; unused? */
+   s32 res, fd, n;
+
+   res = Card_CheckState();
+   if (res != -1) {
+      return res;
+   }
+   strcpy(gCardFilenameBufferPtr, "bu00:");
+   strcat(gCardFilenameBufferPtr, filename);
+   fd = FileOpen(gCardFilenameBufferPtr, O_RDONLY);
+   if (fd == -1) {
+      return -2;
+   }
+   n = FileRead(fd, buf, 128);
+   if (n == -1) {
+      FileClose(fd);
+      return -2;
+   }
+   FileClose(fd);
+   return 0;
+}
+
+u32 CalculateChecksum(u32 n, u8 *s) {
+   s32 i;
+   u32 j, bit, crc = 0xffffffff;
+
+   for (i = 0; i < n; i++) {
+      crc ^= s[i];
+      for (j = 0; j < 8; j++) {
+         bit = crc & 1;
+         if (bit != 0) {
+            crc = crc >> 1 ^ 0xedb88320;
+         } else {
+            crc >>= 1;
+         }
+      }
+   }
+   return ~crc;
+}
+
+s32 Card_WaitForSwCardEvent(void) {
+   while (1) {
+      if (TestEvent(gEventSwCardIOE) == 1) {
+         return CARD_EVENT_TYPE_IOE;
+      }
+      if (TestEvent(gEventSwCardError) == 1) {
+         return CARD_EVENT_TYPE_ERROR;
+      }
+      if (TestEvent(gEventSwCardTimeout) == 1) {
+         return CARD_EVENT_TYPE_TIMEOUT;
+      }
+      if (TestEvent(gEventSwCardNew) == 1) {
+         return CARD_EVENT_TYPE_NEW;
+      }
+   }
+}
+
+void Card_ClearSwCardEvents(void) {
+   TestEvent(gEventSwCardIOE);
+   TestEvent(gEventSwCardError);
+   TestEvent(gEventSwCardTimeout);
+   TestEvent(gEventSwCardNew);
+}
+
+s32 Card_WaitForHwCardEvent(void) {
+   while (1) {
+      if (TestEvent(gEventHwCardIOE) == 1) {
+         return CARD_EVENT_TYPE_IOE;
+      }
+      if (TestEvent(gEventHwCardError) == 1) {
+         return CARD_EVENT_TYPE_ERROR;
+      }
+      if (TestEvent(gEventHwCardTimeout) == 1) {
+         return CARD_EVENT_TYPE_TIMEOUT;
+      }
+      if (TestEvent(gEventHwCardNew) == 1) {
+         return CARD_EVENT_TYPE_NEW;
+      }
+   }
+}
+
+void Card_ClearHwCardEvents(void) {
+   TestEvent(gEventHwCardIOE);
+   TestEvent(gEventHwCardError);
+   TestEvent(gEventHwCardTimeout);
+   TestEvent(gEventHwCardNew);
 }

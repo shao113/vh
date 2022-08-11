@@ -246,6 +246,7 @@ typedef enum UnitNameIdx {
    UNIT_DALLAS = 22,
    UNIT_KURTZ = 23,
    UNIT_SABINA = 24,
+   UNIT_XENO = 27, /* ?: Not in gCharacterNames? */
    UNIT_DOLF = 29,
    UNIT_LEENA = 30,
    UNIT_CLIVE = 31,

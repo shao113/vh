@@ -6,6 +6,10 @@
 #include "battle.h"
 #include "field.h"
 
+#define BYTES_PER_BLOCK 8192
+#define TOTAL_BLOCKS 15
+#define REQUIRED_BLOCKS 2
+
 typedef enum CardEventType {
    CARD_EVENT_TYPE_IOE = 0,
    CARD_EVENT_TYPE_ERROR = 1,
@@ -170,5 +174,16 @@ s32 Card_ReadInBattleSaveInto(CardFileData_InBattleSave *);
 void Card_Init(void);
 s32 Card_CheckState(void);
 s32 Card_Format(void);
+s32 Card_CountFreeBlocks(void);
+s32 Card_CreateFile(u8 *, CardFileData_Header *);
+s32 Card_FileExists(u8 *);
+s32 Card_WriteFile(u8 *, void *, s32, s32);
+s32 Card_ReadFile(u8 *, void *, s32, s32);
+s32 Card_ReadHeadOfArbitraryFile(u8 *, void *);
+u32 CalculateChecksum(u32, u8 *);
+s32 Card_WaitForSwCardEvent(void);
+void Card_ClearSwCardEvents(void);
+s32 Card_WaitForHwCardEvent(void);
+void Card_ClearHwCardEvents(void);
 
 #endif
