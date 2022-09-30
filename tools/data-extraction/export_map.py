@@ -3,6 +3,7 @@ from itertools import chain
 
 from vh.config import *
 from vh.util import readClut, loadImageRect
+from vh.misc_data import MiscData
 
 EXPORT_DIR = "exported-maps/"
 
@@ -84,14 +85,13 @@ def createVertex(v):
 def readFace(f):
     return [ord(f.read(1)) for i in range(4)]
 
-def loadTextureInfo(battleNum):
+def loadTextureInfo(mapNum):
     #LAND_DT.DAT (69 * 1797 bytes)
     RECORD_SIZE = 1797 #1028+257+512
     NUM_TEXTURES = 257
-    CLUT_IDX_OFFSET = 32
     textures = []
     with open(DATA_DIR + "LAND_DT.DAT", "rb") as f:
-        f.seek(battleNum * RECORD_SIZE)
+        f.seek(mapNum * RECORD_SIZE)
         # texture windows: 1028 bytes
         for i in range(NUM_TEXTURES):
             texture = TextureInfo(f.read(4))
@@ -99,22 +99,22 @@ def loadTextureInfo(battleNum):
         # clut ids: 257 bytes
         for i in range(NUM_TEXTURES):
             clutId = ord(f.read(1))
-            if clutId != 0: clutId -= CLUT_IDX_OFFSET
             textures[i].clutId = clutId
-            assert 0 <= clutId < 16
         # cluts: 512 bytes
-        cluts = [readClut(f) for i in range(16)]
+        # a few maps (e.g. 56-58) do access the global cluts
+        cluts = globalCluts.copy()
+        cluts[32:48] = [readClut(f) for i in range(16)]
     return textures, cluts
 
-def generateMtl(textureFilename, battleNum, mapTiles):
-    mtlFilename = f"b{battleNum}.mtl"
+def generateMtl(textureFilename, mapNum, mapTiles):
+    mtlFilename = f"m{mapNum:0>2}.mtl"
     uniqueGfx = set()
     for mapTile in mapTiles:
         uniqueGfx.update(mapTile.faceGfx)
     #print(uniqueGfx)
     assert max(uniqueGfx) < 257 and min(uniqueGfx) >= 0
 
-    textures, cluts = loadTextureInfo(battleNum)
+    textures, cluts = loadTextureInfo(mapNum)
     with open(textureFilename, "rb") as textureFile, open(EXPORT_DIR + mtlFilename, "w") as mtlFile:
         for gfx in uniqueGfx:
             tex = textures[gfx]
@@ -122,8 +122,8 @@ def generateMtl(textureFilename, battleNum, mapTiles):
             img = loadImageRect(textureFile, cluts[tex.clutId], tex.x, tex.y, tex.w, tex.h, stride=128)
             #TBD texture alignment? 1px?
             img = img.crop(box=(0, 0, tex.w-1, tex.h-1))
-            imgFilename = f"b{battleNum}_g{gfx}.png"
-            print(imgFilename)
+            imgFilename = f"m{mapNum:0>2}_g{gfx}.png"
+            #print(imgFilename)
             img.save(EXPORT_DIR + imgFilename)
             mtlFile.write(f"newmtl g{gfx}\n")
             mtlFile.write(f"map_Kd {imgFilename}\n\n")
@@ -201,7 +201,10 @@ def unpackMap(prsFilename, outFilename):
             # Next mode bit
             mode >>= 1	     
 
-def exportMap(objFilename, mapFilename, battleNum, textureFilename, xCount=28, zCount=22):
+def exportMap(objFilename, mapFilename, mapNum, textureFilename, xCount=28, zCount=22, guessSize=False):
+    if guessSize:
+        xCount, zCount = measureMap(mapFilename)
+        print(f"guessed size: {xCount}, {zCount}")
     with open(mapFilename, "rb") as mapFile, open(EXPORT_DIR + objFilename, "w") as objFile:
         tiles = []
         for z in range(zCount):
@@ -210,8 +213,7 @@ def exportMap(objFilename, mapFilename, battleNum, textureFilename, xCount=28, z
                 tile.read(mapFile)
                 tiles.append(tile)
 
-        mtlFilename = generateMtl(textureFilename, battleNum, tiles)
-        #mtlFilename = "b10.mtl" 
+        mtlFilename = generateMtl(textureFilename, mapNum, tiles)
         objFile.write(f"mtllib {mtlFilename}\n")
         objFile.write("vt 0.0 1.0 0.0\nvt 1.0 1.0 0.0\nvt 1.0 0.0 0.0\nvt 0.0 0.0 0.0\n\n")
 
@@ -220,21 +222,133 @@ def exportMap(objFilename, mapFilename, battleNum, textureFilename, xCount=28, z
             tile.writeToObj(objFile, vertexOffset, separate=True)
             vertexOffset += len(tile.vertices)
 
+def measureMap(mapFilename):
+    RECORD_SIZE = 304
+    def getx(v): return v[0]
+    with open(mapFilename, "rb") as mapFile:
+        filesize = os.path.getsize(mapFilename)
+        assert filesize % RECORD_SIZE == 0
+        tileCount = filesize // RECORD_SIZE
+        prevCenter = -999
+        for i in range(tileCount):
+            tile = MapTile(0, 0)
+            tile.read(mapFile)
+            if tile.faceCt != 0:
+                centerx = (max(tile.vertices, key=getx)[0] + min(tile.vertices, key=getx)[0]) / 2
+                if centerx < prevCenter:
+                    # (presumably) hit the beginning of the second row
+                    rowSize = i
+                    break
+                prevCenter = centerx
+        if tileCount % rowSize == 0:
+            return rowSize, tileCount // rowSize
+        else:
+            # fails if second row starts with blanks (e.g. map 45)
+            print("failed to guess size, falling back to default")
+            return 28, 22
 
-# Normally texture gfx indices would be offset by 400; just zero-indexing "local" cluts/gfxidx for now;
-# TBD if anything references any of the global COL_DAT.DAT cluts or previously loaded GFX
+def batchExport(first=0, last=68):
+    presets = [
+        ("M_KEY01.PRS", "F_TEX14.DAT"), #0
+        ("M_KEY02.PRS", "F_TEX15.DAT"), #1
+        ("M_KEY03.PRS", "F_TEX13.DAT"), #2
+        ("M_KEY04.PRS", "F_TEX02.DAT"), #3
+        ("M_KEY05.PRS", "F_TEX05.DAT"), #4
+        ("M_KEY06.PRS", "F_TEX02.DAT"), #5
+        None,                           #6
+        None,                           #7
+        ("M_SHOW.PRS", "F_TEX02.DAT"),  #8
+        ("IVENT.PRS", "F_TEX01.DAT"),   #9
+        ("M_MAP01.PRS", "F_TEX01.DAT"), #10
+        ("M_MAP02.PRS", "F_TEX01.DAT"), #11
+        ("M_MAP03.PRS", "F_TEX02.DAT"), #12
+        ("M_MAP04.PRS", "F_TEX01.DAT"), #13
+        ("M_MAP05.PRS", "F_TEX03.DAT"), #14
+        ("M_MAP06.PRS", "F_TEX04.DAT"), #15
+        ("M_MAP07.PRS", "F_TEX02.DAT"), #16
+        ("M_MAP08.PRS", "F_TEX02.DAT"), #17
+        ("M_MAP09.PRS", "F_TEX05.DAT"), #18
+        ("M_MAP10.PRS", "F_TEX05.DAT"), #19
+        ("M_MAP11.PRS", "F_TEX06.DAT"), #20
+        ("M_MAP12.PRS", "F_TEX02.DAT"), #21
+        ("M_MAP13.PRS", "F_TEX07.DAT"), #22
+        ("M_MAP14.PRS", "F_TEX07.DAT"), #23
+        ("M_MAP15.PRS", "F_TEX02.DAT"), #24
+        ("M_MAP16.PRS", "F_TEX05.DAT"), #25
+        ("M_MAP17.PRS", "F_TEX02.DAT"), #26
+        ("M_MAP18.PRS", "F_TEX08.DAT"), #27
+        ("M_MAP19.PRS", "F_TEX09.DAT"), #28
+        ("M_MAP20.PRS", "F_TEX10.DAT"), #29
+        ("M_MAP21.PRS", "F_TEX09.DAT"), #30
+        ("M_MAP22.PRS", "F_TEX08.DAT"), #31
+        ("M_MAP23.PRS", "F_TEX11.DAT"), #32
+        ("M_MAP24.PRS", "F_TEX12.DAT"), #33
+        ("M_MAP25.PRS", "F_TEX04.DAT"), #34
+        ("M_MAP26.PRS", "F_TEX13.DAT"), #35
+        ("M_MAP27.PRS", "F_TEX14.DAT"), #36
+        ("M_MAP28.PRS", "F_TEX15.DAT"), #37
+        ("M_MAP29.PRS", "F_TEX16.DAT"), #38
+        ("M_MAP30.PRS", "F_TEX17.DAT"), #39
+        ("M_MAP31.PRS", "F_TEX05.DAT"), #40
+        ("M_MAP32.PRS", "F_TEX01.DAT"), #41
+        ("M_MAP33.PRS", "F_TEX18.DAT"), #42
+        ("M_MAP34.PRS", "F_TEX15.DAT"), #43
+        ("M_IVE01.PRS", "F_TEX06.DAT"), #44
+        ("M_IVE02.PRS", "F_IVE01.DAT"), #45
+        ("M_IVE03.PRS", "F_TEX08.DAT"), #46
+        ("M_IVE04.PRS", "F_IVE02.DAT"), #47
+        ("M_IVE05.PRS", "F_IVE02.DAT"), #48
+        ("M_IVE06.PRS", "F_TEX08.DAT"), #49
+        ("M_IVE07.PRS", "F_IVE02.DAT"), #50
+        ("M_IVE08.PRS", "F_IVE02.DAT"), #51
+        ("M_IVE09.PRS", "F_IVE03.DAT"), #52
+        ("M_IVE10.PRS", "F_IVE03.DAT"), #53
+        ("M_IVE11.PRS", "F_TEX08.DAT"), #54
+        ("M_IVE12.PRS", "F_IVE03.DAT"), #55
+        ("M_IVE13.PRS", "F_IVE04.DAT"), #56
+        ("M_IVE14.PRS", "F_IVE04.DAT"), #57
+        ("M_IVE15.PRS", "F_IVE04.DAT"), #58
+        ("M_IVE16.PRS", "F_IVE05.DAT"), #59
+        ("M_IVE17.PRS", "F_IVE05.DAT"), #60
+        ("M_IVE18.PRS", "F_TEX06.DAT"), #61
+        ("M_IVE19.PRS", "F_IVE04.DAT"), #62
+        ("M_IVE20.PRS", "F_IVE06.DAT"), #63
+        ("M_IVE21.PRS", "F_TEX01.DAT"), #64
+        ("M_MAP04.PRS", "F_TEX01.DAT"), #65
+        ("M_MAP09.PRS", "F_TEX05.DAT"), #66
+        ("M_MAP12.PRS", "F_TEX05.DAT"), #67
+        ("M_MAP24.PRS", "F_TEX12.DAT")  #68
+    ]
+
+    for i in range(first, last+1):
+        print(f"map {i}")
+        if presets[i] is None:
+            print("skipping")
+            continue
+        
+        prsFilename, textureFilename = presets[i]
+        objFilename = f"m{i:0>2}_{prsFilename}.obj"
+        tmpFilename = "unpacked-map.tmp"
+        
+        unpackMap(
+            prsFilename=DATA_DIR + prsFilename, 
+            outFilename=tmpFilename)
+
+        exportMap(
+            objFilename=objFilename, 
+            mapFilename=tmpFilename, 
+            mapNum=i,
+            textureFilename=DATA_DIR + textureFilename,
+            guessSize=True)
+
+        print(f"exported: {objFilename}")
+
+
+# TBD if anything references any of the previously loaded GFX
 # TBD: unpacked development versions? e.g. M_MAP01.DAT; any interesting differences?
-# TODO generalize "battleNum" to include event maps?
+# TODO: polygon winding?
 
-unpackMap(
-    prsFilename=DATA_DIR + "M_MAP02.PRS", 
-    outFilename="unpacked-map.tmp")
+# a few maps (e.g. 56-58) do access the global cluts
+globalCluts = MiscData.loadCluts()
 
-exportMap(
-    objFilename="test3d-11.obj",
-    #mapFilename=DATA_DIR + "M_MAP01.DAT", 
-    mapFilename="unpacked-map.tmp", 
-    battleNum=11,
-    textureFilename=DATA_DIR + "F_TEX01.DAT",
-    xCount=28,
-    zCount=12)
+batchExport()
