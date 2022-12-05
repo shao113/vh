@@ -42,6 +42,8 @@ typedef struct MapUnit {
 extern s16 gTerrainBonus[];
 extern TerrainTile (*gTerrainPtr)[65];
 extern MapUnit (*gMapUnitsPtr)[65];
+extern u8 *gMapDataPtr;
 extern s16 gMapCursorX, gMapCursorZ;
+extern u8 gOverheadMapState;
 
 #endif

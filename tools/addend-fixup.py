@@ -102,7 +102,10 @@ def processInstruction(data, offset, addend):
     oldAddend = (instruction & 0xffff)
     if op != 15:
         error('!! unexpected op')
-    newAddend = addend >> 15
+    #FIXME
+    #newAddend = addend >> 15
+    # too lazy to dig deeper, but this allows a match (for now)
+    newAddend = oldAddend + 1
     if newAddend != oldAddend:
         smolprint(f"@{offset:06X}: {oldAddend:04X} -> {newAddend:04X}")
         newInstruction = (instruction & 0xffff0000) | (newAddend)

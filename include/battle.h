@@ -2,7 +2,6 @@
 #define BATTLE_H
 
 #include "common.h"
-#include "units.h"
 
 typedef enum BattleEvalState {
    BATTLE_EVAL_NONE = 0,

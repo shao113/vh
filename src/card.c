@@ -68,7 +68,7 @@ typedef struct {
    u8 bytes[0x16cc];
 } RawInBattleSaveData;
 
-void ShowFileSaveScreen(void) {
+void State_FileSaveScreen(void) {
    EvtData *evt;
 
    switch (gState.secondary) {
@@ -96,7 +96,7 @@ void ShowFileSaveScreen(void) {
    }
 }
 
-void ShowFileLoadScreen(void) {
+void State_FileLoadScreen(void) {
    EvtData *evt;
 
    switch (gState.secondary) {
@@ -130,7 +130,7 @@ void Card_PopulateRegularSave(void) {
    for (i = 0; i < PARTY_CT; i++) {
       gRegularSave.party[i] = gPartyMembers[i];
    }
-   for (i = 0; i < 150; i++) {
+   for (i = 0; i < DEPOT_CT; i++) {
       gRegularSave.depot[i] = gState.depot[i];
    }
 
@@ -154,7 +154,7 @@ void Card_LoadRegularSaveFromBuf(void) {
    for (i = 0; i < PARTY_CT; i++) {
       gPartyMembers[i] = gRegularSave.party[i];
    }
-   for (i = 0; i < 150; i++) {
+   for (i = 0; i < DEPOT_CT; i++) {
       gState.depot[i] = gRegularSave.depot[i];
    }
 
@@ -178,7 +178,7 @@ void Card_LoadRegularSave_Internal(void) {
 
    switch (gState.saveLocation) {
    case SAVE_LOC_UNK:
-      gState.primary = 10;
+      gState.primary = STATE_MOVIE;
       break;
    case SAVE_LOC_BATTLE:
       gState.primary = 0x1f;
@@ -259,7 +259,7 @@ void Card_LoadInBattleSaveFromBuf(void) {
    gDeferredInBattleSaveData.turn = gInBattleSaveDataPtr->turn;
    gDeferredInBattleSaveData.battle = gInBattleSaveDataPtr->battle;
 
-   for (i = 0; i < 150; i++) {
+   for (i = 0; i < DEPOT_CT; i++) {
       gDeferredInBattleSaveData.depot[i] = gInBattleSaveDataPtr->depot[i];
    }
 
@@ -317,9 +317,9 @@ void Card_PopulateInBattleSave(void) {
    }
 
    gInBattleSaveDataPtr->turn = gState.turn;
-   gInBattleSaveDataPtr->battle = gState.battleNum;
+   gInBattleSaveDataPtr->battle = gState.mapNum;
 
-   for (i = 0; i < 150; i++) {
+   for (i = 0; i < DEPOT_CT; i++) {
       gInBattleSaveDataPtr->depot[i] = gState.depot[i];
    }
 
@@ -343,7 +343,7 @@ void Card_PopulateInBattleSave(void) {
    gInBattleSaveDataPtr->mapCursorX = gMapCursorX;
    gInBattleSaveDataPtr->mapCursorZ = gMapCursorZ;
    gInBattleSaveDataPtr->cameraRotationX = gCameraRotation.vx;
-   gInBattleSaveDataPtr->cameraRotationY = gCameraRotation_vy;
+   gInBattleSaveDataPtr->cameraRotationY = gCameraRotation.vy;
    gInBattleSaveDataPtr->debug = gState.debug;
 
    for (i = 0; i < 20; i++) {
@@ -436,7 +436,7 @@ s32 Card_LoadInBattleSave(void) {
       return res;
    }
    Card_LoadInBattleSaveFromBuf();
-   gState.primary = 0x17;
+   gState.primary = STATE_LOAD_IN_BATTLE_SAVE;
    gState.secondary = 0;
    gState.state3 = 0;
    gState.state4 = 0;

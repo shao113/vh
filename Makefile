@@ -51,6 +51,9 @@ build/src/audio.c.s: OPT_FLAGS := -O2
 
 build/src/card.c.s: GP_OPT := -G8
 
+build/src/main.c.s: GP_OPT := -G8
+
+build/src/temp_sdata.c.s: GP_OPT := -G8
 
 default: dirs check
 	

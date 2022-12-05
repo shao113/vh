@@ -13,9 +13,9 @@
 #define CDA_LOOP 0
 #define CDA_NO_LOOP 2
 
-typedef enum { AUDIO_MODE_MONO = 0, AUDIO_MODE_STEREO = 1 } AudioMode;
+typedef enum AudioMode { AUDIO_MODE_MONO = 0, AUDIO_MODE_STEREO = 1 } AudioMode;
 
-typedef enum {
+typedef enum AudioJob {
    AUDIO_JOB_NULL = 0x0,
    AUDIO_JOB_PLAY_SEQ = 0x1,
    AUDIO_JOB_PLAY_CDA = 0x2,
@@ -85,7 +85,7 @@ typedef struct SeqProperties {
 extern void *gSeqDataPtr;
 extern s16 gSeqSetIdx;
 extern s16 gSeqAccessNum;
-extern s32 gSectorOffset;
+extern s32 gCdaSectorOffset;
 extern u8 gSeqCurrentID;
 extern s32 D_80125AAC;
 extern s16 gCurrentVolume;
@@ -103,7 +103,7 @@ extern u16 gSfxPrevVolume;
 extern s16 gSfxSlotSustained;
 extern s16 gSfxSlotToggled;
 
-extern s8 D_80124FB4;
+extern s8 gSeqTable[SS_SEQ_TABSIZ * 16];
 extern u8 gAudioJobPrepareCdaState;
 extern u8 gAudioJobPlayCdaState;
 extern s8 D_801733B8;
@@ -149,7 +149,7 @@ extern s32 gSeqDataOffsets[39][8];
 void SetSeqDataPtr(void *);
 void SetCurrentSeqSet(s16);
 void SetSeqAccessNum(s16);
-void SetSectorOffset(s32);
+void SetCdaSectorOffset(s32);
 u32 GetCurrentSeqId(void);
 void SetReverbDepth(s16);
 u8 ExecuteCdControl(u8, u8 *, u8 *);

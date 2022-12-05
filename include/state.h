@@ -2,7 +2,27 @@
 #define STATE_H
 
 #include "common.h"
-#include "evt.h"
+
+typedef enum PrimaryState {
+   STATE_TAVERN = 8,
+   STATE_MOVIE = 10,
+   STATE_FINISH_CHAPTER = 0xd,
+   STATE_ENDING_SCREEN = 0xe,
+   STATE_SET_SCENE_STATE = 0xf,
+   STATE_FILE_SAVE_SCREEN = 0x16,
+   STATE_LOAD_IN_BATTLE_SAVE = 0x17,
+   STATE_FILE_LOAD_SCREEN = 0x18,
+   STATE_TITLE_SCREEN = 0x33,
+   STATE_TITLE_LOAD_SCREEN = 0x34,
+   STATE_LOAD_DEBUG_MENU = 0x62,
+   STATE_DEBUG_MENU = 0x63,
+} PrimaryState;
+
+typedef struct DynamicIcon {
+   u16 gfxIdx;
+   s16 x;
+   s16 y;
+} DynamicIcon;
 
 typedef struct State {
    u8 worldMapState;
@@ -34,7 +54,7 @@ typedef struct State {
    s32 state4;
    s32 state5;
    s32 state6;
-   s32 state7;
+   s32 state7; //<- Sometimes used to communicate evtf# of scene loader
    s32 state8;
    s32 D_801405A4;
 
@@ -83,29 +103,29 @@ typedef struct State {
    u8 field_0xa0;
    u8 field_0xa1;
    s16 field_0xa2;
-   u8 battleNum;
+   u8 mapNum; // <- also serves as battleNum when <= 43
    u8 fieldRenderingDisabled;
    u8 vsyncMode;
    u8 field_0xa7;
-   s16 depot[150];
+   s16 depot[DEPOT_CT];
    s32 gold;
    u8 field_0x1d8;
    u8 msgTextWaitTimer[5];
    s16 portraitsToLoad[75];
    s16 currentPortraits[75];
-   u8 compassDisabled;
+   u8 inEvent;
    u8 field_0x30b;
    s16 eventResumeLocation;
    SVectorXYZ eventCameraPan;
-   s16 field_0x314;
-   s16 field_0x316;
-   EvtData *field_0x318;
+   s16 eventCameraRot;
+   s16 eventCameraHeight;
+   struct EvtData *evtFocus;
    u8 msgBoxFinished;
    u8 field_0x31d;
    u8 field_0x31e;
    u8 field_0x31f;
    s8 **currentTextPointers;
-   u8 field_0x324;
+   u8 showEnemyRange;
    u8 zoom;
    s16 unitMarkerSpin;
    u8 lastSelectedUnit;
@@ -115,15 +135,15 @@ typedef struct State {
    u8 field_0x32c;
    u8 D_80140859;
    u8 vsyncNoWait;
-   u8 field_0x32f;
-   u8 field_0x330;
+   u8 suppressLoadingScreen;
+   u8 D_8014085C;
    u8 choices[6];
    u8 enableMapScaling;
    u8 textSpeed;
    u8 field_0x339;
    u8 field_0x33a;
    u8 field_0x33b;
-   EvtData *evtScreenEffect;
+   struct EvtData *evtScreenEffect;
    u8 field_0x340;
    u8 field_0x341;
    u8 field_0x342;

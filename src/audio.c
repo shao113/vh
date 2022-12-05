@@ -9,7 +9,7 @@ void SetCurrentSeqSet(s16 arg0) { gSeqSetIdx = arg0; }
 
 void SetSeqAccessNum(s16 arg0) { gSeqAccessNum = arg0; }
 
-void SetSectorOffset(s32 arg0) { gSectorOffset = arg0; }
+void SetCdaSectorOffset(s32 arg0) { gCdaSectorOffset = arg0; }
 
 u32 GetCurrentSeqId(void) {
    u16 res = 0;
@@ -38,7 +38,6 @@ u8 ExecuteCdControl(u8 arg0, u8 *arg1, u8 *arg2) {
          D_80125AAC = 0;
          return 0;
       }
-
       return 1;
    }
    return 1;
@@ -96,7 +95,7 @@ void InitAudio(void) {
    SetAudioMode(AUDIO_MODE_STEREO);
    SsSetReservedVoice(0x14);
    SsStart();
-   SsSetTableSize(&D_80124FB4, 0x10, 1);
+   SsSetTableSize(gSeqTable, 0x10, 1);
    SsUtSetReverbType(SPU_REV_MODE_STUDIO_C);
    SpuClearReverbWorkArea(SPU_REV_MODE_STUDIO_C);
    SsUtReverbOn();
@@ -236,11 +235,10 @@ void AudioJob_PrepareCda(void) {
    extern u8 s_cdSyncResultBuffer_80124f0c[8];
    extern u8 s_cdaIdToPrepare;
    extern u32 s_minutes_80124f1c;
-   u8 res;
    u32 seconds;
    u32 sector;
    u32 minutes;
-   u32 resultToCheck;
+   u32 res;
 
    switch (gAudioJobPrepareCdaState) {
    case 0:
@@ -262,13 +260,12 @@ void AudioJob_PrepareCda(void) {
       /* fallthrough */
    case 2:
       res = ExecuteCdControl(CdlSetmode, (void *)&gCdaControlParam, NULL);
-
       if (res == 0) {
          gAudioJobPrepareCdaState = 3;
       }
-      resultToCheck = res;
+
    CheckResult:
-      if (resultToCheck == 2) {
+      if (res == 2) {
          gAudioJobPrepareCdaState = 8;
       }
       break;
@@ -284,12 +281,11 @@ void AudioJob_PrepareCda(void) {
       if (res == 0) {
          gAudioJobPrepareCdaState = 5;
       }
-      resultToCheck = res;
       goto CheckResult;
    case 5:
       s_minutes_80124f1c = gCdaProperties[s_cdaIdToPrepare].channelId +
                            gCdaProperties[s_cdaIdToPrepare].startingSector + STARTING_SECTOR;
-      s_minutes_80124f1c += gSectorOffset;
+      s_minutes_80124f1c += gCdaSectorOffset;
 
       seconds = s_minutes_80124f1c / SECTORS_PER_SECOND;
       sector = s_minutes_80124f1c % SECTORS_PER_SECOND;
@@ -307,21 +303,16 @@ void AudioJob_PrepareCda(void) {
       /* fallthrough */
    case 6:
       res = ExecuteCdControl(CdlSeekL, (void *)&gCdaCdlLOC, NULL);
-
       if (res == 0) {
          gAudioJobPrepareCdaState = 7;
       }
-      resultToCheck = res;
       goto CheckResult;
    case 7: {
-      /* FIXME */
-      register int v1 asm("v1");
-      register int v0 asm("v0");
-
+      // register int v1 asm("v1");
+      // register int v0 asm("v0");
       CdSync(1, s_cdSyncResultBuffer_80124f0c);
-      v1 = s_cdSyncResultBuffer_80124f0c[0];
-      v0 = v1 & CdlStatSeek;
-      if (v0 == 0) {
+      res = s_cdSyncResultBuffer_80124f0c[0];
+      if ((res & CdlStatSeek) == 0) {
          gAudioJobPrepareCdaState = 8;
       }
       break;
@@ -359,7 +350,7 @@ void AudioJob_PlayPreparedCda(void) {
 
    switch (gAudioJobPlayPreparedCdaState) {
    case 0:
-      s_delay_80124f2c = 0xA;
+      s_delay_80124f2c = 10;
       s_cdaId_80124f24 = gCdaIdToPlay;
       if (gCdaFadeInState == CDA_FADE_IN_STATE_PENDING) {
          gCdaCurrentVolume = 0;
@@ -455,7 +446,7 @@ void AudioJob_PlayCda(void) {
       } else {
          gCdaLoopEnabled = 1;
       }
-      s_minutes_80124f44 += gSectorOffset;
+      s_minutes_80124f44 += gCdaSectorOffset;
 
       seconds = s_minutes_80124f44 / SECTORS_PER_SECOND;
       sector = s_minutes_80124f44 % SECTORS_PER_SECOND;
@@ -481,12 +472,11 @@ void AudioJob_PlayCda(void) {
       break;
    case 6:
       CdSync(1, s_cdSyncResultBuffer_80124f34);
-
-      if ((s_cdSyncResultBuffer_80124f34[0] & CdlStatSeek) != 0) {
+      res = s_cdSyncResultBuffer_80124f34[0];
+      if ((res & CdlStatSeek) != 0) {
          return;
       }
-
-      if ((s_cdSyncResultBuffer_80124f34[0] & CdlStatShellOpen) == 0) {
+      if ((res & CdlStatShellOpen) == 0) {
          gAudioJobPlayCdaState = 7;
          return;
       }

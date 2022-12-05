@@ -38,7 +38,7 @@ typedef struct CardFileData_Header {
 typedef struct CardFileData_RegularSave {
    u32 checksum;
    PartyMember party[13];
-   s16 depot[150];
+   s16 depot[DEPOT_CT];
    // u8 field3_0x2ea;
    // u8 field4_0x2eb;
    u32 frameCounter;
@@ -77,7 +77,7 @@ typedef struct CardFileData_InBattleSave {
    s16 turn;
    u8 battle;
    // u8 field18_0x1505;
-   s16 depot[150];
+   s16 depot[DEPOT_CT];
    // u8 field20_0x1632;
    // u8 field21_0x1633;
    s32 gold;
@@ -111,7 +111,7 @@ typedef struct DeferredInBattleSaveData {
    s16 turn;
    u8 battle;
    // u8 padding_0x85;
-   s16 depot[150];
+   s16 depot[DEPOT_CT];
    // u8 padding_0x1b2[2];
    s32 gold;
    u8 zoom;
@@ -141,8 +141,8 @@ extern DeferredInBattleSaveData gDeferredInBattleSaveData;
 extern CardFileData_RegularSave *gRegularSaveDataPtr;
 extern CardFileData_Listing *gCardFileListingPtr;
 
-void ShowFileSaveScreen(void);
-void ShowFileLoadScreen(void);
+void State_FileSaveScreen(void);
+void State_FileLoadScreen(void);
 void Card_PopulateRegularSave(void);
 void Card_LoadRegularSaveFromBuf(void);
 void Card_LoadRegularSave_Internal(void);

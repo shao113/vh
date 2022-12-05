@@ -91,7 +91,7 @@ def parseAssembly(filename):
     def seekJtblLabel(reg, lines, start):
         for i in range(start, -1, -1):
             a = lines[i].split()
-            if len(a) == 0 or a[0] in [".set", "nop"]:
+            if len(a) == 0 or a[0] in [".set", "nop", "#nop"]:
                 continue
             elif a[0] == "lw":
                 #e.g.     lw    $2,$L20($2)
@@ -148,12 +148,22 @@ def parseAssembly(filename):
             reg = a[1]
             label = seekJtblLabel(reg, lines, i-2)
             
-            if not (label and cmp(lines[i+1], [".align", "3"]) and cmp(lines[i+2], [".align", "2"])):
+            if not label:
                 continue
-            if lines[i+3].strip() != label+":":
+            if not cmp(lines[i+1], [".align", "3"]):
                 continue
             
-            lst = buildJtblList(lines, i+4)
+            if cmp(lines[i+2], [".align", "2"]):
+                #cc1_v258
+                start = i+3
+            else:
+                #cc1_v263
+                start = i+2
+
+            if lines[start].strip() != label+":":
+                continue
+            
+            lst = buildJtblList(lines, start+1)
             entry["isJtbl"] = True
             entry["label"] = label
             entry["count"] = len(lst)

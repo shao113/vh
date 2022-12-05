@@ -8,7 +8,7 @@
 void Evtf574_DisplayIcon(EvtData *evt) {
    evt->d.sprite.x3 = evt->d.sprite.x1 + 15;
    evt->d.sprite.y3 = evt->d.sprite.y1 + 15;
-   AddEvtPrim_TBD(gGraphicsPtr->ot, evt);
+   AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
 }
 
 void ClearIcons(void) {

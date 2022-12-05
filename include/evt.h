@@ -7,18 +7,22 @@
 #define EVT_DATA_CT 350
 #define EVT_DATA_LAST_IDX 349
 
-#define TO_TILE(arg) (*((s8 *)&arg + 1))
-//#define TO_TILE(arg) ((s8)arg)
-
-typedef enum {
+typedef enum EvtFunctionIdx {
    EVTF_NULL = 0,
-   EVTF_NOOP = 1, /* TBD Used only for sprites? */
+   EVTF_NOOP = 1, /* TBD Used only for sprites? Sometimes used as a data store? */
+   EVTF_MENU_CHOICE = 2,
    EVTF_MAP_OBJECT_CHEST = 40,
    EVTF_MAP_OBJECT_CRATE = 46,
    EVTF_UNIT_SPRITES_DECODER = 50,
    EVTF_FILE_SAVE_DIALOG = 341,
+   EVTF_FILE_LOAD_DIALOG_360 = 360,
+   EVTF_SCREEN_EFFECT = 369,
    EVTF_FILE_LOAD_DIALOG = 373,
    EVTF_FULLSCREEN_IMAGE = 387,
+   EVTF_PANORAMA = 405,
+   EVTF_NOOP_407 = 407,
+   EVTF_EVENT_CAMERA = 412,
+   EVTF_DEBUG_MENU = 414,
    EVTF_EVALUATE_BATTLE_10 = 426,
    EVTF_EVALUATE_BATTLE_11 = 427,
    EVTF_EVALUATE_BATTLE_12 = 428,
@@ -48,6 +52,7 @@ typedef enum {
    EVTF_EVALUATE_BATTLE_43 = 563,
    EVTF_DISPLAY_ICON = 574,
    EVTF_AUDIO_CMD = 581,
+   EVTF_MAIN_MENU_JPN = 582,
    EVTF_MAP_OBJECT_BOULDER = 591,
 } EvtFunctionIdx;
 
@@ -86,6 +91,18 @@ typedef struct EvtData_Sprite {
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_Sprite;
 
+/* Panorama */
+typedef struct EvtData_405 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 pan;
+   /* :0x14 */ u8 unk_0x14[16];
+   /* :0x24 */ s16 yRot;
+   /* :0x26 */ s16 xRot;
+   /* :0x28 */ s16 xOffset;
+   /* :0x2a */ s16 yOffset;
+   /* :0x2c */ u8 unk_0x2c[52];
+} EvtData_405;
+
 /* Evaluate Battle 08 */
 typedef struct EvtData_438 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -112,6 +129,7 @@ typedef struct EvtData {
    union {
       u8 bytes[80];
       EvtData_Sprite sprite;
+      EvtData_405 evtf405;
       EvtData_438 evtf438;
       EvtData_581 evtf581;
    } d;
@@ -122,6 +140,7 @@ typedef void (*EvtFunction)(EvtData *evt);
 extern EvtData gEvtDataArray[EVT_DATA_CT];
 extern EvtFunction gEvtFunctionPointers[804];
 extern EvtData gEvtData050_UnitSpritesDecoder;
+extern EvtData *gTempGfxEvt;
 extern EvtData *gTempEvt;
 
 void Evt_Execute(void);

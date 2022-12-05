@@ -41,56 +41,74 @@ segments:
     vram: 0x80010000
     subalign: 4
     subsegments:
-    - [0x000800, rdata]            # 0x80010000
+    - [0x000800, rdata]                   # 0x80010000
 
-    - [0x0041d4, .rdata, card]     # 0x800139d4
-    - [0x0041f4, rdata]            # 0x800139f4
-  
-    - [0x006580, .rdata, audio]    # 0x80015d80 
-    - [0x0069b0, bin]              # 0x800161b0 end of audio jtbls
+    - [0x0019ec, .rdata, main]            # 0x800111ec
+    - [0x001c04, .rdata, engine]          # 0x80011404
+    - [0x001c10, rdata]                   # 0x80011410
 
-    - [0x007690, bin]              # 0x80016e90
-    
-    - [0x00e184, c, evtf574]       # 0x8001d984 Evtf574_DisplayIcon ...
-    - [0x00e584, bin]              # 0x8001dd84
+    - [0x0033ec, .rdata, evt]             # 0x80012bec
+    - [0x003500, rdata]                   # 0x80012d00
 
-    - [0x028814, c, evtf581]       # 0x80038014 Evtf581_AudioCommand
-    - [0x02889c, bin]              # 0x8003809c
-    - [0x028ba8, c, Evt_Execute]   # 0x800383a8 Evt_Execute ...
-    - [0x028f2c, bin]              # 0x8003872c
-    - [0x0318b4, c, battle_eval]   # 0x800410b4 FindUnitByNameIdx ...
-    - [0x032ef0, bin]              # 0x800426f0 (End of battle_eval)
-    
-    - [0x039e48, c, card]          # 0x80049648 ShowFileSaveScreen ...
-    - [0x03c94c, bin]              # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
-    
-    - [0x0b4e60, c, audio]         # 0x800c4660 SetSeqDataPtr ...
-    - [0x0b7ac8, bin]              # 0x800c72c8 End of audio functions
+    - [0x0041d4, .rdata, card]            # 0x800139d4
+    - [0x0041f4, rdata]                   # 0x800139f4
+
+    - [0x006580, .rdata, audio]           # 0x80015d80 
+    - [0x0069b0, bin]                     # 0x800161b0 end of audio jtbls
+
+
+    - [0x007690, c, main]                 # 0x80016e90 main ...
+    - [0x0084c0, c, engine]               # 0x80017cc0 UpdateEngine ...
+
+    - [0x0087bc, bin]                     # 
+
+    - [0x00e184, c, evtf574]              # 0x8001d984 Evtf574_DisplayIcon ...
+    - [0x00e584, bin]                     # 0x8001dd84
+
+    - [0x028814, c, evt]                  # 0x80038014 Evtf581_AudioCommand ...
+    - [0x028f2c, bin]                     # 0x8003872c
+    - [0x0318b4, c, battle_eval]          # 0x800410b4 FindUnitByNameIdx ...
+    - [0x032ef0, bin]                     # 0x800426f0 (End of battle_eval)
+
+    - [0x039e48, c, card]                 # 0x80049648 State_FileSaveScreen ...
+    - [0x03c94c, bin]                     # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
+
+    - [0x0b4e60, c, audio]                # 0x800c4660 SetSeqDataPtr ...
+    - [0x0b7ac8, bin]                     # 0x800c72c8 End of audio functions
     
     #- [0x0d4dc8, asm]  # 0x800e45c8 Data?
 
     - [0x0db758, .data, gCharacterNames]  # 0x800eaf58
-    - [0x0dc314, bin]  #0x800ebb14
+    - [0x0dc314, bin]                     # 0x800ebb14
 
-    - [0x0e1384, .data, glyphs]     # 0x800f0b84
+    - [0x0e1384, .data, glyphs]           # 0x800f0b84
 
-    - [0x0e1ed8, data]
-    - [0x0e3914, .data, gCdFiles]   # 0x800f3114
+    - [0x0e1ed8, data]                    # 0x800f16d8
+    - [0x0e3914, .data, gCdFiles]         # 0x800f3114
     - [0x0e5a74, bin]
-    - [0x0e5d4c, .data, card]       # 0x800f554c gCardFilePath
-    - [0x0e5d60, bin]               # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
+    - [0x0e5d4c, .data, card]             # 0x800f554c gCardFilePath
+    - [0x0e5d60, bin]                     # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
 
-    - [0x0f780c, .data, audio_data] # 0x8010700c
-    - [0x0f91d0, bin]               # 0x801089d0 lib data
+    - [0x0e76a4, data, portrait_data]     # 0x800f6ea4
+    - [0x0e991c, bin]                     # 0x800f911c
 
-    #- [0x113610, asm]               # 0x80122e10 _gp_1
+    - [0x0f780c, .data, audio_data]       # 0x8010700c
+    - [0x0f91d0, bin]                     # 0x801089d0 lib data
 
-    - [0x113710, .sdata, card]       # 0x80122f10
-    - [0x11372c, bin]                # 0x80122f2c
+    #- [0x113610, asm]                    # 0x80122e10 _gp_1
 
-    #- [0x113ab0, .sbss, card]       # 0x801232b0
+    - [0x113618, .sdata, temp_sdata]      # 0x80122e18 trying stuff
+    - [0x113628, bin] 
+
+    #- [0x113618, sdata]
+    #- [0x113628, bin] 
+
+    - [0x113710, .sdata, card]            # 0x80122f10
+    - [0x11372c, bin]                     # 0x80122f2c
+
+    #- [0x113ab0, .sbss, card]            # 0x801232b0
     - [0x113ad8, bin]
-    #- [0x1156fc, .data, audio]      # 0x80124efc TODO sdata?
+    #- [0x1156fc, .data, audio]            # 0x80124efc TODO sdata?
     #- [0x115704, bin]
     
     #- [0x130d2c, asm]

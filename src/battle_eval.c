@@ -5,6 +5,7 @@
 #include "field.h"
 #include "battle.h"
 #include "state.h"
+#include "graphics.h"
 
 UnitStatus *FindUnitByNameIdx(s16 nameIdx) {
    UnitStatus *p;
@@ -55,7 +56,7 @@ s32 CountUnitsOfTeam(s16 team) {
 
 void Evtf438_EvaluateBattle08(EvtData *evt) {
    // TBD gLightRotation.vy ?
-   gLightRotation_vy += 0x10;
+   gLightRotation.vy = GetLightRotY() + 0x10;
 
    if (gState.needEval) {
       gState.needEval = 0;
@@ -67,7 +68,7 @@ void Evtf438_EvaluateBattle08(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      if ((gState.D_80140859 != 0) || ((gPadStateNewPresses & PADstart) != 0)) {
+      if ((gState.D_80140859 != 0) || ((gPadStateNewPresses & PAD_START) != 0)) {
          FadeOutScreen(2, 6);
          PerformAudioCommand(0x21);
          evt->d.evtf438.delay = 75;
@@ -78,7 +79,7 @@ void Evtf438_EvaluateBattle08(EvtData *evt) {
       if (--evt->d.evtf438.delay == 0) {
          PerformAudioCommand(6);
          gIsEnemyTurn = 0;
-         gState.primary = 0x33;
+         gState.primary = STATE_TITLE_SCREEN;
          gState.secondary = 0;
          gState.state3 = 0;
          gState.state4 = 0;
@@ -155,7 +156,7 @@ void Evtf427_EvaluateBattle11(EvtData *evt) {
 }
 
 void Evtf428_EvaluateBattle12(EvtData *evt) {
-   gLightRotation_vy += 0x10;
+   gLightRotation.vy = GetLightRotY() + 0x10;
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfTeam(TEAM_ENEMY) == 0) {
@@ -400,7 +401,6 @@ void Evtf442_EvaluateBattle26(EvtData *evt) {
       if (!FindUnitByNameIdx(UNIT_ASH)) {
          gState.battleEval = BATTLE_EVAL_DEFEAT;
       }
-
       for (i = 1; i < UNIT_CT; i++) {
          p = &gUnits[i];
          if ((p->idx != 0) && (p->team == TEAM_ENEMY)) {
