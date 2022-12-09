@@ -15,7 +15,7 @@ typedef struct SlainUnit {
    s16 reward;
 } SlainUnit;
 
-extern s8 gIsEnemyTurn;
+extern u8 gIsEnemyTurn;
 extern SlainUnit gSlainUnits[20];
 extern u8 gPartyMemberSlain[PARTY_CT];
 

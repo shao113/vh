@@ -91,6 +91,18 @@ typedef struct EvtData_Sprite {
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_Sprite;
 
+typedef struct EvtData_025 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s16 camSavedRotX;
+   /* :0x26 */ s16 camSavedRotY;
+   /* :0x28 */ s16 camSavedZoom;
+   /* :0x2A */ s16 camSavedX;
+   /* :0x2C */ s16 camSavedY;
+   /* :0x2E */ s16 camSavedZ;
+   /* :0x30 */ s8 delay;
+   /* :0x31 */ u8 unk_0x31[47];
+} EvtData_025;
+
 /* Panorama */
 typedef struct EvtData_405 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -129,6 +141,7 @@ typedef struct EvtData {
    union {
       u8 bytes[80];
       EvtData_Sprite sprite;
+      EvtData_025 evtf025;
       EvtData_405 evtf405;
       EvtData_438 evtf438;
       EvtData_581 evtf581;

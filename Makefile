@@ -53,7 +53,9 @@ build/src/card.c.s: GP_OPT := -G8
 
 build/src/main.c.s: GP_OPT := -G8
 
-build/src/temp_sdata.c.s: GP_OPT := -G8
+build/src/engine.c.s: GP_OPT := -G8
+
+build/src/temp_sdata.c.s: GP_OPT := -G16
 
 default: dirs check
 	
@@ -104,9 +106,9 @@ build/%.c.o: build/%.c.s
 	@if [[ "$$(grep -Fi nonmatchings '$<')" ]]; then \
 		$(AS) $(AS_FLAGS) -o $@ $< ;\
 	else \
-		$(TOOLS_DIR)/wine-as.sh $@ $< ;\
+		$(TOOLS_DIR)/dosbox-assemble-all.sh $< ;\
 	fi
-	
+
 # Batch assemble src files with a single dosbox launch
 batch: $(foreach file,$(C_FILES),build/$(file).s)
 	$(TOOLS_DIR)/dosbox-assemble-all.sh $^

@@ -61,7 +61,7 @@ void Evtf405_Panorama(EvtData *evt) {
    case 0:
       evt->state++;
    case 1:
-      evt->d.evtf405.pan = evt->d.evtf405.pan + 0x100;
+      evt->d.evtf405.pan += 0x100;
       xOfs = (evt->d.evtf405.yRot - GetCamRotY()) >> 4;
       xOfs += H_HI(evt->d.evtf405.pan);
       if (H_HI(evt->d.evtf405.pan) != 0) {
@@ -70,8 +70,6 @@ void Evtf405_Panorama(EvtData *evt) {
       yOfs = (evt->d.evtf405.xRot - GetCamRotX()) >> 5;
       evt->d.evtf405.yRot = GetCamRotY();
       evt->d.evtf405.xRot = GetCamRotX();
-      // evt->d.evtf405.xRot = *(u16 *)(0x80122e18);
-      // evt->d.evtf405.xRot = gCameraRotation.vx;
    }
 
    evt->d.evtf405.xOffset += xOfs;

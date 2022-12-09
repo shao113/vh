@@ -28,6 +28,7 @@
 #define UNIT_CT 40
 #define PARTY_CT 13
 #define DEPOT_CT 150
+#define BATTLE_CT 44
 
 #define H_LO(arg) ((s8 *)&arg)[0]
 #define H_HI(arg) ((s8 *)&arg)[1]
@@ -36,6 +37,8 @@
 typedef u16 BigInt[8];
 
 struct EvtData;
+
+typedef enum Direction { DIR_SOUTH = 0, DIR_WEST = 1, DIR_NORTH = 2, DIR_EAST = 3 } Direction;
 
 typedef struct SVectorXZY {
    s16 x;
@@ -48,6 +51,12 @@ typedef struct SVectorXYZ {
    s16 y;
    s16 z;
 } SVectorXYZ;
+
+typedef struct BVectorZXY {
+   u8 z;
+   u8 x;
+   u8 y;
+} BVectorZXY;
 
 extern u8 gScratch1_801317c0[];
 extern u8 gScratch2_8013e054[];

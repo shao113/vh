@@ -1,4 +1,10 @@
+
+# Note: Matching build requires splat 0.9.1 (or earlier), with sdata.py / sbss.py segtypes added manually.
+# Build fails with the newer linker script, possibly due to alignment issues with my mostly arbitrary 
+# splits; I'm hoping it will resolve itself as I match more of the gaps between segments.
+
 options:
+
   platform: psx
   basename: vandalhearts
 
@@ -18,7 +24,7 @@ options:
   enable_ld_alignment_hack: False
   auto_decompile_empty_functions: False
   use_legacy_include_asm: False
-  use_function_labels: True
+  asm_function_macro: glabel
   use_legacy_include_asm: False
   gp_value: 0x80122e10
   auto_all_sections: [".data", ".rodata", ".rdata", ".bss"]
@@ -40,6 +46,7 @@ segments:
     start: 0x800
     vram: 0x80010000
     subalign: 4
+    #align: 4
     subsegments:
     - [0x000800, rdata]                   # 0x80010000
 
@@ -56,11 +63,9 @@ segments:
     - [0x006580, .rdata, audio]           # 0x80015d80 
     - [0x0069b0, bin]                     # 0x800161b0 end of audio jtbls
 
-
     - [0x007690, c, main]                 # 0x80016e90 main ...
     - [0x0084c0, c, engine]               # 0x80017cc0 UpdateEngine ...
-
-    - [0x0087bc, bin]                     # 
+    - [0x0098e0, bin]                     # 
 
     - [0x00e184, c, evtf574]              # 0x8001d984 Evtf574_DisplayIcon ...
     - [0x00e584, bin]                     # 0x8001dd84
@@ -76,46 +81,51 @@ segments:
     - [0x0b4e60, c, audio]                # 0x800c4660 SetSeqDataPtr ...
     - [0x0b7ac8, bin]                     # 0x800c72c8 End of audio functions
     
-    #- [0x0d4dc8, asm]  # 0x800e45c8 Data?
+    - [0x0d4dc8, data]                    # 0x800e45c8 Data?
 
     - [0x0db758, .data, gCharacterNames]  # 0x800eaf58
-    - [0x0dc314, bin]                     # 0x800ebb14
+    - [0x0dc314, data]                    # 0x800ebb14
+
+    - [0x0e1234, .data, engine]           # 0x800f0a34 
+    - [0x0e135c, data]      
 
     - [0x0e1384, .data, glyphs]           # 0x800f0b84
 
     - [0x0e1ed8, data]                    # 0x800f16d8
     - [0x0e3914, .data, gCdFiles]         # 0x800f3114
-    - [0x0e5a74, bin]
+    - [0x0e5a74, data]
     - [0x0e5d4c, .data, card]             # 0x800f554c gCardFilePath
-    - [0x0e5d60, bin]                     # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
+    - [0x0e5d60, data]                    # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
 
     - [0x0e76a4, data, portrait_data]     # 0x800f6ea4
-    - [0x0e991c, bin]                     # 0x800f911c
-
+    - [0x0e9b58, data]                    # 0x800f9358
+    - [0x0f76ec, bin]           # - TBD - # Why is this necessary?
+    - [0x0f76f0, data]          # # # # # # 
+    
     - [0x0f780c, .data, audio_data]       # 0x8010700c
-    - [0x0f91d0, bin]                     # 0x801089d0 lib data
+    - [0x0f91d0, data]                    # 0x801089d0 lib data
+    - [0x111a5c, bin]           # - TBD - # 
+    - [0x111a60, data]          # # # # # # 
 
-    #- [0x113610, asm]                    # 0x80122e10 _gp_1
-
-    - [0x113618, .sdata, temp_sdata]      # 0x80122e18 trying stuff
+    - [0x113610, .sdata, temp_sdata]      # 0x80122e10 trying stuff
     - [0x113628, bin] 
 
-    #- [0x113618, sdata]
-    #- [0x113628, bin] 
+    - [0x113674, .sdata, engine]          # 0x80122e74
+    - [0x11367c, bin] 
 
     - [0x113710, .sdata, card]            # 0x80122f10
-    - [0x11372c, bin]                     # 0x80122f2c
+    - [0x11372c, sdata]                   # 0x80122f2c
+
+    - [0x113940, .sbss, engine]           # 0x80123140 TODO: .sbss?
+    - [0x113944, bin]
 
     #- [0x113ab0, .sbss, card]            # 0x801232b0
-    - [0x113ad8, bin]
-    #- [0x1156fc, .data, audio]            # 0x80124efc TODO sdata?
+    #- [0x113ad8, bin]
+    #- [0x114fd4, bss]                    # 0x801247d4
+    #- [0x1156fc, .bss, audio]            # 0x80124efc
     #- [0x115704, bin]
-    
-    #- [0x130d2c, asm]
-    #- [0x131070, bin]
-    #- [0x160efc, bin]
-    #- [0x16d7bc, asm]
-    #- [0x16dac0, bin]
-    
-    - [0x1d5ac4, bin] # 0x801e52c4 (More functions)
+    #- [0x16d7bc, .bss, card]
+
+    #- [0x1d5ac4, bin] # 0x801e52c4 (More functions)
+  - [0x1d4e90, bin] #0x801e4690
   - [0x1e7800] # TBD end of file

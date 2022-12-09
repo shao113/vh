@@ -6,6 +6,7 @@
 #include "PsyQ/libgpu.h"
 
 #define OT_SIZE 1024
+#define GFX_CT 870
 
 typedef enum GfxIdx {
    GFX_PLAYER_CIRCLE = 2,
@@ -164,6 +165,10 @@ typedef struct Graphics {
    u32 ot[OT_SIZE];
 } Graphics;
 
+typedef struct TextureWindow {
+   u8 x, y, w, h;
+} TextureWindow;
+
 typedef struct PortraitOverlayOffsets {
    u8 blinkX, blinkY, speakX, speakY;
 } PortraitOverlayOffsets;
@@ -182,10 +187,17 @@ extern SVECTOR gCameraPos;
 extern SVECTOR gCameraRotation;
 /* FIXME - static inline getters? */
 // extern s16 gCameraRotation_vx, gCameraRotation_vy, gCameraRotation_vz;
+extern VECTOR gCameraZoom;
+extern s32 gGeomOffsetX, gGeomOffsetY;
 extern s32 gQuadIndex;
 extern u16 gOscillation;
 extern u8 gGridColorOscillation;
 extern s32 gDecodingSprites;
+
+// Hard-coded values start as indices into gClutIds & are replaced w/ actual CLUT IDs in SetupGfx()
+extern u16 gGfxClutIds[GFX_CT];
+extern u16 gGfxTPageIds[GFX_CT];
+extern TextureWindow gGfxSubTextures[GFX_CT];
 
 extern PortraitOverlayOffsets gPortraitOverlayOffsetsDb[692];
 extern PortraitsDb gPortraitsDb;
@@ -197,5 +209,7 @@ void AddEvtPrim_Gui(u32 *ot, struct EvtData *evt);
 static inline s16 GetCamRotX() { return gCameraRotation.vx; }
 static inline s16 GetCamRotY() { return gCameraRotation.vy; }
 static inline u16 GetLightRotY() { return gLightRotation.vy; }
+static inline s16 GetCamPosY() { return gCameraPos.vy; }
+static inline s32 GetCamZoom() { return gCameraZoom.vz; }
 
 #endif
