@@ -165,6 +165,8 @@ typedef struct Graphics {
    u32 ot[OT_SIZE];
 } Graphics;
 
+typedef SVECTOR Quad[4];
+
 typedef struct TextureWindow {
    u8 x, y, w, h;
 } TextureWindow;
@@ -201,6 +203,8 @@ extern TextureWindow gGfxSubTextures[GFX_CT];
 
 extern PortraitOverlayOffsets gPortraitOverlayOffsetsDb[692];
 extern PortraitsDb gPortraitsDb;
+
+extern Quad gQuad_800fe63c;
 
 void DecodeUnitSprites(void);
 

@@ -18,7 +18,7 @@ typedef enum TerrainType {
 } TerrainType;
 
 typedef struct TerrainTile {
-   u8 elevation;
+   s8 elevation;
    s8 terrain;
 } TerrainTile;
 

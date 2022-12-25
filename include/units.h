@@ -250,6 +250,25 @@ typedef enum UnitNameIdx {
    UNIT_KIRA_2 = 34
 } UnitNameIdx;
 
+/* Partial; defining as needed */
+typedef enum UnitId {
+   UNIT_ID_DIEGO_BOWMAN = 15,
+   UNIT_ID_KIRA_BOWMAN = 18,
+   UNIT_ID_AMON_BOWMAN = 21,
+   UNIT_ID_DARIUS_BOWMAN = 24,
+   UNIT_ID_DIEGO_SNIPER = 39,
+   UNIT_ID_KIRA_SNIPER = 42,
+   UNIT_ID_AMON_SNIPER = 45,
+   UNIT_ID_DARIUS_SNIPER = 48,
+   UNIT_ID_EGGWORM = 63,
+   UNIT_ID_BUGABOO = 75,
+   UNIT_ID_LANDO = 90,
+   UNIT_ID_SABINA = 91,
+   UNIT_ID_GRENADIER = 111,
+   UNIT_ID_BASILISK = 127,
+   UNIT_ID_M_CANNON = 129,
+} UnitId;
+
 typedef enum UnitTeam { TEAM_NULL = 0, TEAM_PLAYER = 1, TEAM_ENEMY = 2 } UnitTeam;
 
 typedef enum UnitType {

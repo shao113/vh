@@ -52,7 +52,7 @@ segments:
 
     - [0x0019ec, .rdata, main]            # 0x800111ec
     - [0x001c04, .rdata, engine]          # 0x80011404
-    - [0x001c10, rdata]                   # 0x80011410
+    - [0x001c20, rdata]                   # 0x80011420
 
     - [0x0033ec, .rdata, evt]             # 0x80012bec
     - [0x003500, rdata]                   # 0x80012d00
@@ -64,8 +64,8 @@ segments:
     - [0x0069b0, bin]                     # 0x800161b0 end of audio jtbls
 
     - [0x007690, c, main]                 # 0x80016e90 main ...
-    - [0x0084c0, c, engine]               # 0x80017cc0 UpdateEngine ...
-    - [0x0098e0, bin]                     # 
+    - [0x0084c0, c, engine]               # 0x80017cc0 UpdateEngine ...    
+    - [0x00ab4c, bin]                     # 
 
     - [0x00e184, c, evtf574]              # 0x8001d984 Evtf574_DisplayIcon ...
     - [0x00e584, bin]                     # 0x8001dd84
@@ -86,9 +86,7 @@ segments:
     - [0x0db758, .data, gCharacterNames]  # 0x800eaf58
     - [0x0dc314, data]                    # 0x800ebb14
 
-    - [0x0e1234, .data, engine]           # 0x800f0a34 
-    - [0x0e135c, data]      
-
+    - [0x0e1234, .data, engine]           # 0x800f0a34
     - [0x0e1384, .data, glyphs]           # 0x800f0b84
 
     - [0x0e1ed8, data]                    # 0x800f16d8
@@ -111,13 +109,15 @@ segments:
     - [0x113628, bin] 
 
     - [0x113674, .sdata, engine]          # 0x80122e74
-    - [0x11367c, bin] 
+    - [0x1136b4, bin] 
 
     - [0x113710, .sdata, card]            # 0x80122f10
     - [0x11372c, sdata]                   # 0x80122f2c
 
-    - [0x113940, .sbss, engine]           # 0x80123140 TODO: .sbss?
-    - [0x113944, bin]
+    # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses
+    # set through symbol_addrs to override the assembler's placement
+    #- [0x113940, .sbss, engine]          # 0x80123140 TODO: .sbss?
+    - [0x113940, bin]                     # 0x80123140 TODO: .sbss?
 
     #- [0x113ab0, .sbss, card]            # 0x801232b0
     #- [0x113ad8, bin]

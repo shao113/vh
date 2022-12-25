@@ -18,6 +18,8 @@ typedef struct SlainUnit {
 extern u8 gIsEnemyTurn;
 extern SlainUnit gSlainUnits[20];
 extern u8 gPartyMemberSlain[PARTY_CT];
+extern s16 gTargetX, gTargetZ;
+extern s32 gTempDirection;
 
 UnitStatus *FindUnitByNameIdx(s16);
 s32 CountUnitsOfType(s16);

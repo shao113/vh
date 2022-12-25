@@ -63,9 +63,9 @@ void Evtf405_Panorama(EvtData *evt) {
    case 1:
       evt->d.evtf405.pan += 0x100;
       xOfs = (evt->d.evtf405.yRot - GetCamRotY()) >> 4;
-      xOfs += H_HI(evt->d.evtf405.pan);
-      if (H_HI(evt->d.evtf405.pan) != 0) {
-         H_HI(evt->d.evtf405.pan) = 0;
+      xOfs += HI(evt->d.evtf405.pan);
+      if (HI(evt->d.evtf405.pan) != 0) {
+         HI(evt->d.evtf405.pan) = 0;
       }
       yOfs = (evt->d.evtf405.xRot - GetCamRotX()) >> 5;
       evt->d.evtf405.yRot = GetCamRotY();

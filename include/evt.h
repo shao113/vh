@@ -11,6 +11,8 @@ typedef enum EvtFunctionIdx {
    EVTF_NULL = 0,
    EVTF_NOOP = 1, /* TBD Used only for sprites? Sometimes used as a data store? */
    EVTF_MENU_CHOICE = 2,
+   EVTF_PROJECTILE = 22,
+   EVTF_PROJECTILE_INDIRECT = 29, /* Unused? maybe to open chest w/ ranged attacker? */
    EVTF_MAP_OBJECT_CHEST = 40,
    EVTF_MAP_OBJECT_CRATE = 46,
    EVTF_UNIT_SPRITES_DECODER = 50,
@@ -54,6 +56,12 @@ typedef enum EvtFunctionIdx {
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
    EVTF_MAP_OBJECT_BOULDER = 591,
+   EVTF_SPARKLE_DUST = 735,
+   EVTF_PROJECTILE_TRAIL_POISON = 764,
+   EVTF_PROJECTILE_TRAIL_EXPLOSION = 765,
+   EVTF_PROJECTILE_TRAIL_SMOKE = 766,
+   EVTF_PROJECTILE_TRAIL_SPARKLES = 767,
+
 } EvtFunctionIdx;
 
 typedef struct EvtData_Sprite {
@@ -91,6 +99,35 @@ typedef struct EvtData_Sprite {
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_Sprite;
 
+/* Projectile */
+typedef struct EvtData_022_029 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ struct EvtData *sprite;
+   /* :0x28 */ s16 xMid;
+   /* :0x2A */ s16 zMid;
+   /* :0x2C */ s16 xzMidDist;
+   /* :0x2E */ s16 zMidDist;
+   /* :0x30 */ s16 yRotOfs;
+   /* :0x32 */ s16 zRotOfs;
+   /* :0x34 */ u8 unk_0x34[4];
+   /* :0x38 */ s16 zRot;
+   /* :0x3A */ u8 unk_0x3A[38];
+} EvtData_022_029;
+
+/* Camera - Ranged Target */
+typedef struct EvtData_023 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct EvtData *targetSprite;
+   /* :0x28 */ s16 yRotDst;
+   /* :0x2A */ s16 delay;
+   /* :0x2C */ u8 unk_0x2C[52];
+} EvtData_023;
+
+/* Overhead Map View */
 typedef struct EvtData_025 {
    /* :0x10 */ u8 unk_0x10[20];
    /* :0x24 */ s16 camSavedRotX;
@@ -141,6 +178,8 @@ typedef struct EvtData {
    union {
       u8 bytes[80];
       EvtData_Sprite sprite;
+      EvtData_022_029 evtf022;
+      EvtData_023 evtf023;
       EvtData_025 evtf025;
       EvtData_405 evtf405;
       EvtData_438 evtf438;
