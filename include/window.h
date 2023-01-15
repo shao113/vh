@@ -19,7 +19,9 @@ typedef struct WindowChoice {
    } d;
 } WindowChoice;
 
-extern u16 gWindowChoiceHeight, gWindowChoicesTopMargin, gWindowActiveIdx;
+extern u16 gWindowChoiceHeight, gWindowChoicesCount, gWindowChoicesTopMargin, gWindowActiveIdx;
+extern s16 gWindowDisplayX[16];
+extern s16 gWindowDisplayY[16];
 extern WindowChoice gWindowChoice;
 extern WindowChoice gWindowActivatedChoice;
 

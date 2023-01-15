@@ -155,6 +155,21 @@ typedef enum GfxIdx {
    GFX_SCROLL_INDICATOR = 344,
    GFX_COLORS = 346,
    GFX_MAP_TEXTURES_OFS = 400,
+   GFX_MAP_TEXTURE_1 = 401,
+   GFX_MAP_TEXTURE_4 = 404,
+   GFX_MAP_TEXTURE_5 = 405,
+   GFX_MAP_TEXTURE_7 = 407,
+   GFX_MAP_TEXTURE_21 = 421,
+   GFX_MAP_TEXTURE_23 = 423,
+   GFX_MAP_TEXTURE_51 = 451,
+   GFX_MAP_TEXTURE_52 = 452,
+   GFX_MAP_TEXTURE_90 = 490,
+   GFX_MAP_TEXTURE_128 = 528,
+   GFX_MAP_TEXTURE_198 = 598,
+   GFX_WINDOW_TBD_657 = 657,
+   GFX_WINDOW_TBD_658 = 658,
+   GFX_WINDOW_TBD_707 = 707,
+   GFX_WINDOW_TBD_708 = 708,
    GFX_ITEM_ICONS_OFS = 727,
 } GfxIdx;
 
@@ -199,7 +214,9 @@ extern s32 gDecodingSprites;
 // Hard-coded values start as indices into gClutIds & are replaced w/ actual CLUT IDs in SetupGfx()
 extern u16 gGfxClutIds[GFX_CT];
 extern u16 gGfxTPageIds[GFX_CT];
+extern s16 gGfxTPageCells[GFX_CT];
 extern TextureWindow gGfxSubTextures[GFX_CT];
+extern u16 gTPageIds[4][32];
 
 extern PortraitOverlayOffsets gPortraitOverlayOffsetsDb[692];
 extern PortraitsDb gPortraitsDb;

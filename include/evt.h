@@ -52,6 +52,11 @@ typedef enum EvtFunctionIdx {
    EVTF_EVALUATE_BATTLE_40 = 560,
    EVTF_EVALUATE_BATTLE_42 = 562,
    EVTF_EVALUATE_BATTLE_43 = 563,
+   EVTF_MAP_OBJECT_WATER_1 = 564,
+   EVTF_MAP_OBJECT_WATER_2 = 565,
+   EVTF_MAP_OBJECT_LAVA_1 = 566,
+   EVTF_MAP_OBJECT_LAVA_2 = 569,
+   EVTF_MAP_OBJECT_LAVA_3 = 572,
    EVTF_DISPLAY_ICON = 574,
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
@@ -98,6 +103,47 @@ typedef struct EvtData_Sprite {
    /* :0x5C */ u8 animSingleAxis;
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_Sprite;
+
+/* Window (incomplete) */
+typedef struct EvtData_004_005_408 {
+   /* :0x10 */ s16 todo_x10;
+   /* :0x12 */ s16 x; /* Center point */
+   /* :0x14 */ s16 y;
+   /* :0x16 */ u8 unk_0x16[8];
+   /* :0x1E */ s16 destX;
+   /* :0x20 */ s16 destY;
+   /* :0x22 */ u8 unk_0x22[2];
+   /* :0x24 */ s32 todo_x24;
+   /* :0x28 */ s16 clut;
+   /* :0x2A */ s16 todo_x2a;
+   /* :0x2C */ u8 unk_0x2C[2];
+   /* :0x2E */ s16 highlightYOffset;
+   /* :0x30 */ s32 todo_x30;
+   /* :0x34 */ u8 highlightHeight;
+   /* :0x35 */ s8 choiceCt;
+   /* :0x36 */ s8 choiceHeight;
+   /* :0x37 */ s8 windowId;
+   /* :0x38 */ s16 halfHeight;
+   /* :0x3A */ u8 unk_0x3A[2];
+   /* :0x3C */ s16 halfWidth;
+   /* :0x3E */ u8 unk_0x3E[2];
+   /* :0x40 */ s16 relQuadX0;
+   /* :0x42 */ s16 relQuadY0;
+   /* :0x44 */ s16 relQuadX1;
+   /* :0x46 */ s16 relQuadY1;
+   /* :0x48 */ s16 relQuadX2;
+   /* :0x4A */ s16 relQuadY2;
+   /* :0x4C */ s16 relQuadX3;
+   /* :0x4E */ s16 relQuadY3;
+   /* :0x50 */ struct EvtData *highlight;
+   /* :0x54 */ struct EvtData *window;
+   /* :0x58 */ s16 todo_x58;
+   /* :0x5A */ s16 todo_x5a;
+   /* :0x5C */ s8 effect;
+   /* :0x5D */ s8 translucentHighlight;
+   /* :0x5E */ s8 otOfs;
+   /* :0x5F */ s8 disableWraparound;
+} EvtData_004_005_408;
 
 /* Projectile */
 typedef struct EvtData_022_029 {
@@ -159,6 +205,13 @@ typedef struct EvtData_438 {
    /* :0x25 */ u8 unk_0x25[59];
 } EvtData_438;
 
+/* Map Object - Rippling Water/Lava (animated texture) */
+typedef struct EvtData_564_565_566 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ u16 phase;
+   /* :0x26 */ u8 unk_0x26[58];
+} EvtData_564_565_566;
+
 /* Audio Command */
 typedef struct EvtData_581 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -171,18 +224,20 @@ typedef struct EvtData_581 {
 typedef struct EvtData {
    /* 0x00 */ SVECTOR vec;
    /* 0x08 */ s16 functionIndex;
-   /* 0x0A */ u16 mem;
+   /* 0x0A */ s16 mem;
    /* 0x0C */ s16 state;
    /* 0x0E */ s16 state2;
    /* 0x10: */
    union {
       u8 bytes[80];
       EvtData_Sprite sprite;
+      EvtData_004_005_408 evtf004;
       EvtData_022_029 evtf022;
       EvtData_023 evtf023;
       EvtData_025 evtf025;
       EvtData_405 evtf405;
       EvtData_438 evtf438;
+      EvtData_564_565_566 evtf564;
       EvtData_581 evtf581;
    } d;
 } EvtData;

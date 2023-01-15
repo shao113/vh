@@ -230,8 +230,10 @@ extern GlyphIndex gGlyphStrip_D7[];
 extern GlyphIndex *gGlyphStrips[];
 extern GlyphIndex gClassIconStartingGlyph[];
 
-void IntToLeftPaddedGlyphs(s32, GlyphIndex *);
+void IntToLeftPaddedGlyphs(s16, GlyphIndex *);
 s32 StringToGlyphs(GlyphIndex *, u8 *);
-s32 IntToGlyphs(s32, GlyphIndex *);
+s32 IntToGlyphs(s16, GlyphIndex *);
+void DrawGlyphStripGroup(u8 *, s32);
+GlyphIndex GetGlyphIdxForAsciiChar(u8);
 
 #endif

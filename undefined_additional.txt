@@ -1,0 +1,8 @@
+gPathGrid2 = 0x8012ee98;
+gPathGrid3 = 0x8012f68c;
+gPathGrid4 = 0x8012fe2c;
+gPathGrid5 = 0x801305cc;
+gPathGrid6 = 0x80130d6c;
+gPathGrid0 = 0x8016fe8c;
+gPathGrid1 = 0x80172a60;
+gTPageIds = 0x801732b0;

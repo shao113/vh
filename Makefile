@@ -34,7 +34,7 @@ AS_FLAGS        := -march=r3000 -mtune=r3000 -Iinclude -G0
 D_FLAGS       	:= -Dmips -D__GNUC__=2 -D__OPTIMIZE__ -D__mips__ -D__mips -Dpsx -D__psx__ -D__psx -D_PSYQ -D__EXTENSIONS__ -D_MIPSEL -D__CHAR_UNSIGNED__ -D_LANGUAGE_C -DLANGUAGE_C
 
 OPT_FLAGS       := -O1
-GP_OPT          := -G0
+GP_OPT          := -G8
 
 # Update: Removed -fno-builtin to enable generation of inline strcpy
 CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -fshort-enums -ffunction-cse -fpcc-struct-return -fgnu-linker
@@ -42,25 +42,21 @@ CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -fshor
 
 CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -Iinclude/PsyQ -nostdinc
 OBJCOPY_FLAGS   := -O binary
-LD_FLAGS    	:= --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined_syms_auto.$(BASENAME).txt -T undefined_funcs_auto.$(BASENAME).txt --no-check-sections
+LD_FLAGS    	:= --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined_syms_auto.$(BASENAME).txt -T undefined_funcs_auto.$(BASENAME).txt -T undefined_additional.txt --no-check-sections
 
 
 
 build/src/audio.c.s: CC := cc1_v258_messyhack2
 build/src/audio.c.s: OPT_FLAGS := -O2
+build/src/audio.c.s: GP_OPT := -G0
 
-build/src/card.c.s: GP_OPT := -G8
-
-build/src/main.c.s: GP_OPT := -G8
-
-build/src/engine.c.s: GP_OPT := -G8
+build/src/glyphs.c.s: GP_OPT := -G0
 
 build/src/temp_sdata.c.s: GP_OPT := -G16
 
 default: dirs check
 	
 clean:
-	#mv --backup=numbered src/*_asm_auto.c old/backup
 	rm -rf batch.tmp asm assets build
 	
 soft-clean:

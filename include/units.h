@@ -392,10 +392,10 @@ typedef struct UnitStatus {
    u32 agiVar10000;
    s16 hp;
    s16 maxHp;
-   s16 attack;
-   s16 defense;
+   u16 attack;
+   u16 defense;
    s16 agility;
-   s16 exp;
+   u16 exp;
    s16 mp;
    s16 maxMp;
    s16 hpVar100;
@@ -408,12 +408,12 @@ typedef struct UnitStatus {
    u8 done;
    u8 field33_0x56;
    u8 field34_0x57;
-   u16 item1;
-   u16 item2;
-   u16 droppedItem;
-   u16 helmet;
-   u16 armor;
-   u16 weapon;
+   s16 item1;
+   s16 item2;
+   s16 droppedItem;
+   s16 helmet;
+   s16 armor;
+   s16 weapon;
    s16 unitId; // ?: 0..143
    u8 travelRange;
    u8 attackRange;
@@ -456,6 +456,7 @@ typedef struct PartyMember {
 extern s8 gCharacterNames[35][7];
 extern s8 gUnitTypeNames[86][11];
 extern s8 gItemNames[139][13];
+extern s8 gItemEquipmentDisplayPower[104];
 extern UnitStatus gUnits[UNIT_CT];
 extern PartyMember gPartyMembers[PARTY_CT];
 extern BigInt gExperienceLevels[];

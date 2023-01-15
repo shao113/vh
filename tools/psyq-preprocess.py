@@ -197,30 +197,30 @@ class PsyqExpression:
         ret = PsyqExpression()
         exprOp = readUInt8(file)
         ret.type = PsyqExprOpcode(exprOp)
-        vprint("    ")
-        vprint("  " * level)
+        verbose and vprint("    ")
+        verbose and vprint("  " * level)
         if exprOp == PsyqExprOpcode.VALUE:
             value = readUInt32(file)
-            vprint(f"Value: {value:08x}\n")
+            verbose and vprint(f"Value: {value:08x}\n")
             ret.value = value
         elif exprOp == PsyqExprOpcode.SYMBOL:
             import_ = readUInt16(file)
-            vprint(f"Import: {import_}\n")
+            verbose and vprint(f"Import: {import_}\n")
             ret.symbolIndex = import_
         elif exprOp == PsyqExprOpcode.SECTION_BASE:
             sectionIndex = readUInt16(file)
-            vprint(f"Base of section {sectionIndex}\n")
+            verbose and vprint(f"Base of section {sectionIndex}\n")
             ret.sectionIndex = sectionIndex
         elif exprOp == PsyqExprOpcode.SECTION_START:
             sectionIndex = readUInt16(file)
-            vprint(f"Start of section {sectionIndex}\n")
+            verbose and vprint(f"Start of section {sectionIndex}\n")
             ret.sectionIndex = sectionIndex
         elif exprOp == PsyqExprOpcode.SECTION_END:
             sectionIndex = readUInt16(file)
-            vprint(f"End of section {sectionIndex}\n")
+            verbose and vprint(f"End of section {sectionIndex}\n")
             ret.sectionIndex = sectionIndex
         elif exprOp == PsyqExprOpcode.ADD:
-            vprint("Add:\n")
+            verbose and vprint("Add:\n")
             ret.right = PsyqExpression.parse(file, verbose, level + 1)
             ret.left = PsyqExpression.parse(file, verbose, level + 1)
             if ret.right.type == PsyqExprOpcode.ADD and ret.left.type == PsyqExprOpcode.VALUE:
@@ -242,13 +242,13 @@ class PsyqExpression:
             if (not ret.left) or (not ret.right):
                 return None
         elif exprOp == PsyqExprOpcode.SUB:
-            vprint("Sub:\n")
+            verbose and vprint("Sub:\n")
             ret.right = PsyqExpression.parse(file, verbose, level + 1)
             ret.left = PsyqExpression.parse(file, verbose, level + 1)
             if (not ret.left) or (not ret.right):
                 return None
         elif exprOp == PsyqExprOpcode.DIV:
-            vprint("Div:\n")
+            verbose and vprint("Div:\n")
             ret.right = PsyqExpression.parse(file, verbose, level + 1)
             ret.left = PsyqExpression.parse(file, verbose, level + 1)
             if (not ret.left) or (not ret.right):
@@ -339,36 +339,36 @@ class PsyqLnkFile:
         gotProgramSeven = False
         
         with open(filename, "rb") as file:
-            vprint(":: Reading signature.\n")
+            verbose and vprint(":: Reading signature.\n")
             signature = readString(file, 3)
             if signature != "LNK":
                 print(f"Wrong signature: {signature}")
                 return None
-            vprint(" --> Signature ok.\n")
+            verbose and vprint(" --> Signature ok.\n")
             
-            vprint(":: Reading version: ")
+            verbose and vprint(":: Reading version: ")
             version = readUInt8(file)
-            vprint(f"{version}\n")
+            verbose and vprint(f"{version}\n")
             if (version != 2):
                 print(f"Unknown version {version}")
                 return None
             
-            vprint(":: Parsing file...\n")
+            verbose and vprint(":: Parsing file...\n")
             while True:
                 opcode = readUInt8(file)
                 if opcode is None:
                     break
-                vprint(f"  :: Read opcode {opcode} --> ")
+                verbose and vprint(f"  :: Read opcode {opcode} --> ")
                 #vprint(f"{file.tell():06x}  :: Read opcode {opcode} --> ")
                 #print(PsyqOpcode(opcode))
                 if opcode == PsyqOpcode.END:
-                    vprint("EOF\n")
+                    verbose and vprint("EOF\n")
                     return ret
                 elif opcode == PsyqOpcode.BYTES:
                     size = readUInt16(file)
-                    vprint(f"Bytes ({size:04x})\n")
+                    verbose and vprint(f"Bytes ({size:04x})\n")
                     b = file.read(size)
-                    vprint(toHexString(b) + "\n")
+                    verbose and vprint(toHexString(b) + "\n")
                     section = ret.getCurrentSection()
                     if not section:
                         print(f"Section {ret.currentSection} not found")
@@ -376,16 +376,17 @@ class PsyqLnkFile:
                     section.pointer = section.getFullSize()
                     if section.zeroes:
                         section.data += b"\0" * section.zeroes
+                        section.zeroes = 0
                     section.data += b
                     continue
                 elif opcode == PsyqOpcode.SWITCH:
                     sectionIndex = readUInt16(file)
-                    vprint(f"Switch to section {sectionIndex}\n")
+                    verbose and vprint(f"Switch to section {sectionIndex}\n")
                     ret.currentSection = sectionIndex
                     continue
                 elif opcode == PsyqOpcode.ZEROES:
                     size = readUInt32(file)
-                    vprint(f"Zeroes ({size:04x})\n")
+                    verbose and vprint(f"Zeroes ({size:04x})\n")
                     section = ret.getCurrentSection()
                     if not section:
                         print(f"Section {ret.currentSection} not found")
@@ -394,19 +395,19 @@ class PsyqLnkFile:
                     continue
                 elif opcode == PsyqOpcode.RELOCATION:
                     relocType = readUInt8(file)
-                    vprint(f"Relocation {relocType} ")
+                    verbose and vprint(f"Relocation {relocType} ")
                     if relocType == PsyqRelocType.REL32:
-                        vprint("(REL32), ")
+                        verbose and vprint("(REL32), ")
                     elif relocType == PsyqRelocType.REL26:
-                        vprint("(REL26), ")
+                        verbose and vprint("(REL26), ")
                     elif relocType == PsyqRelocType.HI16:
-                        vprint("(HI16), ")
+                        verbose and vprint("(HI16), ")
                     elif relocType == PsyqRelocType.LO16:
-                        vprint("(LO16), ")
+                        verbose and vprint("(LO16), ")
                     elif relocType == PsyqRelocType.GPREL16:
-                        vprint("(GPREL16), ")
+                        verbose and vprint("(GPREL16), ")
                     elif relocType == PsyqRelocType.UNK_30:
-                        vprint("(UNK_30), ")
+                        verbose and vprint("(UNK_30), ")
                     else:
                         print(f"Unknown relocation type {relocType}")
                         return None
@@ -415,7 +416,7 @@ class PsyqLnkFile:
                     if not section:
                         print(f"Section {ret.currentSection} not found")
                         return None
-                    vprint(f"offset {offset:04x}+{section.pointer:08x}, expression: \n")
+                    verbose and vprint(f"offset {offset:04x}+{section.pointer:08x}, expression: \n")
                     
                     ## HACK
                     if relocType == PsyqRelocType.UNK_30:
@@ -432,7 +433,7 @@ class PsyqLnkFile:
                     sectionIndex = readUInt16(file)
                     offset = readUInt32(file)
                     name = readPsyqString(file)
-                    vprint(f"Export: id {symbolIndex}, section {sectionIndex}, offset {offset:08x}, name {name}\n")
+                    verbose and vprint(f"Export: id {symbolIndex}, section {sectionIndex}, offset {offset:08x}, name {name}\n")
                     symbol = PsyqSymbol()
                     symbol.symbolType = PsyqSymbol.Type.EXPORTED
                     symbol.sectionIndex = sectionIndex
@@ -443,7 +444,7 @@ class PsyqLnkFile:
                 elif opcode == PsyqOpcode.IMPORTED_SYMBOL:
                     symbolIndex = readUInt16(file)
                     name = readPsyqString(file)
-                    vprint(f"Import: id {symbolIndex}, name {name}\n")
+                    verbose and vprint(f"Import: id {symbolIndex}, name {name}\n")
                     symbol = PsyqSymbol()
                     symbol.symbolType = PsyqSymbol.Type.IMPORTED
                     symbol.name = name
@@ -454,7 +455,7 @@ class PsyqLnkFile:
                     group = readUInt16(file)
                     alignment = readUInt8(file)
                     name = readPsyqString(file)
-                    vprint(f"Section: id {sectionIndex}, group {group}, alignment {alignment}, name {name}\n")
+                    verbose and vprint(f"Section: id {sectionIndex}, group {group}, alignment {alignment}, name {name}\n")
                     section = PsyqSection(group, alignment, name)
                     ret.sections[sectionIndex] = section
                     if (alignment - 1) & alignment:
@@ -465,7 +466,7 @@ class PsyqLnkFile:
                     sectionIndex = readUInt16(file)
                     offset = readUInt32(file)
                     name = readPsyqString(file)
-                    vprint(f"Local: section {sectionIndex}, offset {offset}, name {name}\n")
+                    verbose and vprint(f"Local: section {sectionIndex}, offset {offset}, name {name}\n")
                     symbol = PsyqSymbol()
                     symbol.symbolType = PsyqSymbol.Type.LOCAL
                     symbol.sectionIndex = sectionIndex
@@ -477,11 +478,11 @@ class PsyqLnkFile:
                 elif opcode == PsyqOpcode.FILENAME:
                     index = readUInt16(file)
                     name = readPsyqString(file)
-                    vprint(f"File {index}: {name}\n")
+                    verbose and vprint(f"File {index}: {name}\n")
                     continue
                 elif opcode == PsyqOpcode.PROGRAMTYPE:
                     type = readUInt8(file)
-                    vprint(f"Program type {type}\n")
+                    verbose and vprint(f"Program type {type}\n")
                     if type != 7:
                         print(f"Unknown program type {type}.")
                         return None
@@ -513,10 +514,76 @@ class PsyqLnkFile:
                     section.uninitializedOffset &= ~align
                     symbol.offset = section.uninitializedOffset
                     
-                    vprint(f"Uninitialized: id {symbolIndex}, section {sectionIndex}, offset {symbol.offset:08x}, size {size:08x}, name {name}\n")
+                    verbose and vprint(f"Uninitialized: id {symbolIndex}, section {sectionIndex}, offset {symbol.offset:08x}, size {size:08x}, name {name}\n")
                     
                     section.uninitializedOffset += size
                     ret.symbols[symbolIndex] = symbol
+                    continue
+                elif opcode == PsyqOpcode.INC_SLD_LINENUM:
+                    offset = readUInt16(file)
+                    verbose and vprint(f"INC_SLD_LINENUM offset {offset}\n")
+                    continue
+                elif opcode == PsyqOpcode.INC_SLD_LINENUM_BY_BYTE:
+                    offset = readUInt16(file)
+                    _byte = readUInt8(file)
+                    verbose and vprint(f"INC_SLD_LINENUM_BY_BYTE offset {offset}, _byte {_byte}\n")
+                    continue
+                elif opcode == PsyqOpcode.SET_SLD_LINENUM:
+                    offset = readUInt16(file)
+                    lineNum = readUInt32(file)
+                    verbose and vprint(f"SET_SLD_LINENUM lineNum {lineNum}, offset {offset}\n")
+                    continue
+                elif opcode == PsyqOpcode.SET_SLD_LINENUM_FILE:
+                    offset = readUInt16(file)
+                    lineNum = readUInt32(file)
+                    _file = readUInt16(file)
+                    verbose and vprint(f"SET_SLD_LINENUM_FILE lineNum {lineNum}, offset {offset}, _file {_file}\n")
+                    continue
+                elif opcode == PsyqOpcode.END_SLD:
+                    # 2 bytes of nothing
+                    zero = readUInt16(file)
+                    assert(zero == 0);
+                    verbose and vprint("END_SLD\n")
+                    continue
+                elif opcode == PsyqOpcode.FUNCTION:
+                    section = readUInt16(file)
+                    offset = readUInt32(file)
+                    _file = readUInt16(file)
+                    startLine = readUInt32(file)
+                    frameReg = readUInt16(file)
+                    frameSize = readUInt32(file)
+                    retnPcReg = readUInt16(file)
+                    mask = readUInt32(file)
+                    maskOffset = readUInt32(file)
+                    name = readPsyqString(file)
+                    verbose and vprint(f"FUNCTION: section {section}, offset {offset}, _file {_file}, startLine {startLine}, frameReg {frameReg}, frameSize {frameSize}, retnPcReg {retnPcReg}, mask {mask}, maskOffset {maskOffset}, name {name}\n")
+                    continue
+                elif opcode == PsyqOpcode.FUNCTION_END:
+                    section = readUInt16(file)
+                    offset = readUInt32(file)
+                    endLine = readUInt32(file)
+                    verbose and vprint(f"FUNCTION_END: section {section}, offset {offset}, endLine {endLine}\n")
+                    continue
+                elif opcode == PsyqOpcode.SECTION_DEF:
+                    section = readUInt16(file)
+                    value = readUInt32(file)
+                    _class = readUInt16(file)
+                    _type = readUInt16(file)
+                    size = readUInt32(file)
+                    name = readPsyqString(file)
+                    verbose and vprint(f"SECTION_DEF: section {section}, value {value}, _class {_class}, type {_type}, size {size}\n")
+                    continue
+                elif opcode == PsyqOpcode.SECTION_DEF2:
+                    section = readUInt16(file)
+                    value = readUInt32(file)
+                    _class = readUInt16(file)
+                    _type = readUInt16(file)
+                    size = readUInt32(file)
+                    dims = readUInt16(file)
+                    dimList = [readUInt16(file) for i in range(dims)]
+                    tag = readPsyqString(file)
+                    name = readPsyqString(file)
+                    verbose and vprint(f"SECTION_DEF2: section {section}, value {value}, _class {_class}, type {_type}, size {size}, dims {dims}, tag {tag}, name {name}\n")
                     continue
                 else:
                     print(f"Unknown opcode {opcode}.")
@@ -579,15 +646,19 @@ def HACK_PatchReloc30(file, blob, patches):
     return expression
     
 smolprintLen = 0
-def smolprint(s, d="   ", n=100):
+smolprintMax = 100
+if 'SMOLPRINT' in os.environ:
+	smolprintMax = int(os.environ['SMOLPRINT'])
+def smolprint(s, d="   "):
     global smolprintLen
+    if smolprintMax <= 0:
+        return
     s += d
     smolprintLen += len(s)
-    if smolprintLen > n:
+    if smolprintLen > smolprintMax:
         print()
         smolprintLen = len(s)
     print(s, end="")
-
 
 if len(sys.argv) == 1 + 1:
     lnkFilename = sys.argv[1]
@@ -630,8 +701,10 @@ if fixup and len(patches) > 0:
     #print("Patching: ")
     for p in reversed(patches):
         smolprint(f"@{p[0]:06x}", d="  ")
-        blob[p[0]:p[1]] = p[2]
-    print()    
+        blob[p[0]:p[1]] = p[2] 
     fd = os.open(outFilename, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
     os.write(fd, blob)
     os.close(fd)
+
+if smolprintLen > 0:
+    print()

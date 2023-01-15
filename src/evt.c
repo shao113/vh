@@ -196,7 +196,7 @@ void Evt_ResetAll(void) {
 EvtData *Evt_GetUnused(void) {
    s32 i;
    EvtData *p;
-   /*  TBD What is the significance of first 20 entries? reserved? */
+   // TBD What is the significance of first 20 entries? reserved?
    p = &gEvtDataArray[20];
    for (i = 20; i < EVT_DATA_CT; i++, p++) {
       if (p->functionIndex == EVTF_NULL) {
@@ -264,10 +264,6 @@ EvtData *Evt_GetFirstUnused(void) {
 
 EvtData *Evt_GetLastUnused(void) { return Evt_GetLastUnusedSkippingTail(0); }
 
-/* TBD: Bad output (maybe because offset > 0x8000; psyq-obj-parser bug?) */
-/* Update: Well, the pile of hacks grows ever larger; added addend-fixup.py to convert-psyq-lnk.sh,
- * which scans the psyq-obj-parser dump for large addends and patches affected lui instructions;
- * will need to investigate the psyq-obj-parser src for a true fix. */
 EvtData *Evt_GetLastUnusedSkippingTail(s32 tailEntriesToSkip) {
    s32 i;
    EvtData *p;

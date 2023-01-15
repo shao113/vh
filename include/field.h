@@ -49,6 +49,27 @@ typedef struct MapTileModel {
    u8 height;
 } MapTileModel;
 
+typedef enum PathStep {
+   PATH_STEP_UNSET = 0x0,
+   PATH_STEP_SOUTH = 0x1,
+   PATH_STEP_WEST = 0x2,
+   PATH_STEP_NORTH = 0x3,
+   PATH_STEP_EAST = 0x4,
+   PATH_STEP_INVALID = 0xff
+} PathStep;
+
+// ?: a PathGrid can contain PathStep (direction), num steps from start, ...
+typedef u8 PathGridRow[65];
+extern PathGridRow gPathGrid0[30];
+extern PathGridRow gPathGrid1[30];
+// extern PathGridRow gPathGrid0_1[29];
+// extern PathGridRow gPathGrid1_1[29];
+extern PathGridRow gPathGrid2[30];
+extern PathGridRow gPathGrid3[30];
+extern PathGridRow gPathGrid4[30];
+extern PathGridRow gPathGrid5[30];
+extern PathGridRow gPathGrid6[30];
+
 extern s16 gTerrainBonus[];
 extern TerrainTile (*gTerrainPtr)[65];
 extern MapUnit (*gMapUnitsPtr)[65];

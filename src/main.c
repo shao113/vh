@@ -128,7 +128,6 @@ void UpdateState(void) {
       State_Title_FileLoadScreen();
       break;
    case STATE_LOAD_DEBUG_MENU:
-      /* Debug menu */
       Evt_ResetFromIdx10();
       SwapOutCodeToVram();
       gState.vsyncMode = 0;
