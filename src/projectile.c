@@ -141,6 +141,8 @@ void RotateProjectile(s16 rotx, s16 roty, s16 rotz) {
    PopMatrix();
 }
 
+#undef EVTF
+#define EVTF 022
 void Evtf022_029_Projectile(EvtData *evt) {
    EvtData *targetSprite;
    EvtData *projectileSprite;
@@ -151,9 +153,9 @@ void Evtf022_029_Projectile(EvtData *evt) {
    s16 mdist, xmdist, zmdist;
    s8 unused[24];
 
-   projectileSprite = evt->d.evtf022.sprite;
+   projectileSprite = EVT.sprite;
    target = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].unitIdx];
-   unitIdx = gMapUnitsPtr[HI(evt->d.evtf022.z)][HI(evt->d.evtf022.x)].unitIdx;
+   unitIdx = gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].unitIdx;
    attacker = &gUnits[unitIdx];
 
    if (evt->functionIndex == EVTF_PROJECTILE) {
@@ -185,30 +187,30 @@ void Evtf022_029_Projectile(EvtData *evt) {
          projectileSprite->d.sprite.vecIdx = 7;
       }
 
-      evt->d.evtf022.sprite = projectileSprite;
-      projectileSprite->d.sprite.x1 = evt->d.evtf022.x;
-      projectileSprite->d.sprite.z1 = evt->d.evtf022.z;
-      projectileSprite->d.sprite.y1 = evt->d.evtf022.y;
+      EVT.sprite = projectileSprite;
+      projectileSprite->d.sprite.x1 = EVT.x;
+      projectileSprite->d.sprite.z1 = EVT.z;
+      projectileSprite->d.sprite.y1 = EVT.y;
 
       projectileHeight = CalculateProjectileHeight(
           HI(projectileSprite->d.sprite.x1), HI(projectileSprite->d.sprite.z1),
           HI(targetSprite->d.sprite.x1), HI(targetSprite->d.sprite.z1));
       ArcProjectileTo(projectileSprite, targetSprite->d.sprite.x1, targetSprite->d.sprite.z1,
                       projectileHeight, 0);
-      evt->d.evtf022.xMid = evt->d.evtf022.x + ((targetSprite->d.sprite.x1 - evt->d.evtf022.x) / 2);
-      evt->d.evtf022.zMid = evt->d.evtf022.z + ((targetSprite->d.sprite.z1 - evt->d.evtf022.z) / 2);
+      EVT.xMid = EVT.x + ((targetSprite->d.sprite.x1 - EVT.x) / 2);
+      EVT.zMid = EVT.z + ((targetSprite->d.sprite.z1 - EVT.z) / 2);
 
-      evt->d.evtf022.xzMidDist = (targetSprite->d.sprite.x1 - evt->d.evtf022.x) / 2;
-      SET_ABS(evt->d.evtf022.xzMidDist);
+      EVT.xzMidDist = (targetSprite->d.sprite.x1 - EVT.x) / 2;
+      SET_ABS(EVT.xzMidDist);
 
-      evt->d.evtf022.zMidDist = (targetSprite->d.sprite.z1 - evt->d.evtf022.z) / 2;
-      SET_ABS(evt->d.evtf022.zMidDist);
+      EVT.zMidDist = (targetSprite->d.sprite.z1 - EVT.z) / 2;
+      SET_ABS(EVT.zMidDist);
 
-      evt->d.evtf022.xzMidDist += evt->d.evtf022.zMidDist;
+      EVT.xzMidDist += EVT.zMidDist;
 
       if (projectileSprite->d.sprite.x1 == targetSprite->d.sprite.x1) {
-         evt->d.evtf022.yRotOfs = ANGLE_90_DEGREES;
-         evt->d.evtf022.zRotOfs = ANGLE_180_DEGREES;
+         EVT.yRotOfs = ANGLE_90_DEGREES;
+         EVT.zRotOfs = ANGLE_180_DEGREES;
       }
       evt->state++;
       ArcProjectileTo(projectileSprite, 0, 0, 0, 1);
@@ -245,15 +247,14 @@ void Evtf022_029_Projectile(EvtData *evt) {
          projectileSprite->functionIndex = EVTF_NULL;
       }
 
-      xmdist = evt->d.evtf022.xMid - projectileSprite->d.sprite.x1;
+      xmdist = EVT.xMid - projectileSprite->d.sprite.x1;
       SET_ABS(xmdist);
-      zmdist = evt->d.evtf022.zMid - projectileSprite->d.sprite.z1;
+      zmdist = EVT.zMid - projectileSprite->d.sprite.z1;
       SET_ABS(zmdist);
       mdist = xmdist + zmdist;
 
       // Shifts compute 3/4ths
-      gCameraZoom.vz = 250 + ((evt->d.evtf022.xzMidDist - mdist) >> 1) +
-                       ((evt->d.evtf022.xzMidDist - mdist) >> 2);
+      gCameraZoom.vz = 250 + ((EVT.xzMidDist - mdist) >> 1) + ((EVT.xzMidDist - mdist) >> 2);
 
       if (evt->functionIndex == EVTF_NULL) {
          gCameraZoom.vz = 250;
@@ -267,42 +268,44 @@ void Evtf022_029_Projectile(EvtData *evt) {
    gCameraPos.vy = projectileSprite->d.sprite.y1 >> 3;
 
    // x2,y2 (delta) set in ArcProjectileTo
-   evt->d.evtf022.zRot = ratan2(projectileSprite->d.sprite.y2, projectileSprite->d.sprite.x2);
+   EVT.zRot = ratan2(projectileSprite->d.sprite.y2, projectileSprite->d.sprite.x2);
 
-   if (evt->d.evtf022.yRotOfs == 0) {
-      evt->d.evtf022.zRot = ANGLE_360_DEGREES - evt->d.evtf022.zRot;
+   if (EVT.yRotOfs == 0) {
+      EVT.zRot = ANGLE_360_DEGREES - EVT.zRot;
    }
 
-   evt->d.evtf022.zRot += evt->d.evtf022.zRotOfs;
-   RotateProjectile(gCameraRotation.vx, gCameraRotation.vy + evt->d.evtf022.yRotOfs,
-                    gCameraRotation.vz + evt->d.evtf022.zRot);
+   EVT.zRot += EVT.zRotOfs;
+   RotateProjectile(gCameraRotation.vx, gCameraRotation.vy + EVT.yRotOfs,
+                    gCameraRotation.vz + EVT.zRot);
    AddEvtPrim6(gGraphicsPtr->ot, projectileSprite, 0);
 }
 
+#undef EVTF
+#define EVTF 023
 void Evtf023_Camera_RangedTarget(EvtData *evt) {
    s16 diff;
-   EvtData *targetSprite = evt->d.evtf023.targetSprite;
+   EvtData *targetSprite = EVT.targetSprite;
 
    switch (evt->state) {
    case 0:
-      evt->d.evtf023.yRotDst =
+      EVT.yRotDst =
           GetBestViewOfTarget(HI(targetSprite->d.sprite.z1), HI(targetSprite->d.sprite.x1), 1);
 
-      diff = evt->d.evtf023.yRotDst - gCameraRotation.vy;
+      diff = EVT.yRotDst - gCameraRotation.vy;
       if (diff > 0) {
          if (diff > ANGLE_180_DEGREES) {
-            evt->d.evtf023.yRotDst -= ANGLE_360_DEGREES;
+            EVT.yRotDst -= ANGLE_360_DEGREES;
          }
       } else if (diff < -ANGLE_180_DEGREES) {
-         evt->d.evtf023.yRotDst += ANGLE_360_DEGREES;
+         EVT.yRotDst += ANGLE_360_DEGREES;
       }
 
-      evt->d.evtf023.delay = 35;
+      EVT.delay = 35;
       evt->state++;
       // fallthrough
    case 1:
-      if (--evt->d.evtf023.delay != 0) {
-         gCameraRotation.vy += (evt->d.evtf023.yRotDst - gCameraRotation.vy) >> 3;
+      if (--EVT.delay != 0) {
+         gCameraRotation.vy += (EVT.yRotDst - gCameraRotation.vy) >> 3;
       } else {
          evt->functionIndex = EVTF_NULL;
       }

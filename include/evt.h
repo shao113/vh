@@ -7,10 +7,18 @@
 #define EVT_DATA_CT 350
 #define EVT_DATA_LAST_IDX 349
 
+// Can't decide if this is an improvement over just typing it out; maybe for big functions?
+#define EVT_HELPER_2(x) evt->d.evtf##x
+#define EVT_HELPER_1(x) EVT_HELPER_2(x)
+#define EVT EVT_HELPER_1(EVTF)
+#define EVTF 000
+
 typedef enum EvtFunctionIdx {
    EVTF_NULL = 0,
    EVTF_NOOP = 1, /* TBD Used only for sprites? Sometimes used as a data store? */
    EVTF_MENU_CHOICE = 2,
+   EVTF_WINDOW_TBD_004 = 4,
+   EVTF_WINDOW_TBD_005 = 5,
    EVTF_PROJECTILE = 22,
    EVTF_PROJECTILE_INDIRECT = 29, /* Unused? maybe to open chest w/ ranged attacker? */
    EVTF_MAP_OBJECT_CHEST = 40,
@@ -23,6 +31,7 @@ typedef enum EvtFunctionIdx {
    EVTF_FULLSCREEN_IMAGE = 387,
    EVTF_PANORAMA = 405,
    EVTF_NOOP_407 = 407,
+   EVTF_CLOSED_WINDOW = 408,
    EVTF_EVENT_CAMERA = 412,
    EVTF_DEBUG_MENU = 414,
    EVTF_EVALUATE_BATTLE_10 = 426,
@@ -106,25 +115,25 @@ typedef struct EvtData_Sprite {
 
 /* Window (incomplete) */
 typedef struct EvtData_004_005_408 {
-   /* :0x10 */ s16 todo_x10;
+   /* :0x10 */ s16 effectState;
    /* :0x12 */ s16 x; /* Center point */
    /* :0x14 */ s16 y;
    /* :0x16 */ u8 unk_0x16[8];
    /* :0x1E */ s16 destX;
    /* :0x20 */ s16 destY;
    /* :0x22 */ u8 unk_0x22[2];
-   /* :0x24 */ s32 todo_x24;
+   /* :0x24 */ s32 effectPhase;
    /* :0x28 */ s16 clut;
-   /* :0x2A */ s16 todo_x2a;
-   /* :0x2C */ u8 unk_0x2C[2];
-   /* :0x2E */ s16 highlightYOffset;
+   /* :0x2A */ s16 choicesTopMargin;
+   /* :0x2C */ /*s16 todo_x2c;*/ s32 todo_x2c;
+   ///* :0x2E */ s16 highlightYOffset;
    /* :0x30 */ s32 todo_x30;
-   /* :0x34 */ u8 highlightHeight;
+   /* :0x34 */ s8 highlightHeight;
    /* :0x35 */ s8 choiceCt;
    /* :0x36 */ s8 choiceHeight;
    /* :0x37 */ s8 windowId;
    /* :0x38 */ s16 halfHeight;
-   /* :0x3A */ u8 unk_0x3A[2];
+   /* :0x3A */ s16 todo_x3a;
    /* :0x3C */ s16 halfWidth;
    /* :0x3E */ u8 unk_0x3E[2];
    /* :0x40 */ s16 relQuadX0;
@@ -137,8 +146,8 @@ typedef struct EvtData_004_005_408 {
    /* :0x4E */ s16 relQuadY3;
    /* :0x50 */ struct EvtData *highlight;
    /* :0x54 */ struct EvtData *window;
-   /* :0x58 */ s16 todo_x58;
-   /* :0x5A */ s16 todo_x5a;
+   /* :0x58 */ s16 effectX;
+   /* :0x5A */ s16 effectY;
    /* :0x5C */ s8 effect;
    /* :0x5D */ s8 translucentHighlight;
    /* :0x5E */ s8 otOfs;

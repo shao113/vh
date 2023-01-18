@@ -54,7 +54,8 @@ segments:
     - [0x001c04, .rdata, engine]               # 0x80011404
     - [0x001c10, .rdata, projectile]           # 0x80011410
     - [0x001c3c, .rdata, animated_textures]    # 0x8001143c
-    - [0x001cdc, rdata]                        # 0x800114dc
+    - [0x001cdc, .rdata, window]               # 0x800114dc
+    - [0x001e48, rdata]                        # 
 
     - [0x0033ec, .rdata, evt]                  # 0x80012bec
     - [0x003500, rdata]                        # 0x80012d00
@@ -70,7 +71,7 @@ segments:
     - [0x009c44, c, projectile]                # 0x80019444 CalculateProjectileDeltas ...
     - [0x00ae4c, c, animated_textures]         # 0x8001a64c Evtf564_565_566_MapObject_Water ...
     - [0x00b83c, c, window]                    # 0x8001b03c WindowIsOffScreen ...
-    - [0x00e584, bin]                          # 
+    - [0x01020c, bin]                          # 
 
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
     - [0x028f2c, bin]                          # 0x8003872c

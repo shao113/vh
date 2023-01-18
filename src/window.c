@@ -6,6 +6,29 @@
 #include "graphics.h"
 #include "glyphs.h"
 #include "field.h"
+#include "audio.h"
+
+s32 WindowIsOffScreen(EvtData *);
+void DrawSmallEquipmentWindow(u8);
+void DrawWindow(s16, s16, s16, s16, s16, s16, s16, u8, u8);
+s32 StringToGlyphs(GlyphIndex *, u8 *);
+s32 FUN_8001d384(u8 *, u8 *);
+s32 FUN_8001d3fc(u8 *, u8 *);
+void UpdateSkillStatusWindow(UnitStatus *);
+void Evtf574_DisplayIcon(EvtData *);
+void ClearIcons(void);
+void UpdateCompactUnitInfoWindow(UnitStatus *, UnitStatus *, u8);
+void UpdateUnitInfoWindow(UnitStatus *);
+void Evtf002_MenuChoice(EvtData *);
+void DisplayBasicWindow(s32);
+void DisplayBasicWindowWithSetChoice(s32, u8);
+void DisplayCustomWindow(s32, u8, u8, u8, u8, u8);
+void DisplayCustomWindowWithSetChoice(s32, u8, u8, u8, u8, u8, u8);
+void CloseWindow(s32);
+s32 GetWindowChoice(s32);
+s32 GetWindowChoice2(s32);
+void SlideWindowTo(s32, s16, s16);
+void Evtf004_005_408_Window(EvtData *);
 
 s32 WindowIsOffScreen(EvtData *evt) {
    if (evt->d.evtf004.x < 0)
@@ -730,7 +753,7 @@ s32 StringToGlyphs(GlyphIndex *dest, u8 *src) {
       return -1;
    }
    while (*src != '\0') {
-      *(dest++) = GetGlyphIdxForAsciiChar(*(src++));
+      *dest++ = GetGlyphIdxForAsciiChar(*src++);
       ct++;
    }
    return ct;
@@ -745,9 +768,9 @@ s32 FUN_8001d384(u8 *dest, u8 *src) {
       return -1;
    }
    while (*src != 0xff) {
-      inByte = *(src++);
+      inByte = *src++;
       outByte = inByte;
-      if (outByte >= 0x9b) {
+      if (inByte >= 0x9b) {
          outByte = inByte - 0x89;
          if (inByte >= 0xaa && inByte <= 0xae) {
             outByte = inByte - 0x84;
@@ -756,7 +779,7 @@ s32 FUN_8001d384(u8 *dest, u8 *src) {
       if (inByte == 0x9a) {
          outByte = 0xf;
       }
-      *(dest++) = outByte;
+      *dest++ = outByte;
       ct++;
    }
    return ct;
@@ -771,7 +794,7 @@ s32 FUN_8001d3fc(u8 *dest, u8 *src) {
       return -1;
    }
    while (*src != 0xff) {
-      inByte = *(src++);
+      inByte = *src++;
       outByte = 1;
       if (inByte >= 0x9a) {
          outByte = 0x9a;
@@ -779,7 +802,7 @@ s32 FUN_8001d3fc(u8 *dest, u8 *src) {
             outByte = 0x9b;
          }
       }
-      *(dest++) = outByte;
+      *dest++ = outByte;
       ct++;
    }
    return ct;
@@ -1011,5 +1034,725 @@ void UpdateCompactUnitInfoWindow(UnitStatus *unit, UnitStatus *unused, u8 param_
    // Plot partial block for remainder:
    if (rem != 0) {
       pBtm[full + 9] = GLYPH_HP_BAR_1_PX + rem;
+   }
+}
+
+void UpdateUnitInfoWindow(UnitStatus *unit) {
+   s32 i, px, full, rem;
+   s32 terrainBonus;
+   EvtData_Sprite *sprite;
+   GlyphIndex *firstRow, *secondRow, *thirdRow, *fourthRow;
+
+   firstRow = gGlyphStrip_52;
+   secondRow = gGlyphStrip_53;
+   thirdRow = gGlyphStrip_54;
+   fourthRow = gGlyphStrip_55;
+
+   for (i = 2; i < 26; i++) {
+      firstRow[i] = GLYPH_BG;
+      secondRow[i] = GLYPH_BG;
+   }
+
+   firstRow[2] = gClassIconStartingGlyph[unit->class];
+   firstRow[3] = gClassIconStartingGlyph[unit->class] + 1;
+   secondRow[2] = gClassIconStartingGlyph[unit->class] + 2;
+   secondRow[3] = gClassIconStartingGlyph[unit->class] + 3;
+
+   sprite = &unit->evtSprite->d.sprite;
+   thirdRow[3] = GLYPH_BG;
+   thirdRow[4] = GLYPH_BG;
+   thirdRow[5] = GLYPH_BG;
+   terrainBonus =
+       gTerrainBonus[gTerrainPtr[TO_TILE(sprite->z1)][TO_TILE(sprite->x1)].terrain] / 100;
+   IntToLeftPaddedGlyphs(terrainBonus, &fourthRow[2]);
+   fourthRow[2] = GLYPH_BG;
+
+   IntToLeftPaddedGlyphs(unit->hp, &thirdRow[19]);
+   thirdRow[25] = GLYPH_BG;
+   IntToGlyphs(unit->maxHp, &thirdRow[23]);
+   IntToLeftPaddedGlyphs(unit->exp % 100, &fourthRow[19]);
+
+   i = StringToGlyphs(&secondRow[5], gCharacterNames[unit->name]);
+   i += 5;
+   firstRow[i] = GLYPH_BG;
+   secondRow[i] = GLYPH_BG;
+   i++;
+   i += StringToGlyphs(&secondRow[i], gUnitTypeNames[unit->unitType]);
+   firstRow[i] = GLYPH_BG;
+   secondRow[i] = GLYPH_BG;
+
+   if (unit->level < 10) {
+      IntToLeftPaddedGlyphs(unit->level, &secondRow[i]);
+      secondRow[i + 1] = GLYPH_CHAR_UPPERCASE_L;
+   } else {
+      IntToLeftPaddedGlyphs(unit->level, &secondRow[i + 1]);
+      secondRow[i + 1] = GLYPH_CHAR_UPPERCASE_L;
+   }
+
+   // HP Bar
+   for (i = 0; i < 10; i++) {
+      thirdRow[i + 9] = GLYPH_HP_BAR_0_PX;
+   }
+
+   px = unit->hpFrac;
+   px /= 125;
+   if (px == 0) {
+      px = 1;
+   }
+
+   full = px / 8;
+   rem = px % 8;
+   if (full != 0) {
+      for (i = 0; i < full; i++) {
+         thirdRow[i + 9] = GLYPH_HP_BAR_8_PX;
+      }
+   }
+   if (rem != 0) {
+      thirdRow[full + 9] = GLYPH_HP_BAR_1_PX + rem;
+   }
+
+   // EXP Bar
+   for (i = 0; i < 10; i++) {
+      fourthRow[i + 9] = GLYPH_HP_BAR_0_PX;
+   }
+
+   px = (unit->exp % 100) * 80 / 100;
+   if (px == 0 && (unit->exp % 100) != 0) {
+      px = 1;
+   }
+   if ((unit->exp % 100) == 0) {
+      px = 0;
+   }
+
+   full = px / 8;
+   rem = px % 8;
+   if (full != 0) {
+      for (i = 0; i < full; i++) {
+         fourthRow[i + 9] = GLYPH_EXP_BAR_8_PX;
+      }
+   }
+   if (rem != 0) {
+      fourthRow[full + 9] = GLYPH_EXP_BAR_0_PX + rem;
+   }
+}
+
+void Evtf002_MenuChoice(EvtData *evt) {
+   if (gWindowChoice.d.s.windowId != (s8)gWindowActiveIdx) {
+      gWindowChoice.d.s.choice = 0;
+      gWindowChoice.d.s.windowId = gWindowActiveIdx;
+      gWindowActivatedChoice.d.raw = gWindowChoice.d.raw;
+   } else {
+      gWindowChoice.d.s.windowId = gWindowActiveIdx;
+   }
+   if (gWindowActivatedChoice.d.raw == gWindowChoice.d.raw) {
+      gWindowChoice.d.s.choice = 0;
+      gWindowActivatedChoice.d.s.choice = 0;
+   } else {
+      gWindowChoice = gWindowActivatedChoice;
+   }
+}
+
+void DisplayBasicWindow(s32 windowId) {
+   DisplayCustomWindowWithSetChoice(windowId, 0, 1, 0, 0, 0, 0);
+}
+
+void DisplayBasicWindowWithSetChoice(s32 windowId, u8 choiceIdx) {
+   DisplayCustomWindowWithSetChoice(windowId, 0, 1, 0, 0, 0, choiceIdx);
+}
+
+void DisplayCustomWindow(s32 windowId, u8 effect, u8 translucentHighlight, u8 otOfs,
+                         u8 disableWraparound, u8 clut) {
+   DisplayCustomWindowWithSetChoice(windowId, effect, translucentHighlight, otOfs,
+                                    disableWraparound, clut, 0);
+}
+
+void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHighlight, u8 otOfs,
+                                      u8 disableWraparound, u8 clut, u8 choiceIdx) {
+   EvtData *window;
+   s16 restored1, restored2, restored3;
+
+   gWindowChoice.d.raw = 0;
+   CloseWindow(windowId);
+   window = Evt_GetLastUnusedSkippingTail(20);
+
+   window->functionIndex = EVTF_WINDOW_TBD_004;
+   window->d.evtf004.windowId = windowId;
+   window->d.evtf004.effect = effect;
+   window->d.evtf004.translucentHighlight = translucentHighlight;
+   window->d.evtf004.otOfs = otOfs;
+   window->d.evtf004.disableWraparound = disableWraparound;
+   window->d.evtf004.clut = clut;
+   window->state2 = choiceIdx;
+
+   switch (windowId) {
+   case 0x00:
+   case 0x01:
+      window->d.evtf004.x = 350;
+      window->d.evtf004.y = 90;
+      break;
+   case 0x03:
+      window->d.evtf004.x = 140;
+      window->d.evtf004.y = 120;
+      window->functionIndex = EVTF_WINDOW_TBD_005;
+      break;
+   case 0x1b:
+      SaveRestorePos(&restored1, &restored2, 1);
+      window->d.evtf004.x = restored1 - 64;
+      window->d.evtf004.y = restored2 - 13;
+      HI_H(window->d.evtf004.todo_x30) = 1;
+      break;
+   case 0x1c:
+      SaveRestoreHp(&restored1, &restored2, &restored3, 1);
+      IntToLeftPaddedGlyphs2(restored2, &gGlyphStrip_50[1]);
+      IntToLeftPaddedGlyphs2(restored1, &gGlyphStrip_50[5]);
+      SaveRestorePos(&restored1, &restored2, 1);
+      window->d.evtf004.x = restored1 + 27;
+      window->d.evtf004.y = restored2 - 4;
+      break;
+   case 0x02:
+   case 0x1d:
+      window->d.evtf004.x = 102;
+      window->d.evtf004.y = 184;
+      break;
+   case 0x04:
+   case 0x1a:
+   case 0x1e:
+      window->d.evtf004.x = 10;
+      window->d.evtf004.y = 16;
+      break;
+   case 0x1f:
+      window->d.evtf004.x = 102;
+      window->d.evtf004.y = 175;
+      break;
+   case 0x20:
+      window->d.evtf004.x = 14;
+      window->d.evtf004.y = 56;
+      break;
+   case 0x32:
+   case 0x33:
+   case 0x34:
+   case 0x35:
+   case 0x36:
+   case 0x37:
+   case 0x38:
+   case 0x39:
+   case 0x3a:
+   case 0x3b:
+   case 0x3c:
+   case 0x3d:
+   case 0x3e:
+   case 0x3f:
+   case 0x40:
+   case 0x41:
+   case 0x42:
+   case 0x43:
+   case 0x44:
+   case 0x45:
+   case 0x46:
+      window->functionIndex = EVTF_WINDOW_TBD_005;
+      window->d.evtf004.x = gWindowDisplayX[windowId];
+      window->d.evtf004.y = gWindowDisplayY[windowId];
+      window->d.evtf004.choicesTopMargin = gWindowChoicesTopMargin;
+      window->d.evtf004.highlightHeight = gWindowChoiceHeight;
+      window->d.evtf004.choiceCt = gWindowChoicesCount;
+      window->d.evtf004.choiceHeight = gWindowChoiceHeight;
+   }
+
+   window->d.evtf004.halfWidth =
+       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.evtf004.windowId].w / 2;
+   window->d.evtf004.halfHeight =
+       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.evtf004.windowId].h / 2;
+}
+
+void CloseWindow(s32 windowId) {
+   s32 i;
+   EvtData *p = &gEvtDataArray[0];
+
+   for (i = 0; i < EVT_DATA_CT; i++, p++) {
+      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
+          p->d.evtf004.windowId == windowId) {
+         p->d.evtf004.windowId = 99;
+         p->functionIndex = EVTF_CLOSED_WINDOW;
+         p->state = 99;
+         p->d.evtf004.effectState = 0;
+
+         if (gWindowActivatedChoice.d.s.windowId == windowId) {
+            gWindowActivatedChoice.d.raw = 0;
+            gWindowChoice.d.raw = 0;
+         }
+         return;
+      }
+   }
+}
+
+s32 GetWindowChoice(s32 windowId) {
+   s32 i;
+   EvtData *p = &gEvtDataArray[0];
+
+   for (i = 0; i < EVT_DATA_CT; i++, p++) {
+      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
+          p->d.evtf004.windowId == windowId) {
+         return p->state2 + 1;
+      }
+   }
+
+   return 1;
+}
+
+s32 GetWindowChoice2(s32 windowId) {
+   s32 i;
+   EvtData *p = &gEvtDataArray[0];
+
+   for (i = 0; i < EVT_DATA_CT; i++, p++) {
+      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
+          p->d.evtf004.windowId == windowId && p->state == 2) {
+         return p->state2 + 1;
+      }
+   }
+
+   return 0;
+}
+
+void SlideWindowTo(s32 windowId, s16 x, s16 y) {
+   // Initiates a slide to specified location; actual movement is done by Evtf004_005_408_Window
+   s32 i;
+   EvtData *p = &gEvtDataArray[0];
+
+   for (i = 0; i < EVT_DATA_CT; i++, p++) {
+      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
+          p->d.evtf004.windowId == windowId) {
+         // Convert specified top-left point to window center point
+         p->d.evtf004.destX = x + p->d.evtf004.halfWidth;
+         p->d.evtf004.destY = y + p->d.evtf004.halfHeight;
+         return;
+      }
+   }
+}
+
+#undef EVTF
+#define EVTF 004
+void Evtf004_005_408_Window(EvtData *evt) {
+   // TODO: todo_x2c, todo_x30 (highlight location)
+   EvtData *window;
+   EvtData *highlight;
+   s8 unused[8];
+
+   window = EVT.window;
+   highlight = EVT.highlight;
+
+   switch (evt->state) {
+   case 0:
+      EVT.x += EVT.halfWidth;
+
+      if (EVT.windowId == 0x1c) {
+         EVT.halfWidth >>= 1;
+         EVT.x -= EVT.halfWidth;
+      }
+
+      if (evt->functionIndex == EVTF_WINDOW_TBD_004) {
+         DrawGlyphStripGroup(gGlyphStripGroups[EVT.windowId], GFX_WINDOW_TBD_657 + EVT.windowId);
+      }
+
+      EVT.todo_x3a = EVT.halfHeight + (EVT.halfHeight >> 1);
+      EVT.y += EVT.halfHeight;
+
+      window = Evt_GetUnused();
+      window->functionIndex = EVTF_NOOP;
+      window->d.sprite.clut = EVT.clut;
+      window->d.sprite.semiTrans = EVT.translucentHighlight;
+      if (EVT.otOfs == 0) {
+         EVT.otOfs = 3;
+      }
+      window->d.sprite.otOfs = EVT.otOfs;
+      window->d.sprite.gfxIdx = GFX_WINDOW_TBD_657 + EVT.windowId;
+      EVT.window = window;
+
+      highlight = Evt_GetUnused();
+      highlight->functionIndex = EVTF_NOOP;
+      highlight->d.sprite.semiTrans = EVT.translucentHighlight;
+      highlight->d.sprite.otOfs = EVT.otOfs;
+      highlight->d.sprite.gfxIdx = GFX_WINDOW_TBD_657;
+      highlight->d.sprite.hidden = 1;
+      EVT.highlight = highlight;
+
+      evt->mem = EVT.effect;
+      if (EVT.destX == 0) {
+         EVT.destX = EVT.x;
+      }
+      if (EVT.destY == 0) {
+         EVT.destY = EVT.y;
+      }
+
+      evt->state++;
+   // fallthrough
+   case 1:
+      //@3a5c
+      switch (evt->mem) {
+      case 0:
+         EVT.relQuadX0 = -EVT.halfWidth;
+         EVT.relQuadX1 = EVT.halfWidth;
+         EVT.relQuadX2 = -EVT.halfWidth;
+         EVT.relQuadX3 = EVT.halfWidth;
+         EVT.relQuadY0 = -EVT.halfHeight;
+         EVT.relQuadY1 = -EVT.halfHeight;
+         EVT.relQuadY2 = EVT.halfHeight;
+         EVT.relQuadY3 = EVT.halfHeight;
+
+         if (highlight) {
+            highlight->d.sprite.hidden = 0;
+         }
+
+         EVT.todo_x2c = EVT.choicesTopMargin << 16;
+         evt->state++;
+         EVT.effectState = 0;
+         EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+         break;
+      case 1:
+      case 2:
+
+         switch (EVT.effectState) {
+         case 0:
+            EVT.relQuadX1 = EVT.halfWidth << 1;
+            EVT.clut = 8;
+            EVT.effectState++;
+         // fallthrough
+         case 1:
+            if (--EVT.clut != 0) {
+               EVT.relQuadX1 += (EVT.halfWidth - EVT.relQuadX1) >> 1;
+               EVT.relQuadX0 = -EVT.relQuadX1;
+               EVT.relQuadX2 = -EVT.relQuadX1;
+               EVT.relQuadX3 = EVT.relQuadX1;
+               EVT.relQuadY2 += (EVT.halfHeight - EVT.relQuadY2) >> 1;
+               EVT.relQuadY0 = -EVT.relQuadY2;
+               EVT.relQuadY1 = -EVT.relQuadY2;
+               EVT.relQuadY3 = EVT.relQuadY2;
+            } else {
+               EVT.relQuadX0 = -EVT.halfWidth;
+               EVT.relQuadX1 = EVT.halfWidth;
+               EVT.relQuadX2 = -EVT.halfWidth;
+               EVT.relQuadX3 = EVT.halfWidth;
+               EVT.relQuadY0 = -EVT.halfHeight;
+               EVT.relQuadY1 = -EVT.halfHeight;
+               EVT.relQuadY2 = EVT.halfHeight;
+               EVT.relQuadY3 = EVT.halfHeight;
+               if (highlight) {
+                  highlight->d.sprite.hidden = 0;
+               }
+               EVT.todo_x2c = EVT.choicesTopMargin << 16;
+               evt->state++;
+               EVT.effectState = 0;
+               EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+            }
+         }
+         break;
+      case 3:
+      case 4:
+      case 5:
+
+         switch (EVT.effectState) {
+         case 0:
+            EVT.relQuadX0 = EVT.halfWidth;
+            EVT.relQuadX1 = EVT.halfWidth;
+            EVT.relQuadX2 = -EVT.halfWidth;
+            EVT.relQuadX3 = -EVT.halfWidth;
+            EVT.relQuadY0 = EVT.halfHeight;
+            EVT.relQuadY1 = EVT.halfHeight;
+            EVT.relQuadY2 = -EVT.halfHeight;
+            EVT.relQuadY3 = -EVT.halfHeight;
+            EVT.effectX = EVT.halfWidth >> 3;
+            EVT.effectY = EVT.halfHeight >> 3;
+            EVT.clut = 16;
+            EVT.effectState++;
+         // fallthrough
+         case 1:
+            if (--EVT.clut != 0) {
+               EVT.relQuadX0 = EVT.relQuadX0 - EVT.effectX;
+               EVT.relQuadX3 = EVT.relQuadX3 + EVT.effectX;
+               EVT.relQuadY0 = EVT.relQuadY0 - EVT.effectY;
+               EVT.relQuadY1 = EVT.relQuadY1 - EVT.effectY;
+               EVT.relQuadY2 = EVT.relQuadY2 + EVT.effectY;
+               EVT.relQuadY3 = EVT.relQuadY3 + EVT.effectY;
+            } else {
+
+               EVT.relQuadX0 = -EVT.halfWidth;
+               EVT.relQuadX1 = EVT.halfWidth;
+               EVT.relQuadX2 = -EVT.halfWidth;
+               EVT.relQuadX3 = EVT.halfWidth;
+               EVT.relQuadY0 = -EVT.halfHeight;
+               EVT.relQuadY1 = -EVT.halfHeight;
+               EVT.relQuadY2 = EVT.halfHeight;
+               EVT.relQuadY3 = EVT.halfHeight;
+
+               if (highlight) {
+                  highlight->d.sprite.hidden = 0;
+               }
+               EVT.todo_x2c = EVT.choicesTopMargin << 16;
+               evt->state++;
+               EVT.effectState = 0;
+               EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+            }
+         }
+         break;
+      case 6:
+      case 7:
+         EVT.relQuadX0 = -EVT.halfWidth;
+         EVT.relQuadX1 = EVT.halfWidth;
+         EVT.relQuadX2 = -EVT.halfWidth;
+         EVT.relQuadX3 = EVT.halfWidth;
+
+         EVT.effectPhase += 0xc0;
+         EVT.relQuadY0 = -(rcos((EVT.effectPhase - 0x400) & 0xfff) * EVT.todo_x3a >> 12);
+         EVT.relQuadY1 = EVT.relQuadY0;
+         EVT.relQuadY2 = -EVT.relQuadY0;
+         EVT.relQuadY3 = -EVT.relQuadY0;
+
+         //@3f60
+         if (EVT.effectPhase > 0x400 && -EVT.relQuadY0 < EVT.halfHeight) {
+            EVT.relQuadY0 = -EVT.halfHeight;
+            EVT.relQuadY1 = -EVT.halfHeight;
+            EVT.relQuadY2 = EVT.halfHeight;
+            EVT.relQuadY3 = EVT.halfHeight;
+            if (highlight) {
+               highlight->d.sprite.hidden = 0;
+            }
+            EVT.todo_x2c = EVT.choicesTopMargin << 16;
+            evt->state++;
+            //@3fdc
+            EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+         }
+         break;
+
+      case 8:
+      } // END of switch (evt->mem)  (via state:1)
+
+      break;
+   case 2:
+      if (gWindowActiveIdx == EVT.windowId) {
+         if (gPadStateNewPresses & PAD_DOWN) {
+            if (EVT.choiceCt > 1 && !WindowIsOffScreen(evt)) {
+               PerformAudioCommand(0x5ed);
+            }
+            if (!EVT.disableWraparound && evt->state2 + 1 == EVT.choiceCt) {
+               // Wrap-around to first choice
+               evt->state2 = 0;
+            } else {
+               // Go to next choice
+               evt->state2++;
+            }
+         }
+         if (gPadStateNewPresses & PAD_UP) {
+            if (EVT.choiceCt > 1 && !WindowIsOffScreen(evt)) {
+               PerformAudioCommand(0x5ed);
+            }
+            if (!EVT.disableWraparound && evt->state2 == 0) {
+               // Wrap-around to last choice
+               evt->state2 = EVT.choiceCt - 1;
+            } else {
+               // Go to previous choice
+               evt->state2--;
+            }
+         }
+         evt->state2 = CLAMP(evt->state2, 0, EVT.choiceCt - 1); //@4110
+      }
+      EVT.todo_x30 = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+
+      if (gState.vsyncMode == 0) {
+         EVT.todo_x2c += (EVT.todo_x30 - EVT.todo_x2c) >> 1;
+      } else {
+         EVT.todo_x2c = EVT.todo_x30;
+      }
+
+      if (gWindowActiveIdx == EVT.windowId) {
+         gHighlightedChoice = evt->state2 + 1;
+         if (gPadStateNewPresses & PAD_CIRCLE) {
+            gWindowActivatedChoice.d.s.windowId = EVT.windowId;
+            gWindowActivatedChoice.d.s.choice = evt->state2 + 1;
+         }
+         if (gPadStateNewPresses & PAD_X) {
+            gWindowActivatedChoice.d.s.windowId = EVT.windowId;
+            gWindowActivatedChoice.d.s.choice = -1;
+         }
+      }
+      break;
+
+   case 99:
+
+      switch (evt->mem) {
+      case 0:
+         if (highlight) {
+            highlight->d.sprite.hidden = 1;
+         }
+         //@428c
+         evt->state++;
+         EVT.effectState = 0;
+         evt->functionIndex = EVTF_NULL;
+         window->functionIndex = EVTF_NULL;
+         highlight->functionIndex = EVTF_NULL;
+         return;
+      case 1:
+      case 2:
+
+         switch (EVT.effectState) {
+         case 0:
+            EVT.relQuadX0 = -EVT.halfWidth;
+            EVT.relQuadX1 = EVT.halfWidth;
+            EVT.relQuadX2 = -EVT.halfWidth;
+            EVT.relQuadX3 = EVT.halfWidth;
+            EVT.relQuadY0 = -EVT.halfHeight;
+            EVT.relQuadY1 = -EVT.halfHeight;
+            EVT.relQuadY2 = EVT.halfHeight;
+            EVT.relQuadY3 = EVT.halfHeight;
+            EVT.clut = 8;
+            EVT.effectState++;
+         // fallthrough
+         case 1:
+            if (--EVT.clut == 0) {
+               if (highlight) {
+                  highlight->d.sprite.hidden = 1;
+               }
+               evt->state++;
+               EVT.effectState = 0;
+            } else {
+               EVT.relQuadY2 += (-EVT.relQuadY2 >> 1);
+               EVT.relQuadY0 = -EVT.relQuadY2;
+               EVT.relQuadY1 = -EVT.relQuadY2;
+               EVT.relQuadY3 = EVT.relQuadY2;
+
+               EVT.relQuadX1 = EVT.relQuadX1 + EVT.relQuadY2;
+               EVT.relQuadX0 = -EVT.relQuadX1;
+               EVT.relQuadX2 = -EVT.relQuadX1;
+               EVT.relQuadX3 = EVT.relQuadX1;
+            }
+         }
+
+         break;
+      case 3:
+      case 4:
+      case 5:
+
+         switch (EVT.effectState) {
+         case 0:
+            EVT.relQuadX0 = -EVT.halfWidth;
+            EVT.relQuadX1 = EVT.halfWidth;
+            EVT.relQuadX2 = -EVT.halfWidth;
+            EVT.relQuadX3 = EVT.halfWidth;
+            EVT.relQuadY0 = -EVT.halfHeight;
+            EVT.relQuadY1 = -EVT.halfHeight;
+            EVT.relQuadY2 = EVT.halfHeight;
+            EVT.relQuadY3 = EVT.halfHeight;
+            EVT.effectX = EVT.halfWidth >> 3;
+            EVT.effectY = EVT.halfHeight >> 3;
+            EVT.clut = 16;
+            EVT.effectState++;
+         // fallthrough
+         case 1:
+            EVT.relQuadX0 = EVT.relQuadX0 + EVT.effectX;
+            EVT.relQuadX3 = EVT.relQuadX3 - EVT.effectX;
+            EVT.relQuadY0 = EVT.relQuadY0 + EVT.effectY;
+            EVT.relQuadY1 = EVT.relQuadY1 + EVT.effectY;
+            EVT.relQuadY2 = EVT.relQuadY2 - EVT.effectY;
+            EVT.relQuadY3 = EVT.relQuadY3 - EVT.effectY;
+
+            if (--EVT.clut == 0) {
+               if (highlight) {
+                  highlight->d.sprite.hidden = 1;
+               }
+               evt->state++;
+               EVT.effectState = 0;
+            }
+         }
+
+         break;
+      case 7:
+         //@457c
+         switch (EVT.effectState) {
+         case 0:
+            EVT.relQuadX0 = -EVT.halfWidth;
+            EVT.relQuadX1 = EVT.halfWidth;
+            EVT.relQuadX2 = -EVT.halfWidth;
+            EVT.relQuadX3 = EVT.halfWidth;
+            EVT.relQuadY0 = -EVT.halfHeight;
+            EVT.relQuadY1 = -EVT.halfHeight;
+            EVT.relQuadY2 = EVT.halfHeight;
+            EVT.relQuadY3 = EVT.halfHeight;
+            EVT.effectState++;
+         // fallthrough
+         case 1:
+            EVT.effectPhase -= 0xc0;
+            EVT.relQuadY0 = -(rcos((EVT.effectPhase - 0x400U) & 0xfff) * EVT.todo_x3a >> 12);
+            EVT.relQuadY1 = EVT.relQuadY0;
+            EVT.relQuadY2 = -EVT.relQuadY0;
+            EVT.relQuadY3 = -EVT.relQuadY0;
+
+            if (EVT.effectPhase <= 0) {
+               EVT.clut = 0;
+               EVT.effectState = 0;
+               evt->state++;
+            }
+
+            if (highlight) {
+               highlight->d.sprite.hidden = 1;
+            }
+         }
+
+         break;
+      case 8:
+         break;
+      } // END of SECOND switch (evt->mem) (via state:99)
+      break;
+   case 100:
+      evt->functionIndex = EVTF_NULL;
+      window->functionIndex = EVTF_NULL;
+      highlight->functionIndex = EVTF_NULL;
+      return;
+   } // END of switch (evt->state)
+
+   // switchD_8001f2ac_caseD_6: //@46a0
+   EVT.x += (EVT.destX - EVT.x) >> 2;
+   EVT.y += (EVT.destY - EVT.y) >> 2;
+
+   window->d.sprite.coords[0].x = EVT.x + EVT.relQuadX0;
+   window->d.sprite.coords[0].z = EVT.y + EVT.relQuadY0;
+   window->d.sprite.coords[0].y = EVT.x + EVT.relQuadX1;
+   window->d.sprite.coords[1].x = EVT.y + EVT.relQuadY1;
+   window->d.sprite.coords[1].z = EVT.x + EVT.relQuadX2;
+   window->d.sprite.coords[1].y = EVT.y + EVT.relQuadY2;
+   window->d.sprite.coords[2].x = EVT.x + EVT.relQuadX3;
+   window->d.sprite.coords[2].z = EVT.y + EVT.relQuadY3;
+
+   if (highlight && EVT.choiceCt != 0 && evt->state == 2) {
+      //@479c
+      highlight->d.sprite.y1 = window->d.sprite.coords[1].x + (EVT.todo_x2c >> 16);
+      highlight->d.sprite.y3 = highlight->d.sprite.y1 + EVT.highlightHeight;
+      highlight->d.sprite.x1 = window->d.sprite.coords[0].x;
+      highlight->d.sprite.x3 = window->d.sprite.coords[0].y;
+
+      gGfxSubTextures[GFX_WINDOW_TBD_657].x = gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].x;
+      gGfxSubTextures[GFX_WINDOW_TBD_657].w = gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].w;
+      gGfxTPageCells[GFX_WINDOW_TBD_657] = gGfxTPageCells[GFX_WINDOW_TBD_657 + EVT.windowId];
+      gGfxTPageIds[GFX_WINDOW_TBD_657] = gGfxTPageIds[GFX_WINDOW_TBD_657 + EVT.windowId];
+      gGfxSubTextures[GFX_WINDOW_TBD_657].y =
+          (EVT.todo_x2c >> 16) + gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].y;
+      gGfxSubTextures[GFX_WINDOW_TBD_657].h = EVT.highlightHeight;
+      if (EVT.windowId == gWindowActiveIdx) {
+         highlight->d.sprite.clut = 0;
+      } else {
+         highlight->d.sprite.clut = 19;
+      }
+      AddEvtPrim_Gui(gGraphicsPtr->ot, highlight);
+   }
+
+   AddEvtPrim2(gGraphicsPtr->ot, window);
+
+   if (gWindowActiveIdx == EVT.windowId) {
+      gHighlightedChoice = evt->state2 + 1;
+      if (gPadStateNewPresses & PADRright) {
+         gWindowActivatedChoice.d.s.windowId = EVT.windowId;
+         gWindowActivatedChoice.d.s.choice = evt->state2 + 1;
+      }
+      if (gPadStateNewPresses & PADRdown) {
+         gWindowActivatedChoice.d.s.windowId = EVT.windowId;
+         gWindowActivatedChoice.d.s.choice = -1;
+      }
    }
 }
