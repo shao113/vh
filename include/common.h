@@ -33,6 +33,7 @@
 #define PARTY_CT 13
 #define DEPOT_CT 150
 #define BATTLE_CT 44
+#define UNIT_DB_CT 144
 
 //#define ABS(x) (((x)>=0)?(x):(-(x)))
 //#define ABS(arg) abs(arg)

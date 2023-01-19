@@ -81,6 +81,9 @@ segments:
     - [0x039e48, c, card]                      # 0x80049648 State_FileSaveScreen ...
     - [0x03c94c, bin]                          # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
 
+    - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
+    - [0x0b0480, bin]
+
     - [0x0b4e60, c, audio]                     # 0x800c4660 SetSeqDataPtr ...
     - [0x0b7ac8, bin]                          # 0x800c72c8 End of audio functions
     
