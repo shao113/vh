@@ -396,7 +396,7 @@ typedef struct UnitStatus {
    u16 defense;
    s16 agility;
    u16 exp;
-   s16 mp;
+   u16 mp;
    s16 maxMp;
    s16 hpVar100;
    s16 atkVar100;
@@ -408,8 +408,9 @@ typedef struct UnitStatus {
    u8 done;
    u8 field33_0x56;
    u8 field34_0x57;
-   s16 item1;
-   s16 item2;
+   // s16 item1;
+   // s16 item2;
+   s16 items[2];
    s16 droppedItem;
    s16 helmet;
    s16 armor;
@@ -443,8 +444,7 @@ typedef struct PartyMember {
    u8 helmet;
    u8 armor;
    u8 weapon;
-   u8 item1;
-   u8 item2;
+   u8 items[2];
    u8 field9_0x9;
    BigInt experience;
    s16 hpVar100;
@@ -453,10 +453,36 @@ typedef struct PartyMember {
    s16 agiVar100;
 } PartyMember;
 
+typedef enum SpellArea { SPELL_AREA_NULL = 0, SPELL_AREA_SINGLE = 1, SPELL_AREA_AOE = 2 } SpellArea;
+
+typedef enum SpellTargeting {
+   SPELL_TARGET_ENEMY = 0,
+   SPELL_TARGET_ALLY = 1,
+   SPELL_TARGET_ENEMY_GROUP = 3,
+   SPELL_TARGET_ALLY_GROUP = 4
+} SpellTargeting;
+
+typedef struct Spell {
+   u8 area;
+   u8 targeting;
+   u8 range;
+   u8 fieldSize;
+   u8 power;
+   u8 mpCost;
+} Spell;
+
 extern s8 gCharacterNames[35][7];
 extern s8 gUnitTypeNames[86][11];
 extern s8 gItemNames[139][13];
+extern u8 gItemNamesSjis[101][17];
+extern s8 *gItemDescriptions[101];
 extern s8 gItemEquipmentDisplayPower[104];
+extern u8 gItemSpells[104];
+
+extern Spell gSpells[80];
+extern s8 gSpellNames[72][21];
+extern s8 *gSpellDescriptions[72];
+
 extern UnitStatus gUnits[UNIT_CT];
 extern PartyMember gPartyMembers[PARTY_CT];
 extern BigInt gExperienceLevels[];

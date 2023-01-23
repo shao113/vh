@@ -13,6 +13,9 @@
 #define CDA_LOOP 0
 #define CDA_NO_LOOP 2
 
+//#define PLAY_PREPARED_CDA(id) (0x300 | id)
+//#define PREPARE_CDA(id) (0x1300 | id)
+
 typedef enum AudioMode { AUDIO_MODE_MONO = 0, AUDIO_MODE_STEREO = 1 } AudioMode;
 
 typedef enum AudioJob {

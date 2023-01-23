@@ -37,7 +37,7 @@ OPT_FLAGS       := -O1
 GP_OPT          := -G8
 
 # Update: Removed -fno-builtin to enable generation of inline strcpy
-CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -fshort-enums -ffunction-cse -fpcc-struct-return -fgnu-linker
+CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -ffunction-cse -fpcc-struct-return -fgnu-linker
 
 
 CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -Iinclude/PsyQ -nostdinc

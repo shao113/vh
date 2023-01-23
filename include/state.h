@@ -100,8 +100,8 @@ typedef struct State {
    u8 droppedItem;
    u8 field_0x9d;
    s16 turn;
-   u8 field_0xa0;
-   u8 field_0xa1;
+   u8 activeItem;
+   u8 activeItemSlot;
    s16 field_0xa2;
    u8 mapNum; // <- also serves as battleNum when <= 43
    u8 fieldRenderingDisabled;

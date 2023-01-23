@@ -206,8 +206,8 @@ void CommitPartyMemberStatus(UnitStatus *status) {
       gPartyMembers[idx].helmet = status->helmet;
       gPartyMembers[idx].armor = status->armor;
       gPartyMembers[idx].weapon = status->weapon;
-      gPartyMembers[idx].item1 = status->item1;
-      gPartyMembers[idx].item2 = status->item2;
+      gPartyMembers[idx].items[0] = status->items[0];
+      gPartyMembers[idx].items[1] = status->items[1];
 
       for (i = 0; i < 8; i++) {
          gPartyMembers[idx].experience[i] = status->experience[i];

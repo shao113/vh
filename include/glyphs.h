@@ -3,6 +3,12 @@
 
 #include "common.h"
 
+#define VRAM_GLYPHS_X 640
+#define VRAM_GLYPHS_Y 256
+#define VRAM_GLYPH_W (8 >> 2)
+#define VRAM_GLYPH_H 9
+#define VRAM_GLYPHS_PER_ROW 32
+
 typedef enum GlyphIndex {
    GLYPH_BLANK = 0,
    GLYPH_BG = 1,
@@ -155,6 +161,8 @@ typedef enum GlyphIndex {
    GLYPH_CLASS_VANDALIER_2 = 249,
    GLYPH_CLASS_VANDALIER_3 = 250,
    GLYPH_CLASS_VANDALIER_4 = 251,
+   GLYPH_TBD_253 = 253,
+   GLYPH_TBD_254 = 254,
    GLYPH_TERMINATOR = 255
 } GlyphIndex;
 
@@ -169,71 +177,71 @@ extern u8 gGlyphStripGroup_800f0bc0[];
 extern u8 gGlyphStripGroup_800f0bd4[];
 extern u8 gGlyphStripGroup_800f0bf0[];
 extern u8 *gGlyphStripGroups[];
-extern GlyphIndex gGlyphStrip_01[];
-extern GlyphIndex gGlyphStrip_02[];
-extern GlyphIndex gGlyphStrip_03[];
-extern GlyphIndex gGlyphStrip_04[];
-extern GlyphIndex gGlyphStrip_05[];
-extern GlyphIndex gGlyphStrip_06[];
-extern GlyphIndex gGlyphStrip_07[];
-extern GlyphIndex gGlyphStrip_08[];
-extern GlyphIndex gGlyphStrip_09[];
-extern GlyphIndex gGlyphStrip_0A[];
-extern GlyphIndex gGlyphStrip_0B[];
-extern GlyphIndex gGlyphStrip_0C[];
-extern GlyphIndex gGlyphStrip_4B[];
-extern GlyphIndex gGlyphStrip_4C[];
-extern GlyphIndex gGlyphStrip_4D[];
-extern GlyphIndex gGlyphStrip_4E[];
-extern GlyphIndex gGlyphStrip_4F[];
-extern GlyphIndex gGlyphStrip_50[];
-extern GlyphIndex gGlyphStrip_51[];
-extern GlyphIndex gGlyphStrip_52[];
-extern GlyphIndex gGlyphStrip_53[];
-extern GlyphIndex gGlyphStrip_54[];
-extern GlyphIndex gGlyphStrip_55[];
-extern GlyphIndex gGlyphStrip_56[];
-extern GlyphIndex gGlyphStrip_57[];
-extern GlyphIndex gGlyphStrip_58[];
-extern GlyphIndex gGlyphStrip_59[];
-extern GlyphIndex gGlyphStrip_5A[];
-extern GlyphIndex gGlyphStrip_5B[];
-extern GlyphIndex gGlyphStrip_5C[];
-extern GlyphIndex gGlyphStrip_5D[];
-extern GlyphIndex gGlyphStrip_5E[];
-extern GlyphIndex gGlyphStrip_5F[];
-extern GlyphIndex gGlyphStrip_60[];
-extern GlyphIndex gGlyphStrip_61[];
-extern GlyphIndex gGlyphStrip_62[];
-extern GlyphIndex gGlyphStrip_63[];
-extern GlyphIndex gGlyphStrip_64[];
-extern GlyphIndex gGlyphStrip_65[];
-extern GlyphIndex gGlyphStrip_66[];
-extern GlyphIndex gGlyphStrip_67[];
-extern GlyphIndex gGlyphStrip_68[];
-extern GlyphIndex gGlyphStrip_C8[];
-extern GlyphIndex gGlyphStrip_C9[];
-extern GlyphIndex gGlyphStrip_CA[];
-extern GlyphIndex gGlyphStrip_CB[];
-extern GlyphIndex gGlyphStrip_CC[];
-extern GlyphIndex gGlyphStrip_CD[];
-extern GlyphIndex gGlyphStrip_CE[];
-extern GlyphIndex gGlyphStrip_CF[];
-extern GlyphIndex gGlyphStrip_D0[];
-extern GlyphIndex gGlyphStrip_D1[];
-extern GlyphIndex gGlyphStrip_D2[];
-extern GlyphIndex gGlyphStrip_D3[];
-extern GlyphIndex gGlyphStrip_D4[];
-extern GlyphIndex gGlyphStrip_D5[];
-extern GlyphIndex gGlyphStrip_D6[];
-extern GlyphIndex gGlyphStrip_D7[];
-extern GlyphIndex *gGlyphStrips[];
-extern GlyphIndex gClassIconStartingGlyph[];
+extern u8 gGlyphStrip_01[];
+extern u8 gGlyphStrip_02[];
+extern u8 gGlyphStrip_03[];
+extern u8 gGlyphStrip_04[];
+extern u8 gGlyphStrip_05[];
+extern u8 gGlyphStrip_06[];
+extern u8 gGlyphStrip_07[];
+extern u8 gGlyphStrip_08[];
+extern u8 gGlyphStrip_09[];
+extern u8 gGlyphStrip_0A[];
+extern u8 gGlyphStrip_0B[];
+extern u8 gGlyphStrip_0C[];
+extern u8 gGlyphStrip_4B[];
+extern u8 gGlyphStrip_4C[];
+extern u8 gGlyphStrip_4D[];
+extern u8 gGlyphStrip_4E[];
+extern u8 gGlyphStrip_4F[];
+extern u8 gGlyphStrip_50[];
+extern u8 gGlyphStrip_51[];
+extern u8 gGlyphStrip_52[];
+extern u8 gGlyphStrip_53[];
+extern u8 gGlyphStrip_54[];
+extern u8 gGlyphStrip_55[];
+extern u8 gGlyphStrip_56[];
+extern u8 gGlyphStrip_57[];
+extern u8 gGlyphStrip_58[];
+extern u8 gGlyphStrip_59[];
+extern u8 gGlyphStrip_5A[];
+extern u8 gGlyphStrip_5B[];
+extern u8 gGlyphStrip_5C[];
+extern u8 gGlyphStrip_5D[];
+extern u8 gGlyphStrip_5E[];
+extern u8 gGlyphStrip_5F[];
+extern u8 gGlyphStrip_60[];
+extern u8 gGlyphStrip_61[];
+extern u8 gGlyphStrip_62[];
+extern u8 gGlyphStrip_63[];
+extern u8 gGlyphStrip_64[];
+extern u8 gGlyphStrip_65[];
+extern u8 gGlyphStrip_66[];
+extern u8 gGlyphStrip_67[];
+extern u8 gGlyphStrip_68[];
+extern u8 gGlyphStrip_C8[];
+extern u8 gGlyphStrip_C9[];
+extern u8 gGlyphStrip_CA[];
+extern u8 gGlyphStrip_CB[];
+extern u8 gGlyphStrip_CC[];
+extern u8 gGlyphStrip_CD[];
+extern u8 gGlyphStrip_CE[];
+extern u8 gGlyphStrip_CF[];
+extern u8 gGlyphStrip_D0[];
+extern u8 gGlyphStrip_D1[];
+extern u8 gGlyphStrip_D2[];
+extern u8 gGlyphStrip_D3[];
+extern u8 gGlyphStrip_D4[];
+extern u8 gGlyphStrip_D5[];
+extern u8 gGlyphStrip_D6[];
+extern u8 gGlyphStrip_D7[];
+extern u8 *gGlyphStrips[];
+extern u8 gClassIconStartingGlyph[];
 
-void IntToLeftPaddedGlyphs(s16, GlyphIndex *);
-s32 StringToGlyphs(GlyphIndex *, u8 *);
-s32 IntToGlyphs(s16, GlyphIndex *);
-void DrawGlyphStripGroup(u8 *, s32);
-GlyphIndex GetGlyphIdxForAsciiChar(u8);
+void IntToLeftPaddedGlyphs(s16, u8 *);
+s32 StringToGlyphs(u8 *, u8 *);
+s32 IntToGlyphs(s16, u8 *);
+// void DrawGlyphStripGroup(u8 *, s32);
+u8 GetGlyphIdxForAsciiChar(u8);
 
 #endif

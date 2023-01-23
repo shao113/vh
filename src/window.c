@@ -7,11 +7,12 @@
 #include "glyphs.h"
 #include "field.h"
 #include "audio.h"
+#include "battle.h"
 
 s32 WindowIsOffScreen(EvtData *);
 void DrawSmallEquipmentWindow(u8);
 void DrawWindow(s16, s16, s16, s16, s16, s16, s16, u8, u8);
-s32 StringToGlyphs(GlyphIndex *, u8 *);
+s32 StringToGlyphs(u8 *, u8 *);
 s32 FUN_8001d384(u8 *, u8 *);
 s32 FUN_8001d3fc(u8 *, u8 *);
 void UpdateSkillStatusWindow(UnitStatus *);
@@ -29,15 +30,23 @@ s32 GetWindowChoice(s32);
 s32 GetWindowChoice2(s32);
 void SlideWindowTo(s32, s16, s16);
 void Evtf004_005_408_Window(EvtData *);
+void DrawGlyphStrip(u8 *, s16, s16, u8);
+void ClearGlyphStripBottom(u8 *, s16, s16);
+void DrawGlyphStripGroup(u8 *, s16);
+u16 DrawEmbossedSjisChar(u16, s32, s32, s32, s32);
+void Evtf422_LowerMsgBoxTail(EvtData *);
+void Evtf421_UpperMsgBoxTail(EvtData *);
+void Evtf573_BattleItemsList(EvtData *);
+void Evtf031_BattleSpellsList(EvtData *);
 
 s32 WindowIsOffScreen(EvtData *evt) {
    if (evt->d.evtf004.x < 0)
       return 1;
-   if (evt->d.evtf004.x > 320)
+   if (evt->d.evtf004.x > SCREEN_WIDTH)
       return 1;
    if (evt->d.evtf004.y < 0)
       return 1;
-   if (evt->d.evtf004.y > 240)
+   if (evt->d.evtf004.y > SCREEN_HEIGHT)
       return 1;
    return 0;
 }
@@ -66,8 +75,8 @@ void DrawSmallEquipmentWindow(u8 partyIdx) {
       StringToGlyphs(&gGlyphStrip_03[4], gItemNames[gPartyMembers[partyIdx].weapon]);
       StringToGlyphs(&gGlyphStrip_05[4], gItemNames[gPartyMembers[partyIdx].helmet]);
       StringToGlyphs(&gGlyphStrip_07[4], gItemNames[gPartyMembers[partyIdx].armor]);
-      StringToGlyphs(&gGlyphStrip_09[4], gItemNames[gPartyMembers[partyIdx].item1]);
-      StringToGlyphs(&gGlyphStrip_0B[4], gItemNames[gPartyMembers[partyIdx].item2]);
+      StringToGlyphs(&gGlyphStrip_09[4], gItemNames[gPartyMembers[partyIdx].items[0]]);
+      StringToGlyphs(&gGlyphStrip_0B[4], gItemNames[gPartyMembers[partyIdx].items[1]]);
       DrawGlyphStripGroup(gGlyphStripGroups[1], GFX_WINDOW_TBD_658);
    }
 }
@@ -746,7 +755,7 @@ void DrawWindow(s16 windowId, s16 x, s16 y, s16 width, s16 height, s16 dispX, s1
    }
 }
 
-s32 StringToGlyphs(GlyphIndex *dest, u8 *src) {
+s32 StringToGlyphs(u8 *dest, u8 *src) {
    s32 ct = 0;
 
    if (*src == '\0') {
@@ -944,9 +953,9 @@ void UpdateCompactUnitInfoWindow(UnitStatus *unit, UnitStatus *unused, u8 param_
    s32 i, px, full, rem;
    s32 terrainBonus;
    EvtData_Sprite *sprite;
-   GlyphIndex *pTop;
-   GlyphIndex *pMid;
-   GlyphIndex *pBtm;
+   u8 *pTop;
+   u8 *pMid;
+   u8 *pBtm;
 
    // ?: 0: bottom;  1: top;  2: off-field (dojo?)
    if (param_3 != 0) {
@@ -1041,7 +1050,7 @@ void UpdateUnitInfoWindow(UnitStatus *unit) {
    s32 i, px, full, rem;
    s32 terrainBonus;
    EvtData_Sprite *sprite;
-   GlyphIndex *firstRow, *secondRow, *thirdRow, *fourthRow;
+   u8 *firstRow, *secondRow, *thirdRow, *fourthRow;
 
    firstRow = gGlyphStrip_52;
    secondRow = gGlyphStrip_53;
@@ -1746,13 +1755,492 @@ void Evtf004_005_408_Window(EvtData *evt) {
 
    if (gWindowActiveIdx == EVT.windowId) {
       gHighlightedChoice = evt->state2 + 1;
-      if (gPadStateNewPresses & PADRright) {
+      if (gPadStateNewPresses & PAD_CIRCLE) {
          gWindowActivatedChoice.d.s.windowId = EVT.windowId;
          gWindowActivatedChoice.d.s.choice = evt->state2 + 1;
       }
-      if (gPadStateNewPresses & PADRdown) {
+      if (gPadStateNewPresses & PAD_X) {
          gWindowActivatedChoice.d.s.windowId = EVT.windowId;
          gWindowActivatedChoice.d.s.choice = -1;
       }
+   }
+}
+
+void DrawGlyphStrip(u8 *strip, s16 x, s16 y, u8 unused) {
+   RECT rect;
+   u8 current, first;
+
+   rect.w = VRAM_GLYPH_W;
+   first = *strip++;
+   current = *strip++;
+
+   while (current != GLYPH_TERMINATOR) {
+      if (first != GLYPH_BLANK) {
+         rect.h = 4;
+      } else {
+         rect.h = 9;
+      }
+      rect.x = VRAM_GLYPHS_X + (current % VRAM_GLYPHS_PER_ROW) * VRAM_GLYPH_W;
+      rect.y = VRAM_GLYPHS_Y + (current / VRAM_GLYPHS_PER_ROW) * VRAM_GLYPH_H;
+      if (first != GLYPH_BLANK) {
+         rect.y += 5;
+      }
+      MoveImage(&rect, x, y);
+      x += VRAM_GLYPH_W;
+      current = *strip++;
+   }
+}
+
+void ClearGlyphStripBottom(u8 *strip, s16 x, s16 y) {
+   u8 current;
+   u8 dbl;
+   u8 first;
+   u8 unused[8];
+   RECT rect;
+
+   dbl = 0;
+   rect.w = (16 >> 2);
+   rect.h = 1;
+   rect.x = VRAM_GLYPHS_X;
+   rect.y = VRAM_GLYPHS_Y;
+
+   first = *strip++;
+   current = *strip++;
+
+   while (current != GLYPH_TERMINATOR) {
+      if (current == GLYPH_TBD_254) {
+         dbl = 1;
+         current = *strip++;
+      }
+      if (current == GLYPH_TBD_253) {
+         dbl = 0;
+         current = *strip++;
+      }
+
+      if (dbl) {
+         MoveImage(&rect, x, y + 9);
+         x += VRAM_GLYPH_W;
+         MoveImage(&rect, x, y + 9);
+         x += VRAM_GLYPH_W;
+      } else {
+         MoveImage(&rect, x, y + 9);
+         x += VRAM_GLYPH_W;
+      }
+
+      current = *strip++;
+   }
+}
+
+void DrawGlyphStripGroup(u8 *group, s16 gfxIdx) {
+   s16 x, y;
+   u8 current, first;
+
+   y = 0;
+   x = 512;
+   if (gGfxTPageCells[gfxIdx] == 9) {
+      x += 64;
+   }
+   if (gGfxTPageCells[gfxIdx] == 14) {
+      x += 384;
+   }
+   if (gGfxTPageCells[gfxIdx] == 15) {
+      x += 448;
+   }
+
+   x += gGfxSubTextures[gfxIdx].x >> 2;
+   y += gGfxSubTextures[gfxIdx].y;
+
+   first = *group++;
+   current = *group++;
+
+   while (current != 0) {
+      DrawGlyphStrip(gGlyphStrips[current], x, y, first);
+      first = !first; // hm
+
+      if (gGlyphStrips[current][0] != GLYPH_BLANK) {
+         y += 4;
+      } else {
+         y += 9;
+      }
+      current = *group++;
+   }
+   group -= 2;
+   current = *group;
+   ClearGlyphStripBottom(gGlyphStrips[current], x, y - 9);
+   ClearGlyphStripBottom(gGlyphStrips[current], x, y - 8);
+   DrawSync(0);
+}
+
+u16 DrawEmbossedSjisChar(u16 sjis, s32 x, s32 y, s32 fgc, s32 bgc) {
+   extern u32 s_embossedCharData[34];
+
+   s32 i, j;
+   u8 bits;
+   u8 *p;
+   u32 fg, bg, mask;
+   RECT rect;
+   u8 unused[128];
+
+   p = Krom2RawAdd(sjis);
+   if (p == -1) {
+      return 0xff;
+   }
+
+   for (i = 0; i < 34; i++) {
+      s_embossedCharData[i] = 0;
+   }
+
+   for (i = 0; i < 30; i++, p++) {
+      bg = 0;
+      mask = 0;
+      fg = 0;
+      bits = *p;
+
+      for (j = 0; j < 7; j++) {
+         if (bits & 1) {
+            fg |= fgc;
+            bg |= bgc;
+            mask |= 0xf;
+         }
+         bits >>= 1;
+         fg <<= 4;
+         bg <<= 4;
+         mask <<= 4;
+      }
+      if (bits & 1) {
+         fg |= fgc;
+         bg |= bgc;
+         mask |= 0xf;
+      }
+
+      s_embossedCharData[i] |= bg << 4;
+      s_embossedCharData[i + 2] |= bg;
+      s_embossedCharData[i + 2] |= (bg << 4);
+
+      if ((bg >> 28) && !(i & 1)) {
+         s_embossedCharData[i + 1] |= bgc;
+         s_embossedCharData[i + 3] |= bgc;
+      }
+
+      s_embossedCharData[i] &= ~mask;
+      s_embossedCharData[i] |= fg;
+   }
+
+   s_embossedCharData[32] = s_embossedCharData[33] = 0;
+
+   rect.x = x;
+   rect.y = y;
+   rect.w = 16 >> 2;
+   rect.h = 16;
+   LoadImage(&rect, s_embossedCharData);
+   DrawSync(0);
+   return GetTPage(0, 0, x, y);
+}
+
+void Evtf422_LowerMsgBoxTail(EvtData *evt) { Evtf421_UpperMsgBoxTail(evt); }
+
+#undef EVTF
+#define EVTF 421
+void Evtf421_UpperMsgBoxTail(EvtData *evt) {
+   s32 p, flag;
+   SVECTOR position;
+
+   RotTransPers(&EVT.sprite->vec, (s32 *)&position, &p, &flag);
+   EVT.left = position.vx - 4;
+   gTempGfxEvt->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_DOWN;
+
+   if (evt->functionIndex == EVTF_UPPER_MSGBOX_TAIL) {
+      position.vy -= 45;
+      if (position.vy < 86) {
+         s16 width = 18;
+         if (EVT.left < SCREEN_HALF_WIDTH) {
+            gTempGfxEvt->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_LEFT;
+            EVT.left += width;
+         } else {
+            gTempGfxEvt->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_RIGHT;
+            EVT.left -= width;
+         }
+         position.vy = 99;
+      }
+      EVT.top = 78;
+      EVT.bottom = position.vy;
+   } else {
+      // EVTF_LOWER_MSGBOX_TAIL:
+      position.vy += -10;
+      if (position.vy > 150) {
+         position.vy = 150;
+      }
+      EVT.bottom = position.vy;
+      EVT.top = 162;
+   }
+
+   gTempGfxEvt->d.sprite.hidden = 0;
+   gTempGfxEvt->d.sprite.clut = 25;
+   gTempGfxEvt->d.sprite.otOfs = 2;
+
+   if (gTempGfxEvt->d.sprite.gfxIdx == GFX_MSGBOX_TAIL_DOWN) {
+      gTempGfxEvt->d.sprite.x1 = EVT.left;
+      gTempGfxEvt->d.sprite.x3 = EVT.left + 10;
+   } else {
+      gTempGfxEvt->d.sprite.x1 = EVT.left - 2;
+      gTempGfxEvt->d.sprite.x3 = EVT.left + 14;
+   }
+
+   gTempGfxEvt->d.sprite.y1 = EVT.top;
+   gTempGfxEvt->d.sprite.y3 = EVT.bottom;
+   AddEvtPrim_Gui(gGraphicsPtr->ot, gTempGfxEvt);
+}
+
+void Evtf573_BattleItemsList(EvtData *evt) {
+   s32 i;
+   UnitStatus *unit;
+   EvtData *icon;
+   s32 tmp;
+
+   unit = evt->d.evtf573.unit;
+
+   switch (evt->state) {
+   case 0:
+      CloseWindow(0x1e);
+      gWindowChoiceHeight = 18;
+      gWindowChoicesTopMargin = 9;
+      DrawWindow(0x38, 0, 50, 136, 54, 70, 93, WBS_CROSSED, 2);
+
+      for (i = 0; i < 2; i++) {
+         if (gItemSpells[unit->items[i]] == SPELL_NULL)
+            tmp = 1; // Color to indicate item is unusable
+         else
+            tmp = 0;
+         DrawSjisText(28, i * 18 + 60, 20, 0, tmp, gItemNamesSjis[unit->items[i]]);
+      }
+
+      icon = Evt_GetUnused();
+      icon->functionIndex = EVTF_DISPLAY_ICON;
+      icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[0];
+      icon->d.sprite.x1 = 79;
+      icon->d.sprite.y1 = 103;
+
+      icon = Evt_GetUnused();
+      icon->functionIndex = EVTF_DISPLAY_ICON;
+      icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[1];
+      icon->d.sprite.x1 = 79;
+      icon->d.sprite.y1 = 121;
+
+      DisplayBasicWindow(0x38);
+      gWindowActiveIdx = 0x38;
+      gClearSavedPadState = 1;
+      evt->state++;
+      break;
+   case 1:
+      if (gWindowChoice.d.raw == 0x38ff) {
+         // Canceled:
+         CloseWindow(0x38);
+         gSignal2 = 1;
+         evt->functionIndex = EVTF_NULL;
+         CloseWindow(0x3c);
+         CloseWindow(0x3d);
+         ClearIcons();
+         return;
+      }
+      if (gWindowChoice.d.s.windowId == 0x38 && gWindowChoice.d.s.choice != 0) {
+         gCurrentSpell = gItemSpells[unit->items[gWindowChoice.d.s.choice - 1]];
+         if (gCurrentSpell != SPELL_NULL) {
+            gState.activeItem = unit->items[gWindowChoice.d.s.choice - 1];
+            gState.activeItemSlot = gWindowChoice.d.s.choice - 1;
+            unit->items[gWindowChoice.d.s.choice - 1] = ITEM_NULL;
+            CloseWindow(0x38);
+            gSignal2 = 2;
+            gClearSavedPadState = 0;
+            evt->functionIndex = EVTF_NULL;
+            CloseWindow(0x3c);
+            CloseWindow(0x3d);
+            ClearIcons();
+            return;
+         }
+      }
+      break;
+   }
+
+   switch (evt->d.evtf573.drawState) {
+   case 0:
+      evt->d.evtf573.item = -1;
+      DrawWindow(0x3c, 0, 0, 288, 36, 14, 192, WBS_CROSSED, 0);
+      DisplayBasicWindow(0x3c);
+      DisplayBasicWindow(0x3d);
+      evt->d.evtf573.drawState++;
+      break;
+   case 1:
+      tmp = unit->items[GetWindowChoice(0x38) - 1];
+      if (evt->d.evtf573.item != tmp) {
+         evt->d.evtf573.item = tmp;
+         DrawWindow(60, 0, 0, 288, 36, 4, 192, WBS_CROSSED, 0);
+         DrawText_Internal(12, 10, 35, 2, 0, gItemDescriptions[tmp], 0);
+      }
+      break;
+   }
+}
+
+void Evtf031_BattleSpellsList(EvtData *evt) {
+   static u8 mpBuffer[9] = "\x82\x6c\x82\x6f\x81\x40\x81\x40\x00";
+   UnitStatus *unit;
+   s32 spellIdx;
+   s32 i;
+   s32 extraTopMargin, extraHeight, shorten;
+   s32 numSpells;
+   s32 spell;
+   // evt->state2: page number
+
+   unit = evt->d.evtf031.unit;
+
+   switch (evt->state) {
+   case 0:
+      DrawWindow(0x3e, 400, 200, 72, 36, 214, 140, WBS_CROSSED, 0);
+      EmbedIntAsSjis(unit->mp, &mpBuffer[4], 2);
+      DrawSjisText(404, 210, 20, 0, 0, mpBuffer);
+      DisplayBasicWindow(0x3e);
+      CloseWindow(0x1e);
+      gWindowChoiceHeight = 17;
+
+      if (!gState.debug && unit->weapon != ITEM_V_HEART_2) {
+         numSpells = 0;
+         while (unit->spells[numSpells] != SPELL_NULL) {
+            numSpells++;
+         }
+
+         extraTopMargin = numSpells;
+         shorten = 0;
+         if (numSpells >= 7) {
+            shorten = 9;
+            extraTopMargin = numSpells - 7;
+            extraHeight = 1;
+         } else {
+            extraHeight = 0;
+         }
+         extraTopMargin /= 2;
+         gWindowChoicesTopMargin = extraTopMargin + 9;
+
+         DrawWindow(0x38, 0, 50, 144, extraHeight + (numSpells * 18 + 18 - shorten), 70,
+                    10 + (10 - numSpells) * 18 / 2, WBS_CROSSED, numSpells);
+
+         for (i = 0; i < numSpells; i++) {
+            s32 color;
+            if (unit->mp < gSpells[unit->spells[i]].mpCost)
+               color = 1;
+            else
+               color = 0;
+            DrawText(12, 60 + i * 17 + extraTopMargin, 20, 0, color, gSpellNames[unit->spells[i]]);
+         }
+         DisplayBasicWindow(0x38);
+      }
+
+      gWindowActiveIdx = 0x38;
+      gClearSavedPadState = 1;
+
+      if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
+         gWindowChoicesTopMargin = 9;
+         DrawWindow(0x38, 0, 50, 144, 190, 70, 8, WBS_CROSSED, 10);
+
+         i = 0;
+         spellIdx = evt->state2 * 10 + 1;
+
+         while (spellIdx < evt->state2 * 10 + 1 + 10) {
+            DrawText(12, i * 17 + 60, 20, 0, 0, gSpellNames[spellIdx]);
+            i++;
+            spellIdx++;
+         }
+
+         DisplayBasicWindow(0x38);
+      }
+
+      evt->state++;
+      break;
+
+   case 1:
+
+      if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
+         // Paged menu to select from all spells; for debug mode / vandalier
+         if (gPadStateNewPresses & PAD_RIGHT) {
+            if (evt->state2 != 6) {
+               evt->state2++; // Next page
+            }
+            DrawWindow(0x38, 0, 50, 144, 190, 70, 8, WBS_CROSSED, 10);
+
+            i = 0;
+            spellIdx = evt->state2 * 10 + 1;
+
+            while (spellIdx < evt->state2 * 10 + 1 + 10) {
+               DrawText(12, i * 17 + 60, 20, 0, 0, gSpellNames[spellIdx]);
+               i++;
+               spellIdx++;
+            }
+         }
+         if (gPadStateNewPresses & PAD_LEFT) {
+            if (evt->state2 != 0) {
+               evt->state2--; // Previous page
+            }
+            DrawWindow(0x38, 0, 50, 144, 190, 70, 8, WBS_CROSSED, 8);
+
+            i = 0;
+            spellIdx = evt->state2 * 10 + 1;
+
+            while (spellIdx < evt->state2 * 10 + 1 + 10) {
+               DrawText(12, i * 17 + 60, 20, 0, 0, gSpellNames[spellIdx]);
+               i++;
+               spellIdx++;
+            }
+         }
+      }
+
+      if (gWindowChoice.d.raw == 0x38ff) {
+         // Canceled
+         CloseWindow(0x38);
+         CloseWindow(0x3e);
+         gSignal2 = 1;
+         evt->functionIndex = EVTF_NULL;
+         CloseWindow(0x3c);
+         CloseWindow(0x3d);
+         return;
+      }
+      if (gWindowChoice.d.s.windowId == 0x38 && gWindowChoice.d.s.choice != 0) {
+         gCurrentSpell = unit->spells[gWindowChoice.d.s.choice - 1];
+         if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
+            gCurrentSpell = gWindowChoice.d.s.choice + evt->state2 * 10;
+         }
+         if (unit->mp < gSpells[gCurrentSpell].mpCost) {
+            gCurrentSpell = SPELL_NULL;
+         }
+         if (gCurrentSpell != SPELL_NULL) {
+            CloseWindow(0x38);
+            CloseWindow(0x3e);
+            gSignal2 = 2;
+            gClearSavedPadState = 0;
+            evt->functionIndex = EVTF_NULL;
+            CloseWindow(0x3c);
+            CloseWindow(0x3d);
+            return;
+         }
+      }
+      break;
+   }
+
+   switch (evt->d.evtf031.drawState) {
+   case 0:
+      DrawWindow(0x3c, 0, 0, 288, 36, 14, 192, WBS_CROSSED, 0);
+      DisplayBasicWindow(0x3c);
+      DisplayBasicWindow(0x3d);
+      evt->d.evtf031.drawState++;
+      break;
+   case 1:
+      spellIdx = GetWindowChoice(0x38);
+      spell = unit->spells[spellIdx - 1];
+      if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
+         spell = spellIdx + evt->state2 * 10;
+      }
+      if (evt->d.evtf031.spell != spell) {
+         evt->d.evtf031.spell = spell;
+         DrawWindow(60, 0, 0, 288, 36, 4, 192, WBS_CROSSED, 0);
+         DrawText_Internal(12, 10, 35, 2, 0, gSpellDescriptions[spell], 0);
+      }
+      break;
    }
 }

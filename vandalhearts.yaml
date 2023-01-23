@@ -55,7 +55,8 @@ segments:
     - [0x001c10, .rdata, projectile]           # 0x80011410
     - [0x001c3c, .rdata, animated_textures]    # 0x8001143c
     - [0x001cdc, .rdata, window]               # 0x800114dc
-    - [0x001e48, rdata]                        # 
+    - [0x001e48, .rdata, battle_011604]        # 0x80011648
+    - [0x001e5c, rdata]                        # 
 
     - [0x0033ec, .rdata, evt]                  # 0x80012bec
     - [0x003500, rdata]                        # 0x80012d00
@@ -71,7 +72,8 @@ segments:
     - [0x009c44, c, projectile]                # 0x80019444 CalculateProjectileDeltas ...
     - [0x00ae4c, c, animated_textures]         # 0x8001a64c Evtf564_565_566_MapObject_Water ...
     - [0x00b83c, c, window]                    # 0x8001b03c WindowIsOffScreen ...
-    - [0x01020c, bin]                          # 
+    - [0x011604, c, battle_011604]             # 0x80020e04 Evtf571_LevelUp ...
+    - [0x011c2c, bin]                          # 
 
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
     - [0x028f2c, bin]                          # 0x8003872c
@@ -94,8 +96,9 @@ segments:
 
     - [0x0e1234, .data, engine]                # 0x800f0a34
     - [0x0e1384, .data, glyphs]                # 0x800f0b84
+    - [0x0e1ed8, .data, window]                # 0x800f16d8
+    - [0x0e1ee4, data]                         # 0x800f16e4
 
-    - [0x0e1ed8, data]                         # 0x800f16d8
     - [0x0e3914, .data, gCdFiles]              # 0x800f3114
     - [0x0e5a74, data]
     - [0x0e5d4c, .data, card]                  # 0x800f554c gCardFilePath

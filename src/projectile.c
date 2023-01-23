@@ -242,7 +242,7 @@ void Evtf022_029_Projectile(EvtData *evt) {
 
       if (ArcProjectileTo(projectileSprite, 0, 0, 0, 1)) {
          gSignal3 = 1;
-         gTempDirection = 1;
+         gSignal4 = 1;
          evt->functionIndex = EVTF_NULL;
          projectileSprite->functionIndex = EVTF_NULL;
       }

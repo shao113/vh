@@ -416,9 +416,6 @@ void Evtf025_OverheadMapView(EvtData *evt) {
       gCameraZoom.vz += (overheadMapZoomLevels[gState.mapNum] - gCameraZoom.vz) >> 2;
       gCameraRotation.vx += (0x400 - gCameraRotation.vx) >> 2;
       gCameraRotation.vy += (0x800 - gCameraRotation.vy) >> 2;
-      // TODO: better representation?
-      // gCameraPos.vx += ((~gMapMaxX / 2) * 0x20 - gCameraPos.vx >> 2);
-      // gCameraPos.vz += ((~gMapMaxZ / 2) * 0x20 - gCameraPos.vz >> 2);
       gCameraPos.vx += (((-(gMapMaxX + 1) / 2) * 32) - gCameraPos.vx) >> 2;
       gCameraPos.vz += (((-(gMapMaxZ + 1) / 2) * 32) - gCameraPos.vz) >> 2;
       gCameraPos.vy += -gCameraPos.vy >> 2;

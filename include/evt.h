@@ -34,6 +34,8 @@ typedef enum EvtFunctionIdx {
    EVTF_CLOSED_WINDOW = 408,
    EVTF_EVENT_CAMERA = 412,
    EVTF_DEBUG_MENU = 414,
+   EVTF_UPPER_MSGBOX_TAIL = 421,
+   EVTF_LOWER_MSGBOX_TAIL = 422,
    EVTF_EVALUATE_BATTLE_10 = 426,
    EVTF_EVALUATE_BATTLE_11 = 427,
    EVTF_EVALUATE_BATTLE_12 = 428,
@@ -93,7 +95,7 @@ typedef struct EvtData_Sprite {
    /* :0x25 */ s8 facingLeft;
    /* :0x26 */ s8 animInitialized;
    /* :0x27 */ s8 finishedMoving;
-   /* :0x28 */ u16 gfxIdx;
+   /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ s16 direction; /* s->w->n->e, 0x400 increments */
    /* :0x2C */ s16 clut;
    /* :0x2E */ s8 currentFrameDelay;
@@ -195,6 +197,15 @@ typedef struct EvtData_025 {
    /* :0x31 */ u8 unk_0x31[47];
 } EvtData_025;
 
+/* Battle Spells List */
+typedef struct EvtData_031 {
+   /* :0x10 */ s16 drawState;
+   /* :0x12 */ u8 unk_0x12[18];
+   /* :0x24 */ struct UnitStatus *unit;
+   /* :0x28 */ s8 spell;
+   /* :0x29 */ u8 unk_0x29[55];
+} EvtData_031;
+
 /* Panorama */
 typedef struct EvtData_405 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -206,6 +217,17 @@ typedef struct EvtData_405 {
    /* :0x2a */ s16 yOffset;
    /* :0x2c */ u8 unk_0x2c[52];
 } EvtData_405;
+
+/* MsgBox Tail */
+typedef struct EvtData_421_422 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct EvtData *sprite;
+   /* :0x28 */ s16 left;
+   /* :0x2A */ s16 top;
+   /* :0x2C */ s16 right;
+   /* :0x2E */ s16 bottom;
+   /* :0x30 */ u8 unk_0x30[48];
+} EvtData_421_422;
 
 /* Evaluate Battle 08 */
 typedef struct EvtData_438 {
@@ -220,6 +242,35 @@ typedef struct EvtData_564_565_566 {
    /* :0x24 */ u16 phase;
    /* :0x26 */ u8 unk_0x26[58];
 } EvtData_564_565_566;
+
+/* Level Up - Camera Control, Sound */
+typedef struct EvtData_571 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct EvtData *sprite;
+   /* :0x28 */ s16 camSavedX;
+   /* :0x2A */ s16 camSavedZ;
+   /* :0x2C */ s16 camSavedY;
+   /* :0x2E */ s16 camSavedRotX;
+   /* :0x30 */ s16 camSavedRotZ;
+   /* :0x32 */ s16 camSavedRotY;
+   /* :0x34 */ s16 camSavedZoom;
+   /* :0x36 */ s16 dstZoom;
+   /* :0x38 */ s16 dstRotY;
+   /* :0x3A */ s16 delay;
+   /* :0x3C */ s16 savedGeomOfsY;
+   /* :0x3E */ s16 geomOfsY;
+   /* :0x40 */ s16 dstGeomOfsY;
+   /* :0x42 */ u8 unk_0x42[30];
+} EvtData_571;
+
+/* Battle Items List */
+typedef struct EvtData_573 {
+   /* :0x10 */ s16 drawState;
+   /* :0x12 */ u8 unk_0x12[18];
+   /* :0x24 */ struct UnitStatus *unit;
+   /* :0x28 */ s8 item;
+   /* :0x29 */ u8 unk_0x29[55];
+} EvtData_573;
 
 /* Audio Command */
 typedef struct EvtData_581 {
@@ -244,9 +295,13 @@ typedef struct EvtData {
       EvtData_022_029 evtf022;
       EvtData_023 evtf023;
       EvtData_025 evtf025;
+      EvtData_031 evtf031;
       EvtData_405 evtf405;
+      EvtData_421_422 evtf421;
       EvtData_438 evtf438;
       EvtData_564_565_566 evtf564;
+      EvtData_571 evtf571;
+      EvtData_573 evtf573;
       EvtData_581 evtf581;
    } d;
 } EvtData;

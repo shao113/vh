@@ -29,6 +29,11 @@
 #define PAD_START PADstart
 #define PAD_SELECT PADselect
 
+#define SCREEN_WIDTH 320
+#define SCREEN_HEIGHT 240
+#define SCREEN_HALF_WIDTH (SCREEN_WIDTH / 2)
+#define SCREEN_HALF_HEIGHT (SCREEN_HEIGHT / 2)
+
 #define UNIT_CT 40
 #define PARTY_CT 13
 #define DEPOT_CT 150
@@ -98,7 +103,10 @@ extern s32 gClearSavedPadState;
 
 extern u8 gPlayerControlSuppressed;
 extern u8 gMapCursorSuppressed;
-extern s32 gSignal1, gSignal2;
+extern s32 gSignal1;
+extern s32 gSignal2;
 extern s32 gSignal3; // ?: Used for signaling completion/state of various battle fx/mechanics
+extern s32 gSignal4;
+extern s8 gSignal5;
 
 #endif
