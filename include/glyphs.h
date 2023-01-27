@@ -239,7 +239,7 @@ extern u8 *gGlyphStrips[];
 extern u8 gClassIconStartingGlyph[];
 
 void IntToLeftPaddedGlyphs(s16, u8 *);
-s32 StringToGlyphs(u8 *, u8 *);
+// s32 StringToGlyphs(u8 *, u8 *);
 s32 IntToGlyphs(s16, u8 *);
 // void DrawGlyphStripGroup(u8 *, s32);
 u8 GetGlyphIdxForAsciiChar(u8);

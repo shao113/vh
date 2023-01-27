@@ -77,7 +77,12 @@ extern u8 *gMapDataPtr;
 extern MapTileModel *gMapRowPointers[28];
 extern s16 gMapCursorX, gMapCursorZ;
 extern s16 gMapMinX, gMapMinZ, gMapMaxX, gMapMaxZ;
+extern s16 gMapSizeX, gMapSizeZ;
 extern u8 gOverheadMapState;
 extern BVectorZXY gMapCursorStartingPos[BATTLE_CT];
+
+extern PathGridRow *gRedAttackGridPtr;
+extern PathGridRow *gYellowTargetGridPtr;
+extern PathGridRow *gBlueMovementGridPtr;
 
 #endif

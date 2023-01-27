@@ -269,7 +269,7 @@ typedef enum UnitId {
    UNIT_ID_M_CANNON = 129,
 } UnitId;
 
-typedef enum UnitTeam { TEAM_NULL = 0, TEAM_PLAYER = 1, TEAM_ENEMY = 2 } UnitTeam;
+typedef enum UnitTeam { TEAM_NULL = 0, TEAM_PLAYER = 1, TEAM_ENEMY = 2, TEAM_CHEST = 101 } UnitTeam;
 
 typedef enum UnitType {
    UNIT_TYPE_NULL = 0,
@@ -390,7 +390,7 @@ typedef struct UnitStatus {
    u32 atkVar10000;
    u32 defVar10000;
    u32 agiVar10000;
-   s16 hp;
+   u16 hp;
    s16 maxHp;
    u16 attack;
    u16 defense;
@@ -487,5 +487,7 @@ extern UnitStatus gUnits[UNIT_CT];
 extern PartyMember gPartyMembers[PARTY_CT];
 extern BigInt gExperienceLevels[];
 extern void *gUnitDataPtr;
+
+extern u16 gUnitPortraitIds[UNIT_CT];
 
 #endif

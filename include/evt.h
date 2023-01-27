@@ -19,8 +19,15 @@ typedef enum EvtFunctionIdx {
    EVTF_MENU_CHOICE = 2,
    EVTF_WINDOW_TBD_004 = 4,
    EVTF_WINDOW_TBD_005 = 5,
+   EVTF_BATTLE_PORTRAIT = 8,
+   EVTF_CAMERA_TBD_017 = 17,
+   EVTF_UNIT_ATTACKING = 21,
    EVTF_PROJECTILE = 22,
+   EVTF_BOUNCE_ZOOM = 24,
+   EVTF_CAMERA_TBD_026 = 26,
+   EVTF_UNIT_CASTING = 28,
    EVTF_PROJECTILE_INDIRECT = 29, /* Unused? maybe to open chest w/ ranged attacker? */
+   EVTF_DISPLAY_DAMAGE = 32,
    EVTF_MAP_OBJECT_CHEST = 40,
    EVTF_MAP_OBJECT_CRATE = 46,
    EVTF_UNIT_SPRITES_DECODER = 50,
@@ -66,11 +73,14 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP_OBJECT_WATER_1 = 564,
    EVTF_MAP_OBJECT_WATER_2 = 565,
    EVTF_MAP_OBJECT_LAVA_1 = 566,
+   EVTF_OPENING_CHEST = 567,
    EVTF_MAP_OBJECT_LAVA_2 = 569,
+   EVTF_LEVEL_UP = 571,
    EVTF_MAP_OBJECT_LAVA_3 = 572,
    EVTF_DISPLAY_ICON = 574,
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
+   EVTF_CAMERA_TBD_588 = 588,
    EVTF_MAP_OBJECT_BOULDER = 591,
    EVTF_SPARKLE_DUST = 735,
    EVTF_PROJECTILE_TRAIL_POISON = 764,
@@ -156,6 +166,92 @@ typedef struct EvtData_004_005_408 {
    /* :0x5F */ s8 disableWraparound;
 } EvtData_004_005_408;
 
+/* Battle Portrait */
+typedef struct EvtData_008 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 windowId;
+   /* :0x25 */ s8 flipped;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ struct EvtData *window;
+   /* :0x2C */ struct EvtData *sprite;
+   /* :0x30 */ s16 portraitId;
+   /* :0x32 */ u8 unk_0x32[46];
+} EvtData_008;
+
+/* Battle Unit (Incomplete) */
+typedef struct EvtData_014 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ u8 team;
+   /* :0x25 */ u8 unitIdx;
+   /* :0x26 */ u8 pathIdx;
+   /* :0x27 */ u8 animIdx;
+   /* :0x28 */ struct UnitStatus *unit;
+   /* :0x2C */ u8 **animSet;
+   /* :0x30 */ struct EvtData *sprite;
+   /* :0x34 */ s8 timer;
+   /* :0x35 */ u8 unk_0x35[43];
+} EvtData_014;
+
+/* Targeting Attack */
+typedef struct EvtData_015 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[72];
+} EvtData_015;
+
+/* Choose Done Direction */
+typedef struct EvtData_016 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ struct UnitStatus *unit;
+   /* :0x28 */ s16 angle;
+   /* :0x2A */ u8 unk_0x2A[54];
+} EvtData_016;
+
+/* Camera - TBD */
+typedef struct EvtData_017 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct EvtData *sprite;
+   /* :0x28 */ s16 camSavedX;
+   /* :0x2A */ s16 camSavedZ;
+   /* :0x2C */ s16 camSavedY;
+   /* :0x2E */ s16 camSavedRotX;
+   /* :0x30 */ s16 camSavedRotZ;
+   /* :0x32 */ s16 camSavedRotY;
+   /* :0x34 */ s16 camSavedZoom;
+   /* :0x36 */ s16 dstZoom;
+   /* :0x38 */ s16 dstCamRotY;
+   /* :0x3A */ s16 timer;
+   /* :0x3C */ s16 savedGeomOfsY;
+   /* :0x3E */ s16 geomOfsY;
+   /* :0x40 */ s16 dstGeomOfsY;
+   /* :0x42 */ u8 unk_0x42[30];
+} EvtData_017;
+
+/* Unit Attacking */
+typedef struct EvtData_021 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ struct UnitStatus *attacker;
+   /* :0x28 */ struct UnitStatus *defender;
+   /* :0x2C */ struct EvtData *attackerSprite;
+   /* :0x30 */ struct EvtData *defenderSprite;
+   /* :0x34 */ s8 countering;
+   /* :0x35 */ u8 unk_0x35[3];
+   /* :0x38 */ s8 timer;
+   /* :0x39 */ s8 mapSizeX;
+   /* :0x3A */ s8 mapSizeZ;
+   /* :0x3B */ u8 unk_0x3B[37];
+} EvtData_021;
+
 /* Projectile */
 typedef struct EvtData_022_029 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -184,6 +280,17 @@ typedef struct EvtData_023 {
    /* :0x2C */ u8 unk_0x2C[52];
 } EvtData_023;
 
+/* Camera - Bounce Zoom */
+typedef struct EvtData_024 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s16 soft;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ s16 todo_x2a;
+   /* :0x2C */ s16 savedZoom;
+   /* :0x2E */ u8 unk_0x2E[50];
+} EvtData_024;
+
 /* Overhead Map View */
 typedef struct EvtData_025 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -196,6 +303,36 @@ typedef struct EvtData_025 {
    /* :0x30 */ s8 delay;
    /* :0x31 */ u8 unk_0x31[47];
 } EvtData_025;
+
+/* Camera - TBD */
+typedef struct EvtData_026_588 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct EvtData *sprite;
+   /* :0x28 */ s8 type;
+   /* :0x29 */ u8 unk_0x29;
+   /* :0x2A */ s16 zoom;
+   /* :0x2C */ u8 unk_0x2C[10];
+   /* :0x36 */ s16 dstZoom;
+   /* :0x38 */ s16 dstCamRotY;
+   /* :0x3A */ s16 timer;
+   /* :0x3C */ s16 savedGeomOfsY;
+   /* :0x3E */ s16 geomOfsY;
+   /* :0x40 */ s16 dstGeomOfsY;
+   /* :0x42 */ u8 unk_0x42[2];
+   /* :0x44 */ s8 todo_x44;
+   /* :0x45 */ u8 unk_0x45[27];
+} EvtData_026_588;
+
+/* Targeting Spell */
+typedef struct EvtData_027 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[16];
+   /* :0x28 */ struct UnitStatus *caster;
+   /* :0x2C */ u8 unk_0x2C[52];
+} EvtData_027;
 
 /* Battle Spells List */
 typedef struct EvtData_031 {
@@ -217,6 +354,14 @@ typedef struct EvtData_405 {
    /* :0x2a */ s16 yOffset;
    /* :0x2c */ u8 unk_0x2c[52];
 } EvtData_405;
+
+/* Camera - Event Zoom */
+typedef struct EvtData_410 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s16 zoom;
+   /* :0x26 */ s16 timer;
+   /* :0x28 */ u8 unk_0x28[56];
+} EvtData_410;
 
 /* MsgBox Tail */
 typedef struct EvtData_421_422 {
@@ -256,7 +401,7 @@ typedef struct EvtData_571 {
    /* :0x34 */ s16 camSavedZoom;
    /* :0x36 */ s16 dstZoom;
    /* :0x38 */ s16 dstRotY;
-   /* :0x3A */ s16 delay;
+   /* :0x3A */ s16 timer;
    /* :0x3C */ s16 savedGeomOfsY;
    /* :0x3E */ s16 geomOfsY;
    /* :0x40 */ s16 dstGeomOfsY;
@@ -292,11 +437,21 @@ typedef struct EvtData {
       u8 bytes[80];
       EvtData_Sprite sprite;
       EvtData_004_005_408 evtf004;
+      EvtData_008 evtf008;
+      EvtData_014 evtf014;
+      EvtData_015 evtf015;
+      EvtData_016 evtf016;
+      EvtData_017 evtf017;
+      EvtData_021 evtf021;
       EvtData_022_029 evtf022;
       EvtData_023 evtf023;
+      EvtData_024 evtf024;
       EvtData_025 evtf025;
+      EvtData_026_588 evtf026;
+      EvtData_027 evtf027;
       EvtData_031 evtf031;
       EvtData_405 evtf405;
+      EvtData_410 evtf410;
       EvtData_421_422 evtf421;
       EvtData_438 evtf438;
       EvtData_564_565_566 evtf564;

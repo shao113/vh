@@ -9,30 +9,13 @@
 #include "audio.h"
 #include "battle.h"
 
-s32 WindowIsOffScreen(EvtData *);
-void DrawSmallEquipmentWindow(u8);
-void DrawWindow(s16, s16, s16, s16, s16, s16, s16, u8, u8);
-s32 StringToGlyphs(u8 *, u8 *);
 s32 FUN_8001d384(u8 *, u8 *);
 s32 FUN_8001d3fc(u8 *, u8 *);
-void UpdateSkillStatusWindow(UnitStatus *);
 void Evtf574_DisplayIcon(EvtData *);
-void ClearIcons(void);
-void UpdateCompactUnitInfoWindow(UnitStatus *, UnitStatus *, u8);
-void UpdateUnitInfoWindow(UnitStatus *);
 void Evtf002_MenuChoice(EvtData *);
-void DisplayBasicWindow(s32);
-void DisplayBasicWindowWithSetChoice(s32, u8);
-void DisplayCustomWindow(s32, u8, u8, u8, u8, u8);
-void DisplayCustomWindowWithSetChoice(s32, u8, u8, u8, u8, u8, u8);
-void CloseWindow(s32);
-s32 GetWindowChoice(s32);
-s32 GetWindowChoice2(s32);
-void SlideWindowTo(s32, s16, s16);
 void Evtf004_005_408_Window(EvtData *);
 void DrawGlyphStrip(u8 *, s16, s16, u8);
 void ClearGlyphStripBottom(u8 *, s16, s16);
-void DrawGlyphStripGroup(u8 *, s16);
 u16 DrawEmbossedSjisChar(u16, s32, s32, s32, s32);
 void Evtf422_LowerMsgBoxTail(EvtData *);
 void Evtf421_UpperMsgBoxTail(EvtData *);

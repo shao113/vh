@@ -15,6 +15,12 @@ typedef struct SlainUnit {
    s16 reward;
 } SlainUnit;
 
+typedef enum AttackResult {
+   ATK_RES_HIT = 0,
+   ATK_RES_BLOCKED = 1,
+   ATK_RES_DEFEATED = 2
+} AttackResult;
+
 typedef enum TileAction {
    TA_NONE = 0,
    TA_PHYS_HIT = 1,
@@ -26,6 +32,7 @@ typedef enum TileAction {
    TA_CAST = 8,
    TA_X9 = 9, // ?: after attacking, cancelled move dest
    TA_RANGED_ATK = 10,
+   TA_XB = 11,
    TA_MAG_DEFEAT = 12,
    TA_MAG_HIT = 13,
    TA_CRATE_PUSHED_PRE = 15,

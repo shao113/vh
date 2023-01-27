@@ -9,10 +9,17 @@
 
 #define NULL 0
 #define ASCII_DIGIT 0x30
+#define ANGLE_0_DEGREES 0
 #define ANGLE_45_DEGREES 0x200
 #define ANGLE_90_DEGREES 0x400
 #define ANGLE_180_DEGREES 0x800
+#define ANGLE_270_DEGREES 0xc00
 #define ANGLE_360_DEGREES 0x1000
+
+#define ANGLE_SOUTH 0
+#define ANGLE_WEST 0x400
+#define ANGLE_NORTH 0x800
+#define ANGLE_EAST 0xc00
 
 #define PAD_UP PADLup
 #define PAD_DOWN PADLdown
@@ -107,6 +114,6 @@ extern s32 gSignal1;
 extern s32 gSignal2;
 extern s32 gSignal3; // ?: Used for signaling completion/state of various battle fx/mechanics
 extern s32 gSignal4;
-extern s8 gSignal5;
+extern u8 gSignal5;
 
 #endif
