@@ -19,6 +19,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MENU_CHOICE = 2,
    EVTF_WINDOW_TBD_004 = 4,
    EVTF_WINDOW_TBD_005 = 5,
+   EVTF_APPLY_POISON = 7,
    EVTF_BATTLE_PORTRAIT = 8,
    EVTF_CAMERA_TBD_017 = 17,
    EVTF_UNIT_ATTACKING = 21,
@@ -31,6 +32,9 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP_OBJECT_CHEST = 40,
    EVTF_MAP_OBJECT_CRATE = 46,
    EVTF_UNIT_SPRITES_DECODER = 50,
+   EVTF_STRETCH_WARP_SPRITE = 62,
+   EVTF_SPELL_FX2_HEALING = 100,
+   EVTF_CLOUD = 215,
    EVTF_FILE_SAVE_DIALOG = 341,
    EVTF_FILE_LOAD_DIALOG_360 = 360,
    EVTF_SCREEN_EFFECT = 369,
@@ -83,10 +87,12 @@ typedef enum EvtFunctionIdx {
    EVTF_CAMERA_TBD_588 = 588,
    EVTF_MAP_OBJECT_BOULDER = 591,
    EVTF_SPARKLE_DUST = 735,
+   EVTF_REMOVE_PARALYSIS = 737,
    EVTF_PROJECTILE_TRAIL_POISON = 764,
    EVTF_PROJECTILE_TRAIL_EXPLOSION = 765,
    EVTF_PROJECTILE_TRAIL_SMOKE = 766,
    EVTF_PROJECTILE_TRAIL_SPARKLES = 767,
+   EVTF_ITEM_SPELL = 770,
 
 } EvtFunctionIdx;
 
@@ -165,6 +171,14 @@ typedef struct EvtData_004_005_408 {
    /* :0x5E */ s8 otOfs;
    /* :0x5F */ s8 disableWraparound;
 } EvtData_004_005_408;
+
+/* Apply Poison */
+typedef struct EvtData_007 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct UnitStatus *unit;
+   /* :0x28 */ s8 timer;
+   /* :0x29 */ u8 unk_0x29[55];
+} EvtData_007;
 
 /* Battle Portrait */
 typedef struct EvtData_008 {
@@ -334,6 +348,22 @@ typedef struct EvtData_027 {
    /* :0x2C */ u8 unk_0x2C[52];
 } EvtData_027;
 
+/* Unit Casting Spell */
+typedef struct EvtData_028 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[7];
+   /* :0x1F */ s8 targetX;
+   /* :0x20 */ u8 unk_0x20[3];
+   /* :0x23 */ s8 targetZ;
+   /* :0x24 */ s8 timer;
+   /* :0x25 */ s8 mapSizeX;
+   /* :0x26 */ s8 mapSizeZ;
+   /* :0x27 */ u8 unk_0x27[57];
+} EvtData_028;
+
 /* Battle Spells List */
 typedef struct EvtData_031 {
    /* :0x10 */ s16 drawState;
@@ -388,6 +418,20 @@ typedef struct EvtData_564_565_566 {
    /* :0x26 */ u8 unk_0x26[58];
 } EvtData_564_565_566;
 
+/* Opening Chest */
+typedef struct EvtData_567 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ struct UnitStatus *opener;
+   /* :0x28 */ u8 sendToDepot;
+   /* :0x29 */ u8 unk_0x29[3];
+   /* :0x2C */ struct EvtData *openerSprite;
+   /* :0x30 */ u8 unk_0x30[48];
+} EvtData_567;
+
 /* Level Up - Camera Control, Sound */
 typedef struct EvtData_571 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -426,6 +470,15 @@ typedef struct EvtData_581 {
    /* :0x29 */ u8 unk_0x29[55];
 } EvtData_581;
 
+/* Battle - Turn Start */
+typedef struct EvtData_592 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 timer;
+   /* :0x25 */ s8 team;
+   /* :0x26 */ s8 targets;
+   /* :0x27 */ u8 unk_0x27[57];
+} EvtData_592;
+
 typedef struct EvtData {
    /* 0x00 */ SVECTOR vec;
    /* 0x08 */ s16 functionIndex;
@@ -437,6 +490,7 @@ typedef struct EvtData {
       u8 bytes[80];
       EvtData_Sprite sprite;
       EvtData_004_005_408 evtf004;
+      EvtData_007 evtf007;
       EvtData_008 evtf008;
       EvtData_014 evtf014;
       EvtData_015 evtf015;
@@ -449,15 +503,18 @@ typedef struct EvtData {
       EvtData_025 evtf025;
       EvtData_026_588 evtf026;
       EvtData_027 evtf027;
+      EvtData_028 evtf028;
       EvtData_031 evtf031;
       EvtData_405 evtf405;
       EvtData_410 evtf410;
       EvtData_421_422 evtf421;
       EvtData_438 evtf438;
       EvtData_564_565_566 evtf564;
+      EvtData_567 evtf567;
       EvtData_571 evtf571;
       EvtData_573 evtf573;
       EvtData_581 evtf581;
+      EvtData_592 evtf592;
    } d;
 } EvtData;
 

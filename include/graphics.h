@@ -224,6 +224,8 @@ extern PortraitsDb gPortraitsDb;
 extern Quad gQuad_800fe63c;
 
 void DecodeUnitSprites(void);
+void StartUnitSpritesDecoder(u8);
+struct EvtData *GetUnitSpriteAtPosition(u8, u8);
 
 void AddEvtPrim_Gui(u32 *ot, struct EvtData *evt);
 

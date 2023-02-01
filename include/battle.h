@@ -38,24 +38,31 @@ typedef enum TileAction {
    TA_CRATE_PUSHED_PRE = 15,
    TA_CRATE_PUSHED = 16,
    TA_PUSHING_CRATE = 17,
+   TA_CHEST_1 = 18, // TBD
+   TA_CHEST_2 = 19,
+   TA_CHEST_3 = 20,
    TA_LEVEL_UP = 21,
    TA_PHYS_DEFEAT_MSG = 23,
    TA_MAG_DEFEAT_MSG = 24,
+   TA_X19 = 25, // ?: Spawning
    TA_PUSHING_BOULDER = 26,
    TA_BOULDER_PUSHED = 27,
    TA_BOULDER_HIT = 28,
+   TA_X1E = 30,
+   TA_X1F = 31,
 } TileAction;
 
 typedef struct TileState {
-   u8 action;
+   s8 action;
    s8 cachedByte;
-   s16 cachedWord;
+   s16 cachedShort;
 } TileState;
 
 extern u8 gIsEnemyTurn;
 extern SlainUnit gSlainUnits[20];
 extern u8 gPartyMemberSlain[PARTY_CT];
 extern s16 gTargetX, gTargetZ;
+extern u8 gTargetCoords[72];
 extern s16 gCurrentSpell;
 extern TileState (*gTileStateGridPtr)[65];
 

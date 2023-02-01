@@ -397,7 +397,7 @@ typedef struct UnitStatus {
    s16 agility;
    u16 exp;
    u16 mp;
-   s16 maxMp;
+   u16 maxMp;
    s16 hpVar100;
    s16 atkVar100;
    s16 defVar100;
@@ -408,8 +408,6 @@ typedef struct UnitStatus {
    u8 done;
    u8 field33_0x56;
    u8 field34_0x57;
-   // s16 item1;
-   // s16 item2;
    s16 items[2];
    s16 droppedItem;
    s16 helmet;
@@ -462,6 +460,22 @@ typedef enum SpellTargeting {
    SPELL_TARGET_ALLY_GROUP = 4
 } SpellTargeting;
 
+typedef enum SpellEffect {
+   SPELL_EFFECT_DAMAGE = 0,
+   SPELL_EFFECT_RESTORE_HP = 1,
+   SPELL_EFFECT_RESTORE_HP_UNK = 2,
+   SPELL_EFFECT_POISON = 3,
+   SPELL_EFFECT_PARALYZE = 4,
+   SPELL_EFFECT_SUPPORT_OFS = 5,
+   SPELL_EFFECT_BOOST_ATK = 5,
+   SPELL_EFFECT_BOOST_DEF = 6,
+   SPELL_EFFECT_BOOST_ATK_AND_DEF = 7,
+   SPELL_EFFECT_CURE_AILMENTS = 8,
+   SPELL_EFFECT_BOOST_AGL = 9,
+   SPELL_EFFECT_RESTORE_MP = 10,
+   SPELL_EFFECT_TRANSFER_MP = 11
+} SpellEffect;
+
 typedef struct Spell {
    u8 area;
    u8 targeting;
@@ -470,6 +484,26 @@ typedef struct Spell {
    u8 power;
    u8 mpCost;
 } Spell;
+
+/*
+// Maybe an array instead?
+typedef struct SpellEx {
+   //u16 evtfMain;
+   //u16 evtfTarget;
+   //u16 evtfDefeat;
+   u16 evtf[3];
+   s16 mpBonus;
+   s16 effect;
+} SpellEx;
+*/
+
+enum {
+   SPELL_EX_EVTF_MAIN = 0,
+   SPELL_EX_EVTF_TARGET = 1,
+   SPELL_EX_EVTF_DEFEAT = 2,
+   SPELL_EX_MP_BONUS = 3,
+   SPELL_EX_EFFECT = 4
+};
 
 extern s8 gCharacterNames[35][7];
 extern s8 gUnitTypeNames[86][11];
@@ -482,6 +516,10 @@ extern u8 gItemSpells[104];
 extern Spell gSpells[80];
 extern s8 gSpellNames[72][21];
 extern s8 *gSpellDescriptions[72];
+extern s16 gSpellSounds[72];
+extern s16 gSpellSounds2[72];
+// extern SpellEx gSpellsEx[73];
+extern s16 gSpellsEx[73][5];
 
 extern UnitStatus gUnits[UNIT_CT];
 extern PartyMember gPartyMembers[PARTY_CT];

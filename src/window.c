@@ -802,23 +802,19 @@ s32 FUN_8001d3fc(u8 *dest, u8 *src) {
 
 void UpdateSkillStatusWindow(UnitStatus *unit) {
    s32 i;
-   s32 atk, def;
+   s32 a, def;
    EvtData *icon;
 
-   {
-      // TODO: Why are a0/v1 swapped without this hack? What am I missing...
-      register s32 i asm("a0");
-      for (i = 2; i < 26; i++) {
-         gGlyphStrip_65[i] = GLYPH_BG;
-         gGlyphStrip_66[i] = GLYPH_BG;
-         gGlyphStrip_67[i] = GLYPH_BG;
-         gGlyphStrip_68[i] = GLYPH_BG;
-      }
-      for (i = 16; i < 28; i++) {
-         gGlyphStrip_5F[i] = GLYPH_BG;
-         gGlyphStrip_61[i] = GLYPH_BG;
-         gGlyphStrip_63[i] = GLYPH_BG;
-      }
+   for (a = 2; a < 26; a++) {
+      gGlyphStrip_65[a] = GLYPH_BG;
+      gGlyphStrip_66[a] = GLYPH_BG;
+      gGlyphStrip_67[a] = GLYPH_BG;
+      gGlyphStrip_68[a] = GLYPH_BG;
+   }
+   for (a = 16; a < 28; a++) {
+      gGlyphStrip_5F[a] = GLYPH_BG;
+      gGlyphStrip_61[a] = GLYPH_BG;
+      gGlyphStrip_63[a] = GLYPH_BG;
    }
 
    // Plot the 2x2 glyphs that make up the class icon
@@ -847,11 +843,11 @@ void UpdateSkillStatusWindow(UnitStatus *unit) {
    gGlyphStrip_61[8] = GLYPH_BG;
    gGlyphStrip_61[9] = GLYPH_BG;
 
-   atk = unit->attack;
+   a = unit->attack;
    if (unit->team == TEAM_PLAYER) {
-      atk += gItemEquipmentDisplayPower[unit->weapon];
+      a += gItemEquipmentDisplayPower[unit->weapon];
    }
-   i = IntToGlyphs(atk, &gGlyphStrip_61[6]);
+   i = IntToGlyphs(a, &gGlyphStrip_61[6]);
    if (unit->atkBoosted) {
       gGlyphStrip_61[6 + i] = GLYPH_CHAR_PLUS;
    }

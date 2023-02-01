@@ -522,7 +522,7 @@ void Card_UpdateCaption(u8 fileIdx) {
    //      01234567890123456789012345
 
    level = 0;
-   while (BigIntCompare(gPartyMembers[UNIT_ASH].experience, &gExperienceLevels[level + 2]) < 2) {
+   while (BigIntCompare(gPartyMembers[UNIT_ASH].experience, &gExperienceLevels[level]) < 2) {
       level++;
    }
    if (level > 50) {
