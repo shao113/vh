@@ -1125,16 +1125,16 @@ void UpdateUnitInfoWindow(UnitStatus *unit) {
 }
 
 void Evtf002_MenuChoice(EvtData *evt) {
-   if (gWindowChoice.d.s.windowId != (s8)gWindowActiveIdx) {
-      gWindowChoice.d.s.choice = 0;
-      gWindowChoice.d.s.windowId = gWindowActiveIdx;
-      gWindowActivatedChoice.d.raw = gWindowChoice.d.raw;
+   if (gWindowChoice.s.windowId != (s8)gWindowActiveIdx) {
+      gWindowChoice.s.choice = 0;
+      gWindowChoice.s.windowId = gWindowActiveIdx;
+      gWindowActivatedChoice.raw = gWindowChoice.raw;
    } else {
-      gWindowChoice.d.s.windowId = gWindowActiveIdx;
+      gWindowChoice.s.windowId = gWindowActiveIdx;
    }
-   if (gWindowActivatedChoice.d.raw == gWindowChoice.d.raw) {
-      gWindowChoice.d.s.choice = 0;
-      gWindowActivatedChoice.d.s.choice = 0;
+   if (gWindowActivatedChoice.raw == gWindowChoice.raw) {
+      gWindowChoice.s.choice = 0;
+      gWindowActivatedChoice.s.choice = 0;
    } else {
       gWindowChoice = gWindowActivatedChoice;
    }
@@ -1159,7 +1159,7 @@ void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHig
    EvtData *window;
    s16 restored1, restored2, restored3;
 
-   gWindowChoice.d.raw = 0;
+   gWindowChoice.raw = 0;
    CloseWindow(windowId);
    window = Evt_GetLastUnusedSkippingTail(20);
 
@@ -1264,9 +1264,9 @@ void CloseWindow(s32 windowId) {
          p->state = 99;
          p->d.evtf004.effectState = 0;
 
-         if (gWindowActivatedChoice.d.s.windowId == windowId) {
-            gWindowActivatedChoice.d.raw = 0;
-            gWindowChoice.d.raw = 0;
+         if (gWindowActivatedChoice.s.windowId == windowId) {
+            gWindowActivatedChoice.raw = 0;
+            gWindowChoice.raw = 0;
          }
          return;
       }
@@ -1553,12 +1553,12 @@ void Evtf004_005_408_Window(EvtData *evt) {
       if (gWindowActiveIdx == EVT.windowId) {
          gHighlightedChoice = evt->state2 + 1;
          if (gPadStateNewPresses & PAD_CIRCLE) {
-            gWindowActivatedChoice.d.s.windowId = EVT.windowId;
-            gWindowActivatedChoice.d.s.choice = evt->state2 + 1;
+            gWindowActivatedChoice.s.windowId = EVT.windowId;
+            gWindowActivatedChoice.s.choice = evt->state2 + 1;
          }
          if (gPadStateNewPresses & PAD_X) {
-            gWindowActivatedChoice.d.s.windowId = EVT.windowId;
-            gWindowActivatedChoice.d.s.choice = -1;
+            gWindowActivatedChoice.s.windowId = EVT.windowId;
+            gWindowActivatedChoice.s.choice = -1;
          }
       }
       break;
@@ -1735,12 +1735,12 @@ void Evtf004_005_408_Window(EvtData *evt) {
    if (gWindowActiveIdx == EVT.windowId) {
       gHighlightedChoice = evt->state2 + 1;
       if (gPadStateNewPresses & PAD_CIRCLE) {
-         gWindowActivatedChoice.d.s.windowId = EVT.windowId;
-         gWindowActivatedChoice.d.s.choice = evt->state2 + 1;
+         gWindowActivatedChoice.s.windowId = EVT.windowId;
+         gWindowActivatedChoice.s.choice = evt->state2 + 1;
       }
       if (gPadStateNewPresses & PAD_X) {
-         gWindowActivatedChoice.d.s.windowId = EVT.windowId;
-         gWindowActivatedChoice.d.s.choice = -1;
+         gWindowActivatedChoice.s.windowId = EVT.windowId;
+         gWindowActivatedChoice.s.choice = -1;
       }
    }
 }
@@ -2011,7 +2011,7 @@ void Evtf573_BattleItemsList(EvtData *evt) {
       evt->state++;
       break;
    case 1:
-      if (gWindowChoice.d.raw == 0x38ff) {
+      if (gWindowChoice.raw == 0x38ff) {
          // Canceled:
          CloseWindow(0x38);
          gSignal2 = 1;
@@ -2021,12 +2021,12 @@ void Evtf573_BattleItemsList(EvtData *evt) {
          ClearIcons();
          return;
       }
-      if (gWindowChoice.d.s.windowId == 0x38 && gWindowChoice.d.s.choice != 0) {
-         gCurrentSpell = gItemSpells[unit->items[gWindowChoice.d.s.choice - 1]];
+      if (gWindowChoice.s.windowId == 0x38 && gWindowChoice.s.choice != 0) {
+         gCurrentSpell = gItemSpells[unit->items[gWindowChoice.s.choice - 1]];
          if (gCurrentSpell != SPELL_NULL) {
-            gState.activeItem = unit->items[gWindowChoice.d.s.choice - 1];
-            gState.activeItemSlot = gWindowChoice.d.s.choice - 1;
-            unit->items[gWindowChoice.d.s.choice - 1] = ITEM_NULL;
+            gState.activeItem = unit->items[gWindowChoice.s.choice - 1];
+            gState.activeItemSlot = gWindowChoice.s.choice - 1;
+            unit->items[gWindowChoice.s.choice - 1] = ITEM_NULL;
             CloseWindow(0x38);
             gSignal2 = 2;
             gClearSavedPadState = 0;
@@ -2170,7 +2170,7 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
          }
       }
 
-      if (gWindowChoice.d.raw == 0x38ff) {
+      if (gWindowChoice.raw == 0x38ff) {
          // Canceled
          CloseWindow(0x38);
          CloseWindow(0x3e);
@@ -2180,10 +2180,10 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
          CloseWindow(0x3d);
          return;
       }
-      if (gWindowChoice.d.s.windowId == 0x38 && gWindowChoice.d.s.choice != 0) {
-         gCurrentSpell = unit->spells[gWindowChoice.d.s.choice - 1];
+      if (gWindowChoice.s.windowId == 0x38 && gWindowChoice.s.choice != 0) {
+         gCurrentSpell = unit->spells[gWindowChoice.s.choice - 1];
          if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
-            gCurrentSpell = gWindowChoice.d.s.choice + evt->state2 * 10;
+            gCurrentSpell = gWindowChoice.s.choice + evt->state2 * 10;
          }
          if (unit->mp < gSpells[gCurrentSpell].mpCost) {
             gCurrentSpell = SPELL_NULL;

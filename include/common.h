@@ -63,6 +63,8 @@ s32 abs(s32);
 #define HI_H(arg) ((s16 *)&arg)[1]
 #define TO_TILE(arg) (*((s8 *)&arg + 1))
 
+#define SPR_TERRAIN(spr) gTerrainPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
+
 typedef u16 BigInt[8];
 
 struct EvtData;
@@ -115,5 +117,10 @@ extern s32 gSignal2;
 extern s32 gSignal3; // ?: Used for signaling completion/state of various battle fx/mechanics
 extern s32 gSignal4;
 extern u8 gSignal5;
+
+s32 BigIntCompare(BigInt, BigInt);
+void BigIntAdd(BigInt, BigInt);
+void BigIntSubtract(BigInt, BigInt);
+void BigIntDivide(BigInt, BigInt, u16);
 
 #endif

@@ -14,7 +14,8 @@ typedef enum TerrainType {
    TERRAIN_LAVA = 6,
    TERRAIN_BOUNDARY = 7,
    TERRAIN_OBSTACLE = 8,
-   TERRAIN_NO_ENTRY = 9
+   TERRAIN_NO_ENTRY = 9,
+   TERRAIN_10 = 10
 } TerrainType;
 
 typedef struct TerrainTile {
@@ -35,9 +36,13 @@ typedef struct MapObject3 {
    s8 item;
 } MapObject3;
 
-typedef struct MapUnit {
-   s8 unitIdx;
-   s8 team;
+typedef union MapUnit {
+   s8 bytes[2];
+   s16 raw;
+   struct {
+      s8 unitIdx;
+      s8 team;
+   } s;
 } MapUnit;
 
 typedef struct MapTileModel {

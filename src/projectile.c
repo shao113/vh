@@ -154,8 +154,8 @@ void Evtf022_029_Projectile(EvtData *evt) {
    s8 unused[24];
 
    projectileSprite = EVT.sprite;
-   target = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].unitIdx];
-   unitIdx = gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].unitIdx;
+   target = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx];
+   unitIdx = gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx;
    attacker = &gUnits[unitIdx];
 
    if (evt->functionIndex == EVTF_PROJECTILE) {
@@ -314,31 +314,32 @@ void Evtf023_Camera_RangedTarget(EvtData *evt) {
 }
 
 s32 CalculateProjectileHeight(s8 x1, s8 z1, s8 x2, s8 z2) {
-   // TODO: Less hacky match
+   // TODO: Less hacky match; why does do-while continue to solve this type of issue??
    s8 ox, oz;
    s32 xstep = 0, zstep = 0;
    s32 highest;
-   // s32 startingElevation; // = gTerrainPtr[z1][x1].elevation;
-   register s32 startingElevation asm("t6");
+   s32 startingElevation;
 
-   ox = x1;
-   oz = z1;
-   startingElevation = gTerrainPtr[z1][x1].elevation;
+   do {
+      ox = x1;
+      oz = z1;
+      startingElevation = gTerrainPtr[z1][x1].elevation;
 
-   if (x1 > x2) {
-      xstep = -1;
-   }
-   if (x1 < x2) {
-      xstep = 1;
-   }
-   if (z1 > z2) {
-      zstep = -1;
-   }
-   if (z1 < z2) {
-      zstep = 1;
-   }
+      if (x1 > x2) {
+         xstep = -1;
+      }
+      if (x1 < x2) {
+         xstep = 1;
+      }
+      if (z1 > z2) {
+         zstep = -1;
+      }
+      if (z1 < z2) {
+         zstep = 1;
+      }
 
-   highest = startingElevation;
+      highest = startingElevation;
+   } while (0);
 
    do {
       x1 += xstep;

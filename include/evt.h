@@ -32,6 +32,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP_OBJECT_CHEST = 40,
    EVTF_MAP_OBJECT_CRATE = 46,
    EVTF_UNIT_SPRITES_DECODER = 50,
+   EVTF_ATTACK_INFO_MARKER = 52,
    EVTF_STRETCH_WARP_SPRITE = 62,
    EVTF_SPELL_FX2_HEALING = 100,
    EVTF_CLOUD = 215,
@@ -373,6 +374,22 @@ typedef struct EvtData_031 {
    /* :0x29 */ u8 unk_0x29[55];
 } EvtData_031;
 
+/* Attack Info Marker */
+typedef struct EvtData_052 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 type;
+   /* :0x26 */ s16 clut;
+   /* :0x28 */ s16 angle;
+   /* :0x2A */ s16 timer;
+   /* :0x2C */ u8 unk_0x2C[44];
+   /* :0x58 */ struct EvtData *unitSprite;
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_052;
+
 /* Panorama */
 typedef struct EvtData_405 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -489,32 +506,33 @@ typedef struct EvtData {
    union {
       u8 bytes[80];
       EvtData_Sprite sprite;
-      EvtData_004_005_408 evtf004;
-      EvtData_007 evtf007;
-      EvtData_008 evtf008;
-      EvtData_014 evtf014;
-      EvtData_015 evtf015;
-      EvtData_016 evtf016;
-      EvtData_017 evtf017;
-      EvtData_021 evtf021;
-      EvtData_022_029 evtf022;
-      EvtData_023 evtf023;
-      EvtData_024 evtf024;
-      EvtData_025 evtf025;
-      EvtData_026_588 evtf026;
-      EvtData_027 evtf027;
-      EvtData_028 evtf028;
-      EvtData_031 evtf031;
-      EvtData_405 evtf405;
-      EvtData_410 evtf410;
-      EvtData_421_422 evtf421;
-      EvtData_438 evtf438;
-      EvtData_564_565_566 evtf564;
-      EvtData_567 evtf567;
-      EvtData_571 evtf571;
-      EvtData_573 evtf573;
-      EvtData_581 evtf581;
-      EvtData_592 evtf592;
+      EvtData_004_005_408 evtf004; /* Window */
+      EvtData_007 evtf007;         /* Apply Poison */
+      EvtData_008 evtf008;         /* Battle Portrait */
+      EvtData_014 evtf014;         /* Battle Unit */
+      EvtData_015 evtf015;         /* Targeting Attack */
+      EvtData_016 evtf016;         /* Choose Done Direction */
+      EvtData_017 evtf017;         /* Camera - TBD */
+      EvtData_021 evtf021;         /* Unit Attacking */
+      EvtData_022_029 evtf022;     /* Projectile */
+      EvtData_023 evtf023;         /* Camera - Ranged Target */
+      EvtData_024 evtf024;         /* Camera - Bounce Zoom */
+      EvtData_025 evtf025;         /* Overhead Map View */
+      EvtData_026_588 evtf026;     /* Camera - TBD */
+      EvtData_027 evtf027;         /* Targeting Spell */
+      EvtData_028 evtf028;         /* Unit Casting Spell */
+      EvtData_031 evtf031;         /* Battle Spells List */
+      EvtData_052 evtf052;         /* Attack Info Marker */
+      EvtData_405 evtf405;         /* Panorama */
+      EvtData_410 evtf410;         /* Camera - Event Zoom */
+      EvtData_421_422 evtf421;     /* MsgBox Tail (Upper) */
+      EvtData_438 evtf438;         /* Evaluate Battle 08 */
+      EvtData_564_565_566 evtf564; /* Map Object - Rippling Water */
+      EvtData_567 evtf567;         /* Opening Chest */
+      EvtData_571 evtf571;         /* Level Up - Camera Control, Sound */
+      EvtData_573 evtf573;         /* Battle Items List */
+      EvtData_581 evtf581;         /* Audio Command */
+      EvtData_592 evtf592;         /* Battle - Turn Start */
    } d;
 } EvtData;
 

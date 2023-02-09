@@ -66,6 +66,9 @@ extern u8 gTargetCoords[72];
 extern s16 gCurrentSpell;
 extern TileState (*gTileStateGridPtr)[65];
 
+extern u8 gAdvantage[49][49];
+extern u8 gLevelDisparityBonus[160];
+
 struct UnitStatus *FindUnitByNameIdx(s16);
 s32 CountUnitsOfType(s16);
 s32 CountUnitsOfTeam(s16);

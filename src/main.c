@@ -170,8 +170,8 @@ void Evtf582_MainMenu_Jpn(EvtData *evt) {
          gState.depot[i] = ITEM_NULL;
       }
 
-      if (gWindowChoice.d.s.windowId == 0x34 && gWindowChoice.d.s.choice != 0) {
-         if (gWindowChoice.d.raw == 0x3401) {
+      if (gWindowChoice.s.windowId == 0x34 && gWindowChoice.s.choice != 0) {
+         if (gWindowChoice.raw == 0x3401) {
             ResetStateForNewGame();
             gState.primary = STATE_MOVIE;
             gState.movieIdxToPlay = MOV_LOGO_USA_STR;
@@ -179,7 +179,7 @@ void Evtf582_MainMenu_Jpn(EvtData *evt) {
             gState.state3 = 0;
             gState.state4 = 0;
          }
-         if (gWindowChoice.d.raw == 0x3402) {
+         if (gWindowChoice.raw == 0x3402) {
             CloseWindow(0x34);
             evtDialog = Evt_GetUnused();
             evtDialog->functionIndex = EVTF_FILE_LOAD_DIALOG_360;
@@ -246,8 +246,8 @@ void State_Init(void) {
    gPad2State = 0;
    gPadStateNewPresses = 0;
    gPad2StateNewPresses = 0;
-   gWindowChoice.d.raw = 0;
-   gWindowActivatedChoice.d.raw = 0;
+   gWindowChoice.raw = 0;
+   gWindowActivatedChoice.raw = 0;
    gMapDataPtr = gScratch3_80180210;
    gGraphicsPtr = &gGraphicBuffers[0];
    ClearUnits();

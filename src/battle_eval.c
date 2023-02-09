@@ -607,7 +607,7 @@ void Evtf559_EvaluateBattle39(EvtData *evt) {
    s32 unitIdx;
    if (gState.needEval) {
       gState.needEval = 0;
-      unitIdx = gMapUnitsPtr[6][3].unitIdx;
+      unitIdx = gMapUnitsPtr[6][3].s.unitIdx;
       if (unitIdx != 0 && gUnits[unitIdx].name == UNIT_LEENA) {
          gState.battleEval = BATTLE_EVAL_VICTORY;
       }

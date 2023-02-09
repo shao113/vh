@@ -264,6 +264,7 @@ typedef enum UnitId {
    UNIT_ID_BUGABOO = 75,
    UNIT_ID_LANDO = 90,
    UNIT_ID_SABINA = 91,
+   UNIT_ID_JUGGERNAUT = 94,
    UNIT_ID_GRENADIER = 111,
    UNIT_ID_BASILISK = 127,
    UNIT_ID_M_CANNON = 129,
@@ -391,17 +392,17 @@ typedef struct UnitStatus {
    u32 defVar10000;
    u32 agiVar10000;
    u16 hp;
-   s16 maxHp;
+   u16 maxHp;
    u16 attack;
    u16 defense;
-   s16 agility;
+   u16 agility;
    u16 exp;
    u16 mp;
    u16 maxMp;
-   s16 hpVar100;
-   s16 atkVar100;
-   s16 defVar100;
-   s16 agiVar100;
+   u16 hpVar100;
+   u16 atkVar100;
+   u16 defVar100;
+   u16 agiVar100;
    s16 direction;
    u8 stripIdx;
    u8 spells[10];
@@ -505,12 +506,15 @@ enum {
    SPELL_EX_EFFECT = 4
 };
 
+enum { AILMENT_POISON = 0, AILMENT_PARAYLYZE = 1 };
+
 extern s8 gCharacterNames[35][7];
 extern s8 gUnitTypeNames[86][11];
 extern s8 gItemNames[139][13];
 extern u8 gItemNamesSjis[101][17];
 extern s8 *gItemDescriptions[101];
 extern s8 gItemEquipmentDisplayPower[104];
+extern u8 gItemEquipmentPower[104];
 extern u8 gItemSpells[104];
 
 extern Spell gSpells[80];
@@ -527,5 +531,12 @@ extern BigInt gExperienceLevels[];
 extern void *gUnitDataPtr;
 
 extern u16 gUnitPortraitIds[UNIT_CT];
+
+extern s16 gClassBaseAttack[10];
+extern s16 gClassBaseDefense[10];
+extern s16 gClassBaseMaxHp[10];
+extern s16 gClassBaseAgility[10];
+extern u16 gClassBlockChance[10];
+extern u8 gClassMpMultiplier[8];
 
 #endif

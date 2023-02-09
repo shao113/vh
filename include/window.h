@@ -9,14 +9,12 @@ typedef enum WindowBorderStyle {
    WBS_ROUNDED = 2
 } WindowBorderStyle;
 
-typedef struct WindowChoice {
-   union {
-      s8 bytes[2];
-      s16 raw;
-      struct {
-         s8 choice, windowId;
-      } s;
-   } d;
+typedef union WindowChoice {
+   s8 bytes[2];
+   s16 raw;
+   struct {
+      s8 choice, windowId;
+   } s;
 } WindowChoice;
 
 extern u16 gWindowChoiceHeight, gWindowChoicesCount, gWindowChoicesTopMargin;

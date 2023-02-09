@@ -24,7 +24,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      caster = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].unitIdx];
+      caster = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
       EVT.caster = caster;
 
       if (gSpells[gCurrentSpell].area == SPELL_AREA_NULL) {
@@ -74,7 +74,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
       switch (evt->state2) {
       case SPELL_TARGET_ENEMY:
          if (gRedAttackGridPtr[gMapCursorZ][gMapCursorX] != 0) {
-            unitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].unitIdx;
+            unitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx;
             if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
                gTargetX = gMapCursorX;
                gTargetZ = gMapCursorZ;
@@ -87,7 +87,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
          return;
       case SPELL_TARGET_ALLY:
          if (gRedAttackGridPtr[gMapCursorZ][gMapCursorX] != 0) {
-            unitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].unitIdx;
+            unitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx;
             if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
                gTargetX = gMapCursorX;
                gTargetZ = gMapCursorZ;
@@ -105,7 +105,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
          for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gRedAttackGridPtr[iz][ix] != 0) {
-                  unitIdx = gMapUnitsPtr[iz][ix].unitIdx;
+                  unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
                      gTargetX = HI(EVT.x);
                      gTargetZ = HI(EVT.z);
@@ -121,7 +121,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
          for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gRedAttackGridPtr[iz][ix] != 0) {
-                  unitIdx = gMapUnitsPtr[iz][ix].unitIdx;
+                  unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
                      gTargetX = HI(EVT.x);
                      gTargetZ = HI(EVT.z);
@@ -194,7 +194,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
 
       switch (evt->state2) {
       case SPELL_TARGET_ENEMY:
-         unitIdx = gMapUnitsPtr[gTargetZ][gTargetX].unitIdx;
+         unitIdx = gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx;
          if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
             evt->state = 100;
             return;
@@ -203,7 +203,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
          evt->state2 = 0;
          return;
       case SPELL_TARGET_ALLY:
-         unitIdx = gMapUnitsPtr[gTargetZ][gTargetX].unitIdx;
+         unitIdx = gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx;
          if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
             evt->state = 100;
             return;
@@ -216,7 +216,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
          for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gYellowTargetGridPtr[iz][ix] != 0) {
-                  unitIdx = gMapUnitsPtr[iz][ix].unitIdx;
+                  unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
                      evt->state = 100;
                   }
@@ -230,7 +230,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
          for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gYellowTargetGridPtr[iz][ix] != 0) {
-                  unitIdx = gMapUnitsPtr[iz][ix].unitIdx;
+                  unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
                      evt->state = 100;
                   }
