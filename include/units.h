@@ -539,4 +539,6 @@ extern s16 gClassBaseAgility[10];
 extern u16 gClassBlockChance[10];
 extern u8 gClassMpMultiplier[8];
 
+u8 GetItemNameLength(u8);
+
 #endif

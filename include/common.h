@@ -35,6 +35,7 @@
 #define PAD_R2 PADR2
 #define PAD_START PADstart
 #define PAD_SELECT PADselect
+#define PAD_DPAD (PAD_UP | PAD_DOWN | PAD_LEFT | PAD_RIGHT)
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 240
@@ -64,6 +65,7 @@ s32 abs(s32);
 #define TO_TILE(arg) (*((s8 *)&arg + 1))
 
 #define SPR_TERRAIN(spr) gTerrainPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
+#define SPR_TILESTATE(spr) gTileStateGridPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
 
 typedef u16 BigInt[8];
 

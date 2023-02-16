@@ -59,7 +59,10 @@ segments:
     - [0x001e5c, .rdata, battle_012dcc]        # 0x8001165c
     - [0x001ea0, .rdata, battle_013b94]        # 0x800116a0
     - [0x0023c8, .rdata, battle_0190dc]        # 0x80011bc8
-    - [0x002424, rdata]                        # 
+    - [0x002424, rdata]                        # TODO: PathGrid stuff
+    - [0x0024d8, .rdata, battle_01f360]        # 0x80011cd8
+    - [0x002584, .rdata, battle_0201b8]        # 0x80011d84
+    - [0x002b60, rdata]                        #
 
     - [0x0033ec, .rdata, evt]                  # 0x80012bec
     - [0x003500, rdata]                        # 0x80012d00
@@ -79,7 +82,10 @@ segments:
     - [0x012dcc, c, battle_012dcc]             # 0x800225cc Evtf027_TargetingSpell
     - [0x013b94, c, battle_013b94]             # 0x80023394 ClearBattlePortraits ...
     - [0x0190dc, c, battle_0190dc]             # 0x800288dc EmbedIntAsSjis ...
-    - [0x01bba8, bin]                          # 
+    - [0x01bba8, bin]                          # TODO: PathGrid stuff
+    - [0x01f360, c, battle_01f360]             # 0x8002eb60 QueueImpededStep ...
+    - [0x0201b8, c, battle_0201b8]             # 0x8002f9b8 ShowReceivedItemDialog ...
+    - [0x02326c, bin]
 
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
     - [0x028f2c, bin]                          # 0x8003872c
@@ -126,7 +132,8 @@ segments:
     - [0x113674, .sdata, engine]               # 0x80122e74
     - [0x11367c, .sdata, projectile]           # 0x80122e7c
     - [0x1136b4, .sdata, battle_013b94]        # 0x80122eb4
-    - [0x1136c4, bin] 
+    - [0x1136c4, .sdata, battle_0201b8]        # 0x80122ec4
+    - [0x1136d4, bin]
 
     - [0x113710, .sdata, card]                 # 0x80122f10
     - [0x11372c, sdata]                        # 0x80122f2c

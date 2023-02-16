@@ -6,6 +6,27 @@
 #include "field.h"
 #include "window.h"
 
+void EmbedIntAsSjis(s32, u8 *, u8);
+void EmbedExp(s32, s8 *, u8);
+u8 GetItemNameLength(u8);
+void ShowExpDialog(s32, u8);
+void SyncGainedHp(UnitStatus *, u8);
+s32 CheckForSupporterBonus(u8, u8, u8, u8, u8);
+void DisplaySupporterBonus(u8, u8, u8, u8, u8);
+s16 CalculateAttackDamage(UnitStatus *, UnitStatus *);
+s32 TryInflictingAilment(UnitStatus *, UnitStatus *, u8);
+void CalculateSupportSpellExp(UnitStatus *);
+s16 CalculateSpellPowerAndExp(UnitStatus *, UnitStatus *);
+void DetermineMaxMpAndStatVariance(UnitStatus *);
+void CalculateUnitStats(UnitStatus *);
+s32 BigIntCompare(BigInt, BigInt);
+void BigIntAdd(BigInt, BigInt);
+void BigIntSubtract(BigInt, BigInt);
+void BigIntDivide(BigInt, BigInt, u16);
+void func_8002ADCC(s16, s16, s32, s32);
+void ApplyAirmanAdjustments(u8);
+void RevertAirmanAdjustments(void);
+
 void EmbedIntAsSjis(s32 num, u8 *dst, u8 numDigits) {
    const s32 powersOfTen[] = {10, 100, 1000, 10000, 100000};
    s32 i, power, units;

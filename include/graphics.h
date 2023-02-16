@@ -186,6 +186,41 @@ typedef struct TextureWindow {
    u8 x, y, w, h;
 } TextureWindow;
 
+/* Partial; defining as needed */
+// neutral,injured,happy,angry,upset
+typedef enum PortraitId {
+   PORTRAIT_ASH = 1,
+   PORTRAIT_ASH_UPSET = 5,
+   PORTRAIT_ASH_6 = 6,
+   PORTRAIT_CLINT = 8,
+   PORTRAIT_DIEGO = 15,
+   PORTRAIT_ELENI_25 = 25,
+   PORTRAIT_KIRA = 36,
+   PORTRAIT_DOLAN = 50,
+   PORTRAIT_AMON_HAPPY = 59,
+   PORTRAIT_AMON_ANGRY = 60,
+   PORTRAIT_SARA = 64,
+   PORTRAIT_SARA_HAPPY = 66,
+   PORTRAIT_ZOHAR = 71,
+   PORTRAIT_C_KNIGHT = 463,
+   PORTRAIT_KANE = 480,
+   PORTRAIT_KANE_HAPPY = 482,
+   PORTRAIT_KANE_ANGRY = 483,
+   PORTRAIT_KANE_BLK_KNIGHT = 485,
+   PORTRAIT_SABINA = 506,
+   PORTRAIT_LANDO_514 = 514,
+   PORTRAIT_DALLAS_516 = 516,
+   PORTRAIT_JUGGERNAUT = 560,
+   PORTRAIT_DUMAS = 561,
+   PORTRAIT_DUMAS_562 = 562,
+   PORTRAIT_XENO = 585,
+   PORTRAIT_APPARITION_675 = 675,
+   PORTRAIT_KANE_APPARITION = 678,
+   PORTRAIT_APPARITION_681 = 681,
+   PORTRAIT_KANE_CURSED = 684,
+   PORTRAIT_JUGGERNAUT_INJURED = 686,
+} PortraitId;
+
 typedef struct PortraitOverlayOffsets {
    u8 blinkX, blinkY, speakX, speakY;
 } PortraitOverlayOffsets;

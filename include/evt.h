@@ -35,6 +35,7 @@ typedef enum EvtFunctionIdx {
    EVTF_ATTACK_INFO_MARKER = 52,
    EVTF_STRETCH_WARP_SPRITE = 62,
    EVTF_SPELL_FX2_HEALING = 100,
+   EVTF_BLOOD_SPURT = 205,
    EVTF_CLOUD = 215,
    EVTF_FILE_SAVE_DIALOG = 341,
    EVTF_FILE_LOAD_DIALOG_360 = 360,
@@ -85,8 +86,10 @@ typedef enum EvtFunctionIdx {
    EVTF_DISPLAY_ICON = 574,
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
+   EVTF_BATTLE_MSGBOX = 586,
    EVTF_CAMERA_TBD_588 = 588,
    EVTF_MAP_OBJECT_BOULDER = 591,
+   EVTF_TBD_732 = 732,
    EVTF_SPARKLE_DUST = 735,
    EVTF_REMOVE_PARALYSIS = 737,
    EVTF_PROJECTILE_TRAIL_POISON = 764,
@@ -390,6 +393,20 @@ typedef struct EvtData_052 {
    /* :0x5C */ struct EvtData *sprite;
 } EvtData_052;
 
+/* Stretch Warp Sprite */
+typedef struct EvtData_062 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 speed;
+   /* :0x26 */ s16 phase;
+   /* :0x28 */ u8 unk_0x28[40];
+   /* :0x50 */ struct EvtData *sprite;
+   /* :0x54 */ u8 unk_0x54[12];
+} EvtData_062;
+
 /* Panorama */
 typedef struct EvtData_405 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -487,6 +504,37 @@ typedef struct EvtData_581 {
    /* :0x29 */ u8 unk_0x29[55];
 } EvtData_581;
 
+/* Battle - Player Event */
+typedef struct EvtData_585 {
+   /* :0x10 */ u8 unk_0x10[76];
+   /* :0x5C */ s8 timer;
+   /* :0x5D */ u8 unk_0x5D[3];
+} EvtData_585;
+
+/* Battle - MsgBox */
+typedef struct EvtData_586 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s16 nameIdx;
+   /* :0x26 */ s16 portrait;
+   /* :0x28 */ s16 textIdx;
+   /* :0x2A */ s16 omitTail;
+   /* :0x2C */ u8 unk_0x2C[48];
+   /* :0x5C */ s8 timer;
+   /* :0x5D */ u8 unk_0x5D[3];
+} EvtData_586;
+
+/* Battle - Enemy Event */
+typedef struct EvtData_587 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 timer;
+   /* :0x25 */ u8 unk_0x25[3];
+   /* :0x28 */ s8 xenoSpawnZ;
+   /* :0x29 */ u8 unk_0x29;
+   /* :0x2A */ s8 spawnZ;
+   /* :0x2B */ s8 spawnX;
+   /* :0x2C */ u8 unk_0x2C[52];
+} EvtData_587;
+
 /* Battle - Turn Start */
 typedef struct EvtData_592 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -495,6 +543,13 @@ typedef struct EvtData_592 {
    /* :0x26 */ s8 targets;
    /* :0x27 */ u8 unk_0x27[57];
 } EvtData_592;
+
+/* Battle - Intro */
+typedef struct EvtData_597 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 timer;
+   /* :0x25 */ u8 unk_0x25[59];
+} EvtData_597;
 
 typedef struct EvtData {
    /* 0x00 */ SVECTOR vec;
@@ -523,6 +578,7 @@ typedef struct EvtData {
       EvtData_028 evtf028;         /* Unit Casting Spell */
       EvtData_031 evtf031;         /* Battle Spells List */
       EvtData_052 evtf052;         /* Attack Info Marker */
+      EvtData_062 evtf062;         /* Stretch Warp Sprite */
       EvtData_405 evtf405;         /* Panorama */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
       EvtData_421_422 evtf421;     /* MsgBox Tail (Upper) */
@@ -532,7 +588,12 @@ typedef struct EvtData {
       EvtData_571 evtf571;         /* Level Up - Camera Control, Sound */
       EvtData_573 evtf573;         /* Battle Items List */
       EvtData_581 evtf581;         /* Audio Command */
+      EvtData_585 evtf585;         /* Battle - Player Event */
+      EvtData_586 evtf586;         /* Battle - MsgBox */
+      EvtData_587 evtf587;         /* Battle - Enemy Event */
+      EvtData_026_588 evtf588;     /* Camera - TBD */
       EvtData_592 evtf592;         /* Battle - Turn Start */
+      EvtData_597 evtf597;         /* Battle - Intro */
    } d;
 } EvtData;
 

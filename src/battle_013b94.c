@@ -1884,9 +1884,9 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
       }
       gTileStateGridPtr[gTargetZ][gTargetX].action = TA_X19;
       if (s_unitTypeToSpawn_801231b8 == UNIT_TYPE_ANT_ARM) {
-         SetupBattleUnit(7, gTargetZ, gTargetX, 1, TEAM_ENEMY, 0, 99, 0, 99);
+         SetupBattleUnit(7, gTargetZ, gTargetX, 1, TEAM_ENEMY, DIR_SOUTH, 99, 0, 99);
       } else {
-         SetupBattleUnit(1, gTargetZ, gTargetX, 10, TEAM_ENEMY, 0, 99, 10, 99);
+         SetupBattleUnit(1, gTargetZ, gTargetX, 10, TEAM_ENEMY, DIR_SOUTH, 99, 10, 99);
       }
       evt->state++;
       return;
@@ -1924,9 +1924,8 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_STRETCH_WARP_SPRITE;
          evt_v1->mem = 1;
-         // TODO replace
-         HI(evt_v1->d.sprite.z1) = gTargetZ;
-         HI(evt_v1->d.sprite.x1) = gTargetX;
+         HI(evt_v1->d.evtf062.z) = gTargetZ;
+         HI(evt_v1->d.evtf062.x) = gTargetX;
          EVT.timer = 20;
       }
       evt->state++;

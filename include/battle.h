@@ -42,6 +42,7 @@ typedef enum TileAction {
    TA_CHEST_2 = 19,
    TA_CHEST_3 = 20,
    TA_LEVEL_UP = 21,
+   TA_X16 = 22,
    TA_PHYS_DEFEAT_MSG = 23,
    TA_MAG_DEFEAT_MSG = 24,
    TA_X19 = 25, // ?: Spawning
@@ -69,8 +70,17 @@ extern TileState (*gTileStateGridPtr)[65];
 extern u8 gAdvantage[49][49];
 extern u8 gLevelDisparityBonus[160];
 
-struct UnitStatus *FindUnitByNameIdx(s16);
+// struct UnitStatus *FindUnitByNameIdx(s16); //FIXME
 s32 CountUnitsOfType(s16);
 s32 CountUnitsOfTeam(s16);
+
+void QueueImpededStep(s16, s16, s32, s32 *, s16, u8);
+void PlotPathBackToUnit(s32, s32);
+void PopulateMeleeAttackGridInDir(s16, s16, s16, s16, s32);
+void PopulateMeleeAttackGrid(s16, s16, s32, u8);
+void PopulateCastingGrid(s16, s16, s32, s32);
+void ClearGrid(s32);
+void ClearBlueMovementGrid(void);
+void PopulateRangedAttackGrid(s16, s16, s32, s32);
 
 #endif
