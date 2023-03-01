@@ -237,7 +237,7 @@ void State_Init(void) {
    gMapCursorX = 0;
    gMapCursorZ = 0;
    gState.inEvent = 0;
-   gState.showEnemyRange = 0;
+   gState.previewingRange = 0;
    gSavedPadState = 0;
    gSavedPad2State = 0;
    gSavedPadStateNewPresses = 0;

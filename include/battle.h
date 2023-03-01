@@ -49,6 +49,7 @@ typedef enum TileAction {
    TA_PUSHING_BOULDER = 26,
    TA_BOULDER_PUSHED = 27,
    TA_BOULDER_HIT = 28,
+   TA_X1D = 29,
    TA_X1E = 30,
    TA_X1F = 31,
 } TileAction;
@@ -66,6 +67,10 @@ extern s16 gTargetX, gTargetZ;
 extern u8 gTargetCoords[72];
 extern s16 gCurrentSpell;
 extern TileState (*gTileStateGridPtr)[65];
+
+extern s8 gZ_801233dc, gX_801233d8, gTargetZ_80123418, gTargetX_80123414;
+extern u16 gDir_80123470;
+extern u8 D_80123468, D_8012337C;
 
 extern u8 gAdvantage[49][49];
 extern u8 gLevelDisparityBonus[160];

@@ -62,7 +62,7 @@ segments:
     - [0x002424, rdata]                        # TODO: PathGrid stuff
     - [0x0024d8, .rdata, battle_01f360]        # 0x80011cd8
     - [0x002584, .rdata, battle_0201b8]        # 0x80011d84
-    - [0x002b60, rdata]                        #
+    - [0x0030f4, rdata]                        #
 
     - [0x0033ec, .rdata, evt]                  # 0x80012bec
     - [0x003500, rdata]                        # 0x80012d00
@@ -85,7 +85,7 @@ segments:
     - [0x01bba8, bin]                          # TODO: PathGrid stuff
     - [0x01f360, c, battle_01f360]             # 0x8002eb60 QueueImpededStep ...
     - [0x0201b8, c, battle_0201b8]             # 0x8002f9b8 ShowReceivedItemDialog ...
-    - [0x02326c, bin]
+    - [0x027dd4, bin]
 
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
     - [0x028f2c, bin]                          # 0x8003872c
@@ -109,7 +109,9 @@ segments:
     - [0x0e1234, .data, engine]                # 0x800f0a34
     - [0x0e1384, .data, glyphs]                # 0x800f0b84
     - [0x0e1ed8, .data, window]                # 0x800f16d8
-    - [0x0e1ee4, data]                         # 0x800f16e4
+    - [0x0e1ee4, .data, battle_0190dc]         # 0x800f16e4
+    - [0x0e3094, .data, battle_0201b8]         # 0x800f2894
+    - [0x0e326c, data]                         # 
 
     - [0x0e3914, .data, gCdFiles]              # 0x800f3114
     - [0x0e5a74, data]
@@ -133,7 +135,7 @@ segments:
     - [0x11367c, .sdata, projectile]           # 0x80122e7c
     - [0x1136b4, .sdata, battle_013b94]        # 0x80122eb4
     - [0x1136c4, .sdata, battle_0201b8]        # 0x80122ec4
-    - [0x1136d4, bin]
+    - [0x1136e0, bin]
 
     - [0x113710, .sdata, card]                 # 0x80122f10
     - [0x11372c, sdata]                        # 0x80122f2c

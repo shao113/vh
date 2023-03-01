@@ -70,6 +70,12 @@ typedef struct ImpededStep {
    u8 rem;
 } ImpededStep;
 
+typedef struct HiddenItem {
+   u8 z;
+   u8 x;
+   u8 item;
+} HiddenItem;
+
 // ?: a PathGrid can contain PathStep (direction), num steps from start, ...
 typedef u8 PathGridRow[65];
 extern PathGridRow gPathGrid0[30];
@@ -103,9 +109,13 @@ extern VECTOR gMapScale;
 extern s32 D_80122E28, D_80122E2C;
 extern u8 gOverheadMapState;
 extern BVectorZXY gMapCursorStartingPos[BATTLE_CT];
+extern HiddenItem gMapHiddenItems[BATTLE_CT][2];
+extern s8 gShowBlueMovementGrid;
 
 extern PathGridRow *gRedAttackGridPtr;
 extern PathGridRow *gYellowTargetGridPtr;
 extern PathGridRow *gBlueMovementGridPtr;
+extern PathGridRow *gPathGrid1_Ptr;
+extern PathGridRow *gPathGrid2_Ptr;
 
 #endif

@@ -18,6 +18,8 @@ typedef enum PrimaryState {
    STATE_DEBUG_MENU = 0x63,
 } PrimaryState;
 
+typedef enum CameraMode { CAMERA_MODE_DYNAMIC = 0, CAMERA_MODE_FIXED = 1 } CameraMode;
+
 typedef struct DynamicIcon {
    u16 gfxIdx;
    s16 x;
@@ -125,7 +127,7 @@ typedef struct State {
    u8 field_0x31e;
    u8 field_0x31f;
    s8 **currentTextPointers;
-   u8 showEnemyRange;
+   u8 previewingRange;
    u8 zoom;
    s16 unitMarkerSpin;
    u8 lastSelectedUnit;

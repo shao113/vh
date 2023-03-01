@@ -17,30 +17,42 @@ typedef enum EvtFunctionIdx {
    EVTF_NULL = 0,
    EVTF_NOOP = 1, /* TBD Used only for sprites? Sometimes used as a data store? */
    EVTF_MENU_CHOICE = 2,
+   EVTF_BATTLE_ACTIONS = 3,
    EVTF_WINDOW_TBD_004 = 4,
    EVTF_WINDOW_TBD_005 = 5,
    EVTF_APPLY_POISON = 7,
    EVTF_BATTLE_PORTRAIT = 8,
+   EVTF_TARGETING_ATTACK = 15,
+   EVTF_CHOOSE_DONE_DIRECTION = 16,
    EVTF_CAMERA_TBD_017 = 17,
    EVTF_UNIT_ATTACKING = 21,
    EVTF_PROJECTILE = 22,
    EVTF_BOUNCE_ZOOM = 24,
+   EVTF_OVERHEAD_MAP_VIEW = 25,
    EVTF_CAMERA_TBD_026 = 26,
+   EVTF_TARGETING_SPELL = 27,
    EVTF_UNIT_CASTING = 28,
    EVTF_PROJECTILE_INDIRECT = 29, /* Unused? maybe to open chest w/ ranged attacker? */
+   EVTF_BATTLE_SPELLS_LIST = 31,
    EVTF_DISPLAY_DAMAGE = 32,
    EVTF_MAP_OBJECT_CHEST = 40,
    EVTF_MAP_OBJECT_CRATE = 46,
+   EVTF_PUSH = 48,
+   EVTF_BATTLE_MAP_CURSOR_CONTROL = 49,
    EVTF_UNIT_SPRITES_DECODER = 50,
    EVTF_ATTACK_INFO_MARKER = 52,
    EVTF_STRETCH_WARP_SPRITE = 62,
    EVTF_SPELL_FX2_HEALING = 100,
    EVTF_BLOOD_SPURT = 205,
    EVTF_CLOUD = 215,
+   EVTF_REVEAL_CHEST_ITEM = 290,
+   EVTF_REVEAL_HIDDEN_ITEM = 294,
    EVTF_FILE_SAVE_DIALOG = 341,
+   EVTF_FILE_SAVE_DIALOG_IBS = 342,
    EVTF_FILE_LOAD_DIALOG_360 = 360,
    EVTF_SCREEN_EFFECT = 369,
    EVTF_FILE_LOAD_DIALOG = 373,
+   EVTF_FILE_LOAD_DIALOG_IBS = 374,
    EVTF_FULLSCREEN_IMAGE = 387,
    EVTF_PANORAMA = 405,
    EVTF_NOOP_407 = 407,
@@ -81,17 +93,26 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP_OBJECT_LAVA_1 = 566,
    EVTF_OPENING_CHEST = 567,
    EVTF_MAP_OBJECT_LAVA_2 = 569,
+   EVTF_AI_TBD_570 = 570,
    EVTF_LEVEL_UP = 571,
    EVTF_MAP_OBJECT_LAVA_3 = 572,
+   EVTF_BATTLE_ITEMS_LIST = 573,
    EVTF_DISPLAY_ICON = 574,
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
+   EVTF_BATTLE_PLAYER_EVENT = 585,
    EVTF_BATTLE_MSGBOX = 586,
+   EVTF_BATTLE_ENEMY_EVENT = 587,
    EVTF_CAMERA_TBD_588 = 588,
+   EVTF_BATTLE_TURN_TICKER = 590,
    EVTF_MAP_OBJECT_BOULDER = 591,
+   EVTF_BATTLE_TURN_START = 592,
+   EVTF_STATUS_WINDOW = 595,
+   EVTF_STATUS_WINDOW_MGR = 596,
    EVTF_TBD_732 = 732,
    EVTF_SPARKLE_DUST = 735,
    EVTF_REMOVE_PARALYSIS = 737,
+   EVTF_REVEAL_USED_ITEM = 761,
    EVTF_PROJECTILE_TRAIL_POISON = 764,
    EVTF_PROJECTILE_TRAIL_EXPLOSION = 765,
    EVTF_PROJECTILE_TRAIL_SMOKE = 766,
@@ -134,6 +155,28 @@ typedef struct EvtData_Sprite {
    /* :0x5C */ u8 animSingleAxis;
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_Sprite;
+
+/* Battle - Actions */
+typedef struct EvtData_003 {
+   /* :0x10 */ s16 cursorState;
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[6];
+   /* :0x1E */ s16 unitX;
+   /* :0x20 */ s16 unitY;
+   /* :0x22 */ s16 unitZ;
+   /* :0x24 */ s8 range;
+   /* :0x25 */ s8 performedSubaction; // Whether unit has committed to a turn by using examine/push
+   /* :0x26 */ u8 unk_0x26;
+   /* :0x27 */ s8 remainingRange;
+   /* :0x28 */ struct UnitStatus *unit;
+   /* :0x2C */ u8 unk_0x2C;
+   /* :0x2D */ s8 cursorUnitIdx;
+   /* :0x2E */ u8 unk_0x2E[30];
+   /* :0x4C */ s8 timer;
+   /* :0x4D */ u8 unk_0x4D[19];
+} EvtData_003;
 
 /* Window (incomplete) */
 typedef struct EvtData_004_005_408 {
@@ -195,6 +238,16 @@ typedef struct EvtData_008 {
    /* :0x30 */ s16 portraitId;
    /* :0x32 */ u8 unk_0x32[46];
 } EvtData_008;
+
+/* Battle Manager */
+typedef struct EvtData_013 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct UnitStatus *unit;
+   /* :0x28 */ struct EvtData *unitSprite;
+   /* :0x2C */ s8 timer;
+   /* :0x2D */ s8 todo_x2d;
+   /* :0x2E */ u8 unk_0x2E[50];
+} EvtData_013;
 
 /* Battle Unit (Incomplete) */
 typedef struct EvtData_014 {
@@ -368,6 +421,19 @@ typedef struct EvtData_028 {
    /* :0x27 */ u8 unk_0x27[57];
 } EvtData_028;
 
+/* Unit/Field Info */
+typedef struct EvtData_030 {
+   /* :0x10 */ s16 terrainInfoState;
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s8 previousTerrain;
+   /* :0x25 */ u8 unk_0x25[3];
+   /* :0x28 */ s8 unitIdx;
+   /* :0x29 */ u8 unk_0x29[55];
+} EvtData_030;
+
 /* Battle Spells List */
 typedef struct EvtData_031 {
    /* :0x10 */ s16 drawState;
@@ -407,6 +473,17 @@ typedef struct EvtData_062 {
    /* :0x54 */ u8 unk_0x54[12];
 } EvtData_062;
 
+/* Reveal Item */
+typedef struct EvtData_290_294_761 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[20];
+   /* :0x2C */ u16 gfxIdx;
+   /* :0x2E */ u8 unk_0x2E[50];
+} EvtData_290_294_761;
+
 /* Panorama */
 typedef struct EvtData_405 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -437,6 +514,13 @@ typedef struct EvtData_421_422 {
    /* :0x2E */ s16 bottom;
    /* :0x30 */ u8 unk_0x30[48];
 } EvtData_421_422;
+
+/* Battle - Options */
+typedef struct EvtData_425 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 timer;
+   /* :0x25 */ u8 unk_0x25[59];
+} EvtData_425;
 
 /* Evaluate Battle 08 */
 typedef struct EvtData_438 {
@@ -561,9 +645,11 @@ typedef struct EvtData {
    union {
       u8 bytes[80];
       EvtData_Sprite sprite;
+      EvtData_003 evtf003;         /* Battle - Actions */
       EvtData_004_005_408 evtf004; /* Window */
       EvtData_007 evtf007;         /* Apply Poison */
       EvtData_008 evtf008;         /* Battle Portrait */
+      EvtData_013 evtf013;         /* Battle Manager */
       EvtData_014 evtf014;         /* Battle Unit */
       EvtData_015 evtf015;         /* Targeting Attack */
       EvtData_016 evtf016;         /* Choose Done Direction */
@@ -576,12 +662,15 @@ typedef struct EvtData {
       EvtData_026_588 evtf026;     /* Camera - TBD */
       EvtData_027 evtf027;         /* Targeting Spell */
       EvtData_028 evtf028;         /* Unit Casting Spell */
+      EvtData_030 evtf030;         /* Unit/Field Info */
       EvtData_031 evtf031;         /* Battle Spells List */
       EvtData_052 evtf052;         /* Attack Info Marker */
       EvtData_062 evtf062;         /* Stretch Warp Sprite */
+      EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_405 evtf405;         /* Panorama */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
       EvtData_421_422 evtf421;     /* MsgBox Tail (Upper) */
+      EvtData_425 evtf425;         /* Battle - Options */
       EvtData_438 evtf438;         /* Evaluate Battle 08 */
       EvtData_564_565_566 evtf564; /* Map Object - Rippling Water */
       EvtData_567 evtf567;         /* Opening Chest */
@@ -605,6 +694,8 @@ extern EvtData gEvtData050_UnitSpritesDecoder;
 extern EvtData *gTempGfxEvt;
 extern EvtData *gTempEvt;
 
+void Evt_ResetByFunction(s16);
+EvtData *Evt_FindByFunction(s16);
 void Evt_Execute(void);
 void Evt_ResetFromIdx10(void);
 void Evt_ResetAll(void);
