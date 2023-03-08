@@ -63,15 +63,16 @@ HiddenItem gMapHiddenItems[BATTLE_CT][2] = {
     [42] = {{12, 5, ITEM_GOLD_AXE}, {9, 18, ITEM_MOJOROBE}},
     [43] = {{99, 99, ITEM_NULL}, {99, 99, ITEM_NULL}}};
 
-EnemyEventSpawn gEnemyEventSpawns[6] = {{2, 19, 17, 29, 20}, {4, 19, 18, 25, 12},
-                                        {3, 18, 18, 25, 12}, {3, 20, 18, 25, 12},
-                                        {1, 18, 19, 24, 12}, {1, 20, 19, 24, 12}};
+static EnemyEventSpawn sEnemyEventSpawns[6] = {{2, 19, 17, 29, 20}, {4, 19, 18, 25, 12},
+                                               {3, 18, 18, 25, 12}, {3, 20, 18, 25, 12},
+                                               {1, 18, 19, 24, 12}, {1, 20, 19, 24, 12}};
 
-OromeLakeEnemySpawn gOromeLakeEnemySpawns1[7] = {{6, 13, 13, 23}, {7, 13, 13, 23}, {3, 20, 12, 24},
-                                                 {2, 19, 12, 24}, {2, 21, 12, 24}, {1, 20, 12, 24},
-                                                 {0, 0, 0, 0}};
+static OromeLakeEnemySpawn sOromeLakeEnemySpawns1[7] = {
+    {6, 13, 13, 23}, {7, 13, 13, 23}, {3, 20, 12, 24}, {2, 19, 12, 24},
+    {2, 21, 12, 24}, {1, 20, 12, 24}, {0, 0, 0, 0}};
 
-OromeLakeEnemySpawn gOromeLakeEnemySpawns2[3] = {{9, 11, 12, 24}, {7, 10, 12, 24}, {0, 0, 0, 0}};
+static OromeLakeEnemySpawn sOromeLakeEnemySpawns2[3] = {
+    {9, 11, 12, 24}, {7, 10, 12, 24}, {0, 0, 0, 0}};
 
 void ShowReceivedItemDialog(u8 item, u8 windowId, u8 param_3) {
    s32 len;
@@ -795,7 +796,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
          break;
 
       case 4:
-         pSpawn = &gEnemyEventSpawns[0];
+         pSpawn = &sEnemyEventSpawns[0];
 
          for (i = 0; i < 6; i++) {
             s32 iz, ix;
@@ -3743,9 +3744,9 @@ void Evtf013_BattleMgr(EvtData *evt) {
    case 104:
       if (--EVT.timer == 0) {
          if (HI(unitSprite->d.sprite.z1) == 11) {
-            pSpawn = &gOromeLakeEnemySpawns1[0];
+            pSpawn = &sOromeLakeEnemySpawns1[0];
          } else {
-            pSpawn = &gOromeLakeEnemySpawns2[0];
+            pSpawn = &sOromeLakeEnemySpawns2[0];
          }
          while (pSpawn->z != 0) {
             SetupBattleUnit(pSpawn->stripIdx, pSpawn->z, pSpawn->x, pSpawn->level, TEAM_ENEMY,
@@ -3781,4 +3782,67 @@ void Evtf013_BattleMgr(EvtData *evt) {
          gCameraZoom.vz += (b - gCameraZoom.vz) >> 3;
       }
    }
+}
+
+//////// TODO: Split from here ////////
+
+typedef struct ItemIconStripInfo {
+   RECT rect;
+   u8 unk_0x8;
+   u8 unk_0x9;
+} ItemIconStripInfo;
+
+static ItemIconStripInfo sItemIconStripInfo[10] = {
+    {{700, 352, 4, 144}, 128, 4}, {{764, 352, 4, 144}, 128, 4}, {{828, 0, 4, 240}, 128, 7},
+    {{828, 256, 4, 240}, 128, 7}, {{892, 0, 4, 240}, 128, 7},   {{892, 256, 4, 240}, 128, 7},
+    {{956, 0, 4, 240}, 128, 7},   {{956, 256, 4, 240}, 128, 7}, {{1020, 0, 4, 240}, 128, 7},
+    {{1020, 256, 4, 240}, 128, 7}};
+
+static s8 sHasDefeatSpeech[] = {
+    UNIT_ASH,    UNIT_CLINT,  UNIT_DIEGO,  UNIT_ELENI,  UNIT_HUXLEY, UNIT_KIRA,  UNIT_GROG,
+    UNIT_DOLAN,  UNIT_AMON,   UNIT_SARA,   UNIT_ZOHAR,  UNIT_DARIUS, UNIT_CLIVE, UNIT_LEENA,
+    UNIT_ZOOT,   32,          UNIT_HASSAN, UNIT_MAGNUS, UNIT_LANDO,  UNIT_DUMAS, UNIT_KANE,
+    UNIT_SABINA, UNIT_DALLAS, UNIT_KURTZ,  UNIT_XENO,   UNIT_DOLF,   0};
+/* 0, 14, UNIT_ASH, UNIT_GROG, UNIT_AMON, UNIT_SARA, UNIT_ZOOT, UNIT_HASSAN, 16, UNIT_MAGNUS,
+ * UNIT_LANDO, UNIT_DUMAS, UNIT_KANE, UNIT_KURTZ, UNIT_SABINA, 26, 28, 44, 41, 47, 48, 42, 45, 0,
+ * 0};*/
+
+//?: How to reproduce overlap with sHasDefeatSpeech[]?
+// static s16 sItemIconStripIntervalBytes = 0xa09;
+// static s16 sItemIconStripIntervalBytes[] = {0xa09};
+
+void SaveItemIcons(void) {
+   s32 i;
+   RECT rect;
+   u8 *p = gScratch1_801317c0;
+
+   for (i = 0; i < ARRAY_COUNT(sItemIconStripInfo); i++) {
+      rect.x = sItemIconStripInfo[i].rect.x;
+      rect.y = sItemIconStripInfo[i].rect.y;
+      rect.w = sItemIconStripInfo[i].rect.w;
+      rect.h = sItemIconStripInfo[i].rect.h;
+      StoreImage(&rect, p);
+      // FIXME:
+      // p += sItemIconStripIntervalBytes;
+      p += *(s16 *)&sHasDefeatSpeech[8];
+   }
+   DrawSync(0);
+}
+
+void RestoreItemIcons(void) {
+   s32 i;
+   RECT rect;
+   u8 *p = gScratch1_801317c0;
+
+   for (i = 0; i < ARRAY_COUNT(sItemIconStripInfo); i++) {
+      rect.x = sItemIconStripInfo[i].rect.x;
+      rect.y = sItemIconStripInfo[i].rect.y;
+      rect.w = sItemIconStripInfo[i].rect.w;
+      rect.h = sItemIconStripInfo[i].rect.h;
+      LoadImage(&rect, p);
+      // FIXME:
+      // p += sItemIconStripIntervalBytes;
+      p += *(s16 *)&sHasDefeatSpeech[8];
+   }
+   DrawSync(0);
 }

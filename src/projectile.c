@@ -177,14 +177,14 @@ void Evtf022_029_Projectile(EvtData *evt) {
 
       if (attacker->unitId == UNIT_ID_GRENADIER) {
          projectileSprite->d.sprite.gfxIdx = GFX_BOMB;
-         projectileSprite->d.sprite.vecIdx = 4;
+         projectileSprite->d.sprite.boxIdx = 4;
       } else if (attacker->unitId == UNIT_ID_BASILISK || attacker->unitId == UNIT_ID_M_CANNON ||
                  attacker->unitId == UNIT_ID_EGGWORM || attacker->unitId == UNIT_ID_BUGABOO) {
          projectileSprite->d.sprite.gfxIdx = GFX_EXPLOSION_3;
-         projectileSprite->d.sprite.vecIdx = 4;
+         projectileSprite->d.sprite.boxIdx = 4;
       } else {
          projectileSprite->d.sprite.gfxIdx = GFX_ARROW;
-         projectileSprite->d.sprite.vecIdx = 7;
+         projectileSprite->d.sprite.boxIdx = 7;
       }
 
       EVT.sprite = projectileSprite;

@@ -35,6 +35,7 @@ typedef enum EvtFunctionIdx {
    EVTF_PROJECTILE_INDIRECT = 29, /* Unused? maybe to open chest w/ ranged attacker? */
    EVTF_BATTLE_SPELLS_LIST = 31,
    EVTF_DISPLAY_DAMAGE = 32,
+   EVTF_DISPLAY_DAMAGE_2 = 33,
    EVTF_MAP_OBJECT_CHEST = 40,
    EVTF_MAP_OBJECT_CRATE = 46,
    EVTF_PUSH = 48,
@@ -42,8 +43,19 @@ typedef enum EvtFunctionIdx {
    EVTF_UNIT_SPRITES_DECODER = 50,
    EVTF_ATTACK_INFO_MARKER = 52,
    EVTF_STRETCH_WARP_SPRITE = 62,
+   EVTF_CIRCLE = 77,
    EVTF_SPELL_FX2_HEALING = 100,
+   EVTF_FX_TBD_132 = 132,
+   EVTF_FX_TBD_133 = 133,
+   EVTF_FX_TBD_134 = 134,
+   EVTF_FX_TBD_136 = 136,
+   EVTF_FX_TBD_137 = 137,
+   EVTF_FX_TBD_138 = 138,
+   EVTF_FX_TBD_140 = 140,
+   EVTF_FX_TBD_141 = 141,
+   EVTF_FX_TBD_142 = 142,
    EVTF_BLOOD_SPURT = 205,
+   EVTF_DUST_CLOUD_PARTICLE = 214,
    EVTF_CLOUD = 215,
    EVTF_REVEAL_CHEST_ITEM = 290,
    EVTF_REVEAL_HIDDEN_ITEM = 294,
@@ -118,7 +130,11 @@ typedef enum EvtFunctionIdx {
    EVTF_PROJECTILE_TRAIL_SMOKE = 766,
    EVTF_PROJECTILE_TRAIL_SPARKLES = 767,
    EVTF_ITEM_SPELL = 770,
-
+   EVTF_FX_TBD_799 = 799,
+   EVTF_FX_TBD_800 = 800,
+   EVTF_FX_TBD_801 = 801,
+   EVTF_FX_TBD_802 = 802,
+   EVTF_FX_TBD_803 = 803,
 } EvtFunctionIdx;
 
 typedef struct EvtData_Sprite {
@@ -144,9 +160,9 @@ typedef struct EvtData_Sprite {
    /* :0x30 */ s8 animFinished;
    /* :0x31 */ s8 semiTrans;
    /* :0x32 */ s16 otOfs;
-   /* :0x34 */ s16 vecIdx;
+   /* :0x34 */ s16 boxIdx;
    /* :0x36 */ s16 stripIdx;
-   /* :0x38 */ u8 *animData;
+   /* :0x38 */ void *animData;
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ s8 facingFront;
    /* :0x55 */ u8 unk_0x55[3];
@@ -473,6 +489,267 @@ typedef struct EvtData_062 {
    /* :0x54 */ u8 unk_0x54[12];
 } EvtData_062;
 
+/* Fade From Black */
+typedef struct EvtData_070 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s16 speed;
+   /* :0x26 */ u8 unk_0x26[38];
+   /* :0x4C */ s16 fade;
+   /* :0x4E */ u8 unk_0x4E[18];
+} EvtData_070;
+
+/* Fade To Black */
+typedef struct EvtData_071 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s16 speed;
+   /* :0x26 */ u8 unk_0x26[38];
+   /* :0x4C */ s16 fade;
+   /* :0x4E */ u8 unk_0x4E[18];
+} EvtData_071;
+
+/* Fade From White */
+typedef struct EvtData_072 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s16 speed;
+   /* :0x26 */ u8 unk_0x26[38];
+   /* :0x4C */ s16 fade;
+   /* :0x4E */ u8 unk_0x4E[18];
+} EvtData_072;
+
+/* Fade To White */
+typedef struct EvtData_073 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s16 speed;
+   /* :0x26 */ u8 unk_0x26[38];
+   /* :0x4C */ s16 fade;
+   /* :0x4E */ u8 unk_0x4E[18];
+} EvtData_073;
+
+/* Fade In Sprite */
+typedef struct EvtData_074 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 speed;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ s16 fade;
+   /* :0x2A */ u8 unk_0x2A[50];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_074;
+
+/* Fade Out Sprite */
+typedef struct EvtData_075 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 speed;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ s16 fade;
+   /* :0x2A */ u8 unk_0x2A[50];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_075;
+
+/* FX - Circles (TBD) */
+typedef struct EvtData_076 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[40];
+   /* :0x4E */ s16 todo_x4e;
+   /* :0x50 */ s16 todo_x50;
+   /* :0x52 */ u8 unk_0x52[14];
+} EvtData_076;
+
+/* FX - Circle (TBD) */
+typedef struct EvtData_077 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 fade;
+   /* :0x26 */ u8 unk_0x26[38];
+   /* :0x4C */ s16 angle;
+   /* :0x4E */ s16 todo_x4e;
+   /* :0x50 */ s16 todo_x50;
+   /* :0x52 */ u8 unk_0x52[14];
+} EvtData_077;
+
+/* Spell FX2 - Damage */
+typedef struct EvtData_078 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[58];
+} EvtData_078;
+
+/* Spell FX3 - Slay */
+typedef struct EvtData_079 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[58];
+} EvtData_079;
+
+/* FX - TBD */
+typedef struct EvtData_119 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 type;
+   /* :0x26 */ s16 boxIdx;
+   /* :0x28 */ s16 clut;
+   /* :0x2A */ s8 semiTrans;
+   /* :0x2B */ u8 unk_0x2B;
+   /* :0x2C */ s16 once;
+   /* :0x2E */ s16 radius;
+   /* :0x30 */ s16 theta;
+   /* :0x32 */ s16 h;
+   /* :0x34 */ u8 unk_0x34[24];
+   /* :0x4C */ s16 timer;
+   /* :0x4E */ u8 unk_0x4E[14];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_119;
+
+/* FX - TBD */
+typedef struct EvtData_130 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ u8 unk_0x28[38];
+   /* :0x4E */ s16 todo_x4e;
+   /* :0x50 */ s16 todo_x50;
+   /* :0x52 */ u8 unk_0x52[14];
+} EvtData_130;
+
+/* FX - TBD */
+/* 132, 134, 136, 138, 140, 142, 799, 800 */
+typedef struct EvtData_132_Etc {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 phase; // also used as a timer
+   /* :0x26 */ u8 unk_0x26[6];
+   /* :0x2C */ s16 fade;
+   /* :0x2E */ s16 increasing;
+   /* :0x30 */ u8 unk_0x30[28];
+   /* :0x4C */ s16 clut;
+   /* :0x4E */ u8 unk_0x4E[2];
+   /* :0x50 */ struct EvtData *unitSprite;
+   /* :0x54 */ u8 unk_0x54[12];
+} EvtData_132_Etc;
+
+/* FX - TBD */
+typedef struct EvtData_133_Etc {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 clut;
+   /* :0x26 */ s16 semiTrans;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ s16 todo_x2a; // increments x34
+   /* :0x2C */ u8 unk_0x2C[2];
+   /* :0x2E */ s16 radius;
+   /* :0x30 */ s16 theta;
+   /* :0x32 */ s16 h;
+   /* :0x34 */ s16 todo_x34;
+   /* :0x36 */ u8 unk_0x36[22];
+   /* :0x4C */ s16 timer;
+   /* :0x4E */ u8 unk_0x4E[14];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_133_Etc;
+
+/* FX - TBD */
+typedef struct EvtData_149 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 clut;
+   /* :0x26 */ s16 fadeSpeed;
+   /* :0x28 */ u8 unk_0x28[4];
+   /* :0x2C */ s16 fade;
+   /* :0x2E */ s16 increasing;
+   /* :0x30 */ u8 unk_0x30[44];
+   /* :0x5C */ struct EvtData *unitSprite;
+} EvtData_149;
+
+/* Dust Cloud */
+typedef struct EvtData_213 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[58];
+} EvtData_213;
+
+/* Dust Cloud Particle */
+typedef struct EvtData_214 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 theta;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ s16 halfSize;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ struct EvtData *sprite;
+   /* :0x30 */ SVectorXZY positions[8];
+} EvtData_214;
+
+/* Cloud (Sand, Dust, etc.) */
+typedef struct EvtData_215 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 theta;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ SVectorXZY position1;
+   /* :0x2E */ s16 position7_x;
+   /* :0x30 */ SVectorXZY position2;
+   /* :0x36 */ s16 position7_z;
+   /* :0x38 */ SVectorXZY position3;
+   /* :0x3E */ s16 position7_y;
+   /* :0x40 */ SVectorXZY position4;
+   /* :0x46 */ s16 position8_x;
+   /* :0x48 */ SVectorXZY position5;
+   /* :0x4E */ s16 position8_z;
+   /* :0x50 */ SVectorXZY position6;
+   /* :0x56 */ s16 position8_y;
+   /* :0x58 */ s16 halfSize;
+   /* :0x5A */ u8 unk_0x5A[2];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_215;
+
 /* Reveal Item */
 typedef struct EvtData_290_294_761 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -635,6 +912,18 @@ typedef struct EvtData_597 {
    /* :0x25 */ u8 unk_0x25[59];
 } EvtData_597;
 
+typedef struct EvtData_Unk_8006183c {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 clut;
+   /* :0x26 */ s16 scale;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct EvtData *unitSprite;
+} EvtData_Unk_8006183c;
+
 typedef struct EvtData {
    /* 0x00 */ SVECTOR vec;
    /* 0x08 */ s16 functionIndex;
@@ -666,6 +955,26 @@ typedef struct EvtData {
       EvtData_031 evtf031;         /* Battle Spells List */
       EvtData_052 evtf052;         /* Attack Info Marker */
       EvtData_062 evtf062;         /* Stretch Warp Sprite */
+      EvtData_070 evtf070;         /* Fade From Black */
+      EvtData_071 evtf071;         /* Fade To Black */
+      EvtData_072 evtf072;         /* Fade From White */
+      EvtData_073 evtf073;         /* Fade To White */
+      EvtData_074 evtf074;         /* Fade In Sprite */
+      EvtData_075 evtf075;         /* Fade Out Sprite */
+      EvtData_076 evtf076;         /* FX - Circles (TBD) */
+      EvtData_077 evtf077;         /* FX - Circle (TBD) */
+      EvtData_078 evtf078;         /* Spell FX2 - Damage */
+      EvtData_079 evtf079;         /* Spell FX3 - Slay */
+      EvtData_119 evtf119;         /* FX - TBD */
+      EvtData_149 evtf149;         /* FX - TBD */
+      EvtData_130 evtf130;         /* FX - TBD */
+      EvtData_132_Etc evtf132;     /* FX - TBD */
+      EvtData_133_Etc evtf133;     /* FX - TBD */
+      EvtData_133_Etc evtf137;     /* FX - TBD */
+      EvtData_133_Etc evtf141;     /* FX - TBD */
+      EvtData_213 evtf213;         /* Dust Cloud */
+      EvtData_214 evtf214;         /* Dust Cloud Particle */
+      EvtData_215 evtf215;         /* Cloud (Sand, Dust, etc.) */
       EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_405 evtf405;         /* Panorama */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
@@ -683,6 +992,10 @@ typedef struct EvtData {
       EvtData_026_588 evtf588;     /* Camera - TBD */
       EvtData_592 evtf592;         /* Battle - Turn Start */
       EvtData_597 evtf597;         /* Battle - Intro */
+      EvtData_133_Etc evtf801;     /* FX - TBD */
+      EvtData_133_Etc evtf802;     /* FX - TBD */
+      EvtData_133_Etc evtf803;     /* FX - TBD */
+      EvtData_Unk_8006183c evtfUnk8006183c;
    } d;
 } EvtData;
 
@@ -711,5 +1024,7 @@ void Evtf427_EvaluateBattle11(EvtData *);
 void Evtf438_EvaluateBattle08(EvtData *);
 void Evtf574_DisplayIcon(EvtData *);
 void Evtf581_AudioCommand(EvtData *);
+
+EvtData *CreatePositionedEvt(EvtData *, s32);
 
 #endif

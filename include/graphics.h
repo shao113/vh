@@ -9,6 +9,7 @@
 #define GFX_CT 870
 
 typedef enum GfxIdx {
+   GFX_NULL = 0,
    GFX_PLAYER_CIRCLE = 2,
    GFX_ENEMY_CIRCLE = 3,
    GFX_GRAVE_MARKER = 4,
@@ -52,6 +53,13 @@ typedef enum GfxIdx {
    GFX_S = 61,
    GFX_N = 62,
    GFX_RED_X = 64,
+   GFX_IMPACT_1 = 67,
+   GFX_IMPACT_2 = 68,
+   GFX_IMPACT_3 = 69,
+   GFX_IMPACT_4 = 70,
+   GFX_IMPACT_5 = 71,
+   GFX_IMPACT_6 = 72,
+   GFX_IMPACT_7 = 73,
    GFX_COLOR_1 = 74,
    GFX_COLOR_2 = 75,
    GFX_COLOR_3 = 76,
@@ -78,7 +86,34 @@ typedef enum GfxIdx {
    GFX_EXPLOSION_9 = 97,
    GFX_EXPLOSION_10 = 98,
    GFX_EXPLOSION_11 = 99,
+   GFX_SPARKLE_1 = 100,
+   GFX_SPARKLE_2 = 101,
+   GFX_SPARKLE_3 = 102,
+   GFX_SPARKLE_4 = 103,
+   GFX_SPARKLE_5 = 104,
+   GFX_FLAME_1 = 105,
+   GFX_FLAME_2 = 106,
+   GFX_FLAME_3 = 107,
+   GFX_FLAME_4 = 108,
+   GFX_FLAME_5 = 109,
+   GFX_FLAME_6 = 110,
+   GFX_FLAME_7 = 111,
+   GFX_FLAME_8 = 112,
+   GFX_PUFF_1 = 113,
+   GFX_PUFF_2 = 114,
+   GFX_PUFF_3 = 115,
+   GFX_PUFF_4 = 116,
+   GFX_PUFF_5 = 117,
+   GFX_PUFF_6 = 118,
+   GFX_PUFF_7 = 119,
+   GFX_PUFF_8 = 120,
+   GFX_PUFF_9 = 121,
+   GFX_PUFF_10 = 122,
    GFX_DOTS = 123,
+   GFX_ROCK_1 = 126,
+   GFX_ROCK_2 = 127,
+   GFX_ROCK_3 = 128,
+   GFX_ROCK_4 = 129,
    GFX_SWIRLY_RING = 131,
    GFX_SWIRLY_RING_TOP = 132,
    GFX_SWIRLY_RING_BTM = 133,
@@ -173,6 +208,28 @@ typedef enum GfxIdx {
    GFX_ITEM_ICONS_OFS = 727,
 } GfxIdx;
 
+/*typedef enum SpriteBoxIdx {
+   SPRITE_BOX_0 = 0,
+   SPRITE_BOX_1 = 1,
+   SPRITE_BOX_2 = 2,
+   SPRITE_BOX_3 = 3,
+   SPRITE_BOX_4 = 4,
+   SPRITE_BOX_5 = 5,
+   SPRITE_BOX_6 = 6,
+   SPRITE_BOX_7 = 7,
+   SPRITE_BOX_8 = 8,
+   SPRITE_BOX_9 = 9,
+   SPRITE_BOX_10 = 10,
+   SPRITE_BOX_11 = 11,
+   SPRITE_BOX_12 = 12,
+   SPRITE_BOX_13 = 13,
+   SPRITE_BOX_14 = 14,
+   SPRITE_BOX_15 = 15,
+   SPRITE_BOX_16 = 16,
+   SPRITE_BOX_17 = 17,
+   SPRITE_BOX_18 = 18
+} SpriteBoxIdx;*/
+
 typedef struct Graphics {
    DRAWENV drawEnv;
    DISPENV dispEnv;
@@ -257,6 +314,7 @@ extern u16 gTPageIds[4][32];
 extern PortraitOverlayOffsets gPortraitOverlayOffsetsDb[692];
 extern PortraitsDb gPortraitsDb;
 
+extern Quad gQuad_800fe53c;
 extern Quad gQuad_800fe63c;
 
 void DecodeUnitSprites(void);

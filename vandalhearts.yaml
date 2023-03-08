@@ -70,6 +70,9 @@ segments:
     - [0x0041d4, .rdata, card]                 # 0x800139d4
     - [0x0041f4, rdata]                        # 0x800139f4
 
+    - [0x005088, .rdata, fx_0506c0]            # 0x80014888
+    - [0x0050a4, rdata]
+
     - [0x006580, .rdata, audio]                # 0x80015d80 
     - [0x0069b0, bin]                          # 0x800161b0 end of audio jtbls
 
@@ -85,7 +88,7 @@ segments:
     - [0x01bba8, bin]                          # TODO: PathGrid stuff
     - [0x01f360, c, battle_01f360]             # 0x8002eb60 QueueImpededStep ...
     - [0x0201b8, c, battle_0201b8]             # 0x8002f9b8 ShowReceivedItemDialog ...
-    - [0x027dd4, bin]
+    - [0x027f7c, bin]
 
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
     - [0x028f2c, bin]                          # 0x8003872c
@@ -94,6 +97,9 @@ segments:
 
     - [0x039e48, c, card]                      # 0x80049648 State_FileSaveScreen ...
     - [0x03c94c, bin]                          # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
+
+    - [0x0506c0, c, fx_0506c0]                 # 8005fec0 Evtf119_Fx_TBD ...
+    - [0x054bc8, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
     - [0x0b0480, bin]
@@ -111,7 +117,7 @@ segments:
     - [0x0e1ed8, .data, window]                # 0x800f16d8
     - [0x0e1ee4, .data, battle_0190dc]         # 0x800f16e4
     - [0x0e3094, .data, battle_0201b8]         # 0x800f2894
-    - [0x0e326c, data]                         # 
+    - [0x0e32ec, data]                         # 
 
     - [0x0e3914, .data, gCdFiles]              # 0x800f3114
     - [0x0e5a74, data]
@@ -120,6 +126,10 @@ segments:
 
     - [0x0e76a4, data, portrait_data]          # 0x800f6ea4
     - [0x0e9b58, data]                         # 0x800f9358
+
+    - [0x0ef188, .data, fx_0506c0]             # 0x800fe988
+    - [0x0ef3c0, data]
+
     - [0x0f76ec, bin]                # - TBD - # Why is this necessary?
     - [0x0f76f0, data]               # # # # # # 
     

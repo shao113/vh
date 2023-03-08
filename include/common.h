@@ -63,6 +63,7 @@ s32 abs(s32);
 #define LO_H(arg) ((s16 *)&arg)[0]
 #define HI_H(arg) ((s16 *)&arg)[1]
 #define TO_TILE(arg) (*((s8 *)&arg + 1))
+#define ARRAY_COUNT(arr) (s32)(sizeof(arr) / sizeof(arr[0]))
 
 #define SPR_TERRAIN(spr) gTerrainPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
 #define SPR_TILESTATE(spr) gTileStateGridPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
