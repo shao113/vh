@@ -91,7 +91,7 @@ segments:
     - [0x027f7c, bin]
 
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
-    - [0x028f2c, bin]                          # 0x8003872c
+    - [0x02d548, bin]                          # 
     - [0x0318b4, c, battle_eval]               # 0x800410b4 FindUnitByNameIdx ...
     - [0x032ef0, bin]                          # 0x800426f0 (End of battle_eval)
 

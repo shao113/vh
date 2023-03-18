@@ -668,60 +668,60 @@ void DrawWindow(s16 windowId, s16 x, s16 y, s16 width, s16 height, s16 dispX, s1
          DrawGlyphStripGroup(gGlyphStripGroups[51], GFX_WINDOW_TBD_708);
 
          gGfxTPageCells[GFX_WINDOW_TBD_657 + windowId] = 8;
-         gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[0][8];
+         gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[8];
          gGfxTPageCells[GFX_WINDOW_TBD_658 + windowId] = 9;
-         gGfxTPageIds[GFX_WINDOW_TBD_658 + windowId] = gTPageIds[0][9];
+         gGfxTPageIds[GFX_WINDOW_TBD_658 + windowId] = gTPageIds[9];
       } else {
          gGfxTPageCells[GFX_WINDOW_TBD_707] = 14;
-         gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[0][14];
+         gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[14];
          gGfxTPageCells[GFX_WINDOW_TBD_708] = 15;
-         gGfxTPageIds[GFX_WINDOW_TBD_708] = gTPageIds[0][15];
+         gGfxTPageIds[GFX_WINDOW_TBD_708] = gTPageIds[15];
 
          DrawGlyphStripGroup(gGlyphStripGroups[50], GFX_WINDOW_TBD_707);
          DrawGlyphStripGroup(gGlyphStripGroups[51], GFX_WINDOW_TBD_708);
 
          gGfxTPageCells[GFX_WINDOW_TBD_707] = 8;
-         gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[0][8];
+         gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[8];
          gGfxTPageCells[GFX_WINDOW_TBD_708] = 9;
-         gGfxTPageIds[GFX_WINDOW_TBD_708] = gTPageIds[0][9];
+         gGfxTPageIds[GFX_WINDOW_TBD_708] = gTPageIds[9];
 
          gGfxTPageCells[GFX_WINDOW_TBD_657 + windowId] = 8;
-         gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[0][8];
+         gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[8];
          gGfxTPageCells[GFX_WINDOW_TBD_658 + windowId] = 9;
-         gGfxTPageIds[GFX_WINDOW_TBD_658 + windowId] = gTPageIds[0][9];
+         gGfxTPageIds[GFX_WINDOW_TBD_658 + windowId] = gTPageIds[9];
       }
    } else {
       // !usingMultipleTPages:
       if (type == 0) {
          DrawGlyphStripGroup(gGlyphStripGroups[50], GFX_WINDOW_TBD_707);
          gGfxTPageCells[GFX_WINDOW_TBD_657 + windowId] = 8;
-         gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[0][8];
+         gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[8];
       } else {
          if (type == 1) {
             gGfxTPageCells[GFX_WINDOW_TBD_707] = 9;
-            gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[0][9];
+            gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[9];
             DrawGlyphStripGroup(gGlyphStripGroups[50], GFX_WINDOW_TBD_707);
             gGfxTPageCells[GFX_WINDOW_TBD_707] = 8;
-            gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[0][8];
+            gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[8];
             gGfxTPageCells[GFX_WINDOW_TBD_657 + windowId] = 9;
-            gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[0][9];
+            gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[9];
          } else {
             if (type == 2) {
                gGfxTPageCells[GFX_WINDOW_TBD_707] = 14;
-               gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[0][14];
+               gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[14];
                DrawGlyphStripGroup(gGlyphStripGroups[50], GFX_WINDOW_TBD_707);
                gGfxTPageCells[GFX_WINDOW_TBD_707] = 8;
-               gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[0][8];
+               gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[8];
                gGfxTPageCells[GFX_WINDOW_TBD_657 + windowId] = 14;
-               gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[0][14];
+               gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[14];
             } else {
                gGfxTPageCells[GFX_WINDOW_TBD_707] = 15;
-               gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[0][15];
+               gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[15];
                DrawGlyphStripGroup(gGlyphStripGroups[50], GFX_WINDOW_TBD_707);
                gGfxTPageCells[GFX_WINDOW_TBD_707] = 8;
-               gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[0][8];
+               gGfxTPageIds[GFX_WINDOW_TBD_707] = gTPageIds[8];
                gGfxTPageCells[GFX_WINDOW_TBD_657 + windowId] = 15;
-               gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[0][15];
+               gGfxTPageIds[GFX_WINDOW_TBD_657 + windowId] = gTPageIds[15];
             }
          }
       }

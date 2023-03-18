@@ -240,15 +240,11 @@ void Evtf074_FadeInSprite(EvtData *evt) {
 
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite1, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite2, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       EVT.fade += EVT.speed;
       if (EVT.fade > 0x80) {
@@ -294,9 +290,7 @@ void Evtf075_FadeOutSprite(EvtData *evt) {
 
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite1, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       EVT.fade -= EVT.speed;
       if (EVT.fade < 0) {
@@ -325,27 +319,12 @@ void Evtf072_FadeFromWhite(EvtData *evt) {
    case 1:
       poly = &gGraphicsPtr->quads[gQuadIndex];
       SetSemiTrans(poly, 1);
-      poly->tpage = gTPageIds[1][gGfxTPageCells[GFX_COLOR_15]];
+      poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      poly->u0 = gGfxSubTextures[GFX_COLOR_15].x;
-      poly->v0 = gGfxSubTextures[GFX_COLOR_15].y;
-      poly->u1 = gGfxSubTextures[GFX_COLOR_15].x + gGfxSubTextures[GFX_COLOR_15].w;
-      poly->v1 = gGfxSubTextures[GFX_COLOR_15].y;
-      poly->u2 = gGfxSubTextures[GFX_COLOR_15].x;
-      poly->v2 = gGfxSubTextures[GFX_COLOR_15].y + gGfxSubTextures[GFX_COLOR_15].h;
-      poly->u3 = gGfxSubTextures[GFX_COLOR_15].x + gGfxSubTextures[GFX_COLOR_15].w;
-      poly->v3 = gGfxSubTextures[GFX_COLOR_15].y + gGfxSubTextures[GFX_COLOR_15].h;
-      poly->x0 = 0;
-      poly->y0 = 0;
-      poly->x1 = SCREEN_WIDTH;
-      poly->y1 = 0;
-      poly->x2 = 0;
-      poly->y2 = SCREEN_HEIGHT;
-      poly->x3 = SCREEN_WIDTH;
-      poly->y3 = SCREEN_HEIGHT;
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
+              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
       gQuadIndex++;
 
@@ -373,27 +352,12 @@ void Evtf073_FadeToWhite(EvtData *evt) {
    case 1:
       poly = &gGraphicsPtr->quads[gQuadIndex];
       SetSemiTrans(poly, 1);
-      poly->tpage = gTPageIds[1][gGfxTPageCells[GFX_COLOR_15]];
+      poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      poly->u0 = gGfxSubTextures[GFX_COLOR_15].x;
-      poly->v0 = gGfxSubTextures[GFX_COLOR_15].y;
-      poly->u1 = gGfxSubTextures[GFX_COLOR_15].x + gGfxSubTextures[GFX_COLOR_15].w;
-      poly->v1 = gGfxSubTextures[GFX_COLOR_15].y;
-      poly->u2 = gGfxSubTextures[GFX_COLOR_15].x;
-      poly->v2 = gGfxSubTextures[GFX_COLOR_15].y + gGfxSubTextures[GFX_COLOR_15].h;
-      poly->u3 = gGfxSubTextures[GFX_COLOR_15].x + gGfxSubTextures[GFX_COLOR_15].w;
-      poly->v3 = gGfxSubTextures[GFX_COLOR_15].y + gGfxSubTextures[GFX_COLOR_15].h;
-      poly->x0 = 0;
-      poly->y0 = 0;
-      poly->x1 = SCREEN_WIDTH;
-      poly->y1 = 0;
-      poly->x2 = 0;
-      poly->y2 = SCREEN_HEIGHT;
-      poly->x3 = SCREEN_WIDTH;
-      poly->y3 = SCREEN_HEIGHT;
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
+              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
       gQuadIndex++;
 
@@ -422,27 +386,12 @@ void Evtf070_FadeFromBlack(EvtData *evt) {
    case 1:
       poly = &gGraphicsPtr->quads[gQuadIndex];
       SetSemiTrans(poly, 1);
-      poly->tpage = gTPageIds[2][gGfxTPageCells[GFX_COLOR_15]];
+      poly->tpage = gTPageIds[64 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      poly->u0 = gGfxSubTextures[GFX_COLOR_15].x;
-      poly->v0 = gGfxSubTextures[GFX_COLOR_15].y;
-      poly->u1 = gGfxSubTextures[GFX_COLOR_15].x + gGfxSubTextures[GFX_COLOR_15].w;
-      poly->v1 = gGfxSubTextures[GFX_COLOR_15].y;
-      poly->u2 = gGfxSubTextures[GFX_COLOR_15].x;
-      poly->v2 = gGfxSubTextures[GFX_COLOR_15].y + gGfxSubTextures[GFX_COLOR_15].h;
-      poly->u3 = gGfxSubTextures[GFX_COLOR_15].x + gGfxSubTextures[GFX_COLOR_15].w;
-      poly->v3 = gGfxSubTextures[GFX_COLOR_15].y + gGfxSubTextures[GFX_COLOR_15].h;
-      poly->x0 = 0;
-      poly->y0 = 0;
-      poly->x1 = SCREEN_WIDTH;
-      poly->y1 = 0;
-      poly->x2 = 0;
-      poly->y2 = SCREEN_HEIGHT;
-      poly->x3 = SCREEN_WIDTH;
-      poly->y3 = SCREEN_HEIGHT;
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
+              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 2], poly);
       gQuadIndex++;
 
@@ -470,27 +419,12 @@ void Evtf071_FadeToBlack(EvtData *evt) {
    case 1:
       poly = &gGraphicsPtr->quads[gQuadIndex];
       SetSemiTrans(poly, 1);
-      poly->tpage = gTPageIds[2][gGfxTPageCells[GFX_COLOR_15]];
+      poly->tpage = gTPageIds[64 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      poly->u0 = gGfxSubTextures[GFX_COLOR_15].x;
-      poly->v0 = gGfxSubTextures[GFX_COLOR_15].y;
-      poly->u1 = gGfxSubTextures[GFX_COLOR_15].x + gGfxSubTextures[GFX_COLOR_15].w;
-      poly->v1 = gGfxSubTextures[GFX_COLOR_15].y;
-      poly->u2 = gGfxSubTextures[GFX_COLOR_15].x;
-      poly->v2 = gGfxSubTextures[GFX_COLOR_15].y + gGfxSubTextures[GFX_COLOR_15].h;
-      poly->u3 = gGfxSubTextures[GFX_COLOR_15].x + gGfxSubTextures[GFX_COLOR_15].w;
-      poly->v3 = gGfxSubTextures[GFX_COLOR_15].y + gGfxSubTextures[GFX_COLOR_15].h;
-      poly->x0 = 0;
-      poly->y0 = 0;
-      poly->x1 = SCREEN_WIDTH;
-      poly->y1 = 0;
-      poly->x2 = 0;
-      poly->y2 = SCREEN_HEIGHT;
-      poly->x3 = SCREEN_WIDTH;
-      poly->y3 = SCREEN_HEIGHT;
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
+              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 2], poly);
       gQuadIndex++;
 
@@ -631,17 +565,13 @@ void Evtf077_Circle_TBD(EvtData *evt) {
       ringSprite->d.sprite.semiTrans = 2;
       AddEvtPrim4(gGraphicsPtr->ot, ringSprite);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = fade;
-      poly->g0 = fade;
-      poly->b0 = fade;
+      setRGB0(poly, fade, fade, fade);
 
       ringSprite->d.sprite.clut = 10;
       ringSprite->d.sprite.semiTrans = 3;
       AddEvtPrim3(gGraphicsPtr->ot, ringSprite);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = fade;
-      poly->g0 = fade;
-      poly->b0 = fade;
+      setRGB0(poly, fade, fade, fade);
 
       EVT.fade -= 24;
       if (EVT.fade <= 0) {
@@ -1173,15 +1103,11 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
 
       RenderUnitSprite(gGraphicsPtr->ot, fxEvt1, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       RenderUnitSprite(gGraphicsPtr->ot, fxEvt2, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       if (!EVT.increasing) {
          EVT.fade -= 12;
@@ -1232,15 +1158,15 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
    case 2:
 
       switch (evt->functionIndex) {
-      case 138:
+      case EVTF_FX_TBD_138:
          fadeSpeed = 8;
          stretchSpeed = 0xc0;
          break;
-      case 134:
+      case EVTF_FX_TBD_134:
          fadeSpeed = 12;
          stretchSpeed = 0xe0;
          break;
-      case 139:
+      case EVTF_FX_TBD_139:
          fadeSpeed = 8;
          stretchSpeed = 0xc0;
          break;
@@ -1285,15 +1211,11 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
 
       RenderUnitSprite(gGraphicsPtr->ot, fxEvt1, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       RenderUnitSprite(gGraphicsPtr->ot, fxEvt2, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       for (i = 0; i < 4; i++) {
          gQuad_800fe53c[i].vx = quad[i].vx;
@@ -1361,15 +1283,11 @@ void Evtf149_Fx_TBD(EvtData *evt) {
 
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite1, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = -0x80 - EVT.fade;
-      poly->g0 = -0x80 - EVT.fade;
-      poly->b0 = -0x80 - EVT.fade;
+      setRGB0(poly, -0x80 - EVT.fade, -0x80 - EVT.fade, -0x80 - EVT.fade);
 
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite2, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      poly->r0 = EVT.fade;
-      poly->g0 = EVT.fade;
-      poly->b0 = EVT.fade;
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       if (!EVT.increasing) {
          EVT.fade -= EVT.fadeSpeed;
@@ -1567,7 +1485,7 @@ void Evtf215_Cloud(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 213
-void Evtf213_DustCloud(EvtData *evt) {
+void Evtf213_DustCloudSpawner(EvtData *evt) {
    // Spawned by: EVTF_MAP_OBJECT_CRATE->213; SetupMapExtras()->362->213 (lowering bridge, etc.)
    EvtData *particle;
 
@@ -1579,7 +1497,7 @@ void Evtf213_DustCloud(EvtData *evt) {
    case 1:
       if (EVT.timer > 2) {
          particle = Evt_GetUnused();
-         particle->functionIndex = EVTF_DUST_CLOUD_PARTICLE;
+         particle->functionIndex = EVTF_DUST_CLOUD;
          particle->d.evtf214.x = EVT.x;
          particle->d.evtf214.z = EVT.z;
          particle->d.evtf214.y = EVT.y;
@@ -1593,7 +1511,7 @@ void Evtf213_DustCloud(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 214
-void Evtf214_DustCloudParticle(EvtData *evt) {
+void Evtf214_DustCloud(EvtData *evt) {
    SVectorXZY *pPosition;
    EvtData *sprite;
    s32 i;

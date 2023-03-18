@@ -21,7 +21,6 @@ void CalculateSubstepDeltas(s32, s32, s32, s32, s32, u32, s32 *, s32 *);
 s32 SmoothStepTo(EvtData *, s32, s32, s32);
 
 void UpdateEngine(void) {
-   u32 osc;
    s32 flag;
 
    UpdateAudio();
@@ -49,9 +48,8 @@ void UpdateEngine(void) {
       }
    }
    gState.unitMarkerSpin += 0x20;
-   osc = (gOscillation + 0x100) & 0xfff;
-   gOscillation = osc;
-   gGridColorOscillation = rcos(osc) * 100 >> 12;
+   gOscillation = (gOscillation + 0x100) & 0xfff;
+   gGridColorOscillation = rcos(gOscillation) * 100 >> 12;
    gGridColorOscillation += 155U;
    gQuadIndex = 0;
    UpdateInput();

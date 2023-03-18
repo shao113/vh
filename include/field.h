@@ -117,5 +117,6 @@ extern PathGridRow *gYellowTargetGridPtr;
 extern PathGridRow *gBlueMovementGridPtr;
 extern PathGridRow *gPathGrid1_Ptr;
 extern PathGridRow *gPathGrid2_Ptr;
+extern PathGridRow *gCrateGrid_Ptr;
 
 #endif

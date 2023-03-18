@@ -309,7 +309,7 @@ void Evtf597_BattleIntro(EvtData *evt) {
    case 1:
       if (--EVT.timer == 0) {
          // Display battle conditions
-         DrawWindow(66, 0, 0, 320, 72, 330, 80, WBS_DRAGON, 0);
+         DrawWindow(0x42, 0, 0, 320, 72, 330, 80, WBS_DRAGON, 0);
          DrawText(20, 20, 40, 2, 0, gState.currentTextPointers[0]);
          DisplayBasicWindow(0x42);
          DisplayBasicWindow(0x43);
@@ -338,7 +338,7 @@ void Evtf597_BattleIntro(EvtData *evt) {
    case 4:
       if (--EVT.timer == 0) {
          DrawWindow(0x42, 0, 0, 144, 64, 84, 90, WBS_DRAGON, 0);
-         DrawText(0x14, 24, 20, 0, 0, "Begin Battle");
+         DrawText(20, 24, 20, 0, 0, "Begin Battle");
          DisplayCustomWindow(0x42, 2, 1, 0, 0, 0);
          EVT.timer = 30;
          evt->state++;

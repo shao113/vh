@@ -3,6 +3,9 @@
 #include "state.h"
 #include "graphics.h"
 #include "audio.h"
+#include "field.h"
+#include "units.h"
+#include "battle.h"
 
 void Evtf581_AudioCommand(EvtData *evt) {
    switch (evt->state) {
@@ -310,4 +313,1330 @@ s32 Evt_CountUnused(void) {
       }
    }
    return ct;
+}
+
+extern MATRIX gMatrix_800f2b04;
+extern MATRIX gMatrix_800f2b24;
+extern MATRIX gMatrix_800f2b44;
+extern MATRIX gMatrix_800f2b64;
+extern MATRIX gMatrix_800f2b84;
+extern MATRIX gMatrix_800f2ba4;
+extern MATRIX gMatrix_800f2bc4;
+extern MATRIX gMatrix_800f2be4;
+
+void AddEvtPrim3(u32 *ot, EvtData *evt) {
+   POLY_FT4 *poly;
+   Quad quad;
+   s32 p, flag;
+   u32 otIdx;
+   s32 otz;
+   s32 gfx;
+
+   if (!evt->d.sprite.hidden) {
+      poly = &gGraphicsPtr->quads[gQuadIndex];
+      evt->vec.vx = evt->d.sprite.x1 >> 3;
+      evt->vec.vz = evt->d.sprite.z1 >> 3;
+      evt->vec.vy = -(evt->d.sprite.y1 >> 3);
+
+      otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+      otIdx = OT_SIZE - otz + 6;
+      if (otIdx - 1 < OT_SIZE - 1) {
+         quad[0].vx = evt->d.sprite.coords[0].x >> 3;
+         quad[0].vz = evt->d.sprite.coords[0].z >> 3;
+         quad[0].vy = -(evt->d.sprite.coords[0].y >> 3);
+         quad[1].vx = evt->d.sprite.coords[1].x >> 3;
+         quad[1].vz = evt->d.sprite.coords[1].z >> 3;
+         quad[1].vy = -(evt->d.sprite.coords[1].y >> 3);
+         quad[2].vx = evt->d.sprite.coords[2].x >> 3;
+         quad[2].vz = evt->d.sprite.coords[2].z >> 3;
+         quad[2].vy = -(evt->d.sprite.coords[2].y >> 3);
+         quad[3].vx = evt->d.sprite.coords[3].x >> 3;
+         quad[3].vz = evt->d.sprite.coords[3].z >> 3;
+         quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
+
+         gfx = evt->d.sprite.gfxIdx;
+         if (evt->d.sprite.clut == 0) {
+            poly->clut = gGfxClutIds[gfx];
+         } else {
+            poly->clut = gClutIds[evt->d.sprite.clut];
+         }
+
+         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+                 gGfxSubTextures[gfx].h);
+         RotTransPers4(&quad[0], &quad[1], &quad[2], &quad[3], &poly->x0, &poly->x1, &poly->x2,
+                       &poly->x3, &p, &flag);
+         setRGB0(poly, 0x80, 0x80, 0x80);
+
+         if (evt->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+            poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+         } else {
+            poly->tpage = gGfxTPageIds[gfx];
+            poly->code = GPU_CODE_POLY_FT4;
+         }
+
+         AddPrim(&ot[otIdx], poly);
+         gQuadIndex++;
+      }
+   }
+}
+
+void AddEvtPrim4(u32 *ot, EvtData *evt) {
+   POLY_FT4 *poly;
+   Quad quad;
+   s32 p, flag;
+   u32 otIdx;
+   s32 gfx;
+   s32 otz;
+
+   if (!evt->d.sprite.hidden) {
+      poly = &gGraphicsPtr->quads[gQuadIndex];
+
+      quad[0].vx = evt->d.sprite.coords[0].x >> 3;
+      quad[0].vz = evt->d.sprite.coords[0].z >> 3;
+      quad[0].vy = -(evt->d.sprite.coords[0].y >> 3);
+      quad[1].vx = evt->d.sprite.coords[1].x >> 3;
+      quad[1].vz = evt->d.sprite.coords[1].z >> 3;
+      quad[1].vy = -(evt->d.sprite.coords[1].y >> 3);
+      quad[2].vx = evt->d.sprite.coords[2].x >> 3;
+      quad[2].vz = evt->d.sprite.coords[2].z >> 3;
+      quad[2].vy = -(evt->d.sprite.coords[2].y >> 3);
+      quad[3].vx = evt->d.sprite.coords[3].x >> 3;
+      quad[3].vz = evt->d.sprite.coords[3].z >> 3;
+      quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
+
+      gfx = evt->d.sprite.gfxIdx;
+      if (evt->d.sprite.clut == 0) {
+         poly->clut = gGfxClutIds[gfx];
+      } else {
+         poly->clut = gClutIds[evt->d.sprite.clut];
+      }
+
+      setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+              gGfxSubTextures[gfx].h);
+      otz = RotAverage4(&quad[0], &quad[1], &quad[2], &quad[3], &poly->x0, &poly->x1, &poly->x2,
+                        &poly->x3, &p, &flag);
+      otIdx = OT_SIZE - otz + evt->d.sprite.otOfs;
+
+      if (otIdx - 1 < OT_SIZE - 1) {
+         setRGB0(poly, 0x80, 0x80, 0x80);
+
+         if (evt->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+            poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+         } else {
+            poly->tpage = gGfxTPageIds[gfx];
+            poly->code = GPU_CODE_POLY_FT4;
+         }
+
+         AddPrim(&ot[otIdx], poly);
+         gQuadIndex++;
+      }
+   }
+}
+
+void AddEvtPrim5(u32 *ot, EvtData *evt) {
+   POLY_FT4 *poly;
+   Quad quad;
+   s32 p, flag;
+   u32 otIdx;
+   s32 otz;
+   s32 gfx;
+
+   if (!evt->d.sprite.hidden) {
+      poly = &gGraphicsPtr->quads[gQuadIndex];
+      evt->vec.vx = evt->d.sprite.x1 >> 3;
+      evt->vec.vz = evt->d.sprite.z1 >> 3;
+      evt->vec.vy = -(evt->d.sprite.y1 >> 3);
+
+      otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+      otIdx = OT_SIZE - otz + 6 + evt->d.sprite.otOfs;
+      if (otIdx - 1 < OT_SIZE - 1) {
+         quad[0].vx = evt->d.sprite.coords[0].x >> 3;
+         quad[0].vz = evt->d.sprite.coords[0].z >> 3;
+         quad[0].vy = -(evt->d.sprite.coords[0].y >> 3);
+         quad[1].vx = evt->d.sprite.coords[1].x >> 3;
+         quad[1].vz = evt->d.sprite.coords[1].z >> 3;
+         quad[1].vy = -(evt->d.sprite.coords[1].y >> 3);
+         quad[2].vx = evt->d.sprite.coords[2].x >> 3;
+         quad[2].vz = evt->d.sprite.coords[2].z >> 3;
+         quad[2].vy = -(evt->d.sprite.coords[2].y >> 3);
+         quad[3].vx = evt->d.sprite.coords[3].x >> 3;
+         quad[3].vz = evt->d.sprite.coords[3].z >> 3;
+         quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
+
+         gfx = evt->d.sprite.gfxIdx;
+         if (evt->d.sprite.clut == 0) {
+            poly->clut = gGfxClutIds[gfx];
+         } else {
+            poly->clut = gClutIds[evt->d.sprite.clut];
+         }
+
+         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+                 gGfxSubTextures[gfx].h);
+         RotTransPers4(&quad[0], &quad[1], &quad[2], &quad[3], &poly->x0, &poly->x1, &poly->x2,
+                       &poly->x3, &p, &flag);
+         setRGB0(poly, 0x80, 0x80, 0x80);
+
+         if (evt->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+            poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+         } else {
+            poly->tpage = gGfxTPageIds[gfx];
+            poly->code = GPU_CODE_POLY_FT4;
+         }
+
+         AddPrim(&ot[otIdx], poly);
+         gQuadIndex++;
+      }
+   }
+}
+
+void AddEvtPrim6(u32 *ot, EvtData *evt, s32 useMapElevation) {
+   POLY_FT4 *poly;
+   Quad *quadp;
+   MATRIX *matrix;
+   s32 p, flag;
+   u32 otIdx;
+   s32 gfx;
+   s32 otz;
+
+   if (!evt->d.sprite.hidden) {
+      poly = &gGraphicsPtr->quads[gQuadIndex];
+      matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2b24 : &gMatrix_800f2b04;
+      PushMatrix();
+
+      evt->vec.vx = evt->d.sprite.x1 >> 3;
+      evt->vec.vz = evt->d.sprite.z1 >> 3;
+
+      if (useMapElevation) {
+         if ((HI(evt->d.sprite.x1) >= D_80122E28) &&
+             (HI(evt->d.sprite.x1) <= gMapSizeX + D_80122E28 - 1) &&
+             (HI(evt->d.sprite.z1) >= D_80122E2C) &&
+             (HI(evt->d.sprite.z1) <= gMapSizeZ + D_80122E2C - 1)) {
+            evt->vec.vy = SPR_TILE_MODEL(evt).vertices[0].vy;
+            evt->d.sprite.y1 = -(evt->vec.vy << 3);
+         }
+      } else {
+         evt->vec.vy = -(evt->d.sprite.y1 >> 3) - evt->d.sprite.animYOfs;
+      }
+
+      RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
+
+      otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+      otIdx = OT_SIZE - otz + 8;
+
+      if (otIdx - 1 < OT_SIZE - 1) {
+         SetRotMatrix(matrix);
+         SetTransMatrix(matrix);
+
+         gfx = evt->d.sprite.gfxIdx;
+         if (evt->d.sprite.clut == 0) {
+            poly->clut = gGfxClutIds[gfx];
+         } else {
+            poly->clut = gClutIds[evt->d.sprite.clut];
+         }
+
+         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+                 gGfxSubTextures[gfx].h);
+         quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
+         RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
+                       &poly->x2, &poly->x3, &p, &flag);
+         setRGB0(poly, 0x80, 0x80, 0x80);
+
+         if (evt->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+            poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+         } else {
+            poly->tpage = gGfxTPageIds[gfx];
+            poly->code = GPU_CODE_POLY_FT4;
+         }
+
+         AddPrim(&ot[otIdx], poly);
+         gQuadIndex++;
+      }
+
+      PopMatrix();
+   }
+}
+
+void AddEvtPrim7(u32 *ot, EvtData *evt, s32 useMapElevation) {
+   POLY_FT4 *poly;
+   Quad *quadp;
+   MATRIX *matrix;
+   s32 p, flag;
+   u32 otIdx;
+   s32 gfx;
+   s32 otz;
+
+   if (!evt->d.sprite.hidden && !IsSpriteOutsideVisibleRange(evt)) {
+      poly = &gGraphicsPtr->quads[gQuadIndex];
+      matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2b64 : &gMatrix_800f2b44;
+      PushMatrix();
+
+      evt->vec.vx = evt->d.sprite.x1 >> 3;
+      evt->vec.vz = evt->d.sprite.z1 >> 3;
+
+      if (useMapElevation) {
+         evt->vec.vy = SPR_TILE_MODEL(evt).vertices[0].vy;
+         evt->d.sprite.y1 = -(evt->vec.vy << 3);
+      } else {
+         evt->vec.vy = -(evt->d.sprite.y1 >> 3);
+      }
+
+      RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
+
+      if (gCameraRotation.vx > 0x113) {
+         otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+         otIdx = OT_SIZE - otz + 5 + ((gCameraRotation.vx - 0x113) >> 6);
+      } else {
+         otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+         otIdx = OT_SIZE - otz + 5;
+      }
+
+      if (otIdx - 1 < OT_SIZE - 1) {
+         SetRotMatrix(matrix);
+         SetTransMatrix(matrix);
+
+         gfx = evt->d.sprite.gfxIdx;
+         if (evt->d.sprite.clut == 0) {
+            poly->clut = gGfxClutIds[gfx];
+         } else {
+            poly->clut = gClutIds[evt->d.sprite.clut];
+         }
+
+         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+                 gGfxSubTextures[gfx].h);
+         quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
+         RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
+                       &poly->x2, &poly->x3, &p, &flag);
+         setRGB0(poly, 0x80, 0x80, 0x80);
+
+         if (evt->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+            poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+         } else {
+            poly->tpage = gGfxTPageIds[gfx];
+            poly->code = GPU_CODE_POLY_FT4;
+         }
+
+         AddPrim(&ot[otIdx], poly);
+         gQuadIndex++;
+      }
+
+      PopMatrix();
+   }
+}
+
+void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
+   POLY_FT4 *poly;
+   Quad *quadp;
+   MATRIX *matrix;
+   s32 p, flag;
+   u32 otIdx;
+   s32 gfx;
+   s32 otz;
+   s16 y;
+
+   if (!evt->d.sprite.hidden && !IsSpriteOutsideVisibleRange(evt)) {
+      poly = &gGraphicsPtr->quads[gQuadIndex];
+      matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2ba4 : &gMatrix_800f2b84;
+      PushMatrix();
+
+      evt->vec.vx = evt->d.sprite.x1 >> 3;
+      evt->vec.vz = evt->d.sprite.z1 >> 3;
+
+      if (useMapElevation) {
+         evt->vec.vy = SPR_TILE_MODEL(evt).vertices[0].vy;
+         evt->d.sprite.y1 = -(evt->vec.vy << 3);
+      } else {
+         evt->vec.vy = -(evt->d.sprite.y1 >> 3);
+      }
+
+      RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
+
+      if (gCameraRotation.vx > 0x113) {
+         otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+         otIdx = OT_SIZE - otz + 5 + ((gCameraRotation.vx - 0x113) >> 6);
+      } else {
+         otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+         otIdx = OT_SIZE - otz + 5;
+      }
+
+      if (otIdx - 1 < OT_SIZE - 1) {
+         SetRotMatrix(matrix);
+         SetTransMatrix(matrix);
+
+         gfx = evt->d.sprite.gfxIdx;
+         if (evt->d.sprite.clut == 0) {
+            poly->clut = gGfxClutIds[gfx];
+         } else {
+            poly->clut = gClutIds[evt->d.sprite.clut];
+         }
+
+         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+                 gGfxSubTextures[gfx].h);
+         quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
+
+         y = -(*quadp)[0].vy;
+         (*quadp)[0].vy = -((rcos(gCameraRotation.vx & 0xfff) * (y >> 1) >> 12) + (y >> 1));
+         (*quadp)[1].vy = (*quadp)[0].vy;
+
+         RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
+                       &poly->x2, &poly->x3, &p, &flag);
+         (*quadp)[0].vy = -y;
+         (*quadp)[1].vy = -y;
+
+         setRGB0(poly, gLightColor.r, gLightColor.g, gLightColor.b);
+
+         if (evt->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+            poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+         } else {
+            poly->tpage = gGfxTPageIds[gfx];
+            poly->code = GPU_CODE_POLY_FT4;
+         }
+
+         AddPrim(&ot[otIdx], poly);
+         gQuadIndex++;
+      }
+
+      PopMatrix();
+   }
+}
+
+void RenderUnitSprite(u32 *ot, EvtData *sprite, s32 useMapElevation) {
+   Quad *quadp;
+   SVECTOR screenXY;
+   POLY_FT4 *poly;
+   MATRIX *matrix;
+   s32 p, flag;
+   u32 otIdx;
+   s32 gfx;
+   s32 otz;
+   s32 stripIdx;
+   s16 xOfs = 0;
+   s16 zOfs = 0;
+   u8 view = 0;
+   s16 sxOfs = 0;
+   s16 szOfs = 0;
+
+   if (IsSpriteOutsideVisibleRange(sprite)) {
+      return;
+   }
+
+   poly = &gGraphicsPtr->quads[gQuadIndex];
+   matrix = sprite->d.sprite.facingLeft ? &gMatrix_800f2be4 : &gMatrix_800f2bc4;
+   PushMatrix();
+
+   if (sprite->d.sprite.animSingleAxis) {
+
+      switch ((sprite->d.sprite.direction & 0xfff) >> 10) {
+      case DIR_SOUTH:
+         zOfs = sprite->d.sprite.animRelativeOfs;
+         xOfs = 0;
+         break;
+      case DIR_WEST:
+         zOfs = 0;
+         xOfs = sprite->d.sprite.animRelativeOfs;
+         break;
+      case DIR_NORTH:
+         zOfs = -sprite->d.sprite.animRelativeOfs;
+         xOfs = 0;
+         break;
+      case DIR_EAST:
+         zOfs = 0;
+         xOfs = -sprite->d.sprite.animRelativeOfs;
+         break;
+      }
+
+   } else {
+
+      switch ((gCameraRotation.vy & 0xfff) >> 10) {
+      case CAM_DIR_NORTH:
+      case CAM_DIR_SOUTH:
+         view = 1;
+         break;
+      case CAM_DIR_EAST:
+      case CAM_DIR_WEST:
+         view = 0;
+         break;
+      }
+
+      switch ((sprite->d.sprite.direction & 0xfff) >> 10) {
+      case DIR_SOUTH:
+         zOfs = sprite->d.sprite.animRelativeOfs;
+         if (view) {
+            xOfs = sprite->d.sprite.animRelativeOfs;
+         } else {
+            xOfs = -sprite->d.sprite.animRelativeOfs;
+         }
+         break;
+      case DIR_WEST:
+         if (view) {
+            zOfs = sprite->d.sprite.animRelativeOfs;
+         } else {
+            zOfs = -sprite->d.sprite.animRelativeOfs;
+         }
+         xOfs = sprite->d.sprite.animRelativeOfs;
+         break;
+      case DIR_NORTH:
+         zOfs = -sprite->d.sprite.animRelativeOfs;
+         if (view) {
+            xOfs = -sprite->d.sprite.animRelativeOfs;
+         } else {
+            xOfs = sprite->d.sprite.animRelativeOfs;
+         }
+         break;
+      case DIR_EAST:
+         if (view) {
+            zOfs = -sprite->d.sprite.animRelativeOfs;
+         } else {
+            zOfs = sprite->d.sprite.animRelativeOfs;
+         }
+         xOfs = -sprite->d.sprite.animRelativeOfs;
+         break;
+      }
+   }
+
+   sprite->vec.vx = (sprite->d.sprite.x1 >> 3) + xOfs;
+   sprite->vec.vz = (sprite->d.sprite.z1 >> 3) + zOfs;
+
+   if (useMapElevation != 0) {
+      if (useMapElevation == 1) {
+         sprite->vec.vy = SPR_TILE_MODEL(sprite).vertices[0].vy -
+                          gCrateGrid_Ptr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)] * 32 -
+                          sprite->d.sprite.animYOfs;
+         sprite->d.sprite.y1 = -(sprite->vec.vy << 3);
+      } else {
+         sprite->vec.vy +=
+             (SPR_TILE_MODEL(sprite).vertices[0].vy - sprite->d.sprite.animYOfs - sprite->vec.vy) >>
+             2;
+         sprite->d.sprite.y1 = -(sprite->vec.vy << 3);
+      }
+   } else {
+      sprite->vec.vy = -(sprite->d.sprite.y1 >> 3) - sprite->d.sprite.animYOfs;
+   }
+
+   RotTrans(&sprite->vec, (VECTOR *)&matrix->t, &flag);
+
+   if (gCameraRotation.vx > 0x113) {
+      otz = RotTransPers(&sprite->vec, &poly->x0, &p, &flag);
+      otIdx = OT_SIZE - otz + 4 + ((gCameraRotation.vx - 0x113) >> 6);
+   } else {
+      otz = RotTransPers(&sprite->vec, &poly->x0, &p, &flag);
+      otIdx = OT_SIZE - otz + 5;
+   }
+
+   if (otIdx - 1 < OT_SIZE - 1) {
+      SetRotMatrix(matrix);
+      SetTransMatrix(matrix);
+
+      gfx = sprite->d.sprite.gfxIdx;
+      stripIdx = sprite->d.sprite.stripIdx;
+
+      if (sprite->d.sprite.clut == 0) {
+         poly->clut = gSpriteStripClutIds[stripIdx];
+      } else {
+         poly->clut = gClutIds[sprite->d.sprite.clut];
+      }
+
+      if (sprite->d.sprite.semiTrans) {
+         if (gfx >= 45) {
+            if (gfx < 55) {
+               // 45..54
+               poly->tpage = gTPageIds[(sprite->d.sprite.semiTrans - 1) * 32 + 11];
+               gfx -= 45;
+            } else {
+               // 55..64*
+               gfx -= 55;
+               poly->tpage = gTPageIds[(sprite->d.sprite.semiTrans - 1) * 32 + 27];
+            }
+            setUVWH(poly, gTexwWideSpriteSetFrames[gfx].x, gTexwWideSpriteSetFrames[gfx].y,
+                    gTexwWideSpriteSetFrames[gfx].w, gTexwWideSpriteSetFrames[gfx].h);
+         } else {
+            if (gfx < 35) {
+               if (gfx < 26) {
+                  // 0..25
+                  poly->tpage = gTPageIds[(sprite->d.sprite.semiTrans - 1) * 32 + 11];
+               } else {
+                  // 26..34
+                  poly->tpage = gTPageIds[(sprite->d.sprite.semiTrans - 1) * 32 + 27];
+               }
+               setUVWH(poly, gTexwSpriteSetFrames[gfx].x, gTexwSpriteSetFrames[gfx].y,
+                       gTexwSpriteSetFrames[gfx].w, gTexwSpriteSetFrames[gfx].h);
+            } else {
+               // 35..44: Unit sprite strip, consisting of ten 48x48 pixel frames, spanning
+               // across two TPages (with gaps reserved for item icons)
+               if (gfx < 40) {
+                  // 35..39
+                  poly->tpage = gTPageIds[gSpriteStripTPageCells[stripIdx * 2] +
+                                          (sprite->d.sprite.semiTrans - 1) * 32];
+                  gfx += (stripIdx % 5) * 5;
+                  gfx -= 35;
+               } else {
+                  // 40..44
+                  poly->tpage = gTPageIds[gSpriteStripTPageCells[stripIdx * 2 + 1] +
+                                          (sprite->d.sprite.semiTrans - 1) * 32];
+                  gfx += (stripIdx % 5) * 5;
+                  gfx -= 40;
+               }
+               setUVWH(poly, gTexwSpriteStripFrames[gfx].x, gTexwSpriteStripFrames[gfx].y,
+                       gTexwSpriteStripFrames[gfx].w, gTexwSpriteStripFrames[gfx].h);
+            }
+         }
+         poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+      } else {
+         // semiTrans:0
+         if (gfx >= 45) {
+            if (gfx < 55) {
+               // 45..54
+               poly->tpage = gTPageIds[11];
+               gfx -= 45;
+            } else {
+               // 55..64*
+               gfx -= 55;
+               poly->tpage = gTPageIds[27];
+            }
+            setUVWH(poly, gTexwWideSpriteSetFrames[gfx].x, gTexwWideSpriteSetFrames[gfx].y,
+                    gTexwWideSpriteSetFrames[gfx].w, gTexwWideSpriteSetFrames[gfx].h);
+         } else {
+            if (gfx < 35) {
+               if (gfx < 26) {
+                  // 0..25
+                  poly->tpage = gTPageIds[11];
+               } else {
+                  // 26..34
+                  poly->tpage = gTPageIds[27];
+               }
+               setUVWH(poly, gTexwSpriteSetFrames[gfx].x, gTexwSpriteSetFrames[gfx].y,
+                       gTexwSpriteSetFrames[gfx].w, gTexwSpriteSetFrames[gfx].h);
+            } else {
+               if (gfx < 40) {
+                  // 35..39
+                  poly->tpage = gSpriteStripTPageIds[stripIdx * 2];
+                  gfx += (stripIdx % 5) * 5;
+                  gfx -= 35;
+               } else {
+                  // 40..44
+                  poly->tpage = gSpriteStripTPageIds[stripIdx * 2 + 1];
+                  gfx += (stripIdx % 5) * 5;
+                  gfx -= 40;
+               }
+               setUVWH(poly, gTexwSpriteStripFrames[gfx].x, gTexwSpriteStripFrames[gfx].y,
+                       gTexwSpriteStripFrames[gfx].w, gTexwSpriteStripFrames[gfx].h);
+            }
+         }
+         poly->code = GPU_CODE_POLY_FT4;
+      }
+
+      if (sprite->d.sprite.gfxIdx >= 45) {
+         // 45..
+         sprite->d.sprite.boxIdx = 2;
+      } else if (sprite->d.sprite.gfxIdx >= 21 && sprite->d.sprite.gfxIdx <= 30) {
+         // 21..30
+         sprite->d.sprite.boxIdx = 1;
+      } else {
+         // ..20, 31..44
+         sprite->d.sprite.boxIdx = 0;
+      }
+
+      quadp = gSpriteBoxQuads[sprite->d.sprite.boxIdx];
+      RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
+                    &poly->x2, &poly->x3, &p, &flag);
+
+      if (gState.primary == 4 && gState.preciseSprites) {
+         PopMatrix();
+         PushMatrix();
+         RotTransPers(&sprite->vec, &screenXY, &flag, &flag);
+
+         switch (sprite->d.sprite.boxIdx) {
+         case 0:
+            if (!sprite->d.sprite.facingLeft) {
+               sxOfs = -23;
+               szOfs = 24;
+            } else {
+               szOfs = -23;
+               sxOfs = 24;
+            }
+            break;
+         case 1:
+            if (!sprite->d.sprite.facingLeft) {
+               sxOfs = -31;
+               szOfs = 32;
+            } else {
+               szOfs = -31;
+               sxOfs = 32;
+            }
+            break;
+         case 2:
+            if (!sprite->d.sprite.facingLeft) {
+               sxOfs = -47;
+               szOfs = 48;
+            } else {
+               szOfs = -47;
+               sxOfs = 48;
+            }
+            break;
+         }
+
+         //?: Setting x/y with single sw; was this done manually or by some compiler optimization?
+         *(u32 *)(&poly->x0) = ((screenXY.vy - 40) << 16) + sxOfs + screenXY.vx;
+         *(u32 *)(&poly->x1) = ((screenXY.vy - 40) << 16) + szOfs + screenXY.vx;
+         *(u32 *)(&poly->x2) = ((screenXY.vy + 7) << 16) + sxOfs + screenXY.vx;
+         *(u32 *)(&poly->x3) = ((screenXY.vy + 7) << 16) + szOfs + screenXY.vx;
+      }
+
+      setRGB0(poly, 0x80, 0x80, 0x80);
+      if (!sprite->d.sprite.hidden) {
+         AddPrim(&ot[otIdx], poly);
+         gQuadIndex++;
+      }
+   }
+
+   PopMatrix();
+}
+
+void AddEvtPrim_Gui(u32 *ot, EvtData *evt) {
+   POLY_FT4 *poly;
+   u32 otIdx;
+   s32 gfx;
+
+   if (!evt->d.sprite.hidden) {
+      poly = &gGraphicsPtr->quads[gQuadIndex];
+      gfx = evt->d.sprite.gfxIdx;
+
+      if (evt->d.sprite.clut == 0) {
+         poly->clut = gGfxClutIds[gfx];
+      } else {
+         poly->clut = gClutIds[evt->d.sprite.clut];
+      }
+
+      setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+              gGfxSubTextures[gfx].h);
+
+      poly->x0 = evt->d.sprite.x1;
+      poly->x1 = evt->d.sprite.x3;
+      poly->x2 = evt->d.sprite.x1;
+      poly->x3 = evt->d.sprite.x3;
+      poly->y0 = evt->d.sprite.y1;
+      poly->y1 = evt->d.sprite.y1;
+      poly->y2 = evt->d.sprite.y3;
+      poly->y3 = evt->d.sprite.y3;
+
+      if (evt->d.sprite.otOfs != 0) {
+         otIdx = OT_SIZE - 1 - evt->d.sprite.otOfs;
+      } else {
+         otIdx = OT_SIZE - 1;
+      }
+
+      setRGB0(poly, 0x80, 0x80, 0x80);
+
+      if (evt->d.sprite.semiTrans) {
+         poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+         poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+      } else {
+         poly->tpage = gGfxTPageIds[gfx];
+         poly->code = GPU_CODE_POLY_FT4;
+      }
+
+      AddPrim(&ot[otIdx], poly);
+      gQuadIndex++;
+   }
+}
+
+void AddEvtPrim2(u32 *ot, EvtData *evt) {
+   POLY_FT4 *poly;
+   u32 otIdx;
+   s32 gfx;
+
+   if (!evt->d.sprite.hidden) {
+      poly = &gGraphicsPtr->quads[gQuadIndex];
+      gfx = evt->d.sprite.gfxIdx;
+
+      if (evt->d.sprite.clut == 0) {
+         poly->clut = gGfxClutIds[gfx];
+      } else {
+         poly->clut = gClutIds[evt->d.sprite.clut];
+      }
+
+      setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+              gGfxSubTextures[gfx].h);
+
+      poly->x0 = evt->d.sprite.coords[0].x;
+      poly->x1 = evt->d.sprite.coords[0].y;
+      poly->x2 = evt->d.sprite.coords[1].z;
+      poly->x3 = evt->d.sprite.coords[2].x;
+      poly->y0 = evt->d.sprite.coords[0].z;
+      poly->y1 = evt->d.sprite.coords[1].x;
+      poly->y2 = evt->d.sprite.coords[1].y;
+      poly->y3 = evt->d.sprite.coords[2].z;
+
+      if (evt->d.sprite.otOfs != 0) {
+         otIdx = OT_SIZE - 1 - evt->d.sprite.otOfs;
+      } else {
+         otIdx = OT_SIZE - 1;
+      }
+
+      setRGB0(poly, 0x80, 0x80, 0x80);
+
+      if (evt->d.sprite.semiTrans) {
+         poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+         poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
+      } else {
+         poly->tpage = gGfxTPageIds[gfx];
+         poly->code = GPU_CODE_POLY_FT4;
+      }
+
+      AddPrim(&ot[otIdx], poly);
+      gQuadIndex++;
+   }
+}
+
+void AddEvtPrim_Panorama(u32 *ot, EvtData *evt) {
+   POLY_FT4 *poly;
+   s32 gfx;
+
+   poly = &gGraphicsPtr->quads[gQuadIndex];
+   gfx = evt->d.sprite.gfxIdx;
+
+   if (evt->d.sprite.clut == 0) {
+      poly->clut = gGfxClutIds[gfx];
+   } else {
+      poly->clut = gClutIds[evt->d.sprite.clut];
+   }
+
+   setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
+           gGfxSubTextures[gfx].h);
+
+   poly->x0 = evt->d.sprite.x1;
+   poly->x1 = evt->d.sprite.x3;
+   poly->x2 = evt->d.sprite.x1;
+   poly->x3 = evt->d.sprite.x3;
+   poly->y0 = evt->d.sprite.y1;
+   poly->y1 = evt->d.sprite.y1;
+   poly->y2 = evt->d.sprite.y3;
+   poly->y3 = evt->d.sprite.y3;
+
+   setRGB0(poly, 0x80, 0x80, 0x80);
+   poly->tpage = gGfxTPageIds[gfx];
+   poly->code = GPU_CODE_POLY_FT4;
+
+   AddPrim(&ot[0], poly);
+   gQuadIndex++;
+}
+
+void RenderOverheadMapUnitMarker(u32 *ot_unused, EvtData *unitSprite, s32 showElevation, u8 team) {
+   EvtData *marker;
+   s32 osc;
+   s16 n, w, s, e;
+
+   marker = Evt_GetUnused();
+   if (showElevation) {
+      unitSprite->d.sprite.y1 = SPR_TERRAIN(unitSprite).elevation * 0x80 + 0x100;
+   }
+
+   marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_BLUE_GEM : GFX_RED_GEM;
+   HI(marker->d.sprite.x1) = HI(unitSprite->d.sprite.x1);
+   LO(marker->d.sprite.x1) = 0x80;
+   HI(marker->d.sprite.z1) = HI(unitSprite->d.sprite.z1);
+   LO(marker->d.sprite.z1) = 0x80;
+   marker->d.sprite.y1 = unitSprite->d.sprite.y1;
+
+   osc = ((rcos(((gOscillation * 2) & 0xfff)) << 6) >> 12) + 0x80;
+
+   e = marker->d.sprite.x1 - osc;
+   w = marker->d.sprite.x1 + osc;
+   n = marker->d.sprite.z1 - osc;
+   s = marker->d.sprite.z1 + osc;
+
+   marker->d.sprite.coords[0].y = marker->d.sprite.y1;
+   marker->d.sprite.coords[1].y = marker->d.sprite.y1;
+   marker->d.sprite.coords[2].y = marker->d.sprite.y1;
+   marker->d.sprite.coords[3].y = marker->d.sprite.y1;
+
+   marker->d.sprite.coords[0].x = e;
+   marker->d.sprite.coords[1].x = w;
+   marker->d.sprite.coords[2].x = e;
+   marker->d.sprite.coords[3].x = w;
+
+   marker->d.sprite.coords[0].z = n;
+   marker->d.sprite.coords[1].z = n;
+   marker->d.sprite.coords[2].z = s;
+   marker->d.sprite.coords[3].z = s;
+
+   AddEvtPrim3(gGraphicsPtr->ot, marker);
+}
+
+void Noop_8003bb24() {}
+
+void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8 poisoned,
+                       u8 paralyzed, u8 hideMarker) {
+   EvtData *marker;
+   s16 spin;
+   s16 slot = 0;
+
+   if ((HI(unitSprite->d.sprite.x1) >= D_80122E28) &&
+       (HI(unitSprite->d.sprite.x1) <= gMapSizeX + D_80122E28 - 1) &&
+       (HI(unitSprite->d.sprite.z1) >= D_80122E2C) &&
+       (HI(unitSprite->d.sprite.z1) <= gMapSizeZ + D_80122E2C - 1)) {
+
+      if (poisoned) {
+         RenderStatusEffectText(gGraphicsPtr->ot, unitSprite, 0, slot++);
+      }
+      if (paralyzed) {
+         RenderStatusEffectText(gGraphicsPtr->ot, unitSprite, 1, slot++);
+      }
+      if (!hideMarker && !gIsEnemyTurn && !gPlayerControlSuppressed) {
+         marker = Evt_GetUnused();
+         marker->d.sprite.y1 = SPR_TERRAIN(unitSprite).elevation * 128;
+         marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_PLAYER_CIRCLE : GFX_ENEMY_CIRCLE;
+         marker->d.sprite.x1 = unitSprite->d.sprite.x1;
+         marker->d.sprite.z1 = unitSprite->d.sprite.z1;
+         marker->d.sprite.coords[0].y = marker->d.sprite.y1;
+         marker->d.sprite.coords[1].y = marker->d.sprite.y1;
+         marker->d.sprite.coords[2].y = marker->d.sprite.y1;
+         marker->d.sprite.coords[3].y = marker->d.sprite.y1;
+
+         if (!done) {
+            spin = gState.unitMarkerSpin;
+         } else {
+            if (team == TEAM_PLAYER) {
+               spin = ANGLE_45_DEGREES;
+            } else {
+               spin = gState.unitMarkerSpin;
+            }
+         }
+
+         marker->d.sprite.coords[0].x = unitSprite->d.sprite.x1 + (rcos(spin & 0xfff) * 0xaa >> 12);
+         marker->d.sprite.coords[1].x =
+             unitSprite->d.sprite.x1 + (rcos((spin + ANGLE_90_DEGREES) & 0xfff) * 0xaa >> 12);
+         marker->d.sprite.coords[2].x =
+             unitSprite->d.sprite.x1 + (rcos((spin + ANGLE_270_DEGREES) & 0xfff) * 0xaa >> 12);
+         marker->d.sprite.coords[3].x =
+             unitSprite->d.sprite.x1 + (rcos((spin + ANGLE_180_DEGREES) & 0xfff) * 0xaa >> 12);
+
+         marker->d.sprite.coords[0].z =
+             unitSprite->d.sprite.z1 + (rcos((spin + ANGLE_90_DEGREES) & 0xfff) * 0xaa >> 12);
+         marker->d.sprite.coords[1].z =
+             unitSprite->d.sprite.z1 + (rcos((spin + ANGLE_180_DEGREES) & 0xfff) * 0xaa >> 12);
+         marker->d.sprite.coords[2].z = unitSprite->d.sprite.z1 + (rcos(spin & 0xfff) * 0xaa >> 12);
+         marker->d.sprite.coords[3].z =
+             unitSprite->d.sprite.z1 + (rcos((spin + ANGLE_270_DEGREES) & 0xfff) * 0xaa >> 12);
+
+         marker->d.sprite.otOfs = -2;
+         AddEvtPrim5(gGraphicsPtr->ot, marker);
+      }
+   }
+}
+
+void RenderStatusEffectText(u32 *ot_unused, EvtData *unitSprite, u8 paralyzed, u8 slot) {
+   EvtData *text;
+   s16 osc;
+   s16 oneThird, twoThirds, oneAndOneThird;
+
+   osc = ((rcos(gOscillation) * 4) >> 12) + 12;
+   oneThird = osc / 3;
+   twoThirds = oneThird * 2;
+   oneAndOneThird = osc + oneThird;
+
+   gQuad_800fe63c[0].vx = -oneAndOneThird;
+   gQuad_800fe63c[0].vy = -twoThirds;
+
+   gQuad_800fe63c[1].vx = oneAndOneThird;
+   gQuad_800fe63c[1].vy = -twoThirds;
+
+   gQuad_800fe63c[2].vx = -oneAndOneThird;
+   gQuad_800fe63c[2].vy = twoThirds;
+
+   gQuad_800fe63c[3].vx = oneAndOneThird;
+   gQuad_800fe63c[3].vy = twoThirds;
+
+   text = Evt_GetUnused();
+   text->d.sprite.boxIdx = 7;
+
+   if (paralyzed) {
+      text->d.sprite.gfxIdx = GFX_PARALYZED;
+   } else {
+      text->d.sprite.gfxIdx = GFX_POISONED;
+   }
+
+   text->d.sprite.y1 = unitSprite->d.sprite.y1 + 0x160 + (slot * 0xa0);
+   text->d.sprite.x1 = unitSprite->d.sprite.x1;
+   text->d.sprite.z1 = unitSprite->d.sprite.z1;
+
+   AddEvtPrim6(gGraphicsPtr->ot, text, 0);
+}
+
+void SetElevationFromTerrain(EvtData *evt) {
+   if (HI(evt->d.sprite.x1) < gMapMinX || HI(evt->d.sprite.x1) > gMapMaxX ||
+       HI(evt->d.sprite.z1) < gMapMinZ || HI(evt->d.sprite.z1) > gMapMaxZ) {
+      evt->d.sprite.y1 = 0;
+   } else {
+      evt->d.sprite.y1 = SPR_TERRAIN(evt).elevation * 128;
+   }
+}
+
+s32 GetTerrainElevation(s8 z, s8 x) {
+   if (x < gMapMinX || x > gMapMaxX || z < gMapMinZ || z > gMapMaxZ) {
+      return 0;
+   } else {
+      return gTerrainPtr[z][x].elevation * 128;
+   }
+}
+
+s32 GetMapModelElevation(s8 z, s8 x) {
+   if (x < gMapMinX || x > gMapMaxX || z < gMapMinZ || z > gMapMaxZ) {
+      return 0;
+   } else {
+      return gMapRowPointers[z][x].height * 128;
+   }
+}
+
+void UpdateEvtAnimation(EvtData *evt) {
+   s16 *animData;
+
+   /* AnimData shorts:
+    boxIdx,
+    (gfxIdx, delay), (gfxIdx, delay), ... */
+
+   animData = (s16 *)evt->d.sprite.animData;
+
+   if (!evt->d.sprite.animInitialized) {
+      evt->d.sprite.animState = 1;
+   }
+
+   switch (evt->d.sprite.animState) {
+   case 0:
+      break;
+   case 1:
+      evt->d.sprite.animDataIdx = 1;
+      evt->d.sprite.animFinished = 0;
+      evt->d.sprite.animInitialized = 1;
+      evt->d.sprite.boxIdx = animData[0];
+      evt->d.sprite.currentFrameDelay = animData[2];
+      evt->d.sprite.animState++;
+      break;
+   case 2:
+      if (--evt->d.sprite.currentFrameDelay == 0) {
+         evt->d.sprite.animDataIdx += 2;
+         if (animData[evt->d.sprite.animDataIdx] == 0) {
+            if (animData[evt->d.sprite.animDataIdx + 1] != 0) {
+               // gfxIdx is zero, but frameDelay is non-zero; reset loop
+               evt->d.sprite.animDataIdx = 1;
+               evt->d.sprite.currentFrameDelay = animData[2];
+            } else {
+               // gfxIdx and frameDelay are both zero; rewind to final frame
+               evt->d.sprite.animFinished++;
+               evt->d.sprite.animDataIdx -= 2;
+               evt->d.sprite.animState++;
+            }
+         } else {
+            // gfxIdx is non-zero; assign associated delay, then break to set frame
+            evt->d.sprite.currentFrameDelay = animData[evt->d.sprite.animDataIdx + 1];
+         }
+      }
+      break;
+   }
+
+   evt->d.sprite.gfxIdx = animData[evt->d.sprite.animDataIdx];
+}
+
+void UpdateMultisizeEvtAnimation(EvtData *evt) {
+   s16 *animData;
+
+   /* Multisize AnimData shorts:
+    (gfxIdx, delay, boxIdx), ... */
+
+   animData = (s16 *)evt->d.sprite.animData;
+
+   if (!evt->d.sprite.animInitialized) {
+      evt->d.sprite.animState = 1;
+   }
+
+   switch (evt->d.sprite.animState) {
+   case 0:
+      break;
+   case 1:
+      evt->d.sprite.animDataIdx = 0;
+      evt->d.sprite.animFinished = 0;
+      evt->d.sprite.animInitialized = 1;
+      evt->d.sprite.currentFrameDelay = animData[1];
+      evt->d.sprite.boxIdx = animData[2];
+      evt->d.sprite.animState++;
+      break;
+   case 2:
+      if (--evt->d.sprite.currentFrameDelay == 0) {
+         evt->d.sprite.animDataIdx += 3;
+         if (animData[evt->d.sprite.animDataIdx] == 0) {
+            if (animData[evt->d.sprite.animDataIdx + 1] != 0) {
+               // gfxIdx is zero, but frameDelay is non-zero; reset loop
+               evt->d.sprite.animDataIdx = 0;
+               evt->d.sprite.currentFrameDelay = animData[1];
+               evt->d.sprite.boxIdx = animData[2];
+            } else {
+               // gfxIdx and frameDelay are both zero; rewind to final frame
+               evt->d.sprite.animFinished++;
+               evt->d.sprite.animDataIdx -= 3;
+               evt->d.sprite.animState++;
+            }
+         } else {
+            // gfxIdx is non-zero; assign associated delay/box, then break to set frame
+            evt->d.sprite.currentFrameDelay = animData[evt->d.sprite.animDataIdx + 1];
+            evt->d.sprite.boxIdx = animData[evt->d.sprite.animDataIdx + 2];
+         }
+      }
+      break;
+   }
+
+   evt->d.sprite.gfxIdx = animData[evt->d.sprite.animDataIdx];
+}
+
+void UpdateUnitSpriteAnimation(EvtData *evt) {
+   // Unit anim data consists of bytes instead of shorts
+   s8 *animData = (s8 *)evt->d.sprite.animData;
+
+   if (!evt->d.sprite.animInitialized) {
+      evt->d.sprite.animState = 1;
+   }
+
+   switch (evt->d.sprite.animState) {
+   case 0:
+      break;
+
+   case 1:
+      evt->d.sprite.animFinished = 0;
+      evt->d.sprite.animInitialized = 1;
+
+      if (animData[0] >= 0x3b) {
+         evt->d.sprite.animRelativeOfs = animData[1];
+         evt->d.sprite.animYOfs = animData[2];
+         evt->d.sprite.animDataIdx = 3;
+         evt->d.sprite.currentFrameDelay = animData[4];
+         if (animData[0] == 0x3c) {
+            evt->d.sprite.animSingleAxis = 1;
+         } else {
+            evt->d.sprite.animSingleAxis = 0;
+         }
+      } else {
+         evt->d.sprite.animDataIdx = 0;
+         evt->d.sprite.currentFrameDelay = animData[1];
+         //? can sep? union?
+         *(u32 *)&evt->d.sprite.animRelativeOfs = 0;
+         // evt->d.sprite.animYOfs = 0;
+         evt->d.sprite.animSingleAxis = 0;
+      }
+
+      evt->d.sprite.animState++;
+
+      if (evt->d.sprite.currentFrameDelay == 1 && animData[evt->d.sprite.animDataIdx + 2] == 0 &&
+          animData[evt->d.sprite.animDataIdx + 3] == 0) {
+         evt->d.sprite.animFinished++;
+         evt->d.sprite.animState = 3;
+      }
+
+      break;
+
+   case 2:
+      if (--evt->d.sprite.currentFrameDelay == 0) {
+         evt->d.sprite.animDataIdx += 2;
+
+         if (animData[evt->d.sprite.animDataIdx] >= 0x3b) {
+            evt->d.sprite.animRelativeOfs = animData[evt->d.sprite.animDataIdx + 1];
+            evt->d.sprite.animYOfs = animData[evt->d.sprite.animDataIdx + 2];
+            if (animData[evt->d.sprite.animDataIdx] == 0x3c) {
+               evt->d.sprite.animSingleAxis = 1;
+            } else {
+               evt->d.sprite.animSingleAxis = 0;
+            }
+            evt->d.sprite.animDataIdx += 3;
+         }
+
+         if (animData[evt->d.sprite.animDataIdx] == 0) {
+            if (animData[evt->d.sprite.animDataIdx + 1] != 0) {
+               if (animData[0] >= 0x3b) {
+                  evt->d.sprite.animRelativeOfs = animData[1];
+                  evt->d.sprite.animYOfs = animData[2];
+                  if (animData[0] == 0x3c) {
+                     evt->d.sprite.animSingleAxis = 1;
+                  } else {
+                     evt->d.sprite.animSingleAxis = 0;
+                  }
+                  evt->d.sprite.animDataIdx = 3;
+                  evt->d.sprite.currentFrameDelay = animData[4];
+               } else {
+                  evt->d.sprite.animDataIdx = 0;
+                  evt->d.sprite.currentFrameDelay = animData[1];
+                  //? can sep?
+                  *(u32 *)&evt->d.sprite.animRelativeOfs = 0;
+                  // evt->d.sprite.animYOfs = 0;
+                  evt->d.sprite.animSingleAxis = 0;
+               }
+            }
+         } else {
+            evt->d.sprite.currentFrameDelay = animData[evt->d.sprite.animDataIdx + 1];
+         }
+      }
+
+      if (evt->d.sprite.currentFrameDelay == 1 && animData[evt->d.sprite.animDataIdx + 2] == 0 &&
+          animData[evt->d.sprite.animDataIdx + 3] == 0) {
+         evt->d.sprite.animFinished++;
+         evt->d.sprite.animState++;
+      }
+
+      break;
+   }
+
+   evt->d.sprite.gfxIdx = animData[evt->d.sprite.animDataIdx];
+}
+
+void ClearUnits(void) {
+   s32 i;
+   UnitStatus *pUnit;
+
+   for (i = 0; i < UNIT_CT; i++) {
+      pUnit = &gUnits[i];
+      pUnit->idx = 0;
+   }
+}
+
+UnitStatus *CreateUnitInNextSlot(void) { return CreateUnit(0); }
+
+UnitStatus *CreateUnitInLastSlot(void) { return CreateUnit(1); }
+
+UnitStatus *CreateUnit(u8 last) {
+   s32 i, j;
+   UnitStatus *pUnit = &gUnits[1];
+
+   for (i = 1; i < UNIT_CT; i++, pUnit++) {
+      if (pUnit->idx == 0) {
+         if (last) {
+            pUnit = &gUnits[UNIT_CT - 1];
+            i = UNIT_CT - 1;
+         }
+         pUnit->idx = i;
+         pUnit->level = 1;
+         pUnit->team = TEAM_NULL;
+         pUnit->done = 0;
+         for (j = 0; j < 8; j++) {
+            pUnit->experience[j] = 0;
+         }
+         pUnit->exp = 0;
+         pUnit->hpFrac = 10000;
+         pUnit->mp = 0;
+         pUnit->atkVar10000 = 10000;
+         pUnit->defVar10000 = 10000;
+         pUnit->agiVar10000 = 10000;
+         pUnit->hpVar100 = 100;
+         pUnit->atkVar100 = 100;
+         pUnit->defVar100 = 100;
+         pUnit->agiVar100 = 100;
+         pUnit->direction = 0;
+         pUnit->evtBattler = NULL;
+         pUnit->evtSprite = NULL;
+         pUnit->hideMarker = 0;
+         pUnit->poisoned = 0;
+         pUnit->paralyzed = 0;
+         pUnit->atkBoosted = 0;
+         pUnit->defBoosted = 0;
+         pUnit->aglBoosted = 0;
+         break;
+      }
+   }
+   return pUnit;
+}
+
+void StartUnitSpritesDecoder(u8 stripIdx) {
+   EvtData *evt = &gEvtData050_UnitSpritesDecoder;
+
+   stripIdx -= 2;
+   evt->functionIndex = EVTF_UNIT_SPRITES_DECODER;
+   evt->state = 0;
+   evt->d.evtf050.baseSrcDataPtr = gEncodedUnitSpriteData[gUnitSetEncodedSpriteDataIdx[stripIdx]];
+   evt->d.evtf050.baseDstDataPtr = gScratch1_801317c0;
+   evt->d.evtf050.vramX = 704;
+   evt->d.evtf050.vramY = 0;
+}
+
+EvtData *GetUnitSpriteAtPosition(u8 z, u8 x) {
+   EvtData *unitSprite;
+   u8 unitIdx = gMapUnitsPtr[z][x].s.unitIdx;
+
+   if (unitIdx == 0) {
+      unitSprite = NULL;
+   } else {
+      unitSprite = gUnits[unitIdx].evtSprite;
+   }
+
+   return unitSprite;
+}
+
+EvtData *FindUnitSpriteByNameIdx(u8 nameIdx) {
+   s32 i;
+   UnitStatus *pUnit = &gUnits[1];
+
+   for (i = 1; i < UNIT_CT; i++) {
+      if (pUnit->idx != 0 && pUnit->name == nameIdx) {
+         return pUnit->evtSprite;
+      }
+      pUnit++;
+   }
+
+   return NULL;
+}
+
+EvtData *FindUnitSpriteByType(u8 unitType) {
+   s32 i;
+   UnitStatus *pUnit = &gUnits[1];
+
+   for (i = 1; i < UNIT_CT; i++) {
+      if (pUnit->idx != 0 && pUnit->unitType == unitType) {
+         return pUnit->evtSprite;
+      }
+      pUnit++;
+   }
+
+   return NULL;
+}
+
+void GetUnitSpriteVramRect(EvtData *unitSprite, s32 *px, s32 *py, s32 *pw, s32 *ph) {
+   s32 tpage;
+   s32 gfx = unitSprite->d.sprite.gfxIdx;
+   s32 stripIdx = unitSprite->d.sprite.stripIdx;
+
+   if (gfx < 35) {
+      if (gfx < 26) {
+         *px = 0xb00;
+         *py = 0;
+      } else {
+         *px = 0xb00;
+         *py = 0x100;
+      }
+      *px += gTexwSpriteSetFrames[gfx].x;
+      *py += gTexwSpriteSetFrames[gfx].y;
+      *pw = gTexwSpriteSetFrames[gfx].w;
+      *ph = gTexwSpriteSetFrames[gfx].h;
+   } else {
+      if (gfx < 40) {
+         tpage = gSpriteStripTPageIds[stripIdx * 2];
+         gfx += (stripIdx % 5) * 5;
+         gfx -= 35;
+      } else {
+         tpage = gSpriteStripTPageIds[stripIdx * 2 + 1];
+         gfx += (stripIdx % 5) * 5;
+         gfx -= 40;
+      }
+      if (tpage >= 16) {
+         tpage -= 16;
+         *px = tpage * 0x100;
+         *py = 0x100;
+      } else {
+         *px = tpage * 0x100;
+         *py = 0;
+      }
+      *px += gTexwSpriteStripFrames[gfx].x;
+      *py += gTexwSpriteStripFrames[gfx].y;
+      *pw = gTexwSpriteStripFrames[gfx].w;
+      *ph = gTexwSpriteStripFrames[gfx].h;
+   }
 }

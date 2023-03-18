@@ -67,6 +67,7 @@ s32 abs(s32);
 
 #define SPR_TERRAIN(spr) gTerrainPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
 #define SPR_TILESTATE(spr) gTileStateGridPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
+#define SPR_TILE_MODEL(spr) gMapRowPointers[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
 
 typedef u16 BigInt[8];
 

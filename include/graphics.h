@@ -10,8 +10,8 @@
 
 typedef enum GfxIdx {
    GFX_NULL = 0,
-   GFX_PLAYER_CIRCLE = 2,
-   GFX_ENEMY_CIRCLE = 3,
+   GFX_ENEMY_CIRCLE = 2,
+   GFX_PLAYER_CIRCLE = 3,
    GFX_GRAVE_MARKER = 4,
    GFX_TORCH_1 = 5,
    GFX_TORCH_2 = 6,
@@ -230,6 +230,11 @@ typedef enum GfxIdx {
    SPRITE_BOX_18 = 18
 } SpriteBoxIdx;*/
 
+typedef enum GpuCode {
+   GPU_CODE_SEMI_TRANS = 0x02,
+   GPU_CODE_POLY_FT4 = 0x2c,
+} GpuCode;
+
 typedef struct Graphics {
    DRAWENV drawEnv;
    DISPENV dispEnv;
@@ -291,7 +296,7 @@ typedef struct PortraitsDb {
 extern Graphics gGraphicBuffers[2];
 extern Graphics *gGraphicsPtr;
 extern SVECTOR gLightRotation;
-// extern s16 gLightRotation_vy, gLightRotation_vz; /* FIXME */
+extern CVECTOR gLightColor;
 extern MATRIX gCameraMatrix;
 extern SVECTOR gCameraPos;
 extern SVECTOR gCameraRotation;
@@ -300,22 +305,43 @@ extern SVECTOR gCameraRotation;
 extern VECTOR gCameraZoom;
 extern s32 gGeomOffsetX, gGeomOffsetY;
 extern s32 gQuadIndex;
-extern u16 gOscillation;
+extern s16 gOscillation;
 extern u8 gGridColorOscillation;
 extern s32 gDecodingSprites;
+
+// For each idx of gCurrentUnitSet, stores the corresponding idx of gEncodedUnitSpriteData
+extern s16 gUnitSetEncodedSpriteDataIdx[20];
+extern void *gEncodedUnitSpriteData[20];
+extern u16 gSpriteStripClutIds[25];
+extern s16 gSpriteStripTPageCells[50];
+extern s16 gSpriteStripTPageIds[50];
+
+// Mix of 48x48 and 64x48 px frames (tpages 11 & 27); wider frames allow for e.g. slash animations
+extern TextureWindow gTexwSpriteSetFrames[35];
+// 48x48 px frames
+extern TextureWindow gTexwSpriteStripFrames[25];
+// 96x48 px frames (tpages 11 & 27)
+extern TextureWindow gTexwWideSpriteSetFrames[10];
 
 // Hard-coded values start as indices into gClutIds & are replaced w/ actual CLUT IDs in SetupGfx()
 extern u16 gGfxClutIds[GFX_CT];
 extern u16 gGfxTPageIds[GFX_CT];
 extern s16 gGfxTPageCells[GFX_CT];
 extern TextureWindow gGfxSubTextures[GFX_CT];
-extern u16 gTPageIds[4][32];
+// extern u16 gTPageIds[4][32];
+extern u16 gTPageIds[128];
+
+// ?: Going off of the loop at {@addr 0x8005cd94}, this should
+// have 128 elements, but the last few bytes ({@addr 0x8014014c})
+// are used in a completely unrelated manner: {@addr 800c471c}
+extern u16 gClutIds[124];
 
 extern PortraitOverlayOffsets gPortraitOverlayOffsetsDb[692];
 extern PortraitsDb gPortraitsDb;
 
 extern Quad gQuad_800fe53c;
 extern Quad gQuad_800fe63c;
+extern Quad *gSpriteBoxQuads[19];
 
 void DecodeUnitSprites(void);
 void StartUnitSpritesDecoder(u8);

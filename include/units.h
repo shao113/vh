@@ -529,6 +529,7 @@ extern UnitStatus gUnits[UNIT_CT];
 extern PartyMember gPartyMembers[PARTY_CT];
 extern BigInt gExperienceLevels[];
 extern void *gUnitDataPtr;
+extern s16 gCurrentUnitSet[20];
 
 extern u16 gUnitPortraitIds[UNIT_CT];
 

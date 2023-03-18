@@ -167,7 +167,7 @@ void Evtf022_029_Projectile(EvtData *evt) {
       HI(targetSprite->d.sprite.z1) = LO(gTargetZ);
       LO(targetSprite->d.sprite.x1) = 0x80;
       LO(targetSprite->d.sprite.z1) = 0x80;
-      targetSprite->d.sprite.y1 = GetTerrainHeight(LO(gTargetZ), LO(gTargetX));
+      targetSprite->d.sprite.y1 = GetTerrainElevation(LO(gTargetZ), LO(gTargetX));
    }
 
    switch (evt->state) {

@@ -46,11 +46,11 @@ class MapTile:
                 f.write(f"usemtl g{gfx}\n")
             if face[2] == face[3]:
                 # Triangle
-                f.write(f"f {face[0]+vertexOffset+1}/1 {face[1]+vertexOffset+1}/2 {face[2]+vertexOffset+1}/4\n")
+                f.write(f"f {face[0]+vertexOffset+1}/1 {face[3]+vertexOffset+1}/4 {face[1]+vertexOffset+1}/2\n")
             else:
                 # Quad
-                f.write(f"f {face[0]+vertexOffset+1}/1 {face[1]+vertexOffset+1}/2 {face[2]+vertexOffset+1}/3\n")
-                f.write(f"f {face[0]+vertexOffset+1}/1 {face[2]+vertexOffset+1}/3 {face[3]+vertexOffset+1}/4\n")
+                # TODO: fix texture distortion? simple subdivision in blender can help, but would prefer something more efficient
+                f.write(f"f {face[0]+vertexOffset+1}/1 {face[3]+vertexOffset+1}/4 {face[2]+vertexOffset+1}/3 {face[1]+vertexOffset+1}/2\n")
         f.write("\n")
 
     def read(self, f):
@@ -98,8 +98,7 @@ def loadTextureInfo(mapNum):
             textures.append(texture)
         # clut ids: 257 bytes
         for i in range(NUM_TEXTURES):
-            clutId = ord(f.read(1))
-            textures[i].clutId = clutId
+            textures[i].clutId = ord(f.read(1))
         # cluts: 512 bytes
         # a few maps (e.g. 56-58) do access the global cluts
         cluts = globalCluts.copy()

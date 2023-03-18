@@ -51,11 +51,12 @@ typedef enum EvtFunctionIdx {
    EVTF_FX_TBD_136 = 136,
    EVTF_FX_TBD_137 = 137,
    EVTF_FX_TBD_138 = 138,
+   EVTF_FX_TBD_139 = 139,
    EVTF_FX_TBD_140 = 140,
    EVTF_FX_TBD_141 = 141,
    EVTF_FX_TBD_142 = 142,
    EVTF_BLOOD_SPURT = 205,
-   EVTF_DUST_CLOUD_PARTICLE = 214,
+   EVTF_DUST_CLOUD = 214,
    EVTF_CLOUD = 215,
    EVTF_REVEAL_CHEST_ITEM = 290,
    EVTF_REVEAL_HIDDEN_ITEM = 294,
@@ -168,7 +169,7 @@ typedef struct EvtData_Sprite {
    /* :0x55 */ u8 unk_0x55[3];
    /* :0x58 */ s16 animRelativeOfs;
    /* :0x5A */ s16 animYOfs;
-   /* :0x5C */ u8 animSingleAxis;
+   /* :0x5C */ s8 animSingleAxis;
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_Sprite;
 
@@ -459,6 +460,22 @@ typedef struct EvtData_031 {
    /* :0x29 */ u8 unk_0x29[55];
 } EvtData_031;
 
+/* Unit Sprites Decoder */
+typedef struct EvtData_050 {
+   /* :0x10 */ u8 unk_0x10[44];
+   /* :0x3C */ s32 remainingBytes;
+   /* :0x40 */ u16 encodingBits;
+   /* :0x42 */ u16 cacheOfs;
+   /* :0x44 */ void *src;
+   /* :0x48 */ void *dst;
+   /* :0x4C */ u8 unk_0x4C[4];
+   /* :0x50 */ void *baseSrcDataPtr;
+   /* :0x54 */ void *baseDstDataPtr;
+   /* :0x58 */ s16 vramX;
+   /* :0x5A */ s16 vramY;
+   /* :0x5C */ u8 unk_0x5C[4];
+} EvtData_050;
+
 /* Attack Info Marker */
 typedef struct EvtData_052 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -698,7 +715,7 @@ typedef struct EvtData_149 {
    /* :0x5C */ struct EvtData *unitSprite;
 } EvtData_149;
 
-/* Dust Cloud */
+/* Dust Cloud Spawner */
 typedef struct EvtData_213 {
    /* :0x10 */ u8 unk_0x10[2];
    /* :0x12 */ s16 x;
@@ -709,7 +726,7 @@ typedef struct EvtData_213 {
    /* :0x26 */ u8 unk_0x26[58];
 } EvtData_213;
 
-/* Dust Cloud Particle */
+/* Dust Cloud */
 typedef struct EvtData_214 {
    /* :0x10 */ u8 unk_0x10[2];
    /* :0x12 */ s16 x;
@@ -953,6 +970,7 @@ typedef struct EvtData {
       EvtData_028 evtf028;         /* Unit Casting Spell */
       EvtData_030 evtf030;         /* Unit/Field Info */
       EvtData_031 evtf031;         /* Battle Spells List */
+      EvtData_050 evtf050;         /* Unit Sprites Decoder */
       EvtData_052 evtf052;         /* Attack Info Marker */
       EvtData_062 evtf062;         /* Stretch Warp Sprite */
       EvtData_070 evtf070;         /* Fade From Black */
@@ -972,8 +990,8 @@ typedef struct EvtData {
       EvtData_133_Etc evtf133;     /* FX - TBD */
       EvtData_133_Etc evtf137;     /* FX - TBD */
       EvtData_133_Etc evtf141;     /* FX - TBD */
-      EvtData_213 evtf213;         /* Dust Cloud */
-      EvtData_214 evtf214;         /* Dust Cloud Particle */
+      EvtData_213 evtf213;         /* Dust Cloud Spawner */
+      EvtData_214 evtf214;         /* Dust Cloud */
       EvtData_215 evtf215;         /* Cloud (Sand, Dust, etc.) */
       EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_405 evtf405;         /* Panorama */
