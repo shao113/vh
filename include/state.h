@@ -104,7 +104,7 @@ typedef struct State {
    s16 turn;
    u8 activeItem;
    u8 activeItemSlot;
-   s16 field_0xa2;
+   s16 unitListPortraitId;
    u8 mapNum; // <- also serves as battleNum when <= 43
    u8 fieldRenderingDisabled;
    u8 vsyncMode;

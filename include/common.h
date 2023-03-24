@@ -57,7 +57,10 @@ s32 abs(s32);
       if (tmp < 0)                                                                                 \
          x = -tmp;                                                                                 \
    } while (0)
+
 #define CLAMP(x, min, max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define LO(arg) ((s8 *)&arg)[0]
 #define HI(arg) ((s8 *)&arg)[1]
 #define LO_H(arg) ((s16 *)&arg)[0]

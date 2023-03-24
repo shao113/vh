@@ -23,6 +23,14 @@ typedef enum GfxIdx {
    GFX_WIN_2 = 12,
    GFX_LOSE_1 = 13,
    GFX_LOSE_2 = 14,
+   GFX_PORTRAIT_A_FACE = 17,
+   GFX_PORTRAIT_A_SPEAK_1 = 18,
+   GFX_PORTRAIT_A_SPEAK_2 = 19,
+   GFX_PORTRAIT_A_BLINK = 20,
+   GFX_PORTRAIT_B_FACE = 21,
+   GFX_PORTRAIT_B_SPEAK_1 = 22,
+   GFX_PORTRAIT_B_SPEAK_2 = 23,
+   GFX_PORTRAIT_B_BLINK = 24,
    GFX_DIGIT_0 = 30,
    GFX_DIGIT_1 = 31,
    GFX_DIGIT_2 = 32,
@@ -159,6 +167,8 @@ typedef enum GfxIdx {
    GFX_BLUE_CRYSTAL = 267,
    GFX_BLUE_SHARD = 268,
    GFX_SUPPORT = 269,
+   GFX_FAIRY_1 = 305,
+   GFX_FAIRY_2 = 306,
    GFX_PANORAMA_DEEP_BLUE = 311,
    GFX_MSGBOX_TAIL_DOWN = 313,
    GFX_MSGBOX_TAIL_RIGHT = 314,
@@ -203,6 +213,7 @@ typedef enum GfxIdx {
    GFX_MAP_TEXTURE_198 = 598,
    GFX_WINDOW_TBD_657 = 657,
    GFX_WINDOW_TBD_658 = 658,
+   GFX_TBD_685 = 685,
    GFX_WINDOW_TBD_707 = 707,
    GFX_WINDOW_TBD_708 = 708,
    GFX_ITEM_ICONS_OFS = 727,
@@ -338,6 +349,8 @@ extern u16 gClutIds[124];
 
 extern PortraitOverlayOffsets gPortraitOverlayOffsetsDb[692];
 extern PortraitsDb gPortraitsDb;
+extern PortraitOverlayOffsets gPortraitOverlayOffsets[50];
+extern u8 gPortraitClutIDs[75];
 
 extern Quad gQuad_800fe53c;
 extern Quad gQuad_800fe63c;

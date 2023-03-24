@@ -1,3 +1,4 @@
+gMovieDecoder = 0x8012396c;
 gPathGrid10 = 0x8012b6ec;
 gPathGrid2 = 0x8012ee98;
 gPathGrid3 = 0x8012f68c;

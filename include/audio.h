@@ -134,6 +134,7 @@ extern s8 gClearedSpuIRQ;
 extern u8 gSeqIDToPlay;
 extern u8 gSeqReverb;
 extern s16 gVolumeFadeCounter;
+extern u32 gVabSoundBufferAddr[4];
 
 /* TBD volatile? */
 extern s16 gCdaReducedVolumeTarget;
@@ -148,9 +149,10 @@ extern SeqProperties gSeqProperties[38];
 
 extern s16 gSeqTaggedIDs[38][8];
 extern s32 gSeqDataOffsets[39][8];
+extern u8 gSeqData[];
 
 void SetSeqDataPtr(void *);
-void SetCurrentSeqSet(s16);
+void SetCurrentSeqSet(s32);
 void SetSeqAccessNum(s16);
 void SetCdaSectorOffset(s32);
 u32 GetCurrentSeqId(void);

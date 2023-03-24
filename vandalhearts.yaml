@@ -65,7 +65,10 @@ segments:
     - [0x0030f4, rdata]                        #
 
     - [0x0033ec, .rdata, evt]                  # 0x80012bec
-    - [0x003500, rdata]                        # 0x80012d00
+    - [0x003500, .rdata, split_02d078]         # 0x80012d00
+    - [0x00353c, .rdata, debug_menu]           # 0x80012d3c
+    - [0x0037d4, .rdata, cd]
+    - [0x003980, rdata]
 
     - [0x0041d4, .rdata, card]                 # 0x800139d4
     - [0x0041f4, rdata]                        # 0x800139f4
@@ -91,7 +94,10 @@ segments:
     - [0x027f7c, bin]
 
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
-    - [0x02d548, bin]                          # 
+    - [0x02d078, c, split_02d078]              # 0x8003c878 ClearUnits ...
+    - [0x02efe4, c, debug_menu]                # 0x8003e7e4 Evtf414_DebugMenu
+    - [0x02f748, c, cd]                        # 0x8003ef48 CDInit ...
+    - [0x030c9c, bin]
     - [0x0318b4, c, battle_eval]               # 0x800410b4 FindUnitByNameIdx ...
     - [0x032ef0, bin]                          # 0x800426f0 (End of battle_eval)
 
@@ -119,7 +125,7 @@ segments:
     - [0x0e3094, .data, battle_0201b8]         # 0x800f2894
     - [0x0e32ec, data]                         # 
 
-    - [0x0e3914, .data, gCdFiles]              # 0x800f3114
+    - [0x0e3714, .data, cd]                    # 0x800f2f14
     - [0x0e5a74, data]
     - [0x0e5d4c, .data, card]                  # 0x800f554c gCardFilePath
     - [0x0e5d60, data]                         # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
@@ -129,11 +135,8 @@ segments:
 
     - [0x0ef188, .data, fx_0506c0]             # 0x800fe988
     - [0x0ef3c0, data]
-
-    - [0x0f76ec, bin]                # - TBD - # Why is this necessary?
-    - [0x0f76f0, data]               # # # # # # 
-    
-    - [0x0f780c, .data, audio_data]            # 0x8010700c
+  
+    - [0x0f76ec, .data, audio]                 # 0x80106eec
     - [0x0f91d0, data]                         # 0x801089d0 lib data
     - [0x111a5c, bin]                # - TBD - # 
     - [0x111a60, data]               # # # # # # 
@@ -145,7 +148,8 @@ segments:
     - [0x11367c, .sdata, projectile]           # 0x80122e7c
     - [0x1136b4, .sdata, battle_013b94]        # 0x80122eb4
     - [0x1136c4, .sdata, battle_0201b8]        # 0x80122ec4
-    - [0x1136e0, bin]
+    - [0x1136e0, .sdata, cd]                   # 0x80122ee0
+    - [0x1136f8, bin]
 
     - [0x113710, .sdata, card]                 # 0x80122f10
     - [0x11372c, sdata]                        # 0x80122f2c

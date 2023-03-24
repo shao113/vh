@@ -41,6 +41,7 @@ typedef enum EvtFunctionIdx {
    EVTF_PUSH = 48,
    EVTF_BATTLE_MAP_CURSOR_CONTROL = 49,
    EVTF_UNIT_SPRITES_DECODER = 50,
+   EVTF_FLOATING_DAMAGE_TEXT = 51,
    EVTF_ATTACK_INFO_MARKER = 52,
    EVTF_STRETCH_WARP_SPRITE = 62,
    EVTF_CIRCLE = 77,
@@ -460,6 +461,23 @@ typedef struct EvtData_031 {
    /* :0x29 */ u8 unk_0x29[55];
 } EvtData_031;
 
+/* Display Damage */
+typedef struct EvtData_032_033 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ struct EvtData *barFg;
+   /* :0x28 */ struct EvtData *barBg;
+   /* :0x2C */ s16 barDstX3;
+   /* :0x2E */ s16 timer;
+   /* :0x30 */ s32 maxHp;
+   /* :0x34 */ s32 prevHp;
+   /* :0x38 */ s32 curHp;
+   /* :0x3C */ u8 unk_0x3C[36];
+} EvtData_032_033;
+
 /* Unit Sprites Decoder */
 typedef struct EvtData_050 {
    /* :0x10 */ u8 unk_0x10[44];
@@ -475,6 +493,27 @@ typedef struct EvtData_050 {
    /* :0x5A */ s16 vramY;
    /* :0x5C */ u8 unk_0x5C[4];
 } EvtData_050;
+
+/* Floating Damage Text */
+typedef struct EvtData_051 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 damage;
+   /* :0x26 */ s16 clut;
+   /* :0x28 */ s16 phase;
+   /* :0x2A */ s16 timer;
+   /* :0x2C */ u8 unk_0x2C[32];
+   /* :0x4C */ s16 hundreds;
+   /* :0x4E */ s16 tens;
+   /* :0x50 */ s16 ones;
+   /* :0x52 */ s16 numDigits;
+   /* :0x54 */ u8 unk_0x54[4];
+   /* :0x58 */ struct EvtData *unitSprite;
+   /* :0x5C */ struct EvtData *digitSprite;
+} EvtData_051;
 
 /* Attack Info Marker */
 typedef struct EvtData_052 {
@@ -798,6 +837,31 @@ typedef struct EvtData_410 {
    /* :0x28 */ u8 unk_0x28[56];
 } EvtData_410;
 
+/* MsgBox Portrait */
+typedef struct EvtData_413 {
+   /* :0x10 */ s16 blinkState;
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ union {
+      s16 id;
+      s8 idx;
+   } portrait;
+   /* :0x26 */ s8 flipped;
+   /* :0x27 */ u8 unk_0x27;
+   /* :0x28 */ s8 speakTimer;
+   /* :0x29 */ s8 blinkTimer;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ struct EvtData *faceSprite;
+   /* :0x30 */ struct EvtData *speakSprite;
+   /* :0x34 */ struct EvtData *blinkSprite;
+   /* :0x38 */ struct EvtData *anchor;
+   /* :0x3C */ s16 anchorOfsX;
+   /* :0x3E */ s16 anchorOfsY;
+   /* :0x40 */ u8 unk_0x40[32];
+} EvtData_413;
+
 /* MsgBox Tail */
 typedef struct EvtData_421_422 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -822,6 +886,16 @@ typedef struct EvtData_438 {
    /* :0x24 */ s8 delay;
    /* :0x25 */ u8 unk_0x25[59];
 } EvtData_438;
+
+/* Unit Portrait (in depot, dojo, etc.) */
+typedef struct EvtData_447 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 windowId;
+   /* :0x25 */ u8 unk_0x25[3];
+   /* :0x28 */ struct EvtData *window;
+   /* :0x2C */ struct EvtData *sprite;
+   /* :0x30 */ u8 unk_0x30[48];
+} EvtData_447;
 
 /* Map Object - Rippling Water/Lava (animated texture) */
 typedef struct EvtData_564_565_566 {
@@ -872,6 +946,25 @@ typedef struct EvtData_573 {
    /* :0x28 */ s8 item;
    /* :0x29 */ u8 unk_0x29[55];
 } EvtData_573;
+
+/* Status Portrait */
+typedef struct EvtData_575 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x1;
+   /* :0x14 */ s16 y1;
+   /* :0x16 */ u8 unk_0x16[8];
+   /* :0x1E */ s16 x3;
+   /* :0x20 */ s16 y3;
+   /* :0x22 */ u8 unk_0x22[6];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[4];
+   /* :0x32 */ s16 otOfs;
+   /* :0x34 */ u8 unk_0x34[8];
+   /* :0x3C */ s16 portraitId;
+   /* :0x3E */ u8 unk_0x3E[34];
+} EvtData_575;
 
 /* Audio Command */
 typedef struct EvtData_581 {
@@ -970,7 +1063,9 @@ typedef struct EvtData {
       EvtData_028 evtf028;         /* Unit Casting Spell */
       EvtData_030 evtf030;         /* Unit/Field Info */
       EvtData_031 evtf031;         /* Battle Spells List */
+      EvtData_032_033 evtf032;     /* Display Damage */
       EvtData_050 evtf050;         /* Unit Sprites Decoder */
+      EvtData_051 evtf051;         /* Floating Damage Text */
       EvtData_052 evtf052;         /* Attack Info Marker */
       EvtData_062 evtf062;         /* Stretch Warp Sprite */
       EvtData_070 evtf070;         /* Fade From Black */
@@ -996,13 +1091,16 @@ typedef struct EvtData {
       EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_405 evtf405;         /* Panorama */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
+      EvtData_413 evtf413;         /* MsgBox Portrait */
       EvtData_421_422 evtf421;     /* MsgBox Tail (Upper) */
       EvtData_425 evtf425;         /* Battle - Options */
       EvtData_438 evtf438;         /* Evaluate Battle 08 */
+      EvtData_447 evtf447;         /* Unit Portrait (in depot, dojo, etc.) */
       EvtData_564_565_566 evtf564; /* Map Object - Rippling Water */
       EvtData_567 evtf567;         /* Opening Chest */
       EvtData_571 evtf571;         /* Level Up - Camera Control, Sound */
       EvtData_573 evtf573;         /* Battle Items List */
+      EvtData_575 evtf575;         /* Status Portrait */
       EvtData_581 evtf581;         /* Audio Command */
       EvtData_585 evtf585;         /* Battle - Player Event */
       EvtData_586 evtf586;         /* Battle - MsgBox */
