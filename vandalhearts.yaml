@@ -67,8 +67,11 @@ segments:
     - [0x0033ec, .rdata, evt]                  # 0x80012bec
     - [0x003500, .rdata, split_02d078]         # 0x80012d00
     - [0x00353c, .rdata, debug_menu]           # 0x80012d3c
-    - [0x0037d4, .rdata, cd]
-    - [0x003980, rdata]
+    - [0x0037d4, .rdata, cd]                   # 0x80012fd4
+    - [0x003980, .rdata, battle_eval]          # 0x80013180
+    - [0x0039a8, .rdata, scene_state_setup]    # 0x800131a8
+    - [0x003b24, .rdata, tavern]               # 0x80013324
+    - [0x003d50, rdata]
 
     - [0x0041d4, .rdata, card]                 # 0x800139d4
     - [0x0041f4, rdata]                        # 0x800139f4
@@ -97,9 +100,10 @@ segments:
     - [0x02d078, c, split_02d078]              # 0x8003c878 ClearUnits ...
     - [0x02efe4, c, debug_menu]                # 0x8003e7e4 Evtf414_DebugMenu
     - [0x02f748, c, cd]                        # 0x8003ef48 CDInit ...
-    - [0x030c9c, bin]
-    - [0x0318b4, c, battle_eval]               # 0x800410b4 FindUnitByNameIdx ...
-    - [0x032ef0, bin]                          # 0x800426f0 (End of battle_eval)
+    - [0x030c9c, c, battle_eval]               # 0x8004049c PlayBattleBGM ...
+    - [0x0335d0, c, scene_state_setup]         # 0x80042dd0 State_SetupScene ...
+    - [0x0345f4, c, tavern]                    # 0x80043df4 PlayerHasItem ...
+    - [0x037758, bin]
 
     - [0x039e48, c, card]                      # 0x80049648 State_FileSaveScreen ...
     - [0x03c94c, bin]                          # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
@@ -126,7 +130,8 @@ segments:
     - [0x0e32ec, data]                         # 
 
     - [0x0e3714, .data, cd]                    # 0x800f2f14
-    - [0x0e5a74, data]
+    - [0x0e5a74, .data, battle_eval]           # 0x800f5274
+    - [0x0e5be8, data]
     - [0x0e5d4c, .data, card]                  # 0x800f554c gCardFilePath
     - [0x0e5d60, data]                         # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
 
@@ -149,7 +154,8 @@ segments:
     - [0x1136b4, .sdata, battle_013b94]        # 0x80122eb4
     - [0x1136c4, .sdata, battle_0201b8]        # 0x80122ec4
     - [0x1136e0, .sdata, cd]                   # 0x80122ee0
-    - [0x1136f8, bin]
+    - [0x1136f8, .sdata, tavern]               # 0x80122ef8
+    - [0x113700, bin]
 
     - [0x113710, .sdata, card]                 # 0x80122f10
     - [0x11372c, sdata]                        # 0x80122f2c

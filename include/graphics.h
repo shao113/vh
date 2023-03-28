@@ -263,9 +263,11 @@ typedef struct TextureWindow {
 // neutral,injured,happy,angry,upset
 typedef enum PortraitId {
    PORTRAIT_ASH = 1,
+   PORTRAIT_ASH_ANGRY = 4,
    PORTRAIT_ASH_UPSET = 5,
    PORTRAIT_ASH_6 = 6,
    PORTRAIT_CLINT = 8,
+   PORTRAIT_CLINT_UPSET = 12,
    PORTRAIT_DIEGO = 15,
    PORTRAIT_ELENI_25 = 25,
    PORTRAIT_KIRA = 36,
@@ -288,11 +290,56 @@ typedef enum PortraitId {
    PORTRAIT_DUMAS_562 = 562,
    PORTRAIT_LEENA = 571,
    PORTRAIT_XENO = 585,
+   PORTRAIT_590 = 590,
+   PORTRAIT_591 = 591,
+   PORTRAIT_592 = 592,
+   PORTRAIT_593 = 593,
+   PORTRAIT_595 = 595,
+   PORTRAIT_596 = 596,
+   PORTRAIT_597 = 597,
+   PORTRAIT_598 = 598,
+   PORTRAIT_599 = 599,
+   PORTRAIT_600 = 600,
+   PORTRAIT_601 = 601,
+   PORTRAIT_602 = 602,
+   PORTRAIT_605 = 605,
+   PORTRAIT_606 = 606,
+   PORTRAIT_607 = 607,
+   PORTRAIT_609 = 609,
+   PORTRAIT_610 = 610,
+   PORTRAIT_611 = 611,
+   PORTRAIT_612 = 612,
+   PORTRAIT_614 = 614,
+   PORTRAIT_615 = 615,
+   PORTRAIT_616 = 616,
+   PORTRAIT_618 = 618,
+   PORTRAIT_619 = 619,
+   PORTRAIT_620 = 620,
+   PORTRAIT_622 = 622,
+   PORTRAIT_623 = 623,
+   PORTRAIT_624 = 624,
+   PORTRAIT_626 = 626,
+   PORTRAIT_627 = 627,
+   PORTRAIT_628 = 628,
+   PORTRAIT_630 = 630,
+   PORTRAIT_631 = 631,
+   PORTRAIT_632 = 632,
+   PORTRAIT_633 = 633,
+   PORTRAIT_634 = 634,
+   PORTRAIT_635 = 635,
+   PORTRAIT_636 = 636,
+   PORTRAIT_637 = 637,
+   PORTRAIT_639 = 639,
    PORTRAIT_APPARITION_675 = 675,
    PORTRAIT_KANE_APPARITION = 678,
    PORTRAIT_APPARITION_681 = 681,
+   PORTRAIT_682 = 682,
    PORTRAIT_KANE_CURSED = 684,
    PORTRAIT_JUGGERNAUT_INJURED = 686,
+   PORTRAIT_687 = 687,
+   PORTRAIT_688 = 688,
+   PORTRAIT_689 = 689,
+   PORTRAIT_690 = 690,
 } PortraitId;
 
 typedef struct PortraitOverlayOffsets {
@@ -326,6 +373,7 @@ extern void *gEncodedUnitSpriteData[20];
 extern u16 gSpriteStripClutIds[25];
 extern s16 gSpriteStripTPageCells[50];
 extern s16 gSpriteStripTPageIds[50];
+extern s16 gSpriteStripUnitIds[23];
 
 // Mix of 48x48 and 64x48 px frames (tpages 11 & 27); wider frames allow for e.g. slash animations
 extern TextureWindow gTexwSpriteSetFrames[35];

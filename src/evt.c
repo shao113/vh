@@ -1050,38 +1050,38 @@ void AddEvtPrim2(u32 *ot, EvtData *evt) {
    u32 otIdx;
    s32 gfx;
 
-   if (!evt->d.sprite.hidden) {
+   if (!evt->d.sprite2.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      gfx = evt->d.sprite.gfxIdx;
+      gfx = evt->d.sprite2.gfxIdx;
 
-      if (evt->d.sprite.clut == 0) {
+      if (evt->d.sprite2.clut == 0) {
          poly->clut = gGfxClutIds[gfx];
       } else {
-         poly->clut = gClutIds[evt->d.sprite.clut];
+         poly->clut = gClutIds[evt->d.sprite2.clut];
       }
 
       setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
               gGfxSubTextures[gfx].h);
 
-      poly->x0 = evt->d.sprite.coords[0].x;
-      poly->x1 = evt->d.sprite.coords[0].y;
-      poly->x2 = evt->d.sprite.coords[1].z;
-      poly->x3 = evt->d.sprite.coords[2].x;
-      poly->y0 = evt->d.sprite.coords[0].z;
-      poly->y1 = evt->d.sprite.coords[1].x;
-      poly->y2 = evt->d.sprite.coords[1].y;
-      poly->y3 = evt->d.sprite.coords[2].z;
+      poly->x0 = evt->d.sprite2.coords[0].x;
+      poly->x1 = evt->d.sprite2.coords[1].x;
+      poly->x2 = evt->d.sprite2.coords[2].x;
+      poly->x3 = evt->d.sprite2.coords[3].x;
+      poly->y0 = evt->d.sprite2.coords[0].y;
+      poly->y1 = evt->d.sprite2.coords[1].y;
+      poly->y2 = evt->d.sprite2.coords[2].y;
+      poly->y3 = evt->d.sprite2.coords[3].y;
 
-      if (evt->d.sprite.otOfs != 0) {
-         otIdx = OT_SIZE - 1 - evt->d.sprite.otOfs;
+      if (evt->d.sprite2.otOfs != 0) {
+         otIdx = OT_SIZE - 1 - evt->d.sprite2.otOfs;
       } else {
          otIdx = OT_SIZE - 1;
       }
 
       setRGB0(poly, 0x80, 0x80, 0x80);
 
-      if (evt->d.sprite.semiTrans) {
-         poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+      if (evt->d.sprite2.semiTrans) {
+         poly->tpage = gTPageIds[(evt->d.sprite2.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
          poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
       } else {
          poly->tpage = gGfxTPageIds[gfx];

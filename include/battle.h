@@ -60,6 +60,17 @@ typedef struct TileState {
    s16 cachedShort;
 } TileState;
 
+typedef struct BattleBGM {
+   s16 seqSetIdx;
+   s16 seqId;
+} BattleBGM;
+
+extern BattleBGM gBattleBGM[BATTLE_CT];
+extern s16 gBattleEvaluator[BATTLE_CT];
+extern s8 gBattleExpScalingLevels[BATTLE_CT];
+extern s16 gBattleUnitRewards[BATTLE_CT][20];
+extern u8 gBattleSceneId[50];
+
 extern u8 gIsEnemyTurn;
 extern SlainUnit gSlainUnits[20];
 extern u8 gPartyMemberSlain[PARTY_CT];

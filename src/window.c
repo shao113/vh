@@ -1346,13 +1346,13 @@ void Evtf004_005_408_Window(EvtData *evt) {
 
       window = Evt_GetUnused();
       window->functionIndex = EVTF_NOOP;
-      window->d.sprite.clut = EVT.clut;
-      window->d.sprite.semiTrans = EVT.translucentHighlight;
+      window->d.sprite2.clut = EVT.clut;
+      window->d.sprite2.semiTrans = EVT.translucentHighlight;
       if (EVT.otOfs == 0) {
          EVT.otOfs = 3;
       }
-      window->d.sprite.otOfs = EVT.otOfs;
-      window->d.sprite.gfxIdx = GFX_WINDOW_TBD_657 + EVT.windowId;
+      window->d.sprite2.otOfs = EVT.otOfs;
+      window->d.sprite2.gfxIdx = GFX_WINDOW_TBD_657 + EVT.windowId;
       EVT.window = window;
 
       highlight = Evt_GetUnused();
@@ -1699,21 +1699,21 @@ void Evtf004_005_408_Window(EvtData *evt) {
    EVT.x += (EVT.destX - EVT.x) >> 2;
    EVT.y += (EVT.destY - EVT.y) >> 2;
 
-   window->d.sprite.coords[0].x = EVT.x + EVT.relQuadX0;
-   window->d.sprite.coords[0].z = EVT.y + EVT.relQuadY0;
-   window->d.sprite.coords[0].y = EVT.x + EVT.relQuadX1;
-   window->d.sprite.coords[1].x = EVT.y + EVT.relQuadY1;
-   window->d.sprite.coords[1].z = EVT.x + EVT.relQuadX2;
-   window->d.sprite.coords[1].y = EVT.y + EVT.relQuadY2;
-   window->d.sprite.coords[2].x = EVT.x + EVT.relQuadX3;
-   window->d.sprite.coords[2].z = EVT.y + EVT.relQuadY3;
+   window->d.sprite2.coords[0].x = EVT.x + EVT.relQuadX0;
+   window->d.sprite2.coords[0].y = EVT.y + EVT.relQuadY0;
+   window->d.sprite2.coords[1].x = EVT.x + EVT.relQuadX1;
+   window->d.sprite2.coords[1].y = EVT.y + EVT.relQuadY1;
+   window->d.sprite2.coords[2].x = EVT.x + EVT.relQuadX2;
+   window->d.sprite2.coords[2].y = EVT.y + EVT.relQuadY2;
+   window->d.sprite2.coords[3].x = EVT.x + EVT.relQuadX3;
+   window->d.sprite2.coords[3].y = EVT.y + EVT.relQuadY3;
 
    if (highlight && EVT.choiceCt != 0 && evt->state == 2) {
       //@479c
-      highlight->d.sprite.y1 = window->d.sprite.coords[1].x + (EVT.todo_x2c >> 16);
+      highlight->d.sprite.y1 = window->d.sprite2.coords[1].y + (EVT.todo_x2c >> 16);
       highlight->d.sprite.y3 = highlight->d.sprite.y1 + EVT.highlightHeight;
-      highlight->d.sprite.x1 = window->d.sprite.coords[0].x;
-      highlight->d.sprite.x3 = window->d.sprite.coords[0].y;
+      highlight->d.sprite.x1 = window->d.sprite2.coords[0].x;
+      highlight->d.sprite.x3 = window->d.sprite2.coords[1].x;
 
       gGfxSubTextures[GFX_WINDOW_TBD_657].x = gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].x;
       gGfxSubTextures[GFX_WINDOW_TBD_657].w = gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].w;

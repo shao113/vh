@@ -97,6 +97,11 @@ typedef struct SVectorXYZ {
    s16 z;
 } SVectorXYZ;
 
+typedef struct SVectorXY {
+   s16 x;
+   s16 y;
+} SVectorXY;
+
 typedef struct BVectorZXY {
    u8 z;
    u8 x;
@@ -124,6 +129,9 @@ extern s32 gSignal2;
 extern s32 gSignal3; // ?: Used for signaling completion/state of various battle fx/mechanics
 extern s32 gSignal4;
 extern u8 gSignal5;
+
+extern s8 gText[];
+extern s8 *gTextPointers[101];
 
 s32 BigIntCompare(BigInt, BigInt);
 void BigIntAdd(BigInt, BigInt);

@@ -13,8 +13,6 @@ typedef struct EvtEntityProperties {
 extern s32 gEvtTextFiles[95];
 extern s32 gEvtDataFiles[95];
 extern s32 gEvtSeqSetFiles[95];
-extern s8 gText[];
-extern s8 *gTextPointers[101];
 extern EvtEntityProperties *gEvtEntities[95];
 extern s16 *gEvtEntityDataPointers[100];
 extern u8 **gUnitAnimSets[UNIT_DB_CT];

@@ -20,11 +20,13 @@ typedef enum EvtFunctionIdx {
    EVTF_BATTLE_ACTIONS = 3,
    EVTF_WINDOW_TBD_004 = 4,
    EVTF_WINDOW_TBD_005 = 5,
+   EVTF_LOGO = 6,
    EVTF_APPLY_POISON = 7,
    EVTF_BATTLE_PORTRAIT = 8,
    EVTF_TARGETING_ATTACK = 15,
    EVTF_CHOOSE_DONE_DIRECTION = 16,
    EVTF_CAMERA_TBD_017 = 17,
+   EVTF_COMPASS = 19,
    EVTF_UNIT_ATTACKING = 21,
    EVTF_PROJECTILE = 22,
    EVTF_BOUNCE_ZOOM = 24,
@@ -72,9 +74,12 @@ typedef enum EvtFunctionIdx {
    EVTF_NOOP_407 = 407,
    EVTF_CLOSED_WINDOW = 408,
    EVTF_EVENT_CAMERA = 412,
+   EVTF_MSGBOX_PORTRAIT = 413,
    EVTF_DEBUG_MENU = 414,
+   EVTF_BATTLE_VICTORY = 420,
    EVTF_UPPER_MSGBOX_TAIL = 421,
    EVTF_LOWER_MSGBOX_TAIL = 422,
+   EVTF_BATTLE_ENDER = 424,
    EVTF_EVALUATE_BATTLE_10 = 426,
    EVTF_EVALUATE_BATTLE_11 = 427,
    EVTF_EVALUATE_BATTLE_12 = 428,
@@ -93,6 +98,7 @@ typedef enum EvtFunctionIdx {
    EVTF_EVALUATE_BATTLE_27 = 443,
    EVTF_EVALUATE_BATTLE_28 = 444,
    EVTF_EVALUATE_BATTLE_29 = 445,
+   EVTF_BATTLE_VICTORY_PARTICLE = 446,
    EVTF_EVALUATE_BATTLE_32 = 552,
    EVTF_EVALUATE_BATTLE_33 = 553,
    EVTF_EVALUATE_BATTLE_35 = 555,
@@ -112,6 +118,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP_OBJECT_LAVA_3 = 572,
    EVTF_BATTLE_ITEMS_LIST = 573,
    EVTF_DISPLAY_ICON = 574,
+   EVTF_TAVERN = 576,
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
    EVTF_BATTLE_PLAYER_EVENT = 585,
@@ -121,8 +128,10 @@ typedef enum EvtFunctionIdx {
    EVTF_BATTLE_TURN_TICKER = 590,
    EVTF_MAP_OBJECT_BOULDER = 591,
    EVTF_BATTLE_TURN_START = 592,
+   EVTF_BATTLE_RESULTS = 594,
    EVTF_STATUS_WINDOW = 595,
    EVTF_STATUS_WINDOW_MGR = 596,
+   EVTF_BATTLE_INTRO = 597,
    EVTF_TBD_732 = 732,
    EVTF_SPARKLE_DUST = 735,
    EVTF_REMOVE_PARALYSIS = 737,
@@ -173,6 +182,27 @@ typedef struct EvtData_Sprite {
    /* :0x5C */ s8 animSingleAxis;
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_Sprite;
+
+/* TBD - Sprites passed to AddEvtPrim2 use a different coord layout (xy), and sometimes use other
+ * fields for their own data. */
+typedef struct EvtData_Sprite2 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s8 hidden;
+   /* :0x25 */ u8 unk_0x25[3];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[3];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ s16 otOfs;
+   /* :0x34 */ u8 unk_0x34[8];
+   /* :0x3C */ SVectorXY coords[4];
+   /* :0x4C */ u8 unk_0x4C[20];
+} EvtData_Sprite2;
 
 /* Battle - Actions */
 typedef struct EvtData_003 {
@@ -862,6 +892,13 @@ typedef struct EvtData_413 {
    /* :0x40 */ u8 unk_0x40[32];
 } EvtData_413;
 
+/* Battle Victory/Defeat */
+typedef struct EvtData_420_423 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 timer;
+   /* :0x25 */ u8 unk_0x25[59];
+} EvtData_420_423;
+
 /* MsgBox Tail */
 typedef struct EvtData_421_422 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -886,6 +923,35 @@ typedef struct EvtData_438 {
    /* :0x24 */ s8 delay;
    /* :0x25 */ u8 unk_0x25[59];
 } EvtData_438;
+
+/* Battle - Victory/Defeat Particle */
+typedef struct EvtData_446 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s8 hidden;
+   /* :0x25 */ u8 unk_0x25[3];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[3];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ s16 otOfs;
+   /* :0x34 */ u8 unk_0x34[8];
+   /* :0x3C */ SVectorXY coords[4];
+   /* :0x4C */ s16 todo_x4c;
+   /* :0x4E */ s16 todo_x4e;
+   /* :0x50 */ s16 todo_x50;
+   /* :0x52 */ s16 todo_x52;
+   /* :0x54 */ s16 todo_x54;
+   /* :0x56 */ s16 todo_x56;
+   /* :0x58 */ s16 todo_x58;
+   /* :0x5A */ s16 todo_x5a;
+   /* :0x5C */ s16 todo_x5c;
+   /* :0x5E */ s16 delay;
+} EvtData_446;
 
 /* Unit Portrait (in depot, dojo, etc.) */
 typedef struct EvtData_447 {
@@ -966,6 +1032,17 @@ typedef struct EvtData_575 {
    /* :0x3E */ u8 unk_0x3E[34];
 } EvtData_575;
 
+/* Tavern */
+typedef struct EvtData_576 {
+   /* :0x10 */ s16 state3;
+   /* :0x12 */ u8 unk_0x12[18];
+   /* :0x24 */ s8 needSpeak[4];
+   /* :0x28 */ s8 textPtrIdx;
+   /* :0x29 */ u8 unk_0x29[35];
+   /* :0x4C */ s8 timer;
+   /* :0x4D */ u8 unk_0x4D[19];
+} EvtData_576;
+
 /* Audio Command */
 typedef struct EvtData_581 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -1044,6 +1121,7 @@ typedef struct EvtData {
    union {
       u8 bytes[80];
       EvtData_Sprite sprite;
+      EvtData_Sprite2 sprite2;
       EvtData_003 evtf003;         /* Battle - Actions */
       EvtData_004_005_408 evtf004; /* Window */
       EvtData_007 evtf007;         /* Apply Poison */
@@ -1092,15 +1170,18 @@ typedef struct EvtData {
       EvtData_405 evtf405;         /* Panorama */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
       EvtData_413 evtf413;         /* MsgBox Portrait */
+      EvtData_420_423 evtf420;     /* Battle Victory/Defeat */
       EvtData_421_422 evtf421;     /* MsgBox Tail (Upper) */
       EvtData_425 evtf425;         /* Battle - Options */
       EvtData_438 evtf438;         /* Evaluate Battle 08 */
+      EvtData_446 evtf446;         /* Battle - Victory/Defeat Particle */
       EvtData_447 evtf447;         /* Unit Portrait (in depot, dojo, etc.) */
       EvtData_564_565_566 evtf564; /* Map Object - Rippling Water */
       EvtData_567 evtf567;         /* Opening Chest */
       EvtData_571 evtf571;         /* Level Up - Camera Control, Sound */
       EvtData_573 evtf573;         /* Battle Items List */
       EvtData_575 evtf575;         /* Status Portrait */
+      EvtData_576 evtf576;         /* Tavern */
       EvtData_581 evtf581;         /* Audio Command */
       EvtData_585 evtf585;         /* Battle - Player Event */
       EvtData_586 evtf586;         /* Battle - MsgBox */
