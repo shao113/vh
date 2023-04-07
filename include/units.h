@@ -222,6 +222,7 @@ typedef enum ItemIdx {
 } ItemIdx;
 
 typedef enum UnitNameIdx {
+   UNIT_NULL = 0,
    UNIT_ASH = 1,
    UNIT_CLINT = 2,
    UNIT_DIEGO = 3,
@@ -234,6 +235,7 @@ typedef enum UnitNameIdx {
    UNIT_SARA = 10,
    UNIT_ZOHAR = 11,
    UNIT_DARIUS = 12,
+   UNIT_END_OF_PARTY = 12,
    UNIT_ZOOT = 13,
    UNIT_HASSAN = 15,
    UNIT_MAGNUS = 17,
@@ -263,12 +265,20 @@ typedef enum UnitId {
    UNIT_ID_DARIUS_SKY_LORD = 60,
    UNIT_ID_END_OF_PARTY = 60,
    UNIT_ID_EGGWORM = 63,
+   UNIT_ID_GOLD_GOLEM = 64,
    UNIT_ID_BUGABOO = 75,
+   UNIT_ID_EVILSTATUE = 77,
    UNIT_ID_LANDO = 90,
    UNIT_ID_SABINA = 91,
+   UNIT_ID_MAGE_TOWER = 93,
    UNIT_ID_JUGGERNAUT = 94,
+   UNIT_ID_DEATH_DEV = 95,
    UNIT_ID_GRENADIER = 111,
+   UNIT_ID_CLAY_GOLEM = 113,
+   UNIT_ID_DARK_GOLEM = 122,
+   UNIT_ID_GUARDIAN = 126,
    UNIT_ID_BASILISK = 127,
+   UNIT_ID_MEGA_GUARD = 128,
    UNIT_ID_M_CANNON = 129,
 } UnitId;
 

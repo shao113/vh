@@ -61,6 +61,7 @@ typedef enum GfxIdx {
    GFX_S = 61,
    GFX_N = 62,
    GFX_RED_X = 64,
+   GFX_SELECTION_ARROW = 65,
    GFX_IMPACT_1 = 67,
    GFX_IMPACT_2 = 68,
    GFX_IMPACT_3 = 69,
@@ -199,6 +200,7 @@ typedef enum GfxIdx {
    GFX_MV = 343,
    GFX_SCROLL_INDICATOR = 344,
    GFX_COLORS = 346,
+   GFX_STRIP_SPRITES_OFS = 347,
    GFX_MAP_TEXTURES_OFS = 400,
    GFX_MAP_TEXTURE_1 = 401,
    GFX_MAP_TEXTURE_4 = 404,
@@ -366,6 +368,7 @@ extern s32 gQuadIndex;
 extern s16 gOscillation;
 extern u8 gGridColorOscillation;
 extern s32 gDecodingSprites;
+extern RECT gTempRect;
 
 // For each idx of gCurrentUnitSet, stores the corresponding idx of gEncodedUnitSpriteData
 extern s16 gUnitSetEncodedSpriteDataIdx[20];
@@ -374,6 +377,7 @@ extern u16 gSpriteStripClutIds[25];
 extern s16 gSpriteStripTPageCells[50];
 extern s16 gSpriteStripTPageIds[50];
 extern s16 gSpriteStripUnitIds[23];
+extern u8 gUnitClutIds[492];
 
 // Mix of 48x48 and 64x48 px frames (tpages 11 & 27); wider frames allow for e.g. slash animations
 extern TextureWindow gTexwSpriteSetFrames[35];
@@ -398,7 +402,7 @@ extern u16 gClutIds[124];
 extern PortraitOverlayOffsets gPortraitOverlayOffsetsDb[692];
 extern PortraitsDb gPortraitsDb;
 extern PortraitOverlayOffsets gPortraitOverlayOffsets[50];
-extern u8 gPortraitClutIDs[75];
+extern u8 gPortraitClutIds[75];
 
 extern Quad gQuad_800fe53c;
 extern Quad gQuad_800fe63c;

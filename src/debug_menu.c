@@ -229,7 +229,7 @@ void Evtf414_DebugMenu(EvtData *evt) {
          break;
 
       case 99:
-         gState.primary = 0x1b;
+         gState.primary = STATE_27;
          gState.secondary = 0;
          gState.state3 = 0;
          gState.state4 = 0;

@@ -69,6 +69,7 @@ extern BattleBGM gBattleBGM[BATTLE_CT];
 extern s16 gBattleEvaluator[BATTLE_CT];
 extern s8 gBattleExpScalingLevels[BATTLE_CT];
 extern s16 gBattleUnitRewards[BATTLE_CT][20];
+extern s16 gBattlePenalties[BATTLE_CT];
 extern u8 gBattleSceneId[50];
 
 extern u8 gIsEnemyTurn;

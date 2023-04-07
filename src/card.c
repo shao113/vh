@@ -181,15 +181,15 @@ void Card_LoadRegularSave_Internal(void) {
       gState.primary = STATE_MOVIE;
       break;
    case SAVE_LOC_BATTLE:
-      gState.primary = 0x1f;
+      gState.primary = STATE_31;
       break;
    case SAVE_LOC_WORLD_MAP:
-      gState.primary = 6;
+      gState.primary = STATE_6;
       ClearPortraitSet();
       LoadPortraits();
       break;
    case SAVE_LOC_TOWN:
-      gState.primary = 7;
+      gState.primary = STATE_7;
       break;
    }
 

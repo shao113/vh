@@ -335,7 +335,7 @@ void State_EventScene(void) {
           (gState.scene != 31) && (gState.scene != 34) && (gState.scene != 35) &&
           (gState.scene != 51) && (gState.scene != 68) && (gState.scene != 70) &&
           (gState.scene != 80) && (gState.scene != 87) && (gState.scene != 89) &&
-          (gState.primary == 4 || gState.primary == 0x19)) {
+          (gState.primary == STATE_4 || gState.primary == STATE_25)) {
          gState.suppressLoadingScreen = 0;
       }
    case 1:
@@ -344,11 +344,11 @@ void State_EventScene(void) {
       gState.secondary++;
       break;
    case 4:
-      if (gState.primary == 0x19) {
+      if (gState.primary == STATE_25) {
          LoadFWD();
-         gState.primary = 4;
+         gState.primary = STATE_4;
       }
-      if (gState.primary == 4) {
+      if (gState.primary == STATE_4) {
          SetupPartySprites();
          for (i = 24; i < 50; i++) {
             gState.portraitsToLoad[i] = gPortraitsDb.sceneSets[gState.scene][i - 24];
@@ -404,7 +404,7 @@ void State_EventScene(void) {
          LoadSoundSet(2);
          FinishLoadingVab();
       }
-      if (gState.primary != 0x10) {
+      if (gState.primary != STATE_16) {
          LoadFCOM4XX();
          LoadMapTextures();
          LoadMap();
@@ -412,7 +412,7 @@ void State_EventScene(void) {
       SetupTerrain();
       SetupLight();
       gState.fieldRenderingDisabled = 0;
-      gState.primary = 4;
+      gState.primary = STATE_4;
       gState.secondary++;
       gState.suppressLoadingScreen = 0;
       break;

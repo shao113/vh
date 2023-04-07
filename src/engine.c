@@ -40,7 +40,7 @@ void UpdateEngine(void) {
       // 1P Select: setup transition to state 98 (debug menu)
       if (gState.debug && gPadStateNewPresses & PAD_SELECT) {
          PerformAudioCommand(6);
-         gState.primary = 1;
+         gState.primary = STATE_1;
       }
       // 2P Start: win battle
       if (gState.debug && (gPad2StateNewPresses & PAD_START)) {

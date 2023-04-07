@@ -78,7 +78,7 @@ void State_Tavern(void) {
 
 void func_8004404C(u8 lower) {
    if (lower == 0) {
-      if (gState.primary != 7) {
+      if (gState.primary != STATE_7) {
          SlideWindowTo(0x41, 4, 10);
          SlideWindowTo(0x42, 252, 10);
       } else {
@@ -160,7 +160,7 @@ void SetupTownMsgBox(s16 portraitId, u8 lower) {
       windowId = 0x43;
    }
 
-   if (gState.primary == 5) {
+   if (gState.primary == STATE_5) {
       windowId = 0x34;
    }
 
@@ -1587,7 +1587,6 @@ s32 Evtf576_Tavern(EvtData *evt) {
                EVT.textPtrIdx = 0x4a;
                evt->state2++;
 
-               ////@2d4c
                if (!PlayerHasItem(ITEM_HEAVEN_K) && !PlayerHasItem(ITEM_HEAVEN_P)) {
                   if (PlayerHasItem(ITEM_NOVA_P_) && PlayerHasItem(ITEM_ICE_P_) &&
                       PlayerHasItem(ITEM_MANA_P_) && PlayerHasItem(ITEM_CHAOS_P_) &&
@@ -1673,12 +1672,11 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
       case 2:
          if (--EVT.needSpeak[0] == 0) {
-            gState.primary = 0x14;
+            gState.primary = STATE_20;
             gState.secondary = 0;
             gState.state3 = 0;
             gState.state4 = 0;
 
-            //@3040
             switch (gState.D_80140530) {
             case 0:
                gState.townState = 4;

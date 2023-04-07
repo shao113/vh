@@ -62,8 +62,7 @@ segments:
     - [0x002424, rdata]                        # TODO: PathGrid stuff
     - [0x0024d8, .rdata, battle_01f360]        # 0x80011cd8
     - [0x002584, .rdata, battle_0201b8]        # 0x80011d84
-    - [0x0030f4, rdata]                        #
-
+    - [0x0030f4, .rdata, split_027dd4]         # 0x800128f4
     - [0x0033ec, .rdata, evt]                  # 0x80012bec
     - [0x003500, .rdata, split_02d078]         # 0x80012d00
     - [0x00353c, .rdata, debug_menu]           # 0x80012d3c
@@ -71,8 +70,11 @@ segments:
     - [0x003980, .rdata, battle_eval]          # 0x80013180
     - [0x0039a8, .rdata, scene_state_setup]    # 0x800131a8
     - [0x003b24, .rdata, tavern]               # 0x80013324
-    - [0x003d50, rdata]
-
+    - [0x003d50, .rdata, split_037758]         # 0x80013550
+    - [0x003f3c, .rdata, ending_screen]        # 0x8001373c
+    - [0x003f58, .rdata, split_038148]         # 0x80013758
+    - [0x003f88, .rdata, status_window]        # 0x80013788
+    - [0x003fd0, .rdata, world_actions]        # 0x800137d0
     - [0x0041d4, .rdata, card]                 # 0x800139d4
     - [0x0041f4, rdata]                        # 0x800139f4
 
@@ -94,8 +96,7 @@ segments:
     - [0x01bba8, bin]                          # TODO: PathGrid stuff
     - [0x01f360, c, battle_01f360]             # 0x8002eb60 QueueImpededStep ...
     - [0x0201b8, c, battle_0201b8]             # 0x8002f9b8 ShowReceivedItemDialog ...
-    - [0x027f7c, bin]
-
+    - [0x027dd4, c, split_027dd4]              # 0x800375d4 SaveItemIcons ...
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
     - [0x02d078, c, split_02d078]              # 0x8003c878 ClearUnits ...
     - [0x02efe4, c, debug_menu]                # 0x8003e7e4 Evtf414_DebugMenu
@@ -103,8 +104,11 @@ segments:
     - [0x030c9c, c, battle_eval]               # 0x8004049c PlayBattleBGM ...
     - [0x0335d0, c, scene_state_setup]         # 0x80042dd0 State_SetupScene ...
     - [0x0345f4, c, tavern]                    # 0x80043df4 PlayerHasItem ...
-    - [0x037758, bin]
-
+    - [0x037758, c, split_037758]              # 0x80046f58 State_Movie ...
+    - [0x037f70, c, ending_screen]             # 0x80047770 State_EndingScreen
+    - [0x038148, c, split_038148]              # 0x80047948 CommitPartyStatus ...
+    - [0x038b08, c, status_window]             # 0x80048308 Evtf596_StatusWindowMgr ...
+    - [0x0394cc, c, world_actions]             # 0x80048ccc ShowConfigMenu ...
     - [0x039e48, c, card]                      # 0x80049648 State_FileSaveScreen ...
     - [0x03c94c, bin]                          # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
 
@@ -127,11 +131,13 @@ segments:
     - [0x0e1ed8, .data, window]                # 0x800f16d8
     - [0x0e1ee4, .data, battle_0190dc]         # 0x800f16e4
     - [0x0e3094, .data, battle_0201b8]         # 0x800f2894
+    - [0x0e326c, .data, split_027dd4]          # 0x800f2a6c
     - [0x0e32ec, data]                         # 
 
     - [0x0e3714, .data, cd]                    # 0x800f2f14
     - [0x0e5a74, .data, battle_eval]           # 0x800f5274
-    - [0x0e5be8, data]
+    - [0x0e5be8, .data, split_037758]          # 0x800f53e8
+    - [0x0e5d3c, .data, split_038148]          # 0x800f553c
     - [0x0e5d4c, .data, card]                  # 0x800f554c gCardFilePath
     - [0x0e5d60, data]                         # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
 
@@ -155,7 +161,8 @@ segments:
     - [0x1136c4, .sdata, battle_0201b8]        # 0x80122ec4
     - [0x1136e0, .sdata, cd]                   # 0x80122ee0
     - [0x1136f8, .sdata, tavern]               # 0x80122ef8
-    - [0x113700, bin]
+    - [0x113700, .sdata, split_037758]         # 0x80122f00
+    - [0x113710, bin]
 
     - [0x113710, .sdata, card]                 # 0x80122f10
     - [0x11372c, sdata]                        # 0x80122f2c

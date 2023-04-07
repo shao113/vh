@@ -945,7 +945,7 @@ void RenderUnitSprite(u32 *ot, EvtData *sprite, s32 useMapElevation) {
       RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
                     &poly->x2, &poly->x3, &p, &flag);
 
-      if (gState.primary == 4 && gState.preciseSprites) {
+      if (gState.primary == STATE_4 && gState.preciseSprites) {
          PopMatrix();
          PushMatrix();
          RotTransPers(&sprite->vec, &screenXY, &flag, &flag);

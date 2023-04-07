@@ -464,7 +464,7 @@ void Evtf008_BattlePortrait(EvtData *evt) {
          portraitNum = 0;
       }
 
-      sprite->d.sprite.clut = gPortraitClutIDs[portraitNum];
+      sprite->d.sprite.clut = gPortraitClutIds[portraitNum];
 
       if (portraitNum < 25) {
          gGfxTPageIds[gfx] = gTPageIds[10];
@@ -603,20 +603,20 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
       faceSprite->functionIndex = EVTF_NOOP;
       faceSprite->d.sprite.gfxIdx = gfx;
       faceSprite->d.sprite.otOfs = 3;
-      faceSprite->d.sprite.clut = gPortraitClutIDs[portrait_u8];
+      faceSprite->d.sprite.clut = gPortraitClutIds[portrait_u8];
       EVT.faceSprite = faceSprite;
 
       speakSprite = Evt_GetUnused();
       speakSprite->functionIndex = EVTF_NOOP;
       speakSprite->d.sprite.gfxIdx = gfx + 1;
-      speakSprite->d.sprite.clut = gPortraitClutIDs[portrait_u8];
+      speakSprite->d.sprite.clut = gPortraitClutIds[portrait_u8];
       speakSprite->d.sprite.otOfs = 2;
       EVT.speakSprite = speakSprite;
 
       blinkSprite = Evt_GetUnused();
       blinkSprite->functionIndex = EVTF_NOOP;
       blinkSprite->d.sprite.gfxIdx = gfx + 3;
-      blinkSprite->d.sprite.clut = gPortraitClutIDs[portrait_u8];
+      blinkSprite->d.sprite.clut = gPortraitClutIds[portrait_u8];
       blinkSprite->d.sprite.otOfs = 2;
       EVT.blinkSprite = blinkSprite;
 
@@ -831,7 +831,7 @@ void Evtf447_UnitPortrait(EvtData *evt) {
          portraitNum = 0;
       }
 
-      sprite->d.sprite.clut = gPortraitClutIDs[portraitNum];
+      sprite->d.sprite.clut = gPortraitClutIds[portraitNum];
 
       if (portraitNum < 25) {
          gGfxTPageIds[GFX_PORTRAIT_B_FACE] = gTPageIds[10];
@@ -890,7 +890,7 @@ void Evtf575_StatusPortrait(EvtData *evt) {
          portraitNum = 0;
       }
 
-      EVT.clut = gPortraitClutIDs[portraitNum];
+      EVT.clut = gPortraitClutIds[portraitNum];
 
       if (portraitNum < 25) {
          gGfxTPageIds[GFX_PORTRAIT_B_FACE] = gTPageIds[10];

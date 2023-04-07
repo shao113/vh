@@ -1144,7 +1144,7 @@ void DisplayBasicWindow(s32 windowId) {
    DisplayCustomWindowWithSetChoice(windowId, 0, 1, 0, 0, 0, 0);
 }
 
-void DisplayBasicWindowWithSetChoice(s32 windowId, u8 choiceIdx) {
+void DisplayBasicWindowWithSetChoice(s32 windowId, s32 choiceIdx) {
    DisplayCustomWindowWithSetChoice(windowId, 0, 1, 0, 0, 0, choiceIdx);
 }
 

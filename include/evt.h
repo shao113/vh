@@ -118,6 +118,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP_OBJECT_LAVA_3 = 572,
    EVTF_BATTLE_ITEMS_LIST = 573,
    EVTF_DISPLAY_ICON = 574,
+   EVTF_STATUS_PORTRAIT = 575,
    EVTF_TAVERN = 576,
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
@@ -128,6 +129,7 @@ typedef enum EvtFunctionIdx {
    EVTF_BATTLE_TURN_TICKER = 590,
    EVTF_MAP_OBJECT_BOULDER = 591,
    EVTF_BATTLE_TURN_START = 592,
+   EVTF_BATTLE_RESULTS_UNIT = 593,
    EVTF_BATTLE_RESULTS = 594,
    EVTF_STATUS_WINDOW = 595,
    EVTF_STATUS_WINDOW_MGR = 596,
@@ -1092,6 +1094,44 @@ typedef struct EvtData_592 {
    /* :0x27 */ u8 unk_0x27[57];
 } EvtData_592;
 
+/* Battle - Results - Unit (Reward or Penalty) */
+typedef struct EvtData_593 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x1;
+   /* :0x14 */ s16 y1;
+   /* :0x16 */ u8 unk_0x16[8];
+   /* :0x1E */ s16 x3;
+   /* :0x20 */ s16 y3;
+   /* :0x22 */ u8 unk_0x22[6];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[4];
+   /* :0x32 */ s16 otOfs;
+   /* :0x34 */ u8 unk_0x34[8];
+   /* :0x3C */ u8 unitId;
+   /* :0x3D */ s8 slot;
+   /* :0x3E */ s8 isPenalty;
+   /* :0x3F */ u8 unk_0x3F;
+   /* :0x40 */ s16 unitGfxIdx;
+   /* :0x42 */ s16 unitClut;
+   /* :0x44 */ u8 unk_0x44[28];
+} EvtData_593;
+
+/* Battle - Results */
+typedef struct EvtData_594 {
+   /* :0x10 */ s16 state3;
+   /* :0x12 */ u8 unk_0x12[78];
+} EvtData_594;
+
+/* Status Window Manager */
+typedef struct EvtData_595 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct UnitStatus *unit;
+   /* :0x28 */ s8 multiple;
+   /* :0x29 */ u8 unk_0x29[55];
+} EvtData_595;
+
 /* Battle - Intro */
 typedef struct EvtData_597 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -1188,6 +1228,9 @@ typedef struct EvtData {
       EvtData_587 evtf587;         /* Battle - Enemy Event */
       EvtData_026_588 evtf588;     /* Camera - TBD */
       EvtData_592 evtf592;         /* Battle - Turn Start */
+      EvtData_593 evtf593;         /* Battle - Results - Unit (Reward or Penalty) */
+      EvtData_594 evtf594;         /* Battle - Results */
+      EvtData_595 evtf595;         /* Status Window Manager */
       EvtData_597 evtf597;         /* Battle - Intro */
       EvtData_133_Etc evtf801;     /* FX - TBD */
       EvtData_133_Etc evtf802;     /* FX - TBD */

@@ -34,7 +34,7 @@ void ClearIcons(void);
 void UpdateCompactUnitInfoWindow(struct UnitStatus *, struct UnitStatus *, u8);
 void UpdateUnitInfoWindow(struct UnitStatus *);
 void DisplayBasicWindow(s32);
-void DisplayBasicWindowWithSetChoice(s32, u8);
+void DisplayBasicWindowWithSetChoice(s32, s32);
 void DisplayCustomWindow(s32, u8, u8, u8, u8, u8);
 void DisplayCustomWindowWithSetChoice(s32, u8, u8, u8, u8, u8, u8);
 void CloseWindow(s32);

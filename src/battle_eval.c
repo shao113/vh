@@ -62,7 +62,7 @@ void PlayCurrentBattleBGM(void) {
                                       1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,
                                       0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1};
 
-   if (gState.primary == STATE_LOAD_IN_BATTLE_SAVE || gState.primary == 0x1f) {
+   if (gState.primary == STATE_LOAD_IN_BATTLE_SAVE || gState.primary == STATE_31) {
       PlayBattleBGM(gState.mapNum);
    } else if (battleOverrideBGM[gState.mapNum]) {
       PlayBattleBGM(gState.mapNum);
@@ -99,7 +99,7 @@ s32 State_Battle(void) {
       case 1:
          gState.state4--;
          if (gState.state4 == 0) {
-            if (gState.primary < 0x1e && gState.mapNum != 35 && gState.mapNum != 38) {
+            if (gState.primary < STATE_30 && gState.mapNum != 35 && gState.mapNum != 38) {
                gState.suppressLoadingScreen = 0;
             }
             gState.state4 = 2;
@@ -124,10 +124,10 @@ s32 State_Battle(void) {
          }
          gState.vsyncMode = 2;
          PlayCurrentBattleBGM();
-         if (gState.primary == 0x1b || gState.primary == STATE_LOAD_IN_BATTLE_SAVE) {
+         if (gState.primary == STATE_27 || gState.primary == STATE_LOAD_IN_BATTLE_SAVE) {
             LoadFWD();
          }
-         if (gState.primary < 0x1e) {
+         if (gState.primary < STATE_30) {
             LoadFCOM4XX();
             LoadMapTextures();
          }
@@ -145,7 +145,7 @@ s32 State_Battle(void) {
             SetDefaultStatsForParty();
          }
          func_8005AA7C();
-         if (gState.primary < 0x1e) {
+         if (gState.primary < STATE_30) {
             SetupSprites();
          }
          for (i = 0; i < PARTY_CT - 1; i++) {
@@ -164,7 +164,7 @@ s32 State_Battle(void) {
                ct++;
             }
          }
-         if (gState.primary < 0x1e) {
+         if (gState.primary < STATE_30) {
             for (i = 24; i < 50; i++) {
                gState.portraitsToLoad[i] =
                    gPortraitsDb.sceneSets[gBattleSceneId[gState.mapNum]][i - 24];
@@ -172,7 +172,7 @@ s32 State_Battle(void) {
             if (gState.mapNum != 8) {
                LoadPortraits();
             }
-            if (gState.primary < 0x1e) {
+            if (gState.primary < STATE_30) {
                LoadUnits();
             }
          }
@@ -186,7 +186,7 @@ s32 State_Battle(void) {
          gTempEvt = Evt_GetUnused();
          gTempEvt->functionIndex = EVTF_BATTLE_ENDER;
 
-         if (LoadSoundSet(2) != 0 || gState.primary != 0x1e || gState.mapNum == 13 ||
+         if (LoadSoundSet(2) != 0 || gState.primary != STATE_30 || gState.mapNum == 13 ||
              gState.mapNum == 14 || gState.mapNum == 15 || gState.mapNum == 33 ||
              gState.mapNum == 39) {
             FinishLoadingVab();
