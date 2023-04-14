@@ -69,8 +69,9 @@ s32 abs(s32);
 #define ARRAY_COUNT(arr) (s32)(sizeof(arr) / sizeof(arr[0]))
 
 #define SPR_TERRAIN(spr) gTerrainPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
-#define SPR_TILESTATE(spr) gTileStateGridPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
+#define SPR_TILE_STATE(spr) gTileStateGridPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
 #define SPR_TILE_MODEL(spr) gMapRowPointers[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
+#define SPR_MAP_UNIT(spr) gMapUnitsPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
 
 typedef u16 BigInt[8];
 

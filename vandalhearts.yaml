@@ -76,7 +76,8 @@ segments:
     - [0x003f88, .rdata, status_window]        # 0x80013788
     - [0x003fd0, .rdata, world_actions]        # 0x800137d0
     - [0x0041d4, .rdata, card]                 # 0x800139d4
-    - [0x0041f4, rdata]                        # 0x800139f4
+    - [0x0041f4, .rdata, split_03c94c]         # 0x800139f4
+    - [0x0044e0, rdata]                        # 
 
     - [0x005088, .rdata, fx_0506c0]            # 0x80014888
     - [0x0050a4, rdata]
@@ -110,7 +111,8 @@ segments:
     - [0x038b08, c, status_window]             # 0x80048308 Evtf596_StatusWindowMgr ...
     - [0x0394cc, c, world_actions]             # 0x80048ccc ShowConfigMenu ...
     - [0x039e48, c, card]                      # 0x80049648 State_FileSaveScreen ...
-    - [0x03c94c, bin]                          # 0x8004c14c (End of card functions) ShowMsgBoxForSprite
+    - [0x03c94c, c, split_03c94c]              # 0x8004c14c ShowMsgBoxForSprite ...
+    - [0x040b0c, bin]                         
 
     - [0x0506c0, c, fx_0506c0]                 # 8005fec0 Evtf119_Fx_TBD ...
     - [0x054bc8, bin]
@@ -162,8 +164,6 @@ segments:
     - [0x1136e0, .sdata, cd]                   # 0x80122ee0
     - [0x1136f8, .sdata, tavern]               # 0x80122ef8
     - [0x113700, .sdata, split_037758]         # 0x80122f00
-    - [0x113710, bin]
-
     - [0x113710, .sdata, card]                 # 0x80122f10
     - [0x11372c, sdata]                        # 0x80122f2c
 

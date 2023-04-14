@@ -262,6 +262,7 @@ typedef enum UnitId {
    UNIT_ID_KIRA_SNIPER = 42,
    UNIT_ID_AMON_SNIPER = 45,
    UNIT_ID_DARIUS_SNIPER = 48,
+   UNIT_ID_ASH_VANDALIER = 49,
    UNIT_ID_DARIUS_SKY_LORD = 60,
    UNIT_ID_END_OF_PARTY = 60,
    UNIT_ID_EGGWORM = 63,
@@ -273,13 +274,16 @@ typedef enum UnitId {
    UNIT_ID_MAGE_TOWER = 93,
    UNIT_ID_JUGGERNAUT = 94,
    UNIT_ID_DEATH_DEV = 95,
+   UNIT_ID_DOLF_DARK_ANGEL = 109,
    UNIT_ID_GRENADIER = 111,
    UNIT_ID_CLAY_GOLEM = 113,
    UNIT_ID_DARK_GOLEM = 122,
+   UNIT_ID_SALAMANDER = 125,
    UNIT_ID_GUARDIAN = 126,
    UNIT_ID_BASILISK = 127,
    UNIT_ID_MEGA_GUARD = 128,
    UNIT_ID_M_CANNON = 129,
+   UNIT_ID_BAHAMUT = 130,
 } UnitId;
 
 typedef enum UnitTeam { TEAM_NULL = 0, TEAM_PLAYER = 1, TEAM_ENEMY = 2, TEAM_CHEST = 101 } UnitTeam;
@@ -543,7 +547,14 @@ extern BigInt gExperienceLevels[];
 extern void *gUnitDataPtr;
 extern s16 gCurrentUnitSet[20];
 
-extern u16 gUnitPortraitIds[UNIT_CT];
+extern s16 gUnitPortraitIds[UNIT_CT];
+
+extern s16 gUnitSounds_Attacking1[UNIT_DB_CT][2];
+extern s16 gUnitSounds_Attacking2[UNIT_DB_CT][2];
+extern u8 gUnitSoundDelays_Attacking1[UNIT_DB_CT][2];
+extern u8 gUnitSoundDelays_Attacking2[UNIT_DB_CT][2];
+extern s16 gUnitSounds_Struck[UNIT_DB_CT];
+extern s16 gUnitSounds_Blocking[UNIT_DB_CT];
 
 extern s16 gClassBaseAttack[10];
 extern s16 gClassBaseDefense[10];

@@ -732,7 +732,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
       case 14:
          if (gState.msgFinished) {
             sprite = FindUnitSpriteByNameIdx(UNIT_KANE);
-            SPR_TILESTATE(sprite).action = TA_X16;
+            SPR_TILE_STATE(sprite).action = TA_X16;
             EVT.spawnZ = HI(sprite->d.sprite.z1);
             EVT.spawnX = HI(sprite->d.sprite.x1);
             PerformAudioCommand(0x31c);
@@ -3218,8 +3218,8 @@ void Evtf013_BattleMgr(EvtData *evt) {
       case 0:
          PerformAudioCommand(0x1388);
          if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
-            SPR_TILESTATE(unitSprite).action = TA_X1D;
-            SPR_TILESTATE(unitSprite).cachedByte = 16;
+            SPR_TILE_STATE(unitSprite).action = TA_X1D;
+            SPR_TILE_STATE(unitSprite).cachedByte = 16;
             gSignal3 = 0;
             evt->state2++;
          } else {
@@ -3237,7 +3237,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
          if (gSignal3 != 0) {
             PerformAudioCommand(0x388);
             unitSprite->d.sprite.hidden = 1;
-            SPR_TILESTATE(unitSprite).cachedByte = 0;
+            SPR_TILE_STATE(unitSprite).cachedByte = 0;
             gState.mapState.n.field_0x0 = 2;
             gState.field_0x96 = 1;
             evt->state2++;
@@ -3249,7 +3249,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
             PerformAudioCommand(0x1389);
             gShowBlueMovementGrid = 1;
             PlotPathBackToUnit(gZ_801233dc, gX_801233d8);
-            SPR_TILESTATE(unitSprite).action = TA_X6;
+            SPR_TILE_STATE(unitSprite).action = TA_X6;
             gSignal3 = 0;
             evt->state2++;
          }
@@ -3266,8 +3266,8 @@ void Evtf013_BattleMgr(EvtData *evt) {
          if (gSignal3 == 1) {
             gShowBlueMovementGrid = 0;
             if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
-               SPR_TILESTATE(unitSprite).action = TA_X1D;
-               SPR_TILESTATE(unitSprite).cachedByte = 22;
+               SPR_TILE_STATE(unitSprite).action = TA_X1D;
+               SPR_TILE_STATE(unitSprite).cachedByte = 22;
                EVT.timer = 2;
                gSignal3 = 0;
                evt->state2++;
@@ -3292,7 +3292,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
          evt1->d.sprite.y1 = unitSprite->d.sprite.y1;
 
          if (gSignal3 != 0) {
-            SPR_TILESTATE(unitSprite).cachedByte = 0;
+            SPR_TILE_STATE(unitSprite).cachedByte = 0;
             PerformAudioCommand(0x389);
             gState.field_0x96 = 1;
             gState.mapState.n.field_0x0 = 1;
@@ -3366,7 +3366,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          unit->direction = gDir_80123470;
-         SPR_TILESTATE(unitSprite).action = TA_XB;
+         SPR_TILE_STATE(unitSprite).action = TA_XB;
          EVT.timer = 5;
          evt->state2++;
          // fallthrough

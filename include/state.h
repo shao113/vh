@@ -153,7 +153,7 @@ typedef struct State {
    u8 mono;
    u8 cameraMode;
    u8 mapCursorOutOfRange;
-   s8 shielding;
+   u8 shielding;
    u8 D_80140859;
    u8 vsyncNoWait;
    u8 suppressLoadingScreen;

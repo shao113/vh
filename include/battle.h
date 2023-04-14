@@ -26,6 +26,7 @@ typedef enum TileAction {
    TA_PHYS_HIT = 1,
    TA_BLOCK = 2,
    TA_PHYS_DEFEAT = 3,
+   TA_X4 = 4,
    TA_MELEE_ATK = 5,
    TA_X6 = 6, // ?: moving
    TA_CHOOSING_DIRECTION = 7,
@@ -52,6 +53,7 @@ typedef enum TileAction {
    TA_X1D = 29,
    TA_X1E = 30,
    TA_X1F = 31,
+   TA_X20 = 32,
 } TileAction;
 
 typedef struct TileState {
@@ -99,5 +101,7 @@ void PopulateCastingGrid(s16, s16, s32, s32);
 void ClearGrid(s32);
 void ClearBlueMovementGrid(void);
 void PopulateRangedAttackGrid(s16, s16, s32, s32);
+
+s32 CalculateProjectileHeight(s8, s8, s8, s8);
 
 #endif

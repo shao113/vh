@@ -27,8 +27,10 @@ typedef enum EvtFunctionIdx {
    EVTF_CHOOSE_DONE_DIRECTION = 16,
    EVTF_CAMERA_TBD_017 = 17,
    EVTF_COMPASS = 19,
+   EVTF_PUSHED_BOULDER = 20,
    EVTF_UNIT_ATTACKING = 21,
    EVTF_PROJECTILE = 22,
+   EVTF_RANGED_TARGET_CAMERA = 23,
    EVTF_BOUNCE_ZOOM = 24,
    EVTF_OVERHEAD_MAP_VIEW = 25,
    EVTF_CAMERA_TBD_026 = 26,
@@ -48,6 +50,7 @@ typedef enum EvtFunctionIdx {
    EVTF_STRETCH_WARP_SPRITE = 62,
    EVTF_CIRCLE = 77,
    EVTF_SPELL_FX2_HEALING = 100,
+   EVTF_SLAY_UNIT = 131,
    EVTF_FX_TBD_132 = 132,
    EVTF_FX_TBD_133 = 133,
    EVTF_FX_TBD_134 = 134,
@@ -58,9 +61,12 @@ typedef enum EvtFunctionIdx {
    EVTF_FX_TBD_140 = 140,
    EVTF_FX_TBD_141 = 141,
    EVTF_FX_TBD_142 = 142,
+   EVTF_UNIT_STRUCK = 201,
+   EVTF_UNIT_BLOCKING = 202,
    EVTF_BLOOD_SPURT = 205,
    EVTF_DUST_CLOUD = 214,
    EVTF_CLOUD = 215,
+   EVTF_CASTING_FX = 285,
    EVTF_REVEAL_CHEST_ITEM = 290,
    EVTF_REVEAL_HIDDEN_ITEM = 294,
    EVTF_FILE_SAVE_DIALOG = 341,
@@ -69,10 +75,13 @@ typedef enum EvtFunctionIdx {
    EVTF_SCREEN_EFFECT = 369,
    EVTF_FILE_LOAD_DIALOG = 373,
    EVTF_FILE_LOAD_DIALOG_IBS = 374,
+   EVTF_LEVEL_UP_FX = 380,
+   EVTF_FLAME_BREATH = 382,
    EVTF_FULLSCREEN_IMAGE = 387,
    EVTF_PANORAMA = 405,
    EVTF_NOOP_407 = 407,
    EVTF_CLOSED_WINDOW = 408,
+   EVTF_EVENT_ENTITY = 409,
    EVTF_EVENT_CAMERA = 412,
    EVTF_MSGBOX_PORTRAIT = 413,
    EVTF_DEBUG_MENU = 414,
@@ -134,9 +143,11 @@ typedef enum EvtFunctionIdx {
    EVTF_STATUS_WINDOW = 595,
    EVTF_STATUS_WINDOW_MGR = 596,
    EVTF_BATTLE_INTRO = 597,
+   EVTF_ROCK_SPURT = 685,
    EVTF_TBD_732 = 732,
    EVTF_SPARKLE_DUST = 735,
    EVTF_REMOVE_PARALYSIS = 737,
+   EVTF_ELITE_MELEE_SPARKLES = 760,
    EVTF_REVEAL_USED_ITEM = 761,
    EVTF_PROJECTILE_TRAIL_POISON = 764,
    EVTF_PROJECTILE_TRAIL_EXPLOSION = 765,
@@ -299,18 +310,24 @@ typedef struct EvtData_013 {
    /* :0x2E */ u8 unk_0x2E[50];
 } EvtData_013;
 
-/* Battle Unit (Incomplete) */
+/* Battle Unit */
 typedef struct EvtData_014 {
-   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
    /* :0x24 */ u8 team;
    /* :0x25 */ u8 unitIdx;
-   /* :0x26 */ u8 pathIdx;
-   /* :0x27 */ u8 animIdx;
+   /* :0x26 */ s8 pathIdx;
+   /* :0x27 */ s8 animIdx;
    /* :0x28 */ struct UnitStatus *unit;
    /* :0x2C */ u8 **animSet;
    /* :0x30 */ struct EvtData *sprite;
    /* :0x34 */ s8 timer;
-   /* :0x35 */ u8 unk_0x35[43];
+   /* :0x35 */ u8 unk_0x35;
+   /* :0x36 */ s16 direction;
+   /* :0x38 */ u8 unk_0x38[40];
 } EvtData_014;
 
 /* Targeting Attack */
@@ -861,6 +878,32 @@ typedef struct EvtData_405 {
    /* :0x2c */ u8 unk_0x2c[52];
 } EvtData_405;
 
+/* Event Entity */
+typedef struct EvtData_409 {
+   /* :0x10 */ s16 state3;
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[15];
+   /* :0x27 */ s8 animIdx;
+   /* :0x28 */ u8 unk_0x28[8];
+   /* :0x30 */ struct EvtData *sprite;
+   /* :0x34 */ u8 unk_0x34[8];
+   /* :0x3C */ u8 **baseAnimSet;
+   /* :0x40 */ u8 todo_x40;
+   /* :0x41 */ u8 unk_0x41;
+   /* :0x42 */ s16 todo_x42;
+   /* :0x44 */ s16 *pNext;
+   /* :0x48 */ s16 stripIdxA;
+   /* :0x4A */ s16 stripIdxB;
+   /* :0x4C */ s8 todo_x4c;
+   /* :0x4D */ u8 usingAltAnimSet;
+   /* :0x4E */ u8 todo_x4e;
+   /* :0x4F */ u8 unk_0x4F;
+   /* :0x50 */ u8 **altAnimSet;
+   /* :0x54 */ u8 unk_0x54[12];
+} EvtData_409;
+
 /* Camera - Event Zoom */
 typedef struct EvtData_410 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -1208,6 +1251,7 @@ typedef struct EvtData {
       EvtData_215 evtf215;         /* Cloud (Sand, Dust, etc.) */
       EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_405 evtf405;         /* Panorama */
+      EvtData_409 evtf409;         /* Event Entity */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
       EvtData_413 evtf413;         /* MsgBox Portrait */
       EvtData_420_423 evtf420;     /* Battle Victory/Defeat */
