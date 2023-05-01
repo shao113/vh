@@ -1,0 +1,1034 @@
+#include "common.h"
+#include "evt.h"
+
+void Evtf001_Noop(EvtData *);
+void Evtf002_MenuChoice(EvtData *);
+void Evtf003_BattleActions(EvtData *);
+void Evtf004_005_408_Window(EvtData *);
+void Evtf006_Logo(EvtData *);
+void Evtf007_ApplyPoison(EvtData *);
+void Evtf008_BattlePortrait(EvtData *);
+void Evtf013_BattleMgr(EvtData *);
+void Evtf014_BattleUnit(EvtData *);
+void Evtf015_TargetingAttack(EvtData *);
+void Evtf016_ChooseDoneDirection(EvtData *);
+void Evtf017_Camera_TBD(EvtData *);
+void Evtf019_Compass(EvtData *);
+void Evtf021_UnitAttacking(EvtData *);
+void Evtf022_029_Projectile(EvtData *);
+void Evtf023_Camera_RangedTarget(EvtData *);
+void Evtf024_BounceZoom(EvtData *);
+void Evtf025_OverheadMapView(EvtData *);
+void Evtf026_588_Camera_TBD(EvtData *);
+void Evtf027_TargetingSpell(EvtData *);
+void Evtf028_UnitCasting(EvtData *);
+void Evtf030_FieldInfo(EvtData *);
+void Evtf031_BattleSpellsList(EvtData *);
+void Evtf032_033_DisplayDamage(EvtData *);
+void Evtf035_MapObject_Tree(EvtData *);
+void Evtf036_MapObject_GraveMarker(EvtData *);
+void Evtf037_MapObject_Fountain(EvtData *);
+void Evtf038_MapObject_LampPost(EvtData *);
+void Evtf039_MapObject_Flag(EvtData *);
+void Evtf042_MapObject_FlowingSand(EvtData *);
+void Evtf043_SetupMapObjects(EvtData *);
+void Evtf045_BloodSpurtOffset(EvtData *);
+void Evtf046_MapObject_Crate(EvtData *);
+void Evtf047_BattleMapCursor(EvtData *);
+void Evtf049_BattleMapCursorControl(EvtData *);
+void Evtf062_StretchWarpSprite(EvtData *);
+void Evtf070_FadeFromBlack(EvtData *);
+void Evtf071_FadeToBlack(EvtData *);
+void Evtf072_FadeFromWhite(EvtData *);
+void Evtf073_FadeToWhite(EvtData *);
+void Evtf074_FadeInSprite(EvtData *);
+void Evtf075_FadeOutSprite(EvtData *);
+void Evtf076_Circles_TBD(EvtData *);
+void Evtf077_Circle_TBD(EvtData *);
+void Evtf078_SpellFx2_Damage(EvtData *);
+void Evtf079_SpellFx3_Slay(EvtData *);
+void Evtf119_Fx_TBD(EvtData *);
+void Evtf130_Fx_TBD(EvtData *);
+void Evtf132_Etc_Fx_TBD(EvtData *);
+void Evtf133_Fx_TBD(EvtData *);
+void Evtf137_Fx_TBD(EvtData *);
+void Evtf141_Fx_TBD(EvtData *);
+void Evtf149_Fx_TBD(EvtData *);
+void Evtf206_686_BloodSpurtParticle(EvtData *);
+void Evtf213_DustCloudSpawner(EvtData *);
+void Evtf214_DustCloud(EvtData *);
+void Evtf215_Cloud(EvtData *);
+void Evtf250_350_LoadEvent16(EvtData *);
+void Evtf251_LoadEvent14(EvtData *);
+void Evtf252_LoadEvent05(EvtData *);
+void Evtf254_LoadEvent23(EvtData *);
+void Evtf255_LoadEvent33(EvtData *);
+void Evtf257_LoadEvent37(EvtData *);
+void Evtf259_LoadEvent44(EvtData *);
+void Evtf260_LoadEvent42(EvtData *);
+void Evtf262_LoadEvent51(EvtData *);
+void Evtf263_LoadEvent54(EvtData *);
+void Evtf264_LoadEvent57(EvtData *);
+void Evtf267_LoadEvent62(EvtData *);
+void Evtf268_LoadEvent67(EvtData *);
+void Evtf405_Panorama(EvtData *);
+void Evtf407_NoopIncState(EvtData *);
+void Evtf409_EventEntity(EvtData *);
+void Evtf410_EventZoom(EvtData *);
+void Evtf411_MapObject_VileBog(EvtData *);
+void Evtf412_EventCamera(EvtData *);
+void Evtf413_MsgBoxPortrait(EvtData *);
+void Evtf414_DebugMenu(EvtData *);
+void Evtf415_MapObject_Torch(EvtData *);
+void Evtf416_LoadEvent00(EvtData *);
+void Evtf417_LoadEvent03(EvtData *);
+void Evtf418_LoadEvent06(EvtData *);
+void Evtf419_Noop(EvtData *);
+void Evtf420_BattleVictory(EvtData *);
+void Evtf421_UpperMsgBoxTail(EvtData *);
+void Evtf422_LowerMsgBoxTail(EvtData *);
+void Evtf423_BattleDefeat(EvtData *);
+void Evtf425_BattleOptions(EvtData *);
+void Evtf426_EvaluateBattle10(EvtData *);
+void Evtf427_EvaluateBattle11(EvtData *);
+void Evtf428_EvaluateBattle12(EvtData *);
+void Evtf429_EvaluateBattle13(EvtData *);
+void Evtf430_EvaluateBattle14(EvtData *);
+void Evtf431_EvaluateBattle15(EvtData *);
+void Evtf432_EvaluateBattle16(EvtData *);
+void Evtf433_EvaluateBattle17(EvtData *);
+void Evtf434_EvaluateStandardBattle(EvtData *);
+void Evtf435_EvaluateBattle19(EvtData *);
+void Evtf436_EvaluateBattle20(EvtData *);
+void Evtf437_EvaluateBattle21(EvtData *);
+void Evtf438_EvaluateBattle08(EvtData *);
+void Evtf439_EvaluateBattle23(EvtData *);
+void Evtf442_EvaluateBattle26(EvtData *);
+void Evtf443_EvaluateBattle27(EvtData *);
+void Evtf444_EvaluateBattle28(EvtData *);
+void Evtf445_EvaluateBattle29(EvtData *);
+void Evtf446_BattleVictoryParticle(EvtData *);
+void Evtf447_UnitPortrait(EvtData *);
+void Evtf448_UnitPortraitWrapper(EvtData *);
+void Evtf449_MapObject_FlowingWater(EvtData *);
+void Evtf450_LoadEvent68(EvtData *);
+void Evtf451_LoadEvent70(EvtData *);
+void Evtf452_LoadEvent72(EvtData *);
+void Evtf453_LoadEvent73(EvtData *);
+void Evtf454_LoadEvent75(EvtData *);
+void Evtf455_LoadEvent76(EvtData *);
+void Evtf456_LoadEvent79(EvtData *);
+void Evtf457_LoadEvent80(EvtData *);
+void Evtf458_LoadEvent81(EvtData *);
+void Evtf459_LoadEvent83(EvtData *);
+void Evtf460_LoadEvent01(EvtData *);
+void Evtf461_LoadEvent02(EvtData *);
+void Evtf462_LoadEvent04(EvtData *);
+void Evtf463_LoadEvent08(EvtData *);
+void Evtf464_LoadEvent09(EvtData *);
+void Evtf465_LoadEvent11(EvtData *);
+void Evtf466_LoadEvent12(EvtData *);
+void Evtf467_LoadEvent13(EvtData *);
+void Evtf468_LoadEvent19(EvtData *);
+void Evtf469_LoadEvent21(EvtData *);
+void Evtf470_LoadEvent22(EvtData *);
+void Evtf471_LoadEvent24(EvtData *);
+void Evtf472_LoadEvent28(EvtData *);
+void Evtf473_LoadEvent29(EvtData *);
+void Evtf474_LoadEvent30(EvtData *);
+void Evtf475_LoadEvent31(EvtData *);
+void Evtf476_LoadEvent34(EvtData *);
+void Evtf477_LoadEvent35(EvtData *);
+void Evtf478_LoadEvent36(EvtData *);
+void Evtf479_LoadEvent39(EvtData *);
+void Evtf480_LoadEvent40(EvtData *);
+void Evtf481_LoadEvent41(EvtData *);
+void Evtf482_LoadEvent50(EvtData *);
+void Evtf483_LoadEvent52(EvtData *);
+void Evtf484_LoadEvent55(EvtData *);
+void Evtf485_LoadEvent56(EvtData *);
+void Evtf486_LoadEvent61(EvtData *);
+void Evtf487_LoadEvent64(EvtData *);
+void Evtf488_LoadEvent65(EvtData *);
+void Evtf489_LoadEvent66(EvtData *);
+void Evtf490_LoadEvent71(EvtData *);
+void Evtf491_LoadEvent60(EvtData *);
+void Evtf492_LoadEvent10(EvtData *);
+void Evtf493_LoadEvent18(EvtData *);
+void Evtf494_LoadEvent15(EvtData *);
+void Evtf495_LoadEvent17(EvtData *);
+void Evtf496_LoadEvent27(EvtData *);
+void Evtf497_LoadEvent32(EvtData *);
+void Evtf498_LoadEvent38(EvtData *);
+void Evtf499_LoadEvent43(EvtData *);
+void Evtf500_LoadEvent46(EvtData *);
+void Evtf501_LoadEvent48(EvtData *);
+void Evtf502_LoadEvent49(EvtData *);
+void Evtf503_LoadEvent53(EvtData *);
+void Evtf504_LoadEvent63(EvtData *);
+void Evtf505_LoadEvent69(EvtData *);
+void Evtf506_LoadEvent74(EvtData *);
+void Evtf507_LoadEvent77(EvtData *);
+void Evtf508_LoadEvent78(EvtData *);
+void Evtf509_LoadEvent82(EvtData *);
+void Evtf510_LoadEvent84(EvtData *);
+void Evtf511_LoadEvent85(EvtData *);
+void Evtf512_LoadEvent86(EvtData *);
+void Evtf513_LoadEvent87(EvtData *);
+void Evtf514_LoadEvent88(EvtData *);
+void Evtf515_LoadEvent89(EvtData *);
+void Evtf516_LoadEvent90(EvtData *);
+void Evtf517_LoadEvent91(EvtData *);
+void Evtf518_LoadEvent92(EvtData *);
+void Evtf519_LoadEvent93(EvtData *);
+void Evtf520_LoadEvent25(EvtData *);
+void Evtf521_LoadEvent94(EvtData *);
+void Evtf522_LoadEvent26(EvtData *);
+void Evtf523_LoadEvent07(EvtData *);
+void Evtf524_LoadEvent20(EvtData *);
+void Evtf525_LoadEvent47(EvtData *);
+void Evtf552_EvaluateBattle32(EvtData *);
+void Evtf553_EvaluateBattle33(EvtData *);
+void Evtf555_EvaluateBattle35(EvtData *);
+void Evtf557_EvaluateBattle37(EvtData *);
+void Evtf558_EvaluateBattle38(EvtData *);
+void Evtf559_EvaluateBattle39(EvtData *);
+void Evtf560_EvaluateBattle40(EvtData *);
+void Evtf562_EvaluateBattle42(EvtData *);
+void Evtf563_EvaluateBattle43(EvtData *);
+void Evtf564_565_566_MapObject_Water(EvtData *);
+void Evtf567_OpeningChest(EvtData *);
+void Evtf568_MapObject_Rail(EvtData *);
+void Evtf569_572_MapObject_Lava(EvtData *);
+void Evtf571_LevelUp(EvtData *);
+void Evtf573_BattleItemsList(EvtData *);
+void Evtf574_DisplayIcon(EvtData *);
+void Evtf575_StatusPortrait(EvtData *);
+void Evtf576_Tavern(EvtData *);
+void Evtf581_AudioCommand(EvtData *);
+void Evtf582_MainMenu_Jpn(EvtData *);
+void Evtf583_LoadingIndicator(EvtData *);
+void Evtf584_Noop(EvtData *);
+void Evtf585_BattlePlayerEvent(EvtData *);
+void Evtf586_BattleMsgBox(EvtData *);
+void Evtf587_BattleEnemyEvent(EvtData *);
+void Evtf590_BattleTurnTicker(EvtData *);
+void Evtf591_MapObject_Boulder(EvtData *);
+void Evtf592_BattleTurnStart(EvtData *);
+void Evtf593_BattleResultsUnit(EvtData *);
+void Evtf594_BattleResults(EvtData *);
+void Evtf595_StatusWindow(EvtData *);
+void Evtf596_StatusWindowMgr(EvtData *);
+void Evtf597_BattleIntro(EvtData *);
+void Evtf598_WorldActions(EvtData *);
+void Evtf801_Fx_TBD(EvtData *);
+void Evtf802_Fx_TBD(EvtData *);
+void Evtf803_Fx_TBD(EvtData *);
+void Evtf_Unk_8006183c(EvtData *);
+
+EvtFunction gEvtFunctionPointers[804] = {
+    [0] = (EvtFunction)NULL,
+    [1] = Evtf001_Noop,
+    [2] = Evtf002_MenuChoice,
+    [3] = Evtf003_BattleActions,
+    [4] = Evtf004_005_408_Window,
+    [5] = Evtf004_005_408_Window,
+    [6] = Evtf006_Logo,
+    [7] = Evtf007_ApplyPoison,
+    [8] = Evtf008_BattlePortrait,
+    [9] = (EvtFunction)0x801ed158,
+    [10] = (EvtFunction)NULL,
+    [11] = (EvtFunction)NULL,
+    [12] = (EvtFunction)NULL,
+    [13] = Evtf013_BattleMgr,
+    [14] = Evtf014_BattleUnit,
+    [15] = Evtf015_TargetingAttack,
+    [16] = Evtf016_ChooseDoneDirection,
+    [17] = Evtf017_Camera_TBD,
+    [18] = (EvtFunction)NULL,
+    [19] = Evtf019_Compass,
+    [20] = (EvtFunction)0x80053d34,
+    [21] = Evtf021_UnitAttacking,
+    [22] = Evtf022_029_Projectile,
+    [23] = Evtf023_Camera_RangedTarget,
+    [24] = Evtf024_BounceZoom,
+    [25] = Evtf025_OverheadMapView,
+    [26] = Evtf026_588_Camera_TBD,
+    [27] = Evtf027_TargetingSpell,
+    [28] = Evtf028_UnitCasting,
+    [29] = Evtf022_029_Projectile,
+    [30] = Evtf030_FieldInfo,
+    [31] = Evtf031_BattleSpellsList,
+    [32] = Evtf032_033_DisplayDamage,
+    [33] = Evtf032_033_DisplayDamage,
+    [34] = (EvtFunction)NULL,
+    [35] = Evtf035_MapObject_Tree,
+    [36] = Evtf036_MapObject_GraveMarker,
+    [37] = Evtf037_MapObject_Fountain,
+    [38] = Evtf038_MapObject_LampPost,
+    [39] = Evtf039_MapObject_Flag,
+    [40] = (EvtFunction)0x80054ca4,
+    [41] = (EvtFunction)NULL,
+    [42] = Evtf042_MapObject_FlowingSand,
+    [43] = Evtf043_SetupMapObjects,
+    [44] = (EvtFunction)NULL,
+    [45] = Evtf045_BloodSpurtOffset,
+    [46] = Evtf046_MapObject_Crate,
+    [47] = Evtf047_BattleMapCursor,
+    [48] = (EvtFunction)0x800540e4,
+    [49] = Evtf049_BattleMapCursorControl,
+    [50] = (EvtFunction)0x800bfcd0,
+    [51] = (EvtFunction)0x800bffe8,
+    [52] = (EvtFunction)0x800c0ac4,
+    [53] = (EvtFunction)NULL,
+    [54] = (EvtFunction)NULL,
+    [55] = (EvtFunction)NULL,
+    [56] = (EvtFunction)NULL,
+    [57] = (EvtFunction)NULL,
+    [58] = (EvtFunction)NULL,
+    [59] = (EvtFunction)0x800c1088,
+    [60] = (EvtFunction)0x80067e00,
+    [61] = (EvtFunction)NULL,
+    [62] = Evtf062_StretchWarpSprite,
+    [63] = (EvtFunction)NULL,
+    [64] = (EvtFunction)NULL,
+    [65] = (EvtFunction)NULL,
+    [66] = (EvtFunction)NULL,
+    [67] = (EvtFunction)NULL,
+    [68] = (EvtFunction)NULL,
+    [69] = (EvtFunction)NULL,
+    [70] = Evtf070_FadeFromBlack,
+    [71] = Evtf071_FadeToBlack,
+    [72] = Evtf072_FadeFromWhite,
+    [73] = Evtf073_FadeToWhite,
+    [74] = Evtf074_FadeInSprite,
+    [75] = Evtf075_FadeOutSprite,
+    [76] = Evtf076_Circles_TBD,
+    [77] = Evtf077_Circle_TBD,
+    [78] = Evtf078_SpellFx2_Damage,
+    [79] = Evtf079_SpellFx3_Slay,
+    [80] = (EvtFunction)0x800816d4,
+    [81] = (EvtFunction)0x80081b64,
+    [82] = (EvtFunction)0x800834b0,
+    [83] = (EvtFunction)0x80083764,
+    [84] = (EvtFunction)0x8008c5e4,
+    [85] = (EvtFunction)0x80096824,
+    [86] = (EvtFunction)0x800984f0,
+    [87] = (EvtFunction)0x80093824,
+    [88] = (EvtFunction)0x800abe78,
+    [89] = (EvtFunction)0x80096d7c,
+    [90] = (EvtFunction)0x80082748,
+    [91] = (EvtFunction)0x80082fc0,
+    [92] = (EvtFunction)0x80083498,
+    [93] = (EvtFunction)0x80083484,
+    [94] = (EvtFunction)0x80081cac,
+    [95] = (EvtFunction)0x80082210,
+    [96] = (EvtFunction)0x800824ac,
+    [97] = (EvtFunction)0x80082498,
+    [98] = (EvtFunction)0x80093964,
+    [99] = (EvtFunction)0x800abc54,
+    [100] = (EvtFunction)0x80067e18,
+    [101] = (EvtFunction)0x80068104,
+    [102] = (EvtFunction)0x80068344,
+    [103] = (EvtFunction)0x80068658,
+    [104] = (EvtFunction)0x80068954,
+    [105] = (EvtFunction)NULL,
+    [106] = (EvtFunction)0x800693b0,
+    [107] = (EvtFunction)0x80069ae4,
+    [108] = (EvtFunction)0x8006a01c,
+    [109] = (EvtFunction)0x8006a770,
+    [110] = (EvtFunction)0x8006aabc,
+    [111] = (EvtFunction)0x8006a9c0,
+    [112] = (EvtFunction)0x8006aa14,
+    [113] = (EvtFunction)0x8006aa68,
+    [114] = (EvtFunction)NULL,
+    [115] = (EvtFunction)0x8007e9b0,
+    [116] = (EvtFunction)0x8007e780,
+    [117] = (EvtFunction)0x8007e520,
+    [118] = (EvtFunction)0x8007e1c4,
+    [119] = Evtf119_Fx_TBD,
+    [120] = (EvtFunction)0x8007ad5c,
+    [121] = (EvtFunction)0x8007addc,
+    [122] = (EvtFunction)0x8007fe04,
+    [123] = (EvtFunction)NULL,
+    [124] = (EvtFunction)NULL,
+    [125] = (EvtFunction)NULL,
+    [126] = (EvtFunction)NULL,
+    [127] = (EvtFunction)NULL,
+    [128] = (EvtFunction)0x80070b64,
+    [129] = (EvtFunction)0x80070bdc,
+    [130] = Evtf130_Fx_TBD,
+    [131] = (EvtFunction)0x800649d8,
+    [132] = Evtf132_Etc_Fx_TBD,
+    [133] = Evtf133_Fx_TBD,
+    [134] = Evtf132_Etc_Fx_TBD,
+    [135] = (EvtFunction)NULL,
+    [136] = Evtf132_Etc_Fx_TBD,
+    [137] = Evtf137_Fx_TBD,
+    [138] = Evtf132_Etc_Fx_TBD,
+    [139] = (EvtFunction)NULL,
+    [140] = Evtf132_Etc_Fx_TBD,
+    [141] = Evtf141_Fx_TBD,
+    [142] = Evtf132_Etc_Fx_TBD,
+    [143] = (EvtFunction)NULL,
+    [144] = (EvtFunction)0x80078264,
+    [145] = (EvtFunction)0x800785b4,
+    [146] = (EvtFunction)0x80078210,
+    [147] = (EvtFunction)0x8006d7ec,
+    [148] = (EvtFunction)0x80070c58,
+    [149] = Evtf149_Fx_TBD,
+    [150] = (EvtFunction)NULL,
+    [151] = (EvtFunction)0x80073178,
+    [152] = (EvtFunction)NULL,
+    [153] = (EvtFunction)NULL,
+    [154] = (EvtFunction)NULL,
+    [155] = (EvtFunction)0x800748e4,
+    [156] = (EvtFunction)0x8006e0bc,
+    [157] = (EvtFunction)0x8006e424,
+    [158] = (EvtFunction)0x8006e940,
+    [159] = (EvtFunction)0x8006ec2c,
+    [160] = (EvtFunction)0x80073cf4,
+    [161] = (EvtFunction)0x80072734,
+    [162] = (EvtFunction)0x80074030,
+    [163] = (EvtFunction)0x8006f8bc,
+    [164] = (EvtFunction)0x800700bc,
+    [165] = (EvtFunction)0x8006fe44,
+    [166] = (EvtFunction)0x80070068,
+    [167] = (EvtFunction)0x80070d90,
+    [168] = (EvtFunction)0x800716a8,
+    [169] = (EvtFunction)0x80071fbc,
+    [170] = (EvtFunction)0x800729a8,
+    [171] = (EvtFunction)0x80072c58,
+    [172] = (EvtFunction)0x80070438,
+    [173] = (EvtFunction)0x8006c3c4,
+    [174] = (EvtFunction)NULL,
+    [175] = (EvtFunction)0x80073310,
+    [176] = (EvtFunction)0x800736f4,
+    [177] = (EvtFunction)0x80073a68,
+    [178] = (EvtFunction)0x800753b4,
+    [179] = (EvtFunction)0x80074ed0,
+    [180] = (EvtFunction)0x80075b6c,
+    [181] = (EvtFunction)0x80074dac,
+    [182] = (EvtFunction)0x80076604,
+    [183] = (EvtFunction)0x800768c8,
+    [184] = (EvtFunction)0x80076bcc,
+    [185] = (EvtFunction)0x800772e0,
+    [186] = (EvtFunction)0x80077540,
+    [187] = (EvtFunction)0x80077508,
+    [188] = (EvtFunction)0x80080434,
+    [189] = (EvtFunction)0x80074230,
+    [190] = (EvtFunction)0x800775dc,
+    [191] = (EvtFunction)0x80077a40,
+    [192] = (EvtFunction)0x8007c984,
+    [193] = (EvtFunction)0x8007b98c,
+    [194] = (EvtFunction)0x8007b938,
+    [195] = (EvtFunction)0x8007aedc,
+    [196] = (EvtFunction)0x8007b030,
+    [197] = (EvtFunction)0x80067718,
+    [198] = (EvtFunction)0x80067abc,
+    [199] = (EvtFunction)0x800777c4,
+    [200] = (EvtFunction)0x8007ae60,
+    [201] = (EvtFunction)0x80064b00,
+    [202] = (EvtFunction)0x80064e80,
+    [203] = (EvtFunction)0x800651a8,
+    [204] = (EvtFunction)0x80066b70,
+    [205] = (EvtFunction)0x8006552c,
+    [206] = Evtf206_686_BloodSpurtParticle,
+    [207] = (EvtFunction)0x80066ef8,
+    [208] = (EvtFunction)0x8006703c,
+    [209] = (EvtFunction)0x80066f64,
+    [210] = (EvtFunction)0x80066fd0,
+    [211] = (EvtFunction)0x8007ed0c,
+    [212] = (EvtFunction)0x80067408,
+    [213] = Evtf213_DustCloudSpawner,
+    [214] = Evtf214_DustCloud,
+    [215] = Evtf215_Cloud,
+    [216] = (EvtFunction)NULL,
+    [217] = (EvtFunction)NULL,
+    [218] = (EvtFunction)NULL,
+    [219] = (EvtFunction)NULL,
+    [220] = (EvtFunction)0x8006f500,
+    [221] = (EvtFunction)0x8006f868,
+    [222] = (EvtFunction)0x8007a560,
+    [223] = (EvtFunction)0x8007aac4,
+    [224] = (EvtFunction)0x80079cb8,
+    [225] = (EvtFunction)0x80079eb8,
+    [226] = (EvtFunction)0x8007a22c,
+    [227] = (EvtFunction)0x80068344,
+    [228] = (EvtFunction)NULL,
+    [229] = (EvtFunction)NULL,
+    [230] = (EvtFunction)NULL,
+    [231] = (EvtFunction)NULL,
+    [232] = (EvtFunction)NULL,
+    [233] = (EvtFunction)NULL,
+    [234] = (EvtFunction)NULL,
+    [235] = (EvtFunction)NULL,
+    [236] = (EvtFunction)NULL,
+    [237] = (EvtFunction)NULL,
+    [238] = (EvtFunction)NULL,
+    [239] = (EvtFunction)NULL,
+    [240] = (EvtFunction)NULL,
+    [241] = (EvtFunction)NULL,
+    [242] = (EvtFunction)NULL,
+    [243] = (EvtFunction)NULL,
+    [244] = (EvtFunction)NULL,
+    [245] = (EvtFunction)NULL,
+    [246] = (EvtFunction)NULL,
+    [247] = (EvtFunction)NULL,
+    [248] = (EvtFunction)NULL,
+    [249] = (EvtFunction)NULL,
+    [250] = Evtf250_350_LoadEvent16,
+    [251] = Evtf251_LoadEvent14,
+    [252] = Evtf252_LoadEvent05,
+    [253] = (EvtFunction)0x800b1960,
+    [254] = Evtf254_LoadEvent23,
+    [255] = Evtf255_LoadEvent33,
+    [256] = (EvtFunction)0x800b2284,
+    [257] = Evtf257_LoadEvent37,
+    [258] = (EvtFunction)0x800b2284,
+    [259] = Evtf259_LoadEvent44,
+    [260] = Evtf260_LoadEvent42,
+    [261] = (EvtFunction)NULL,
+    [262] = Evtf262_LoadEvent51,
+    [263] = Evtf263_LoadEvent54,
+    [264] = Evtf264_LoadEvent57,
+    [265] = (EvtFunction)0x800b101c,
+    [266] = (EvtFunction)0x800b101c,
+    [267] = Evtf267_LoadEvent62,
+    [268] = Evtf268_LoadEvent67,
+    [269] = (EvtFunction)0x800aba14,
+    [270] = (EvtFunction)0x800ab5f4,
+    [271] = (EvtFunction)0x800ab22c,
+    [272] = (EvtFunction)0x80091be8,
+    [273] = (EvtFunction)0x800aadc0,
+    [274] = (EvtFunction)0x8008bcb0,
+    [275] = (EvtFunction)0x800aaccc,
+    [276] = (EvtFunction)0x800aaa0c,
+    [277] = (EvtFunction)0x800aa0bc,
+    [278] = (EvtFunction)0x800923e0,
+    [279] = (EvtFunction)0x800aa160,
+    [280] = (EvtFunction)0x80088e90,
+    [281] = (EvtFunction)0x8008890c,
+    [282] = (EvtFunction)0x8008890c,
+    [283] = (EvtFunction)0x800885c8,
+    [284] = (EvtFunction)0x80087d1c,
+    [285] = (EvtFunction)0x8008833c,
+    [286] = (EvtFunction)0x80088098,
+    [287] = (EvtFunction)0x800884d4,
+    [288] = (EvtFunction)0x80096030,
+    [289] = (EvtFunction)0x800908b4,
+    [290] = (EvtFunction)0x8008cbd4,
+    [291] = (EvtFunction)0x8008163c,
+    [292] = (EvtFunction)0x8008c828,
+    [293] = (EvtFunction)0x8008caa4,
+    [294] = (EvtFunction)0x8008cbd4,
+    [295] = (EvtFunction)0x8008d42c,
+    [296] = (EvtFunction)0x80098bac,
+    [297] = (EvtFunction)0x800968e8,
+    [298] = (EvtFunction)0x800969e4,
+    [299] = (EvtFunction)0x80097c94,
+    [300] = (EvtFunction)0x8008d90c,
+    [301] = (EvtFunction)0x8008d748,
+    [302] = (EvtFunction)0x80090ab8,
+    [303] = (EvtFunction)0x8009eb3c,
+    [304] = (EvtFunction)0x8009e760,
+    [305] = (EvtFunction)0x800ac540,
+    [306] = (EvtFunction)0x8009034c,
+    [307] = (EvtFunction)0x80085b98,
+    [308] = (EvtFunction)NULL,
+    [309] = (EvtFunction)0x800838ec,
+    [310] = (EvtFunction)0x80084268,
+    [311] = (EvtFunction)0x80084510,
+    [312] = (EvtFunction)0x80084600,
+    [313] = (EvtFunction)0x80084784,
+    [314] = (EvtFunction)0x80084bcc,
+    [315] = (EvtFunction)0x8008503c,
+    [316] = (EvtFunction)0x800a9350,
+    [317] = (EvtFunction)0x8008c284,
+    [318] = (EvtFunction)0x800acd90,
+    [319] = (EvtFunction)0x800acef4,
+    [320] = (EvtFunction)0x800ad284,
+    [321] = (EvtFunction)0x80083a2c,
+    [322] = (EvtFunction)0x80083fec,
+    [323] = (EvtFunction)0x800ad600,
+    [324] = (EvtFunction)0x80085b98,
+    [325] = (EvtFunction)0x80085a9c,
+    [326] = (EvtFunction)0x800861c0,
+    [327] = (EvtFunction)0x80083bfc,
+    [328] = (EvtFunction)0x800ac540,
+    [329] = (EvtFunction)0x8008660c,
+    [330] = (EvtFunction)0x80086614,
+    [331] = (EvtFunction)0x8008fe2c,
+    [332] = (EvtFunction)0x8008da7c,
+    [333] = (EvtFunction)0x8008df00,
+    [334] = (EvtFunction)0x8008e7b4,
+    [335] = (EvtFunction)0x8008ea14,
+    [336] = (EvtFunction)0x8008f2f8,
+    [337] = (EvtFunction)0x80082ea4,
+    [338] = (EvtFunction)0x8008c284,
+    [339] = (EvtFunction)0x8008bd04,
+    [340] = (EvtFunction)0x800ac254,
+    [341] = (EvtFunction)0x800b2db8,
+    [342] = (EvtFunction)0x800b2db8,
+    [343] = (EvtFunction)0x800b40d4,
+    [344] = (EvtFunction)0x8008bcb8,
+    [345] = (EvtFunction)0x8008bcb8,
+    [346] = (EvtFunction)0x8009ba14,
+    [347] = (EvtFunction)0x8009bccc,
+    [348] = (EvtFunction)0x8008e234,
+    [349] = (EvtFunction)0x8008bd04,
+    [350] = Evtf250_350_LoadEvent16,
+    [351] = (EvtFunction)0x800a78c8,
+    [352] = (EvtFunction)0x8009be80,
+    [353] = (EvtFunction)0x800b2db8,
+    [354] = (EvtFunction)0x8009a718,
+    [355] = (EvtFunction)0x80099f38,
+    [356] = (EvtFunction)0x80099f38,
+    [357] = (EvtFunction)0x8009a474,
+    [358] = (EvtFunction)0x80099b78,
+    [359] = (EvtFunction)0x8009483c,
+    [360] = (EvtFunction)0x800b40d4,
+    [361] = (EvtFunction)0x80095d08,
+    [362] = (EvtFunction)0x8009aca8,
+    [363] = (EvtFunction)0x8009457c,
+    [364] = (EvtFunction)0x80097eb4,
+    [365] = (EvtFunction)0x80098dcc,
+    [366] = (EvtFunction)0x80098938,
+    [367] = (EvtFunction)0x800b40d4,
+    [368] = (EvtFunction)0x8009979c,
+    [369] = (EvtFunction)0x800a8b14,
+    [370] = (EvtFunction)0x80083fec,
+    [371] = (EvtFunction)0x80083fec,
+    [372] = (EvtFunction)0x80083fec,
+    [373] = (EvtFunction)0x800b40d4,
+    [374] = (EvtFunction)0x800b40d4,
+    [375] = (EvtFunction)0x8008b728,
+    [376] = (EvtFunction)0x800b40d4,
+    [377] = (EvtFunction)0x8008f870,
+    [378] = (EvtFunction)0x80093f8c,
+    [379] = (EvtFunction)0x8008654c,
+    [380] = (EvtFunction)0x80091e78,
+    [381] = (EvtFunction)0x8008733c,
+    [382] = (EvtFunction)0x8008b854,
+    [383] = (EvtFunction)0x800876d8,
+    [384] = (EvtFunction)0x800877fc,
+    [385] = (EvtFunction)0x8008d5a8,
+    [386] = (EvtFunction)0x800906d0,
+    [387] = (EvtFunction)0x800a9700,
+    [388] = (EvtFunction)0x80089cc4,
+    [389] = (EvtFunction)0x80089558,
+    [390] = (EvtFunction)0x80089710,
+    [391] = (EvtFunction)0x800a9a68,
+    [392] = (EvtFunction)0x8008a050,
+    [393] = (EvtFunction)0x800aa670,
+    [394] = (EvtFunction)0x8008b000,
+    [395] = (EvtFunction)0x8008a550,
+    [396] = (EvtFunction)0x8008a87c,
+    [397] = (EvtFunction)0x8008b4a0,
+    [398] = (EvtFunction)0x8008b36c,
+    [399] = (EvtFunction)0x80095600,
+    [400] = (EvtFunction)0x800561f8,
+    [401] = (EvtFunction)0x800570e4,
+    [402] = (EvtFunction)0x800573a4,
+    [403] = (EvtFunction)0x80057d70,
+    [404] = (EvtFunction)0x800585c8,
+    [405] = Evtf405_Panorama,
+    [406] = (EvtFunction)0x801e6704,
+    [407] = Evtf407_NoopIncState,
+    [408] = Evtf004_005_408_Window,
+    [409] = Evtf409_EventEntity,
+    [410] = Evtf410_EventZoom,
+    [411] = Evtf411_MapObject_VileBog,
+    [412] = Evtf412_EventCamera,
+    [413] = Evtf413_MsgBoxPortrait,
+    [414] = Evtf414_DebugMenu,
+    [415] = Evtf415_MapObject_Torch,
+    [416] = Evtf416_LoadEvent00,
+    [417] = Evtf417_LoadEvent03,
+    [418] = Evtf418_LoadEvent06,
+    [419] = Evtf419_Noop,
+    [420] = Evtf420_BattleVictory,
+    [421] = Evtf421_UpperMsgBoxTail,
+    [422] = Evtf422_LowerMsgBoxTail,
+    [423] = Evtf423_BattleDefeat,
+    [424] = (EvtFunction)0x8005a1e0,
+    [425] = Evtf425_BattleOptions,
+    [426] = Evtf426_EvaluateBattle10,
+    [427] = Evtf427_EvaluateBattle11,
+    [428] = Evtf428_EvaluateBattle12,
+    [429] = Evtf429_EvaluateBattle13,
+    [430] = Evtf430_EvaluateBattle14,
+    [431] = Evtf431_EvaluateBattle15,
+    [432] = Evtf432_EvaluateBattle16,
+    [433] = Evtf433_EvaluateBattle17,
+    [434] = Evtf434_EvaluateStandardBattle,
+    [435] = Evtf435_EvaluateBattle19,
+    [436] = Evtf436_EvaluateBattle20,
+    [437] = Evtf437_EvaluateBattle21,
+    [438] = Evtf438_EvaluateBattle08,
+    [439] = Evtf439_EvaluateBattle23,
+    [440] = (EvtFunction)NULL,
+    [441] = (EvtFunction)NULL,
+    [442] = Evtf442_EvaluateBattle26,
+    [443] = Evtf443_EvaluateBattle27,
+    [444] = Evtf444_EvaluateBattle28,
+    [445] = Evtf445_EvaluateBattle29,
+    [446] = Evtf446_BattleVictoryParticle,
+    [447] = Evtf447_UnitPortrait,
+    [448] = Evtf448_UnitPortraitWrapper,
+    [449] = Evtf449_MapObject_FlowingWater,
+    [450] = Evtf450_LoadEvent68,
+    [451] = Evtf451_LoadEvent70,
+    [452] = Evtf452_LoadEvent72,
+    [453] = Evtf453_LoadEvent73,
+    [454] = Evtf454_LoadEvent75,
+    [455] = Evtf455_LoadEvent76,
+    [456] = Evtf456_LoadEvent79,
+    [457] = Evtf457_LoadEvent80,
+    [458] = Evtf458_LoadEvent81,
+    [459] = Evtf459_LoadEvent83,
+    [460] = Evtf460_LoadEvent01,
+    [461] = Evtf461_LoadEvent02,
+    [462] = Evtf462_LoadEvent04,
+    [463] = Evtf463_LoadEvent08,
+    [464] = Evtf464_LoadEvent09,
+    [465] = Evtf465_LoadEvent11,
+    [466] = Evtf466_LoadEvent12,
+    [467] = Evtf467_LoadEvent13,
+    [468] = Evtf468_LoadEvent19,
+    [469] = Evtf469_LoadEvent21,
+    [470] = Evtf470_LoadEvent22,
+    [471] = Evtf471_LoadEvent24,
+    [472] = Evtf472_LoadEvent28,
+    [473] = Evtf473_LoadEvent29,
+    [474] = Evtf474_LoadEvent30,
+    [475] = Evtf475_LoadEvent31,
+    [476] = Evtf476_LoadEvent34,
+    [477] = Evtf477_LoadEvent35,
+    [478] = Evtf478_LoadEvent36,
+    [479] = Evtf479_LoadEvent39,
+    [480] = Evtf480_LoadEvent40,
+    [481] = Evtf481_LoadEvent41,
+    [482] = Evtf482_LoadEvent50,
+    [483] = Evtf483_LoadEvent52,
+    [484] = Evtf484_LoadEvent55,
+    [485] = Evtf485_LoadEvent56,
+    [486] = Evtf486_LoadEvent61,
+    [487] = Evtf487_LoadEvent64,
+    [488] = Evtf488_LoadEvent65,
+    [489] = Evtf489_LoadEvent66,
+    [490] = Evtf490_LoadEvent71,
+    [491] = Evtf491_LoadEvent60,
+    [492] = Evtf492_LoadEvent10,
+    [493] = Evtf493_LoadEvent18,
+    [494] = Evtf494_LoadEvent15,
+    [495] = Evtf495_LoadEvent17,
+    [496] = Evtf496_LoadEvent27,
+    [497] = Evtf497_LoadEvent32,
+    [498] = Evtf498_LoadEvent38,
+    [499] = Evtf499_LoadEvent43,
+    [500] = Evtf500_LoadEvent46,
+    [501] = Evtf501_LoadEvent48,
+    [502] = Evtf502_LoadEvent49,
+    [503] = Evtf503_LoadEvent53,
+    [504] = Evtf504_LoadEvent63,
+    [505] = Evtf505_LoadEvent69,
+    [506] = Evtf506_LoadEvent74,
+    [507] = Evtf507_LoadEvent77,
+    [508] = Evtf508_LoadEvent78,
+    [509] = Evtf509_LoadEvent82,
+    [510] = Evtf510_LoadEvent84,
+    [511] = Evtf511_LoadEvent85,
+    [512] = Evtf512_LoadEvent86,
+    [513] = Evtf513_LoadEvent87,
+    [514] = Evtf514_LoadEvent88,
+    [515] = Evtf515_LoadEvent89,
+    [516] = Evtf516_LoadEvent90,
+    [517] = Evtf517_LoadEvent91,
+    [518] = Evtf518_LoadEvent92,
+    [519] = Evtf519_LoadEvent93,
+    [520] = Evtf520_LoadEvent25,
+    [521] = Evtf521_LoadEvent94,
+    [522] = Evtf522_LoadEvent26,
+    [523] = Evtf523_LoadEvent07,
+    [524] = Evtf524_LoadEvent20,
+    [525] = Evtf525_LoadEvent47,
+    [526] = (EvtFunction)NULL,
+    [527] = (EvtFunction)NULL,
+    [528] = (EvtFunction)NULL,
+    [529] = (EvtFunction)NULL,
+    [530] = (EvtFunction)0x800b1994,
+    [531] = (EvtFunction)NULL,
+    [532] = (EvtFunction)NULL,
+    [533] = (EvtFunction)NULL,
+    [534] = (EvtFunction)NULL,
+    [535] = (EvtFunction)0x800b2190,
+    [536] = (EvtFunction)0x800b2190,
+    [537] = (EvtFunction)NULL,
+    [538] = (EvtFunction)NULL,
+    [539] = (EvtFunction)NULL,
+    [540] = (EvtFunction)0x800b2138,
+    [541] = (EvtFunction)0x800b2138,
+    [542] = (EvtFunction)0x800b2138,
+    [543] = (EvtFunction)0x800b2138,
+    [544] = (EvtFunction)0x800b2138,
+    [545] = (EvtFunction)0x800b2138,
+    [546] = (EvtFunction)NULL,
+    [547] = (EvtFunction)NULL,
+    [548] = (EvtFunction)NULL,
+    [549] = (EvtFunction)NULL,
+    [550] = (EvtFunction)NULL,
+    [551] = (EvtFunction)NULL,
+    [552] = Evtf552_EvaluateBattle32,
+    [553] = Evtf553_EvaluateBattle33,
+    [554] = (EvtFunction)NULL,
+    [555] = Evtf555_EvaluateBattle35,
+    [556] = (EvtFunction)NULL,
+    [557] = Evtf557_EvaluateBattle37,
+    [558] = Evtf558_EvaluateBattle38,
+    [559] = Evtf559_EvaluateBattle39,
+    [560] = Evtf560_EvaluateBattle40,
+    [561] = (EvtFunction)NULL,
+    [562] = Evtf562_EvaluateBattle42,
+    [563] = Evtf563_EvaluateBattle43,
+    [564] = Evtf564_565_566_MapObject_Water,
+    [565] = Evtf564_565_566_MapObject_Water,
+    [566] = Evtf564_565_566_MapObject_Water,
+    [567] = Evtf567_OpeningChest,
+    [568] = Evtf568_MapObject_Rail,
+    [569] = Evtf569_572_MapObject_Lava,
+    [570] = (EvtFunction)0x80055a0c,
+    [571] = Evtf571_LevelUp,
+    [572] = Evtf569_572_MapObject_Lava,
+    [573] = Evtf573_BattleItemsList,
+    [574] = Evtf574_DisplayIcon,
+    [575] = Evtf575_StatusPortrait,
+    [576] = Evtf576_Tavern,
+    [577] = (EvtFunction)0x801ed610,
+    [578] = (EvtFunction)0x801edb54,
+    [579] = (EvtFunction)0x801efd0c,
+    [580] = (EvtFunction)0x801f3a5c,
+    [581] = Evtf581_AudioCommand,
+    [582] = Evtf582_MainMenu_Jpn,
+    [583] = Evtf583_LoadingIndicator,
+    [584] = Evtf584_Noop,
+    [585] = Evtf585_BattlePlayerEvent,
+    [586] = Evtf586_BattleMsgBox,
+    [587] = Evtf587_BattleEnemyEvent,
+    [588] = Evtf026_588_Camera_TBD,
+    [589] = (EvtFunction)0x80058a14,
+    [590] = Evtf590_BattleTurnTicker,
+    [591] = Evtf591_MapObject_Boulder,
+    [592] = Evtf592_BattleTurnStart,
+    [593] = Evtf593_BattleResultsUnit,
+    [594] = Evtf594_BattleResults,
+    [595] = Evtf595_StatusWindow,
+    [596] = Evtf596_StatusWindowMgr,
+    [597] = Evtf597_BattleIntro,
+    [598] = Evtf598_WorldActions,
+    [599] = (EvtFunction)NULL,
+    [600] = (EvtFunction)NULL,
+    [601] = (EvtFunction)NULL,
+    [602] = (EvtFunction)NULL,
+    [603] = (EvtFunction)NULL,
+    [604] = (EvtFunction)NULL,
+    [605] = (EvtFunction)NULL,
+    [606] = (EvtFunction)NULL,
+    [607] = (EvtFunction)NULL,
+    [608] = (EvtFunction)NULL,
+    [609] = (EvtFunction)NULL,
+    [610] = (EvtFunction)NULL,
+    [611] = (EvtFunction)NULL,
+    [612] = (EvtFunction)NULL,
+    [613] = (EvtFunction)NULL,
+    [614] = (EvtFunction)NULL,
+    [615] = (EvtFunction)NULL,
+    [616] = (EvtFunction)NULL,
+    [617] = (EvtFunction)NULL,
+    [618] = (EvtFunction)NULL,
+    [619] = (EvtFunction)NULL,
+    [620] = (EvtFunction)NULL,
+    [621] = (EvtFunction)NULL,
+    [622] = (EvtFunction)NULL,
+    [623] = (EvtFunction)NULL,
+    [624] = (EvtFunction)NULL,
+    [625] = (EvtFunction)NULL,
+    [626] = (EvtFunction)NULL,
+    [627] = (EvtFunction)NULL,
+    [628] = (EvtFunction)NULL,
+    [629] = (EvtFunction)NULL,
+    [630] = (EvtFunction)NULL,
+    [631] = (EvtFunction)NULL,
+    [632] = (EvtFunction)NULL,
+    [633] = (EvtFunction)NULL,
+    [634] = (EvtFunction)NULL,
+    [635] = (EvtFunction)NULL,
+    [636] = (EvtFunction)NULL,
+    [637] = (EvtFunction)NULL,
+    [638] = (EvtFunction)NULL,
+    [639] = (EvtFunction)NULL,
+    [640] = (EvtFunction)NULL,
+    [641] = (EvtFunction)NULL,
+    [642] = (EvtFunction)NULL,
+    [643] = (EvtFunction)NULL,
+    [644] = (EvtFunction)NULL,
+    [645] = (EvtFunction)NULL,
+    [646] = (EvtFunction)NULL,
+    [647] = (EvtFunction)NULL,
+    [648] = (EvtFunction)NULL,
+    [649] = (EvtFunction)NULL,
+    [650] = (EvtFunction)0x8009f358,
+    [651] = (EvtFunction)0x800a0b2c,
+    [652] = (EvtFunction)0x800a1c6c,
+    [653] = (EvtFunction)0x800a14dc,
+    [654] = (EvtFunction)0x800a4050,
+    [655] = (EvtFunction)0x800a321c,
+    [656] = (EvtFunction)0x800a5860,
+    [657] = (EvtFunction)0x800a2ae8,
+    [658] = (EvtFunction)0x800a3510,
+    [659] = (EvtFunction)0x800a3e70,
+    [660] = (EvtFunction)NULL,
+    [661] = (EvtFunction)0x8009e760,
+    [662] = (EvtFunction)0x8009df44,
+    [663] = (EvtFunction)0x8009e4bc,
+    [664] = (EvtFunction)0x8009d6bc,
+    [665] = (EvtFunction)0x8009da80,
+    [666] = (EvtFunction)0x8009caac,
+    [667] = (EvtFunction)0x8009c038,
+    [668] = (EvtFunction)0x8009c674,
+    [669] = (EvtFunction)0x8009c25c,
+    [670] = (EvtFunction)0x8009d008,
+    [671] = (EvtFunction)NULL,
+    [672] = (EvtFunction)0x800a43d4,
+    [673] = (EvtFunction)0x8009ed24,
+    [674] = (EvtFunction)0x800a9ac0,
+    [675] = (EvtFunction)0x80090b60,
+    [676] = (EvtFunction)0x80090db8,
+    [677] = (EvtFunction)0x80090f78,
+    [678] = (EvtFunction)0x80091248,
+    [679] = (EvtFunction)0x800ada90,
+    [680] = (EvtFunction)0x800adcf4,
+    [681] = (EvtFunction)0x8006bbdc,
+    [682] = (EvtFunction)0x800ade8c,
+    [683] = (EvtFunction)0x800b2708,
+    [684] = (EvtFunction)0x800b2790,
+    [685] = (EvtFunction)0x80092724,
+    [686] = Evtf206_686_BloodSpurtParticle,
+    [687] = (EvtFunction)0x80090db8,
+    [688] = (EvtFunction)0x800aa0b4,
+    [689] = (EvtFunction)0x800ae00c,
+    [690] = (EvtFunction)0x800ac8e0,
+    [691] = (EvtFunction)0x800acab4,
+    [692] = (EvtFunction)0x80091464,
+    [693] = (EvtFunction)0x800ae4f8,
+    [694] = (EvtFunction)0x800ae678,
+    [695] = (EvtFunction)0x800ae8f4,
+    [696] = (EvtFunction)0x800ae8f4,
+    [697] = (EvtFunction)0x800aeb04,
+    [698] = (EvtFunction)0x800aec78,
+    [699] = (EvtFunction)0x800af158,
+    [700] = (EvtFunction)0x800af2b8,
+    [701] = (EvtFunction)NULL,
+    [702] = (EvtFunction)0x800a27a8,
+    [703] = (EvtFunction)0x800a6ab0,
+    [704] = (EvtFunction)NULL,
+    [705] = (EvtFunction)0x800af520,
+    [706] = (EvtFunction)NULL,
+    [707] = (EvtFunction)0x800afc68,
+    [708] = (EvtFunction)0x8009d320,
+    [709] = (EvtFunction)0x8009d320,
+    [710] = (EvtFunction)0x80093e3c,
+    [711] = (EvtFunction)0x80087b50,
+    [712] = (EvtFunction)0x80087b50,
+    [713] = (EvtFunction)0x800ad600,
+    [714] = (EvtFunction)0x800afdbc,
+    [715] = (EvtFunction)0x800928bc,
+    [716] = (EvtFunction)0x800928bc,
+    [717] = (EvtFunction)0x800928bc,
+    [718] = (EvtFunction)0x800928bc,
+    [719] = (EvtFunction)0x800aff2c,
+    [720] = (EvtFunction)0x800b0500,
+    [721] = (EvtFunction)0x800b07cc,
+    [722] = (EvtFunction)0x800b0a08,
+    [723] = (EvtFunction)0x800b0bf8,
+    [724] = (EvtFunction)0x800b0cd0,
+    [725] = (EvtFunction)0x800b0e64,
+    [726] = (EvtFunction)0x800b0fc0,
+    [727] = (EvtFunction)0x800b0fd4,
+    [728] = (EvtFunction)0x800ad4c4,
+    [729] = (EvtFunction)0x800b101c,
+    [730] = (EvtFunction)0x800b130c,
+    [731] = (EvtFunction)0x800b0e04,
+    [732] = (EvtFunction)0x800af520,
+    [733] = (EvtFunction)0x8006bff8,
+    [734] = (EvtFunction)0x800b1334,
+    [735] = (EvtFunction)0x80092ac0,
+    [736] = (EvtFunction)0x80092dc0,
+    [737] = (EvtFunction)0x80093040,
+    [738] = (EvtFunction)0x800a6b70,
+    [739] = (EvtFunction)0x800929cc,
+    [740] = (EvtFunction)0x80092c64,
+    [741] = (EvtFunction)0x800b0cd0,
+    [742] = (EvtFunction)0x800ace90,
+    [743] = (EvtFunction)0x800af520,
+    [744] = (EvtFunction)0x800af520,
+    [745] = (EvtFunction)0x800af8c8,
+    [746] = (EvtFunction)0x80064e80,
+    [747] = (EvtFunction)0x8008ff40,
+    [748] = (EvtFunction)0x8008ff40,
+    [749] = (EvtFunction)0x80090094,
+    [750] = (EvtFunction)0x800a0e14,
+    [751] = (EvtFunction)0x800a0e14,
+    [752] = (EvtFunction)0x8009d3ac,
+    [753] = (EvtFunction)0x800959a8,
+    [754] = (EvtFunction)0x800a4fb8,
+    [755] = (EvtFunction)0x800985e8,
+    [756] = (EvtFunction)0x800b1710,
+    [757] = (EvtFunction)0x800933a8,
+    [758] = (EvtFunction)0x800b28dc,
+    [759] = (EvtFunction)0x80091588,
+    [760] = (EvtFunction)0x80093530,
+    [761] = (EvtFunction)0x8008cbd4,
+    [762] = (EvtFunction)0x800936f8,
+    [763] = (EvtFunction)0x8009152c,
+    [764] = (EvtFunction)0x80093b80,
+    [765] = (EvtFunction)0x80093b80,
+    [766] = (EvtFunction)0x80093b80,
+    [767] = (EvtFunction)0x80093b80,
+    [768] = (EvtFunction)0x80093b80,
+    [769] = (EvtFunction)0x80093b80,
+    [770] = (EvtFunction)0x80093798,
+    [771] = (EvtFunction)0x80093798,
+    [772] = (EvtFunction)0x80093798,
+    [773] = (EvtFunction)0x80093798,
+    [774] = (EvtFunction)0x80093798,
+    [775] = (EvtFunction)0x80093798,
+    [776] = (EvtFunction)0x80093798,
+    [777] = (EvtFunction)0x80093798,
+    [778] = (EvtFunction)0x80093798,
+    [779] = (EvtFunction)0x80093798,
+    [780] = (EvtFunction)0x80093798,
+    [781] = (EvtFunction)0x80093798,
+    [782] = (EvtFunction)0x80093798,
+    [783] = (EvtFunction)0x80093798,
+    [784] = (EvtFunction)0x80093798,
+    [785] = (EvtFunction)0x80093798,
+    [786] = (EvtFunction)0x80093798,
+    [787] = (EvtFunction)0x80093798,
+    [788] = (EvtFunction)0x80093798,
+    [789] = (EvtFunction)0x80093798,
+    [790] = (EvtFunction)0x80093d44,
+    [791] = (EvtFunction)0x8009034c,
+    [792] = (EvtFunction)0x8009034c,
+    [793] = (EvtFunction)0x8009034c,
+    [794] = (EvtFunction)0x800b1320,
+    [795] = (EvtFunction)0x800a9408,
+    [796] = (EvtFunction)0x800b53e0,
+    [797] = (EvtFunction)0x80093f78,
+    [798] = (EvtFunction)0x800a8ae4,
+    [799] = Evtf132_Etc_Fx_TBD,
+    [800] = Evtf132_Etc_Fx_TBD,
+    [801] = Evtf801_Fx_TBD,
+    [802] = Evtf802_Fx_TBD,
+    [803] = Evtf803_Fx_TBD,
+};

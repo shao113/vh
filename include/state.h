@@ -157,7 +157,7 @@ typedef struct State {
    u8 D_80140859;
    u8 vsyncNoWait;
    u8 suppressLoadingScreen;
-   u8 D_8014085C;
+   u8 eventChoice;
    u8 choices[6];
    u8 enableMapScaling;
    u8 textSpeed;

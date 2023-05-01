@@ -286,7 +286,13 @@ typedef enum UnitId {
    UNIT_ID_BAHAMUT = 130,
 } UnitId;
 
-typedef enum UnitTeam { TEAM_NULL = 0, TEAM_PLAYER = 1, TEAM_ENEMY = 2, TEAM_CHEST = 101 } UnitTeam;
+typedef enum UnitTeam {
+   TEAM_NULL = 0,
+   TEAM_PLAYER = 1,
+   TEAM_ENEMY = 2,
+   TEAM_CHEST = 101,
+   TEAM_BOULDER = 102
+} UnitTeam;
 
 typedef enum UnitType {
    UNIT_TYPE_NULL = 0,

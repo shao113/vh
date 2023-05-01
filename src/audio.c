@@ -1156,188 +1156,187 @@ void StopSound(void) {
    gSfxSlotSustained = 0;
 }
 
-void PerformParamlessAudioCommand(s32 cmd) {
-   s16 cmdMinusOne = cmd - 1;
-
-   switch (cmdMinusOne) {
-   case 0x0:
+void PerformParamlessAudioCommand(s16 cmd) {
+   // TODO cmd constants
+   switch (cmd) {
+   case 0x1:
       SetAudioMode(AUDIO_MODE_MONO);
       break;
-   case 0x1:
+   case 0x2:
       SetAudioMode(AUDIO_MODE_STEREO);
       break;
-   case 0x2:
+   case 0x3:
       QueueStopSeq();
       break;
-   case 0x3:
+   case 0x4:
       StopSound();
       break;
-   case 0x4:
+   case 0x5:
       QueuePauseCda();
       break;
-   case 0x5:
    case 0x6:
+   case 0x7:
       QueuePauseCda();
       QueueStopSeq();
       WaitForAudio();
       StopSound();
       gVolumeFadeOutSpeed = 0;
       break;
-   case 0x7:
+   case 0x8:
       WaitForAudio();
       break;
-   case 0x4F:
+   case 0x50:
       StopSound();
       SsSeqSetVol(gSeqAccessNum, 64, 64);
       break;
-   case 0x50:
+   case 0x51:
       SsSeqSetVol(gSeqAccessNum, gSeqCurrentVolume, gSeqCurrentVolume);
       break;
-   case 0x51:
+   case 0x52:
       SetupVolumeFadeOut(8, 8);
       break;
-   case 0x52:
+   case 0x53:
       SetupVolumeFadeIn(8, 8);
       break;
-   case 0x53:
+   case 0x54:
       gCdaVolumeState = CDA_VOLUME_STATE_DECREASING;
       gCdaAdjustedVolume = gCdaMaxVolume;
       gCdaReducedVolumeTarget = gCdaMaxVolume / 3;
       break;
-   case 0x54:
+   case 0x55:
       gCdaVolumeState = CDA_VOLUME_STATE_INCREASING;
       break;
-   case 0x1F:
+   case 0x20:
       SetupVolumeFadeOut(32, 4);
       break;
-   case 0x20:
+   case 0x21:
       SetupVolumeFadeOut(8, 4);
       break;
-   case 0x21:
+   case 0x22:
       SetupVolumeFadeOut(4, 4);
       break;
-   case 0x22:
+   case 0x23:
       SetupVolumeFadeOut(2, 4);
       break;
-   case 0x23:
+   case 0x24:
       SetupVolumeFadeOut(1, 4);
       break;
-   case 0x27:
+   case 0x28:
       SetupVolumeFadeOut(128, 3);
       break;
-   case 0x28:
+   case 0x29:
       SetupVolumeFadeOut(8, 3);
       break;
-   case 0x29:
+   case 0x2a:
       SetupVolumeFadeOut(4, 3);
       break;
-   case 0x2A:
+   case 0x2b:
       SetupVolumeFadeOut(2, 3);
       break;
-   case 0x2B:
+   case 0x2c:
       SetupVolumeFadeOut(1, 3);
       break;
-   case 0x2F:
+   case 0x30:
       SetupVolumeFadeOut(128, 1);
       break;
-   case 0x30:
+   case 0x31:
       SetupVolumeFadeOut(8, 1);
       break;
-   case 0x31:
+   case 0x32:
       SetupVolumeFadeOut(4, 1);
       break;
-   case 0x32:
+   case 0x33:
       SetupVolumeFadeOut(2, 1);
       break;
-   case 0x33:
+   case 0x34:
       SetupVolumeFadeOut(1, 1);
       break;
-   case 0x37:
+   case 0x38:
       SetupVolumeFadeOut(128, 2);
       break;
-   case 0x38:
+   case 0x39:
       SetupVolumeFadeOut(8, 2);
       break;
-   case 0x39:
+   case 0x3a:
       SetupVolumeFadeOut(4, 2);
       break;
-   case 0x3A:
+   case 0x3b:
       SetupVolumeFadeOut(2, 2);
       break;
-   case 0x3B:
+   case 0x3c:
       SetupVolumeFadeOut(1, 2);
       break;
-   case 0x3F:
+   case 0x40:
       SetupVolumeFadeIn(32, VOLUME_FADE_IN_MODE_CDA);
       break;
-   case 0x40:
+   case 0x41:
       SetupVolumeFadeIn(8, VOLUME_FADE_IN_MODE_CDA);
       break;
-   case 0x41:
+   case 0x42:
       SetupVolumeFadeIn(4, VOLUME_FADE_IN_MODE_CDA);
       break;
-   case 0x42:
+   case 0x43:
       SetupVolumeFadeIn(2, VOLUME_FADE_IN_MODE_CDA);
       break;
-   case 0x43:
+   case 0x44:
       SetupVolumeFadeIn(1, VOLUME_FADE_IN_MODE_CDA);
       break;
-   case 0x47:
+   case 0x48:
       SetupVolumeFadeIn(4, VOLUME_FADE_IN_MODE_MAIN);
       break;
-   case 0xAF:
+   case 0xb0:
       SetCdaReverbEnabled(1);
       break;
-   case 0xB0:
+   case 0xb1:
       SetCdaReverbEnabled(0);
       break;
-   case 0xBF:
+   case 0xc0:
       SetReverbDepth(8);
       break;
-   case 0xC0:
+   case 0xc1:
       SetReverbDepth(0x10);
       break;
-   case 0xC1:
+   case 0xc2:
       SetReverbDepth(0x18);
       break;
-   case 0xC2:
+   case 0xc3:
       SetReverbDepth(0x20);
       break;
-   case 0xC3:
+   case 0xc4:
       SetReverbDepth(0x28);
       break;
-   case 0xC4:
+   case 0xc5:
       SetReverbDepth(0x30);
       break;
-   case 0xC5:
+   case 0xc6:
       SetReverbDepth(0x38);
       break;
-   case 0xC6:
+   case 0xc7:
       SetReverbDepth(0x40);
       break;
-   case 0xC7:
+   case 0xc8:
       SetReverbDepth(0x48);
       break;
-   case 0xC8:
+   case 0xc9:
       SetReverbDepth(0x50);
       break;
-   case 0xC9:
+   case 0xca:
       SetReverbDepth(0x58);
       break;
-   case 0xCA:
+   case 0xcb:
       SetReverbDepth(0x60);
       break;
-   case 0xCB:
+   case 0xcc:
       SetReverbDepth(0x68);
       break;
-   case 0xCC:
+   case 0xcd:
       SetReverbDepth(0x70);
       break;
-   case 0xCD:
+   case 0xce:
       SetReverbDepth(0x78);
       break;
-   case 0xCE:
-      SetReverbDepth(0x7F);
+   case 0xcf:
+      SetReverbDepth(0x7f);
       break;
    default:
       return;

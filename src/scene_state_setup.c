@@ -261,7 +261,7 @@ void State_SetSceneState(void) {
       break;
 
    case 0x1c:
-      if (gState.D_8014085C == 0) {
+      if (gState.eventChoice == 0) {
          gState.worldMapDestination = 9;
          gState.primary = STATE_6;
          gState.worldMapState = 0x18;
@@ -633,7 +633,7 @@ void State_SetSceneState(void) {
       break;
 
    case 0x5b:
-      if (gState.D_8014085C == 0) {
+      if (gState.eventChoice == 0) {
          gState.worldMapDestination = 0x20;
          gState.primary = STATE_6;
          gState.worldMapState = 0x4a;

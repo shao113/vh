@@ -1713,7 +1713,7 @@ void func_8004FDB0(EvtData *sprite, EvtData *entity) {
       if (sprite->d.sprite.z1 > sprite->d.sprite.z3) {
          HI(sprite->d.sprite.coords[0].y) += 4;
       }
-      if (entity->d.evtf409.todo_x4c == 0) {
+      if (entity->d.evtf409.maintainDirection == 0) {
          if (sprite->d.sprite.x1 < sprite->d.sprite.x3) {
             sprite->d.sprite.direction = ANGLE_WEST;
          }
@@ -1777,7 +1777,7 @@ void SetupEventEntity_SingleSet(u8 **baseAnimSet, s16 *p, u8 stripIdxA, u8 strip
    entity = Evt_GetUnused();
    entity->functionIndex = EVTF_EVENT_ENTITY;
    entity->d.evtf409.baseAnimSet = baseAnimSet;
-   entity->d.evtf409.pNext = p;
+   entity->d.evtf409.pNextCommand = p;
    // Adding 2 since the area where strips 0 and 1 would be is used for other purposes (font, etc)
    entity->d.evtf409.stripIdxA = stripIdxA + 2;
    entity->d.evtf409.stripIdxB = stripIdxB + 2;
@@ -1790,7 +1790,7 @@ void SetupEventEntity(u8 **baseAnimSet, u8 **altAnimSet, s16 *p, u8 stripIdxA, u
    entity->functionIndex = EVTF_EVENT_ENTITY;
    entity->d.evtf409.baseAnimSet = baseAnimSet;
    entity->d.evtf409.altAnimSet = altAnimSet;
-   entity->d.evtf409.pNext = p;
+   entity->d.evtf409.pNextCommand = p;
    entity->d.evtf409.stripIdxA = stripIdxA + 2;
    entity->d.evtf409.stripIdxB = stripIdxB + 2;
 }
@@ -1833,4 +1833,880 @@ void ReserveSprite(u8 srcIdxWithinSheet, u8 dstStripIdx, u8 dstSubIdx) {
 
    MoveImage(&srcRect, stripX + spriteX, y);
    DrawSync(0);
+}
+
+#undef EVTF
+#define EVTF 409
+void Evtf409_EventEntity(EvtData *evt) {
+   EvtData *sprite;
+   EvtData *evt1;
+   EvtData *evt2;
+   s16 argument;
+   s16 *pNextCommand;
+   s16 *pCurrentCommand;
+   s32 tmp;
+   s32 i, j;
+   u8 **animSet;
+
+   sprite = EVT.sprite;
+
+   switch (EVT.runState) {
+   case 0:
+      sprite = Evt_GetUnused();
+      sprite->functionIndex = EVTF_NOOP;
+      sprite->d.sprite.coords[0].z = rand() % 256 - 128;
+      sprite->d.sprite.stripIdx = EVT.stripIdxA;
+      sprite->d.sprite.x1 = EVT.x;
+      sprite->d.sprite.z1 = EVT.z;
+      sprite->d.sprite.x3 = EVT.x;
+      sprite->d.sprite.z3 = EVT.z;
+      EVT.sprite = sprite;
+      EVT.runState++;
+
+   // fallthrough
+   HandleRunState1:
+   case 1:
+      pNextCommand = EVT.pNextCommand;
+      evt->mem = *pNextCommand;
+      EVT.pNextCommand = pNextCommand + 2;
+      EVT.runState++;
+      EVT.commandState = 0;
+
+   // fallthrough
+   case 2:
+      pNextCommand = EVT.pNextCommand;
+      argument = pNextCommand[-1];
+
+      switch (evt->mem) {
+      case 1:
+         // Yield until given location
+         if (gState.eventResumeLocation >= argument) {
+            EVT.runState = 1;
+            goto HandleRunState1;
+         }
+         // Continue waiting for resume
+         break;
+
+      case 2:
+         // Play base-set animation
+         if ((EVT.animIdx != argument * 2) || EVT.usingAltAnimSet == 1) {
+            // Need to switch
+            EVT.animIdx = argument * 2;
+            EVT.usingAltAnimSet = 0;
+            sprite->d.sprite.animInitialized = 0;
+            sprite->d.sprite.animFinished = 0;
+         }
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 3:
+         sprite->d.sprite.x3 = argument;
+         sprite->d.sprite.finishedMoving = 0;
+         EVT.maintainDirection = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 4:
+         sprite->d.sprite.z3 = argument;
+         sprite->d.sprite.finishedMoving = 0;
+         EVT.maintainDirection = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 5:
+         sprite->d.sprite.x3 = argument;
+         sprite->d.sprite.finishedMoving = 0;
+         EVT.maintainDirection = 1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 6:
+         sprite->d.sprite.z3 = argument;
+         sprite->d.sprite.finishedMoving = 0;
+         EVT.maintainDirection = 1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 7:
+         sprite->d.sprite.x2 = argument;
+         sprite->d.sprite.z2 = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 8:
+         sprite->d.sprite.direction = argument << 10;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 9:
+         if (sprite->d.sprite.finishedMoving) {
+            EVT.runState = 1;
+            goto HandleRunState1;
+         }
+         break;
+
+      case 0xa:
+         if (sprite->d.sprite.animFinished) {
+            EVT.runState = 1;
+            goto HandleRunState1;
+         }
+         break;
+
+      case 0xb:
+
+         switch (EVT.commandState) {
+         case 0:
+            EVT.timer = argument;
+            EVT.commandState++;
+            break;
+         case 1:
+            if (--EVT.timer == 0) {
+               EVT.runState = 1;
+               goto HandleRunState1;
+            }
+            break;
+         }
+
+         break;
+
+      case 0xc:
+         //? Branch (relative to current command)
+         pCurrentCommand = EVT.pNextCommand - 2;
+         EVT.pNextCommand = pCurrentCommand + argument * 2;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0xd:
+         gState.evtFocus = sprite;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0xe:
+         gState.evtFocus = NULL;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0xf:
+
+         switch (EVT.commandState) {
+         case 0:
+            StartUnitSpritesDecoder(sprite->d.sprite.stripIdx);
+            EVT.commandState++;
+            break;
+         case 1:
+            if (!gDecodingSprites) {
+               EVT.runState = 1;
+               goto HandleRunState1;
+            }
+            break;
+         }
+
+         break;
+
+      case 0x10:
+         if (gState.eventResumeLocation >= argument) {
+            EVT.pNextCommand += 2;
+         }
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x11:
+      case 0x12:
+         // Resume suspended entities (up to given "location"), effectively used to branch between
+         // entity scripts
+         if (gState.eventResumeLocation < argument) {
+            gState.eventResumeLocation = argument;
+         }
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x13:
+         sprite->d.sprite.x1 = sprite->d.sprite.x3;
+         sprite->d.sprite.z1 = sprite->d.sprite.z3;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x14:
+         evt1 = Evt_GetUnused();
+         evt1->functionIndex = EVTF_EVENT_ZOOM;
+         evt1->d.evtf410.zoom = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x15:
+         sprite->d.sprite.x1 = argument;
+         sprite->d.sprite.x3 = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x16:
+         sprite->d.sprite.z1 = argument;
+         sprite->d.sprite.z3 = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x17:
+         sprite->d.sprite.x3 = sprite->d.sprite.x1 + argument;
+         sprite->d.sprite.finishedMoving = 0;
+         EVT.maintainDirection = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x18:
+         sprite->d.sprite.z3 = sprite->d.sprite.z1 + argument;
+         sprite->d.sprite.finishedMoving = 0;
+         EVT.maintainDirection = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x19:
+         sprite->d.sprite.x3 = sprite->d.sprite.x1 + argument;
+         sprite->d.sprite.finishedMoving = 0;
+         EVT.maintainDirection = 1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x1a:
+         sprite->d.sprite.z3 = sprite->d.sprite.z1 + argument;
+         sprite->d.sprite.finishedMoving = 0;
+         EVT.maintainDirection = 1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x1b:
+         sprite->d.sprite.hidden = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x1c:
+         sprite->d.sprite.hidden = 1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x1d:
+         // Spawn an arbitrary evt
+         evt1 = Evt_GetUnused();
+         evt1->functionIndex = argument;
+         // todo replace?
+         evt1->d.evtf017.sprite = sprite;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x1e:
+         ShowMsgBoxForSprite(sprite, argument, 0);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x1f:
+         CloseMsgBox(argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x20:
+         SetMsgBoxText(1, argument, 0x100);
+         gState.msgBoxFinished = 0;
+         gState.field_0x31d = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x21:
+         SetMsgBoxText(2, argument, 0x100);
+         gState.msgBoxFinished = 0;
+         gState.field_0x31d = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x22:
+         if (gState.msgBoxFinished) {
+            gState.msgBoxFinished = 0;
+            EVT.runState = 1;
+            goto HandleRunState1;
+         }
+         break;
+
+      case 0x23:
+         if (gState.field_0x31d != 0) {
+            gState.field_0x31d = 0;
+            EVT.runState = 1;
+            goto HandleRunState1;
+         }
+         break;
+
+      case 0x24:
+         gState.eventCameraRot = gCameraRotation.vy = (argument << 10) | ANGLE_45_DEGREES;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x25:
+         gState.eventCameraRot = tmp = argument << 10;
+         gState.eventCameraRot += ANGLE_45_DEGREES;
+
+         i = gState.eventCameraRot - gCameraRotation.vy;
+         if (i > ANGLE_180_DEGREES) {
+            gState.eventCameraRot -= ANGLE_360_DEGREES;
+         }
+         if (i < -ANGLE_180_DEGREES) {
+            gState.eventCameraRot += ANGLE_360_DEGREES;
+         }
+
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x26:
+         gState.eventCameraPan.x = argument;
+         gCameraPos.vx = -(argument >> 3);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x27:
+         gState.eventCameraPan.y = argument;
+         gCameraPos.vy = (argument + gState.eventCameraHeight) >> 3;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x28:
+         gState.eventCameraPan.z = argument;
+         gCameraPos.vz = -(argument >> 3);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x29:
+         gState.eventCameraPan.x = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x2a:
+         gState.eventCameraPan.y = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x2b:
+         gState.eventCameraPan.z = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x2c:
+         evt1 = gState.evtFocus;
+         gState.eventCameraPan.x = evt1->d.sprite.x1;
+         gState.eventCameraPan.y = evt1->d.sprite.y1;
+         gState.eventCameraPan.z = evt1->d.sprite.z1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x2d:
+         gCameraZoom.vz = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x2e:
+         EVT.stripIdxA = argument + 2;
+         sprite->d.sprite.stripIdx = argument + 2;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x2f:
+         if (argument == 0) {
+            sprite->d.sprite.stripIdx = EVT.stripIdxA;
+         } else {
+            sprite->d.sprite.stripIdx = EVT.stripIdxB;
+         }
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x30:
+         // Play alt-set animation
+         if ((EVT.animIdx != argument * 2) || !EVT.usingAltAnimSet) {
+            // Need to switch
+            EVT.animIdx = argument * 2;
+            EVT.usingAltAnimSet = 1;
+            sprite->d.sprite.animInitialized = 0;
+            sprite->d.sprite.animFinished = 0;
+         }
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x31:
+      case 0x32:
+         SetMsgBoxPortrait(argument, evt->mem == 0x32);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      //?
+      case 0x33:
+         i = 0;
+         goto ReserveSpriteInSubIdxI;
+      case 0x34:
+         i = 1;
+         goto ReserveSpriteInSubIdxI;
+      case 0x35:
+         i = 2;
+         goto ReserveSpriteInSubIdxI;
+      case 0x36:
+         i = 3;
+         goto ReserveSpriteInSubIdxI;
+      case 0x37:
+         i = 4;
+         goto ReserveSpriteInSubIdxI;
+      case 0x38:
+         i = 5;
+         goto ReserveSpriteInSubIdxI;
+      case 0x39:
+         i = 6;
+         goto ReserveSpriteInSubIdxI;
+      case 0x3a:
+         i = 7;
+         goto ReserveSpriteInSubIdxI;
+      case 0x3b:
+         i = 8;
+         goto ReserveSpriteInSubIdxI;
+      case 0x3c:
+         i = 9;
+      ReserveSpriteInSubIdxI: //?: Could use something like Duff's device instead?
+         ReserveSprite(argument, sprite->d.sprite.stripIdx, i);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x3d:
+         PerformAudioCommand(argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x3e:
+         PerformAudioCommand(3);
+         LoadSeqSet(argument);
+         FinishLoadingSeq();
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x3f:
+      case 0x55:
+
+         switch (EVT.commandState) {
+         case 0:
+            EVT.timer = 35;
+            evt2 = Evt_GetUnused();
+            evt2->functionIndex = EVTF_BLOOD_SPURT;
+            // todo replace
+            evt2->d.evtf052.sprite = sprite;
+            if (evt->mem == 0x55) {
+               EVT.runState = 1;
+               goto HandleRunState1;
+            } else {
+               EVT.commandState++;
+            }
+            break;
+
+         case 1:
+            if (--EVT.timer == 0) {
+               evt2 = Evt_GetUnused();
+               evt2->functionIndex = EVTF_SLAY_UNIT;
+               // todo replace
+               evt2->d.evtf052.sprite = sprite;
+               EVT.runState = 1;
+               goto HandleRunState1;
+            }
+            break;
+         }
+
+         break;
+
+      case 0x40:
+
+         switch (EVT.commandState) {
+         case 0:
+            EVT.timer = 50;
+            EVT.commandState++;
+
+         // fallthrough
+         case 1:
+            if (--EVT.timer == 0) {
+               gState.primary = STATE_SET_SCENE_STATE;
+               gState.secondary = 0;
+               gState.state3 = 0;
+               gState.state4 = 0;
+            }
+            break;
+         }
+
+         break;
+
+      case 0x41:
+         gState.eventCameraHeight = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x42:
+         ShowMsgBoxForSprite(sprite, argument, 1);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x43:
+         FadeOutScreen(2, argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x44:
+         FadeInScreen(2, argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x45:
+         FadeOutScreen(1, argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x46:
+         FadeInScreen(1, argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x47:
+         EVT.elevationType = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x48:
+
+         switch (EVT.commandState) {
+         case 0:
+            gWindowChoicesTopMargin = 10;
+            gWindowChoiceHeight = 17;
+            DrawWindow(0x34, 0, 170, 240, 54, 40, 93, WBS_CROSSED, 2);
+            DrawText(12, 181, 25, 2, 0, gState.currentTextPointers[argument]);
+            DisplayBasicWindow(0x34);
+            gWindowActiveIdx = 0x34;
+            EVT.commandState++;
+            break;
+
+         case 1:
+            if (gWindowChoice.raw == 0x3401) {
+               CloseWindow(0x34);
+               gState.eventChoice = 0;
+               EVT.pNextCommand += 2;
+               EVT.commandState++;
+            }
+            if (gWindowChoice.raw == 0x3402) {
+               CloseWindow(0x34);
+               gState.eventChoice = 1;
+               EVT.commandState++;
+            }
+            break;
+
+         case 2:
+            EVT.runState = 1;
+            goto HandleRunState1;
+         }
+
+         break;
+
+      case 0x49:
+         gWindowChoicesTopMargin = 10;
+         DrawWindow(0x34, 0, 170, 240, 36, 40, 97, WBS_CROSSED, 0);
+         DrawText(12, 180, 25, 2, 0, gState.currentTextPointers[argument]);
+         DisplayBasicWindow(0x34);
+         gWindowActiveIdx = 0x34;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x4a:
+         if (PressedCircleOrX()) {
+            EVT.runState = 1;
+            CloseWindow(0x34);
+            EVT.runState = 1;
+            goto HandleRunState1;
+         }
+         break;
+
+      case 0x4b:
+         gMapMinX = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x4c:
+         gMapMinZ = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x4d:
+         gMapSizeX = argument;
+         gMapMarginX = 0;
+         gMapMaxX = gMapMinX + gMapSizeX - 1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x4e:
+         gMapSizeZ = argument;
+         gMapMarginZ = 0;
+         gMapMaxZ = gMapMinZ + gMapSizeZ - 1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x4f:
+         evt2 = Evt_GetUnused();
+         evt2->functionIndex = EVTF_STRETCH_WARP_SPRITE;
+         evt2->d.evtf062.sprite = sprite;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x50:
+         evt2 = Evt_GetUnused();
+         evt2->functionIndex = EVTF_STRETCH_WARP_SPRITE;
+         evt2->d.evtf062.sprite = sprite;
+         evt2->mem = 1; // Reversed (warp in)
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x51:
+         CloseWindow(0x34);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x52:
+         evt2 = Evt_GetUnused();
+         evt2->functionIndex = EVTF_ADJUST_FACE_ELEVATION;
+         evt2->state2 = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x53:
+         evt2 = Evt_GetUnused();
+         evt2->functionIndex = EVTF_SLIDING_FACE;
+         evt2->state2 = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x54:
+         Evt_ResetByFunction(argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x56:
+         gState.preciseSprites = 1;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x57:
+         gState.preciseSprites = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x58:
+         DrawWindow(0x43, 0, 100, 296, 64, 12, 161, WBS_ROUNDED, 0);
+         DisplayCustomWindow(0x43, 0, 1, 1, 0, 25);
+         DisplayCustomWindow(0x44, 0, 1, 1, 0, 25);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x59:
+         gCameraPos.vy = (sprite->d.sprite.y1 + 0x100 + gState.eventCameraHeight) >> 3;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x5a:
+         (gState.evtScreenEffect)->state = 5;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x5b:
+         (gState.evtScreenEffect)->state = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x5c:
+         SetScreenEffectOrdering(argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x5d:
+         (gState.evtScreenEffect)->state2 = argument; // semiTransRate
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x5e:
+         (gState.evtScreenEffect)->d.evtf369.color.r = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x5f:
+         (gState.evtScreenEffect)->d.evtf369.color.g = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x60:
+         (gState.evtScreenEffect)->d.evtf369.color.b = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x65:
+         (gState.evtScreenEffect)->d.evtf369.rd = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x66:
+         (gState.evtScreenEffect)->d.evtf369.gd = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x67:
+         (gState.evtScreenEffect)->d.evtf369.bd = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x68:
+         (gState.evtScreenEffect)->d.evtf369.rmax = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x69:
+         (gState.evtScreenEffect)->d.evtf369.gmax = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x6a:
+         (gState.evtScreenEffect)->d.evtf369.bmax = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x6b:
+         gLightColor.r = gLightColor.g = gLightColor.b = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x6c:
+         gLightColor.r += argument;
+         gLightColor.g = gLightColor.b = gLightColor.r;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x6d:
+         (gState.evtScreenEffect)->d.evtf369.color.r = argument;
+         (gState.evtScreenEffect)->d.evtf369.color.g = argument;
+         (gState.evtScreenEffect)->d.evtf369.color.b = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x6e:
+         (gState.evtScreenEffect)->d.evtf369.rd = argument;
+         (gState.evtScreenEffect)->d.evtf369.gd = argument;
+         (gState.evtScreenEffect)->d.evtf369.bd = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x6f:
+         (gState.evtScreenEffect)->d.evtf369.rmax = argument;
+         (gState.evtScreenEffect)->d.evtf369.gmax = argument;
+         (gState.evtScreenEffect)->d.evtf369.bmax = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x70:
+      case 0x71:
+         (gState.evtScreenEffect)->d.evtf369.semiTrans = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x72:
+         for (i = 0; i < 30; i++) {
+            for (j = 0; j < 65; j++) {
+               gPathGrid0[i][j] = PATH_STEP_UNSET;
+            }
+         }
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x73:
+         gCameraRotation.vx = argument;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x74:
+         gScreenFade = Evt_GetUnused();
+         gScreenFade->functionIndex = EVTF_FADE;
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x75:
+         // Set up fade
+         func_800A93C8(1, argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x76:
+         // Set up fade
+         func_800A93E8(1, argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x77:
+         // Set up fade
+         func_800A93C8(2, argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x78:
+         // Set up fade
+         func_800A93E8(2, argument);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x79:
+         Evt_ResetByFunction(EVTF_FADE);
+         EVT.runState = 1;
+         goto HandleRunState1;
+
+      case 0x7a:
+         SetMsgBoxText2(1, argument, 0x100);
+         gState.msgBoxFinished = 0;
+         gState.field_0x31d = 0;
+         EVT.runState = 1;
+         goto HandleRunState1;
+      } // switch (command) (via runState:2)
+
+      break;
+   } // switch (runState)
+
+   // UpdateSprite_80051464:
+   func_8004FDB0(sprite, evt);
+   UpdateUnitSpriteOrientation(sprite);
+   if (!EVT.usingAltAnimSet) {
+      animSet = EVT.baseAnimSet;
+   } else {
+      animSet = EVT.altAnimSet;
+   }
+   sprite->d.sprite.animData = animSet[EVT.animIdx + sprite->d.sprite.facingFront];
+   UpdateUnitSpriteAnimation(sprite);
+   RenderUnitSprite(gGraphicsPtr->ot, sprite, EVT.elevationType + 1);
+}
+
+void Evtf590_BattleTurnTicker(EvtData *evt) {
+   switch (evt->state) {
+   case 0:
+      gState.field_0x96 = 1;
+
+      switch (gState.mapNum) {
+      case 13:
+         // Bridge crumbling in sections
+         gState.mapState.n.field_0x0++;
+         evt->state++;
+         break;
+      case 33:
+         // Kira being gradually lowered into lava pit
+         gState.mapState.n.field_0x0++;
+         evt->state++;
+         break;
+      default:
+         gState.field_0x96 = 0;
+         evt->state++;
+         break;
+      }
+
+      break;
+
+   case 1:
+      if (gState.field_0x96 == 0) {
+         gState.field_0x98 = 0;
+         evt->functionIndex = EVTF_NULL;
+      }
+      break;
+   }
 }

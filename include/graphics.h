@@ -119,6 +119,8 @@ typedef enum GfxIdx {
    GFX_PUFF_9 = 121,
    GFX_PUFF_10 = 122,
    GFX_DOTS = 123,
+   GFX_BOULDER_1 = 124,
+   GFX_BOULDER_2 = 125,
    GFX_ROCK_1 = 126,
    GFX_ROCK_2 = 127,
    GFX_ROCK_3 = 128,
@@ -168,9 +170,13 @@ typedef enum GfxIdx {
    GFX_BLUE_CRYSTAL = 267,
    GFX_BLUE_SHARD = 268,
    GFX_SUPPORT = 269,
+   GFX_TREE_SNOWY = 302,
+   GFX_TREE_EVERGREEN = 303,
+   GFX_TREE_PALM = 304,
    GFX_FAIRY_1 = 305,
    GFX_FAIRY_2 = 306,
    GFX_PANORAMA_DEEP_BLUE = 311,
+   GFX_TREE_BARE = 312,
    GFX_MSGBOX_TAIL_DOWN = 313,
    GFX_MSGBOX_TAIL_RIGHT = 314,
    GFX_MSGBOX_TAIL_LEFT = 315,
@@ -468,10 +474,26 @@ struct EvtData *GetUnitSpriteAtPosition(u8, u8);
 
 void AddEvtPrim_Gui(u32 *ot, struct EvtData *evt);
 
+static inline u16 GetLightRotY() { return gLightRotation.vy; }
+static inline s32 GetCamZoom() { return gCameraZoom.vz; }
+
+static inline s16 GetCamPosX() { return gCameraPos.vx; }
+static inline s16 GetCamPosY() { return gCameraPos.vy; }
+static inline s16 GetCamPosZ() { return gCameraPos.vz; }
+
 static inline s16 GetCamRotX() { return gCameraRotation.vx; }
 static inline s16 GetCamRotY() { return gCameraRotation.vy; }
-static inline u16 GetLightRotY() { return gLightRotation.vy; }
-static inline s16 GetCamPosY() { return gCameraPos.vy; }
-static inline s32 GetCamZoom() { return gCameraZoom.vz; }
+static inline s16 GetCamDir() { return gCameraRotation.vy >> 10; }
+static inline u16 GetCamRotY_U() { return gCameraRotation.vy; }
+
+/*static inline void SetCamPosX(s32 value) { gCameraPos.vx = value; }
+static inline void SetCamPosY(s32 value) { gCameraPos.vy = value; }
+static inline void SetCamPosZ(s32 value) { gCameraPos.vz = value; }
+static inline void SetCamRotY(s32 value) { gCameraRotation.vy = value; }*/
+
+static inline void OffsetCamPosX(s32 value) { gCameraPos.vx = GetCamPosX() + value; }
+static inline void OffsetCamPosY(s32 value) { gCameraPos.vy = GetCamPosY() + value; }
+static inline void OffsetCamPosZ(s32 value) { gCameraPos.vz = GetCamPosZ() + value; }
+static inline void OffsetCamRotY(s32 value) { gCameraRotation.vy = GetCamRotY() + value; }
 
 #endif

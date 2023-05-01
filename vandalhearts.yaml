@@ -77,7 +77,9 @@ segments:
     - [0x003fd0, .rdata, world_actions]        # 0x800137d0
     - [0x0041d4, .rdata, card]                 # 0x800139d4
     - [0x0041f4, .rdata, split_03c94c]         # 0x800139f4
-    - [0x0044e0, rdata]                        # 
+    - [0x0046cc, .rdata, setup_map_objects]    # 0x80013ecc
+    - [0x0047e0, .rdata, map_objects]          # 0x80013fe0
+    - [0x004818, rdata]
 
     - [0x005088, .rdata, fx_0506c0]            # 0x80014888
     - [0x0050a4, rdata]
@@ -112,9 +114,11 @@ segments:
     - [0x0394cc, c, world_actions]             # 0x80048ccc ShowConfigMenu ...
     - [0x039e48, c, card]                      # 0x80049648 State_FileSaveScreen ...
     - [0x03c94c, c, split_03c94c]              # 0x8004c14c ShowMsgBoxForSprite ...
-    - [0x040b0c, bin]                         
+    - [0x041dc8, c, setup_map_objects]         # 0x800515c8 Evtf043_SetupMapObjects ...
+    - [0x042434, c, map_objects]               # 0x80051c34 Evtf035_MapObject_Tree ...                         
+    - [0x043ec4, bin]                         
 
-    - [0x0506c0, c, fx_0506c0]                 # 8005fec0 Evtf119_Fx_TBD ...
+    - [0x0506c0, c, fx_0506c0]                 # 0x8005fec0 Evtf119_Fx_TBD ...
     - [0x054bc8, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
@@ -142,6 +146,10 @@ segments:
     - [0x0e5d3c, .data, split_038148]          # 0x800f553c
     - [0x0e5d4c, .data, card]                  # 0x800f554c gCardFilePath
     - [0x0e5d60, data]                         # 0x800f5560 gCardFileHeader: part of card.data; omitted because of image data
+    - [0x0e5ee0, .data, evt_function_pointers] # 0x800f56e0
+    - [0x0e6b70, .data, setup_map_objects]     # 0x800f6370
+    - [0x0e75e0, .data, map_objects]           # 0x800f6de0
+    - [0x0e7640, data]
 
     - [0x0e76a4, data, portrait_data]          # 0x800f6ea4
     - [0x0e9b58, data]                         # 0x800f9358

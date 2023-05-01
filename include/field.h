@@ -25,15 +25,15 @@ typedef struct TerrainTile {
 
 /* Crates, Boulders, ... */
 typedef struct MapObject2 {
-   s8 z;
-   s8 x;
+   u8 z;
+   u8 x;
 } MapObject2;
 
 /* Chests, ... */
 typedef struct MapObject3 {
-   s8 z;
-   s8 x;
-   s8 item;
+   u8 z;
+   u8 x;
+   u8 item;
 } MapObject3;
 
 typedef union MapUnit {
@@ -110,7 +110,7 @@ extern s32 D_80122E28, D_80122E2C;
 extern u8 gOverheadMapState;
 extern BVectorZXY gMapCursorStartingPos[BATTLE_CT];
 extern HiddenItem gMapHiddenItems[BATTLE_CT][2];
-extern s8 gShowBlueMovementGrid;
+extern u8 gShowBlueMovementGrid;
 
 extern PathGridRow *gRedAttackGridPtr;
 extern PathGridRow *gYellowTargetGridPtr;

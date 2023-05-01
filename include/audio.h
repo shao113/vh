@@ -188,7 +188,7 @@ void AudioJob_StopSeq(void);
 void SetupVolumeFadeOut(s16, s16);
 void SetupVolumeFadeIn(s16, u8);
 void StopSound(void);
-void PerformParamlessAudioCommand(s32);
+void PerformParamlessAudioCommand(s16);
 // void PerformAudioCommand(s16); // FIXME
 void AudioJobQueue_ProcessNext(void);
 void HandleVolumeFadeIn(void);

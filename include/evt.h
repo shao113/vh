@@ -4,6 +4,10 @@
 #include "common.h"
 #include "graphics.h"
 
+// TODO: I've been procrastinating on this, but I really need to re-evaluate the "evt" naming, since
+// they drive the entire game; substituting evt->obj seems reasonable and should be mostly painless;
+// Also need to start cleaning up a bunch of other naming inconsistencies.
+
 #define EVT_DATA_CT 350
 #define EVT_DATA_LAST_IDX 349
 
@@ -40,7 +44,13 @@ typedef enum EvtFunctionIdx {
    EVTF_BATTLE_SPELLS_LIST = 31,
    EVTF_DISPLAY_DAMAGE = 32,
    EVTF_DISPLAY_DAMAGE_2 = 33,
+   EVTF_MAP_OBJECT_TREE = 35,
+   EVTF_MAP_OBJECT_GRAVE_MARKER = 36,
+   EVTF_MAP_OBJECT_FOUNTAIN = 37,
+   EVTF_MAP_OBJECT_LAMP_POST = 38,
+   EVTF_MAP_OBJECT_FLAG = 39,
    EVTF_MAP_OBJECT_CHEST = 40,
+   EVTF_MAP_OBJECT_FLOWING_SAND = 42,
    EVTF_MAP_OBJECT_CRATE = 46,
    EVTF_PUSH = 48,
    EVTF_BATTLE_MAP_CURSOR_CONTROL = 49,
@@ -64,6 +74,7 @@ typedef enum EvtFunctionIdx {
    EVTF_UNIT_STRUCK = 201,
    EVTF_UNIT_BLOCKING = 202,
    EVTF_BLOOD_SPURT = 205,
+   EVTF_DUST_CLOUD_SPAWNER = 213,
    EVTF_DUST_CLOUD = 214,
    EVTF_CLOUD = 215,
    EVTF_CASTING_FX = 285,
@@ -82,9 +93,12 @@ typedef enum EvtFunctionIdx {
    EVTF_NOOP_407 = 407,
    EVTF_CLOSED_WINDOW = 408,
    EVTF_EVENT_ENTITY = 409,
+   EVTF_EVENT_ZOOM = 410,
+   EVTF_MAP_OBJECT_VILE_BOG = 411,
    EVTF_EVENT_CAMERA = 412,
    EVTF_MSGBOX_PORTRAIT = 413,
    EVTF_DEBUG_MENU = 414,
+   EVTF_MAP_OBJECT_TORCH = 415,
    EVTF_BATTLE_VICTORY = 420,
    EVTF_UPPER_MSGBOX_TAIL = 421,
    EVTF_LOWER_MSGBOX_TAIL = 422,
@@ -108,6 +122,7 @@ typedef enum EvtFunctionIdx {
    EVTF_EVALUATE_BATTLE_28 = 444,
    EVTF_EVALUATE_BATTLE_29 = 445,
    EVTF_BATTLE_VICTORY_PARTICLE = 446,
+   EVTF_MAP_OBJECT_FLOWING_WATER = 449,
    EVTF_EVALUATE_BATTLE_32 = 552,
    EVTF_EVALUATE_BATTLE_33 = 553,
    EVTF_EVALUATE_BATTLE_35 = 555,
@@ -121,6 +136,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP_OBJECT_WATER_2 = 565,
    EVTF_MAP_OBJECT_LAVA_1 = 566,
    EVTF_OPENING_CHEST = 567,
+   EVTF_MAP_OBJECT_RAIL = 568,
    EVTF_MAP_OBJECT_LAVA_2 = 569,
    EVTF_AI_TBD_570 = 570,
    EVTF_LEVEL_UP = 571,
@@ -143,17 +159,22 @@ typedef enum EvtFunctionIdx {
    EVTF_STATUS_WINDOW = 595,
    EVTF_STATUS_WINDOW_MGR = 596,
    EVTF_BATTLE_INTRO = 597,
+   EVTF_ADJUST_FACE_ELEVATION = 683,
+   EVTF_SLIDING_FACE = 684,
    EVTF_ROCK_SPURT = 685,
    EVTF_TBD_732 = 732,
    EVTF_SPARKLE_DUST = 735,
    EVTF_REMOVE_PARALYSIS = 737,
+   EVTF_PUSHED_OBJECT_SPLASH = 757,
    EVTF_ELITE_MELEE_SPARKLES = 760,
    EVTF_REVEAL_USED_ITEM = 761,
+   EVTF_BOULDER_RUBBLE = 763,
    EVTF_PROJECTILE_TRAIL_POISON = 764,
    EVTF_PROJECTILE_TRAIL_EXPLOSION = 765,
    EVTF_PROJECTILE_TRAIL_SMOKE = 766,
    EVTF_PROJECTILE_TRAIL_SPARKLES = 767,
    EVTF_ITEM_SPELL = 770,
+   EVTF_FADE = 795,
    EVTF_FX_TBD_799 = 799,
    EVTF_FX_TBD_800 = 800,
    EVTF_FX_TBD_801 = 801,
@@ -527,6 +548,27 @@ typedef struct EvtData_032_033 {
    /* :0x3C */ u8 unk_0x3C[36];
 } EvtData_032_033;
 
+/* Map Object - Crate */
+typedef struct EvtData_046 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ s16 dx;
+   /* :0x1A */ s16 dy;
+   /* :0x1C */ s16 dz;
+   /* :0x1E */ s16 dstX;
+   /* :0x20 */ s16 dstY;
+   /* :0x22 */ s16 dstZ;
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s8 stack;
+   /* :0x29 */ u8 unk_0x29;
+   /* :0x2A */ s16 elevation;
+   /* :0x2C */ u8 unk_0x2C[48];
+   /* :0x5C */ s8 terrain;
+   /* :0x5D */ u8 unk_0x5D[3];
+} EvtData_046;
+
 /* Unit Sprites Decoder */
 typedef struct EvtData_050 {
    /* :0x10 */ u8 unk_0x10[44];
@@ -866,6 +908,32 @@ typedef struct EvtData_290_294_761 {
    /* :0x2E */ u8 unk_0x2E[50];
 } EvtData_290_294_761;
 
+/* Screen Effect (Incomplete) */
+typedef struct EvtData_369 {
+   /* :0x10 */ s16 todo_x10;
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[16];
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 todo_x2c;
+   /* :0x2E */ u8 unk_0x2E[6];
+   /* :0x34 */ s16 otOfs;
+   /* :0x36 */ u8 unk_0x36[2];
+   /* :0x38 */ CVECTOR color;
+   /* :0x3C */ s16 rmax;
+   /* :0x3E */ s16 gmax;
+   /* :0x40 */ s16 bmax;
+   /* :0x42 */ u8 unk_0x42[2];
+   /* :0x44 */ s16 rd;
+   /* :0x46 */ s16 gd;
+   /* :0x48 */ s16 bd;
+   /* :0x4A */ u8 unk_0x4A[2];
+   /* :0x4C */ s16 semiTrans;
+   /* :0x4E */ u8 unk_0x4E[18];
+} EvtData_369;
+
 /* Panorama */
 typedef struct EvtData_405 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -880,7 +948,7 @@ typedef struct EvtData_405 {
 
 /* Event Entity */
 typedef struct EvtData_409 {
-   /* :0x10 */ s16 state3;
+   /* :0x10 */ s16 runState;
    /* :0x12 */ s16 x;
    /* :0x14 */ s16 y;
    /* :0x16 */ s16 z;
@@ -890,15 +958,15 @@ typedef struct EvtData_409 {
    /* :0x30 */ struct EvtData *sprite;
    /* :0x34 */ u8 unk_0x34[8];
    /* :0x3C */ u8 **baseAnimSet;
-   /* :0x40 */ u8 todo_x40;
+   /* :0x40 */ s8 commandState;
    /* :0x41 */ u8 unk_0x41;
-   /* :0x42 */ s16 todo_x42;
-   /* :0x44 */ s16 *pNext;
+   /* :0x42 */ s16 timer;
+   /* :0x44 */ s16 *pNextCommand;
    /* :0x48 */ s16 stripIdxA;
    /* :0x4A */ s16 stripIdxB;
-   /* :0x4C */ s8 todo_x4c;
-   /* :0x4D */ u8 usingAltAnimSet;
-   /* :0x4E */ u8 todo_x4e;
+   /* :0x4C */ s8 maintainDirection;
+   /* :0x4D */ s8 usingAltAnimSet;
+   /* :0x4E */ s8 elevationType; // TBD
    /* :0x4F */ u8 unk_0x4F;
    /* :0x50 */ u8 **altAnimSet;
    /* :0x54 */ u8 unk_0x54[12];
@@ -1128,6 +1196,33 @@ typedef struct EvtData_587 {
    /* :0x2C */ u8 unk_0x2C[52];
 } EvtData_587;
 
+/* Map Object - Boulder */
+typedef struct EvtData_591 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ s16 dx;
+   /* :0x1A */ s16 dy;
+   /* :0x1C */ s16 dz;
+   /* :0x1E */ s16 dstX;
+   /* :0x20 */ s16 dstY;
+   /* :0x22 */ s16 dstZ;
+   /* :0x24 */ s8 hidden;
+   /* :0x25 */ u8 unk_0x25[3];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[10];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[22];
+   /* :0x4C */ s16 dstCamRotY;
+   /* :0x4E */ s16 savedCamRotY;
+   /* :0x50 */ s8 timer;
+   /* :0x51 */ u8 unk_0x51[3];
+   /* :0x54 */ s8 gridZ;
+   /* :0x55 */ s8 gridX;
+   /* :0x56 */ u8 unk_0x56[10];
+} EvtData_591;
+
 /* Battle - Turn Start */
 typedef struct EvtData_592 {
    /* :0x10 */ u8 unk_0x10[20];
@@ -1182,6 +1277,23 @@ typedef struct EvtData_597 {
    /* :0x25 */ u8 unk_0x25[59];
 } EvtData_597;
 
+/* Map Object - Generic */
+typedef struct EvtData_MapObject {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 param;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[10];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[2];
+   /* :0x38 */ void *animData;
+   /* :0x3C */ u8 unk_0x3C[36];
+} EvtData_MapObject;
+
 typedef struct EvtData_Unk_8006183c {
    /* :0x10 */ u8 unk_0x10[2];
    /* :0x12 */ s16 x;
@@ -1225,6 +1337,12 @@ typedef struct EvtData {
       EvtData_030 evtf030;         /* Unit/Field Info */
       EvtData_031 evtf031;         /* Battle Spells List */
       EvtData_032_033 evtf032;     /* Display Damage */
+      EvtData_MapObject evtf035;   /* Map Object - Tree */
+      EvtData_MapObject evtf036;   /* Map Object - Grave Marker */
+      EvtData_MapObject evtf037;   /* Map Object - Fountain */
+      EvtData_MapObject evtf038;   /* Map Object - Lamp Post */
+      EvtData_MapObject evtf039;   /* Map Object - Flag */
+      EvtData_046 evtf046;         /* Map Object - Crate */
       EvtData_050 evtf050;         /* Unit Sprites Decoder */
       EvtData_051 evtf051;         /* Floating Damage Text */
       EvtData_052 evtf052;         /* Attack Info Marker */
@@ -1250,10 +1368,12 @@ typedef struct EvtData {
       EvtData_214 evtf214;         /* Dust Cloud */
       EvtData_215 evtf215;         /* Cloud (Sand, Dust, etc.) */
       EvtData_290_294_761 evtf294; /* Reveal Item */
+      EvtData_369 evtf369;         /* Screen Effect */
       EvtData_405 evtf405;         /* Panorama */
       EvtData_409 evtf409;         /* Event Entity */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
       EvtData_413 evtf413;         /* MsgBox Portrait */
+      EvtData_MapObject evtf415;   /* Map Object - Torch */
       EvtData_420_423 evtf420;     /* Battle Victory/Defeat */
       EvtData_421_422 evtf421;     /* MsgBox Tail (Upper) */
       EvtData_425 evtf425;         /* Battle - Options */
@@ -1271,6 +1391,7 @@ typedef struct EvtData {
       EvtData_586 evtf586;         /* Battle - MsgBox */
       EvtData_587 evtf587;         /* Battle - Enemy Event */
       EvtData_026_588 evtf588;     /* Camera - TBD */
+      EvtData_591 evtf591;         /* Map Object - Boulder */
       EvtData_592 evtf592;         /* Battle - Turn Start */
       EvtData_593 evtf593;         /* Battle - Results - Unit (Reward or Penalty) */
       EvtData_594 evtf594;         /* Battle - Results */
@@ -1279,6 +1400,7 @@ typedef struct EvtData {
       EvtData_133_Etc evtf801;     /* FX - TBD */
       EvtData_133_Etc evtf802;     /* FX - TBD */
       EvtData_133_Etc evtf803;     /* FX - TBD */
+      EvtData_MapObject mapObj;    /* Map Object - Generic */
       EvtData_Unk_8006183c evtfUnk8006183c;
    } d;
 } EvtData;
@@ -1290,6 +1412,7 @@ extern EvtFunction gEvtFunctionPointers[804];
 extern EvtData gEvtData050_UnitSpritesDecoder;
 extern EvtData *gTempGfxEvt;
 extern EvtData *gTempEvt;
+extern EvtData *gScreenFade;
 
 void Evt_ResetByFunction(s16);
 EvtData *Evt_FindByFunction(s16);
