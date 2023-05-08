@@ -97,7 +97,7 @@ void QueueImpededStep(s16, s16, s32, s32 *, s16, u8);
 void PlotPathBackToUnit(s32, s32);
 void PopulateMeleeAttackGridInDir(s16, s16, s16, s16, s32);
 void PopulateMeleeAttackGrid(s16, s16, s32, u8);
-void PopulateCastingGrid(s16, s16, s32, s32);
+// void PopulateCastingGrid(s16, s16, s32, s32); //FIXME
 void ClearGrid(s32);
 void ClearBlueMovementGrid(void);
 void PopulateRangedAttackGrid(s16, s16, s32, s32);

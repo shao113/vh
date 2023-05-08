@@ -1189,8 +1189,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
          SPR_TILE_STATE(sprite).action = TA_NONE;
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_PUSHED_BOULDER;
-         // TODO replace w/ 020
-         evt1->d.evtf017.sprite = sprite;
+         evt1->d.evtf020.unitSprite = sprite;
          evt->state2++;
          break;
 

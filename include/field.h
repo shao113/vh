@@ -97,6 +97,7 @@ extern s8 gTravelDescentImped[14][20];
 extern u8 gPathBackToUnit[300];
 
 extern s16 gTerrainBonus[];
+extern s16 gTerrainPreference[];
 extern TerrainTile (*gTerrainPtr)[65];
 extern MapUnit (*gMapUnitsPtr)[65];
 extern u8 *gMapDataPtr;
@@ -115,8 +116,12 @@ extern u8 gShowBlueMovementGrid;
 extern PathGridRow *gRedAttackGridPtr;
 extern PathGridRow *gYellowTargetGridPtr;
 extern PathGridRow *gBlueMovementGridPtr;
+extern PathGridRow *gPathGrid0_Ptr;
 extern PathGridRow *gPathGrid1_Ptr;
 extern PathGridRow *gPathGrid2_Ptr;
+extern PathGridRow *gPathGrid3_Ptr;
+extern PathGridRow *gPathGrid5_Ptr;
+extern PathGridRow *gPathGrid6_Ptr;
 extern PathGridRow *gCrateGrid_Ptr;
 
 #endif

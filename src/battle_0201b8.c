@@ -3193,9 +3193,8 @@ void Evtf013_BattleMgr(EvtData *evt) {
       D_80123468 = 0;
       evt1 = Evt_GetLastUnused();
       evt1->functionIndex = EVTF_AI_TBD_570;
-      // TODO replace
-      HI(evt1->d.sprite.x1) = HI(unitSprite->d.sprite.x1);
-      HI(evt1->d.sprite.z1) = HI(unitSprite->d.sprite.z1);
+      HI(evt1->d.evtf570.x) = HI(unitSprite->d.sprite.x1);
+      HI(evt1->d.evtf570.z) = HI(unitSprite->d.sprite.z1);
       evt->state++;
       break;
 

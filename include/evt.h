@@ -88,7 +88,11 @@ typedef enum EvtFunctionIdx {
    EVTF_FILE_LOAD_DIALOG_IBS = 374,
    EVTF_LEVEL_UP_FX = 380,
    EVTF_FLAME_BREATH = 382,
+   EVTF_REVEAL_MIMIC = 385,
    EVTF_FULLSCREEN_IMAGE = 387,
+   EVTF_AI_TBD_402 = 402,
+   EVTF_AI_TBD_403 = 403,
+   EVTF_AI_TBD_404 = 404,
    EVTF_PANORAMA = 405,
    EVTF_NOOP_407 = 407,
    EVTF_CLOSED_WINDOW = 408,
@@ -151,6 +155,7 @@ typedef enum EvtFunctionIdx {
    EVTF_BATTLE_MSGBOX = 586,
    EVTF_BATTLE_ENEMY_EVENT = 587,
    EVTF_CAMERA_TBD_588 = 588,
+   EVTF_AI_TBD_589 = 589,
    EVTF_BATTLE_TURN_TICKER = 590,
    EVTF_MAP_OBJECT_BOULDER = 591,
    EVTF_BATTLE_TURN_START = 592,
@@ -392,6 +397,25 @@ typedef struct EvtData_017 {
    /* :0x42 */ u8 unk_0x42[30];
 } EvtData_017;
 
+/* Pushed Boulder */
+typedef struct EvtData_020 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ struct EvtData *unitSprite;
+   /* :0x28 */ s16 savedCamX;
+   /* :0x2A */ s16 savedCamZ;
+   /* :0x2C */ s16 savedCamY;
+   /* :0x2E */ s16 savedCamRotX;
+   /* :0x30 */ u8 unk_0x30[4];
+   /* :0x34 */ s16 savedZoom;
+   /* :0x36 */ u8 unk_0x36[4];
+   /* :0x3A */ s16 timer;
+   /* :0x3C */ u8 unk_0x3C[36];
+} EvtData_020;
+
 /* Unit Attacking */
 typedef struct EvtData_021 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -548,6 +572,30 @@ typedef struct EvtData_032_033 {
    /* :0x3C */ u8 unk_0x3C[36];
 } EvtData_032_033;
 
+/* Map Object - Chest */
+typedef struct EvtData_040 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s8 item;
+   /* :0x25 */ u8 unk_0x25[3];
+   /* :0x28 */ s16 lidAngle;
+   /* :0x2A */ s16 lidAngleVel;
+   /* :0x2C */ s8 facing;
+   /* :0x2D */ s8 terrain;
+   /* :0x2E */ u8 unk_0x2E[34];
+   /* :0x50 */ s16 lid_todo_x50;
+   /* :0x52 */ s16 lid_todo_x52;
+   /* :0x54 */ s16 lid_todo_x54;
+   /* :0x56 */ s16 lid_todo_x56;
+   /* :0x58 */ s16 lid_todo_x58;
+   /* :0x5A */ s16 lid_todo_x5a;
+   /* :0x5C */ s16 lid_todo_x5c;
+   /* :0x5E */ s16 lid_todo_x5e;
+} EvtData_040;
+
 /* Map Object - Crate */
 typedef struct EvtData_046 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -568,6 +616,26 @@ typedef struct EvtData_046 {
    /* :0x5C */ s8 terrain;
    /* :0x5D */ u8 unk_0x5D[3];
 } EvtData_046;
+
+/* Push */
+typedef struct EvtData_048 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ struct UnitStatus *unit;
+   /* :0x28 */ s8 stack;
+   /* :0x29 */ u8 unk_0x29;
+   /* :0x2A */ s16 direction;
+   /* :0x2C */ s8 targetX;
+   /* :0x2D */ s8 targetZ;
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ ushort osc;
+   /* :0x32 */ u8 unk_0x32[42];
+   /* :0x5C */ s8 timer;
+   /* :0x5D */ u8 unk_0x5D[3];
+} EvtData_048;
 
 /* Unit Sprites Decoder */
 typedef struct EvtData_050 {
@@ -934,6 +1002,28 @@ typedef struct EvtData_369 {
    /* :0x4E */ u8 unk_0x4E[18];
 } EvtData_369;
 
+/* AI - TBD */
+typedef struct EvtData_400 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ struct UnitStatus *unit;
+   /* :0x28 */ s16 resumeZ;
+   /* :0x2A */ s16 resumeX;
+   /* :0x2C */ u8 unk_0x2C[52];
+} EvtData_400;
+
+/* AI - TBD */
+typedef struct EvtData_401 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s8 team;
+   /* :0x25 */ s8 unitIdx;
+   /* :0x26 */ s16 unitIter;
+   /* :0x28 */ u8 unk_0x28[56];
+} EvtData_401;
+
 /* Panorama */
 typedef struct EvtData_405 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -1096,6 +1186,15 @@ typedef struct EvtData_567 {
    /* :0x2C */ struct EvtData *openerSprite;
    /* :0x30 */ u8 unk_0x30[48];
 } EvtData_567;
+
+/* AI - TBD */
+typedef struct EvtData_570 {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[72];
+} EvtData_570;
 
 /* Level Up - Camera Control, Sound */
 typedef struct EvtData_571 {
@@ -1326,6 +1425,7 @@ typedef struct EvtData {
       EvtData_015 evtf015;         /* Targeting Attack */
       EvtData_016 evtf016;         /* Choose Done Direction */
       EvtData_017 evtf017;         /* Camera - TBD */
+      EvtData_020 evtf020;         /* Pushed Boulder */
       EvtData_021 evtf021;         /* Unit Attacking */
       EvtData_022_029 evtf022;     /* Projectile */
       EvtData_023 evtf023;         /* Camera - Ranged Target */
@@ -1342,7 +1442,9 @@ typedef struct EvtData {
       EvtData_MapObject evtf037;   /* Map Object - Fountain */
       EvtData_MapObject evtf038;   /* Map Object - Lamp Post */
       EvtData_MapObject evtf039;   /* Map Object - Flag */
+      EvtData_040 evtf040;         /* Map Object - Chest */
       EvtData_046 evtf046;         /* Map Object - Crate */
+      EvtData_048 evtf048;         /* Push */
       EvtData_050 evtf050;         /* Unit Sprites Decoder */
       EvtData_051 evtf051;         /* Floating Damage Text */
       EvtData_052 evtf052;         /* Attack Info Marker */
@@ -1367,8 +1469,11 @@ typedef struct EvtData {
       EvtData_213 evtf213;         /* Dust Cloud Spawner */
       EvtData_214 evtf214;         /* Dust Cloud */
       EvtData_215 evtf215;         /* Cloud (Sand, Dust, etc.) */
+      EvtData_290_294_761 evtf290; /* Reveal Chest Item */
       EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_369 evtf369;         /* Screen Effect */
+      EvtData_400 evtf400;         /* AI - TBD */
+      EvtData_401 evtf401;         /* AI - TBD */
       EvtData_405 evtf405;         /* Panorama */
       EvtData_409 evtf409;         /* Event Entity */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
@@ -1382,6 +1487,7 @@ typedef struct EvtData {
       EvtData_447 evtf447;         /* Unit Portrait (in depot, dojo, etc.) */
       EvtData_564_565_566 evtf564; /* Map Object - Rippling Water */
       EvtData_567 evtf567;         /* Opening Chest */
+      EvtData_570 evtf570;         /* AI - TBD */
       EvtData_571 evtf571;         /* Level Up - Camera Control, Sound */
       EvtData_573 evtf573;         /* Battle Items List */
       EvtData_575 evtf575;         /* Status Portrait */
@@ -1424,13 +1530,6 @@ EvtData *Evt_GetFirstUnused(void);
 EvtData *Evt_GetLastUnused(void);
 EvtData *Evt_GetLastUnusedSkippingTail(s32);
 s32 Evt_CountUnused(void);
-
-void Evtf001_Noop(EvtData *evt);
-void Evtf426_EvaluateBattle10(EvtData *);
-void Evtf427_EvaluateBattle11(EvtData *);
-void Evtf438_EvaluateBattle08(EvtData *);
-void Evtf574_DisplayIcon(EvtData *);
-void Evtf581_AudioCommand(EvtData *);
 
 EvtData *CreatePositionedEvt(EvtData *, s32);
 

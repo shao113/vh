@@ -6,6 +6,24 @@
 #include "state.h"
 #include "field.h"
 #include "battle.h"
+#include "window.h"
+
+void Evtf035_MapObject_Tree(EvtData *);
+void Evtf036_MapObject_GraveMarker(EvtData *);
+void Evtf415_MapObject_Torch(EvtData *);
+void Evtf037_MapObject_Fountain(EvtData *);
+void Evtf038_MapObject_LampPost(EvtData *);
+void Evtf039_MapObject_Flag(EvtData *);
+void Evtf045_BloodSpurtOffset(EvtData *);
+void Evtf591_MapObject_Boulder(EvtData *);
+void Evtf046_MapObject_Crate(EvtData *);
+s32 ScanForCrateDestination(EvtData *);
+s32 ScanForBoulderDestination(EvtData *);
+void UpdateCrateElevation(EvtData *);
+void Evtf020_PushedBoulder(EvtData *);
+void Evtf048_Push(EvtData *);
+void TiltChestLid(EvtData *, s16, u8);
+void Evtf040_MapObject_Chest(EvtData *);
 
 #undef EVTF
 #define EVTF 035
@@ -623,5 +641,749 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
          evt->state = 1;
       }
       break;
+   }
+}
+
+s32 ScanForCrateDestination(EvtData *evt) {
+   s32 dx, dz;
+   s32 unitHeight;
+
+   dx = 0;
+   dz = 0;
+
+   switch (gTileStateGridPtr[HI(evt->d.evtf046.z)][HI(evt->d.evtf046.x)].cachedShort >> 10) {
+   case DIR_SOUTH:
+      dz = 1;
+      dx = 0;
+      break;
+   case DIR_WEST:
+      dz = 0;
+      dx = 1;
+      break;
+   case DIR_NORTH:
+      dz = -1;
+      dx = 0;
+      break;
+   case DIR_EAST:
+      dz = 0;
+      dx = -1;
+      break;
+   }
+
+   evt->d.evtf046.dstX = evt->d.evtf046.x;
+   evt->d.evtf046.dstZ = evt->d.evtf046.z;
+   HI(evt->d.evtf046.dstX) = dx + HI(evt->d.evtf046.dstX);
+   HI(evt->d.evtf046.dstZ) = dz + HI(evt->d.evtf046.dstZ);
+
+   if (gMapUnitsPtr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].raw != 0) {
+      unitHeight = 0x100;
+   } else {
+      unitHeight = 0;
+   }
+
+   if (gTerrainPtr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].terrain == TERRAIN_NO_ENTRY) {
+      HI(evt->d.evtf046.dstX) -= dx;
+      HI(evt->d.evtf046.dstZ) -= dz;
+      evt->d.evtf046.dstY = evt->d.evtf046.y;
+      return 0;
+   } else {
+      if (evt->d.evtf046.y >
+          -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy << 3) +
+              (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8) +
+              unitHeight) {
+         evt->d.evtf046.dstY =
+             -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
+               << 3) +
+             (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8);
+      } else if (evt->d.evtf046.y <
+                 -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
+                   << 3) +
+                     (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8) +
+                     unitHeight) {
+         HI(evt->d.evtf046.dstX) -= dx;
+         HI(evt->d.evtf046.dstZ) -= dz;
+         evt->d.evtf046.dstY = evt->d.evtf046.y;
+         return 0;
+      } else if (evt->d.evtf046.y <=
+                 (-(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
+                    << 3) +
+                  (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8))) {
+         evt->d.evtf046.dstY =
+             -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
+               << 3) +
+             (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8);
+      } else {
+         evt->d.evtf046.dstY =
+             -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
+               << 3) +
+             (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8);
+      }
+      return 1;
+   }
+}
+
+s32 ScanForBoulderDestination(EvtData *evt) {
+   s32 dx, dz;
+   s16 elevation;
+   s32 boulderHeight;
+   s32 hasRoom;
+
+   dx = 0;
+   dz = 0;
+
+   switch (gTileStateGridPtr[HI(evt->d.evtf591.z)][HI(evt->d.evtf591.x)].cachedShort >> 10) {
+   case DIR_SOUTH:
+      dz = 1;
+      dx = 0;
+      break;
+   case DIR_WEST:
+      dz = 0;
+      dx = 1;
+      break;
+   case DIR_NORTH:
+      dz = -1;
+      dx = 0;
+      break;
+   case DIR_EAST:
+      dz = 0;
+      dx = -1;
+      break;
+   }
+
+   evt->d.evtf591.dstX = evt->d.evtf591.x;
+   evt->d.evtf591.dstZ = evt->d.evtf591.z;
+   elevation = evt->d.evtf591.y;
+   hasRoom = 0;
+
+   while (1) {
+      HI(evt->d.evtf591.dstX) = dx + HI(evt->d.evtf591.dstX);
+      HI(evt->d.evtf591.dstZ) = dz + HI(evt->d.evtf591.dstZ);
+
+      if (gMapUnitsPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.team == TEAM_BOULDER) {
+         boulderHeight = 0x100;
+      } else {
+         boulderHeight = 0;
+      }
+
+      if (elevation <
+          ((gMapRowPointers[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].height * 0x80) +
+           (gCrateGrid_Ptr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)] * 0x100) +
+           boulderHeight)) {
+         HI(evt->d.evtf591.dstX) -= dx;
+         HI(evt->d.evtf591.dstZ) -= dz;
+         return hasRoom;
+      }
+
+      if (gMapUnitsPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.team != TEAM_NULL &&
+          gMapUnitsPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.unitIdx == 0) {
+         HI(evt->d.evtf591.dstX) -= dx;
+         HI(evt->d.evtf591.dstZ) -= dz;
+         return hasRoom;
+      }
+
+      if (gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].terrain == TERRAIN_WATER ||
+          gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].terrain == TERRAIN_LAVA) {
+         return 1;
+      }
+
+      elevation = gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].elevation * 128;
+      hasRoom = 1;
+   }
+}
+
+void UpdateCrateElevation(EvtData *evt) {
+   evt->d.evtf046.y =
+       (-gMapRowPointers[HI(evt->d.evtf046.z)][HI(evt->d.evtf046.x)].vertices[0].vy << 3);
+}
+
+#undef EVTF
+#define EVTF 020
+void Evtf020_PushedBoulder(EvtData *evt) {
+   EvtData *unitSprite;
+
+   unitSprite = EVT.unitSprite;
+
+   switch (evt->state) {
+   case 0:
+      gPlayerControlSuppressed = 1;
+      if (gState.mapNum == 40 && gState.mapState.n.field_0x0 == 0) {
+         PerformAudioCommand(0x1370);
+      } else {
+         PerformAudioCommand(0x136f);
+      }
+      gSignal5 = 0;
+      EVT.savedCamX = gCameraPos.vx;
+      EVT.savedCamZ = gCameraPos.vz;
+      EVT.savedCamY = gCameraPos.vy;
+      EVT.savedCamRotX = gCameraRotation.vx;
+      EVT.savedZoom = gCameraZoom.vz;
+      EVT.timer = 30;
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      if (--EVT.timer != 0) {
+         gCameraPos.vx += (-(unitSprite->d.sprite.x1 >> 3) - gCameraPos.vx) >> 2;
+         gCameraPos.vz += (-(unitSprite->d.sprite.z1 >> 3) - gCameraPos.vz) >> 2;
+         gCameraPos.vy += ((unitSprite->d.sprite.y1 >> 3) - gCameraPos.vy) >> 2;
+         gCameraRotation.vx += (0x180 - gCameraRotation.vx) >> 2;
+         gCameraZoom.vz += (250 - gCameraZoom.vz) >> 2;
+      } else {
+         gSignal5 = 1;
+         evt->state++;
+      }
+      break;
+
+   case 2:
+      if (gSignal5 == 2) {
+         evt->state++;
+      }
+      break;
+
+   case 3:
+      if (gSignal5 != 3) {
+         gCameraZoom.vz += (512 - gCameraZoom.vz) >> 3;
+         EVT.timer = 20;
+      } else {
+         evt->state++;
+      }
+      break;
+
+   case 4:
+      if (--EVT.timer != 0) {
+         gCameraRotation.vx += (EVT.savedCamRotX - gCameraRotation.vx) >> 1;
+         gCameraZoom.vz += (EVT.savedZoom - gCameraZoom.vz) >> 1;
+         gCameraPos.vx += (EVT.savedCamX - gCameraPos.vx) >> 2;
+         gCameraPos.vz += (EVT.savedCamZ - gCameraPos.vz) >> 2;
+         gCameraPos.vy += (EVT.savedCamY - gCameraPos.vy) >> 2;
+      } else {
+         gCameraZoom.vz = EVT.savedZoom;
+         gCameraRotation.vx = ((gCameraRotation.vx - 64) >> 8) * 0x100 + 0x80;
+         gSignal2 = 99;
+         evt->functionIndex = EVTF_NULL;
+      }
+   }
+}
+
+#undef EVTF
+#define EVTF 048
+void Evtf048_Push(EvtData *evt) {
+   EvtData *sprite;
+   EvtData *evt1;
+   s16 dir;
+   s16 fInner, fOuter, nfInner, nfOuter;
+   s16 targetZ, targetX;
+   s32 i;
+   s32 j;
+   s32 stack;
+   s32 tmp2;
+   // s16 crateElevation;
+   // s16 srcElevation;
+   s32 targetElevation;
+
+   sprite = EVT.unit->evtBattler;
+   sprite = sprite->d.evtf014.sprite;
+   dir = 0;
+
+   switch (evt->state) {
+   case 0:
+      EVT.x = sprite->d.sprite.x1;
+      EVT.z = sprite->d.sprite.z1;
+      EVT.y = sprite->d.sprite.y1 + 0x80;
+      gSignal4 = sprite->d.sprite.direction;
+      evt->state++;
+
+   // fallthrough
+   case 1:
+
+      switch ((gCameraRotation.vy & 0xfff) >> 10) {
+      case CAM_DIR_SOUTH:
+         dir = ANGLE_0_DEGREES;
+         break;
+      case CAM_DIR_EAST:
+         dir = ANGLE_270_DEGREES;
+         break;
+      case CAM_DIR_NORTH:
+         dir = ANGLE_180_DEGREES;
+         break;
+      case CAM_DIR_WEST:
+         dir = ANGLE_90_DEGREES;
+         break;
+      }
+
+      if (gPadStateNewPresses & PAD_UP) {
+         gSignal4 = dir + ANGLE_0_DEGREES;
+      }
+      if (gPadStateNewPresses & PAD_RIGHT) {
+         gSignal4 = dir + ANGLE_90_DEGREES;
+      }
+      if (gPadStateNewPresses & PAD_DOWN) {
+         gSignal4 = dir + ANGLE_180_DEGREES;
+      }
+      if (gPadStateNewPresses & PAD_LEFT) {
+         gSignal4 = dir + ANGLE_270_DEGREES;
+      }
+      gSignal4 &= 0xfff;
+
+      if (gPadStateNewPresses & PAD_X) {
+         gSignal2 = 2;
+         evt->functionIndex = EVTF_NULL;
+         return;
+      }
+
+      EVT.osc += ANGLE_45_DEGREES;
+
+      fInner = (rcos(EVT.osc & 0xfff) * 50 >> 12) + 192;
+      fOuter = (rcos(EVT.osc & 0xfff) * 130 >> 12) + 512;
+      nfInner = (rcos(EVT.osc & 0xfff) * 25 >> 12) + 192;
+      nfOuter = (rcos(EVT.osc & 0xfff) * 50 >> 12) + 384;
+      evt1 = Evt_GetUnused();
+
+      RenderDirectionArrow(evt, evt1, 0, gSignal4 == 0, fInner, fOuter, nfInner, nfOuter);
+      RenderDirectionArrow(evt, evt1, 0x400, gSignal4 == 0x400, fInner, fOuter, nfInner, nfOuter);
+      RenderDirectionArrow(evt, evt1, 0x800, gSignal4 == 0x800, fInner, fOuter, nfInner, nfOuter);
+      RenderDirectionArrow(evt, evt1, 0xc00, gSignal4 == 0xc00, fInner, fOuter, nfInner, nfOuter);
+
+      targetX = HI(sprite->d.sprite.x1);
+      targetZ = HI(sprite->d.sprite.z1);
+
+      switch (gSignal4 >> 10) {
+      case DIR_SOUTH:
+         targetZ++;
+         break;
+      case DIR_WEST:
+         targetX++;
+         break;
+      case DIR_NORTH:
+         targetZ--;
+         break;
+      case DIR_EAST:
+         targetX--;
+         break;
+      }
+
+      EVT.direction = gSignal4;
+      EVT.targetX = targetX;
+      EVT.targetZ = targetZ;
+
+      if ((gPadStateNewPresses & PAD_CIRCLE) &&
+          gMapUnitsPtr[targetZ][targetX].s.team == TEAM_BOULDER) {
+
+         i = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].elevation -
+             gTerrainPtr[targetZ][targetX].elevation;
+         //?
+         if (i + 1U < 3) {
+            gTileStateGridPtr[targetZ][targetX].cachedShort = gSignal4;
+
+            evt1 = gEvtDataArray;
+            for (i = 0; i < EVT_DATA_CT; i++) {
+               if (evt1->functionIndex == EVTF_MAP_OBJECT_BOULDER &&
+                   HI(evt1->d.evtf591.x) == targetX && HI(evt1->d.evtf591.z) == targetZ) {
+                  if (ScanForBoulderDestination(evt1)) {
+                     gSignal2 = 1;
+                     evt->state = 5;
+                     return;
+                  }
+                  break;
+               }
+               evt1++;
+            }
+         }
+      } // CIRCLE (Boulders)
+
+      if ((gPadStateNewPresses & PAD_CIRCLE) && gCrateGrid_Ptr[targetZ][targetX] != 0 &&
+          gCrateGrid_Ptr[targetZ][targetX] != 0x7f) {
+         // TODO: Clean-up.
+         //@2a68
+         tmp2 = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].elevation + 2;
+         targetElevation = gTerrainPtr[targetZ][targetX].elevation;
+
+         if (gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].elevation >=
+             targetElevation - gCrateGrid_Ptr[targetZ][targetX] * 2 - 1) {
+
+            if (tmp2 - 1 <= targetElevation) {
+               j = targetElevation - gCrateGrid_Ptr[targetZ][targetX] * 2;
+               tmp2 = tmp2 - 1;
+               stack = 0;
+
+               do {
+                  j += 2; //@2ae4
+                  stack++;
+               } while (j < tmp2);
+
+               //@2af4
+               EVT.stack = stack;
+               gTileStateGridPtr[targetZ][targetX].cachedByte = stack;
+               gTileStateGridPtr[targetZ][targetX].cachedShort = gSignal4;
+
+               evt1 = gEvtDataArray;
+               for (i = 0; i < EVT_DATA_CT; i++) {
+                  if (evt1->functionIndex == EVTF_MAP_OBJECT_CRATE &&
+                      stack == evt1->d.evtf046.stack &&
+                      (HI(evt1->d.evtf046.x) == targetX && HI(evt1->d.evtf046.z) == targetZ)) {
+
+                     if (!ScanForCrateDestination(evt1)) {
+                        return;
+                     }
+
+                     break;
+                  }
+                  evt1++;
+               }
+
+               gSignal2 = 1;
+               evt->state++;
+            }
+         }
+      } // CIRCLE (Crates)
+      break;
+
+   case 2:
+      gTileStateGridPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].action = TA_PUSHING_CRATE;
+      gSignal3 = 0;
+      evt->state++;
+
+   // fallthrough
+   case 3:
+      if (gSignal3 != 0) {
+         gTileStateGridPtr[EVT.targetZ][EVT.targetX].action = TA_CRATE_PUSHED_PRE;
+         gTileStateGridPtr[EVT.targetZ][EVT.targetX].cachedByte = EVT.stack;
+         gTileStateGridPtr[EVT.targetZ][EVT.targetX].cachedShort = EVT.direction;
+         EVT.timer = 20;
+         evt->state++;
+      }
+      break;
+
+   case 4:
+      if (--EVT.timer == 0) {
+         gSignal2 = 99;
+         evt->functionIndex = EVTF_NULL;
+      }
+      break;
+
+   case 5:
+      gTileStateGridPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].action =
+          TA_PUSHING_BOULDER;
+      gSignal3 = 0;
+      evt->state++;
+
+   // fallthrough
+   case 6:
+      if (gSignal3 != 0) {
+         gTileStateGridPtr[EVT.targetZ][EVT.targetX].action = TA_BOULDER_PUSHED;
+         gTileStateGridPtr[EVT.targetZ][EVT.targetX].cachedShort = EVT.direction;
+         evt->functionIndex = EVTF_NULL;
+      }
+      break;
+   }
+}
+
+void TiltChestLid(EvtData *chest, s16 angle, u8 facing) {
+   if (facing == 0) {
+      chest->d.evtf040.lid_todo_x5c =
+          chest->d.evtf040.lid_todo_x58 + (rcos(angle & 0xfff) * 0xe0 >> 12);
+      chest->d.evtf040.lid_todo_x5e =
+          chest->d.evtf040.lid_todo_x5a + (rcos((angle + 0x400U) & 0xfff) * 0xe0 >> 12);
+      chest->d.evtf040.lid_todo_x50 =
+          chest->d.evtf040.lid_todo_x58 + (rcos((angle - 0x280U) & 0xfff) * 0x60 >> 12);
+      chest->d.evtf040.lid_todo_x52 =
+          chest->d.evtf040.lid_todo_x5a + (rcos((angle + 0x180U) & 0xfff) * 0x60 >> 12);
+      chest->d.evtf040.lid_todo_x54 =
+          chest->d.evtf040.lid_todo_x58 + (rcos((angle - 0x100U) & 0xfff) * 0xc0 >> 12);
+      chest->d.evtf040.lid_todo_x56 =
+          chest->d.evtf040.lid_todo_x5a + (rcos((angle + 0x300U) & 0xfff) * 0xc0 >> 12);
+   } else {
+      chest->d.evtf040.lid_todo_x58 =
+          chest->d.evtf040.lid_todo_x5c - (rcos(angle & 0xfff) * 0xe0 >> 12);
+      chest->d.evtf040.lid_todo_x5a =
+          chest->d.evtf040.lid_todo_x5e + (rcos((angle + 0x400U) & 0xfff) * 0xe0 >> 12);
+      chest->d.evtf040.lid_todo_x54 =
+          chest->d.evtf040.lid_todo_x5c - (rcos((angle - 0x280U) & 0xfff) * 0x60 >> 12);
+      chest->d.evtf040.lid_todo_x56 =
+          chest->d.evtf040.lid_todo_x5e + (rcos((angle + 0x180U) & 0xfff) * 0x60 >> 12);
+      chest->d.evtf040.lid_todo_x50 =
+          chest->d.evtf040.lid_todo_x5c - (rcos((angle - 0x100U) & 0xfff) * 0xc0 >> 12);
+      chest->d.evtf040.lid_todo_x52 =
+          chest->d.evtf040.lid_todo_x5e + (rcos((angle + 0x300U) & 0xfff) * 0xc0 >> 12);
+   }
+}
+
+#undef EVTF
+#define EVTF 040
+void Evtf040_MapObject_Chest(EvtData *evt) {
+   static s16 chestGfx[10] = {GFX_CHEST_4, GFX_CHEST_4, GFX_CHEST_2, GFX_CHEST_2, GFX_CHEST_3,
+                              GFX_CHEST_3, GFX_CHEST_2, GFX_CHEST_2, GFX_CHEST_1, GFX_CHEST_1};
+   // static u8 mimicLevels[40];
+   // static u8 mimicExpMulti[40];
+   static u8 mimicData[80] = {
+       10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 1, 1, 1, 1, 1,  1, 1,  1, 1, 1,
+       1,  1,  1,  1,  1,  1,  1,  18, 1,  1,  1, 1, 1, 1, 21, 1, 23, 1, 1, 1,
+
+       0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1, 1, 1, 1, 1,  1, 1,  1, 1, 1,
+       1,  1,  1,  1,  1,  1,  1,  8,  1,  1,  1, 1, 1, 1, 12, 1, 15, 1, 1, 0,
+   };
+
+   EvtData *face;
+   EvtData *newEvt;
+   s32 i;
+   s16 idx;
+   u8 *pMimicExpMulti; // Starts halfway into mimicData
+
+   face = gTempGfxEvt;
+   //?: Maybe a remnant of mapObj.param = 0?
+   *(s16 *)(&face->d.sprite.hidden) = 0;
+   idx = 0;
+   if (gRedAttackGridPtr[HI(EVT.z)][HI(EVT.x)] == PATH_STEP_UNSET) {
+      face->d.sprite.clut = 0;
+   } else {
+      face->d.sprite.clut = 3;
+   }
+   face->d.sprite.otOfs = 2;
+
+   switch (evt->state) {
+   case 0:
+      EVT.item = EVT.item;
+      gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team = TEAM_CHEST;
+      EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_OBSTACLE;
+      LO(EVT.x) = 0x80;
+      LO(EVT.z) = 0x80;
+      EVT.y = GetTerrainElevation(HI(EVT.z), HI(EVT.x));
+      EVT.lid_todo_x50 = EVT.z - 0x40;
+      EVT.lid_todo_x54 = EVT.z + 0x40;
+      EVT.lid_todo_x58 = EVT.z - 0x70;
+      EVT.lid_todo_x5c = EVT.z + 0x70;
+      EVT.lid_todo_x52 = EVT.y + 0xd0;
+      EVT.lid_todo_x56 = EVT.y + 0xd0;
+      EVT.lid_todo_x5a = EVT.y + 0x80;
+      EVT.lid_todo_x5e = EVT.y + 0x80;
+      evt->state++;
+      break;
+
+   case 1:
+      if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_CHEST_1) {
+         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = EVT.terrain;
+         gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team = TEAM_NULL;
+         EVT.lidAngleVel = -0xc0;
+         evt->mem = 3;
+         gSignal3 = 0;
+         newEvt = Evt_GetUnused();
+         newEvt->d.sprite.x1 = EVT.x;
+         newEvt->d.sprite.z1 = EVT.z;
+         newEvt->d.sprite.y1 = EVT.y;
+         if (EVT.item != 0) {
+            newEvt->functionIndex = EVTF_REVEAL_CHEST_ITEM;
+            newEvt->d.evtf290.gfxIdx = GFX_ITEM_ICONS_OFS + EVT.item;
+            PerformAudioCommand(0x324);
+         } else {
+            newEvt->functionIndex = EVTF_REVEAL_MIMIC;
+            gState.D_8014053E = 0;
+            PerformAudioCommand(0x384);
+         }
+         evt->state++;
+      }
+      if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_CHEST_2) {
+         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].cachedByte = EVT.item;
+      }
+      if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_CHEST_3) {
+         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+         EVT.facing = gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].cachedByte;
+         if (EVT.facing == 2 && gMapUnitsPtr[gTargetZ - 1][gTargetX].s.team == TEAM_NULL) {
+            EVT.facing = 0;
+         }
+      }
+      break;
+
+   case 2:
+      if (--evt->mem == 0) {
+         evt->mem = 75;
+         evt->state++;
+      }
+      break;
+
+   case 3:
+      if (--evt->mem != 0) {
+         EVT.lidAngleVel -= 0x10;
+         EVT.lidAngle += EVT.lidAngleVel;
+         if (EVT.lidAngle < -0x600) {
+            EVT.lidAngle = -0x600;
+            EVT.lidAngleVel = (-EVT.lidAngleVel >> 1);
+         }
+         TiltChestLid(evt, EVT.lidAngle, EVT.facing);
+         break;
+      }
+      if (EVT.item == 0) {
+         // Spawn a mimic
+         evt->state = 6;
+         break;
+      }
+      if (gTileStateGridPtr[gTargetZ][gTargetX].cachedByte == 0) {
+         ShowReceivedItemDialog(EVT.item, 0x3c, 0);
+      } else {
+         ShowDepotReceivedItemDialog(EVT.item, 0x3c, 0);
+      }
+      evt->mem = 50;
+      evt->state++;
+      break;
+
+   case 4:
+      if ((--evt->mem == 0) || (gPadStateNewPresses & PAD_CIRCLE)) {
+         CloseWindow(0x3c);
+         evt->state = 5;
+      }
+      break;
+
+   case 5:
+      gSignal3 = 1;
+      gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+      evt->functionIndex = EVTF_NULL;
+      break;
+
+   case 6:
+      evt->mem = 30;
+      i = 0;
+      while (gSpriteStripUnitIds[i] != UNIT_ID_MIMIC) {
+         i++;
+      }
+      pMimicExpMulti = &mimicData[40 + gState.mapNum];
+      SetupBattleUnit(i, HI(EVT.z), HI(EVT.x), mimicData[gState.mapNum], TEAM_ENEMY,
+                      gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].cachedShort, 99, *pMimicExpMulti, 99);
+      evt->state++;
+      break;
+
+   case 7:
+      if (--evt->mem == 0) {
+         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+         gState.D_8014053E = 1;
+         gSignal3 = 1;
+         evt->functionIndex = EVTF_NULL;
+      }
+      return;
+   }
+
+   if (!IsSpriteOutsideVisibleRange(evt)) {
+      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[1].x = EVT.x + 0x70;
+      face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
+      face->d.sprite.coords[0].z = EVT.z - 0x70;
+      face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
+      face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
+      face->d.sprite.coords[3].z = face->d.sprite.coords[0].z;
+      face->d.sprite.coords[0].y = EVT.y + 0x80;
+      face->d.sprite.coords[1].y = face->d.sprite.coords[0].y;
+      face->d.sprite.coords[2].y = EVT.y;
+      face->d.sprite.coords[3].y = face->d.sprite.coords[2].y;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[0]
+
+      face->d.sprite.coords[0].z = EVT.z + 0x70;
+      face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
+      face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
+      face->d.sprite.coords[3].z = face->d.sprite.coords[0].z;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[1]
+
+      face->d.sprite.coords[0].x = EVT.x + 0x70;
+      face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[0].z = EVT.z - 0x70;
+      face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
+      face->d.sprite.coords[1].z = EVT.z + 0x70;
+      face->d.sprite.coords[3].z = face->d.sprite.coords[1].z;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[2]
+
+      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[0].z = EVT.z - 0x70;
+      face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
+      face->d.sprite.coords[1].z = EVT.z + 0x70;
+      face->d.sprite.coords[3].z = face->d.sprite.coords[1].z;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[3]
+
+      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[1].x = EVT.x + 0x70;
+      face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
+      face->d.sprite.coords[0].z = EVT.lid_todo_x50;
+      face->d.sprite.coords[1].z = EVT.lid_todo_x50;
+      face->d.sprite.coords[2].z = EVT.lid_todo_x58;
+      face->d.sprite.coords[3].z = EVT.lid_todo_x58;
+      face->d.sprite.coords[0].y = EVT.lid_todo_x52;
+      face->d.sprite.coords[1].y = EVT.lid_todo_x52;
+      face->d.sprite.coords[2].y = EVT.lid_todo_x5a;
+      face->d.sprite.coords[3].y = EVT.lid_todo_x5a;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[4]
+
+      face->d.sprite.coords[0].z = EVT.lid_todo_x54;
+      face->d.sprite.coords[1].z = EVT.lid_todo_x54;
+      face->d.sprite.coords[2].z = EVT.lid_todo_x5c;
+      face->d.sprite.coords[3].z = EVT.lid_todo_x5c;
+      face->d.sprite.coords[0].y = EVT.lid_todo_x56;
+      face->d.sprite.coords[1].y = EVT.lid_todo_x56;
+      face->d.sprite.coords[2].y = EVT.lid_todo_x5e;
+      face->d.sprite.coords[3].y = EVT.lid_todo_x5e;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[5]
+
+      face->d.sprite.coords[0].x = EVT.x + 0x70;
+      face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[0].z = EVT.lid_todo_x50;
+      face->d.sprite.coords[1].z = EVT.lid_todo_x54;
+      face->d.sprite.coords[2].z = EVT.lid_todo_x58;
+      face->d.sprite.coords[3].z = EVT.lid_todo_x5c;
+      face->d.sprite.coords[0].y = EVT.lid_todo_x52;
+      face->d.sprite.coords[1].y = EVT.lid_todo_x56;
+      face->d.sprite.coords[2].y = EVT.lid_todo_x5a;
+      face->d.sprite.coords[3].y = EVT.lid_todo_x5e;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[6]
+
+      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[7]
+
+      face->d.sprite.coords[0].x = EVT.x + 0x70;
+      face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[1].x = EVT.x - 0x70;
+      face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
+      face->d.sprite.coords[0].z = EVT.lid_todo_x54;
+      face->d.sprite.coords[1].z = EVT.lid_todo_x54;
+      face->d.sprite.coords[2].z = EVT.lid_todo_x50;
+      face->d.sprite.coords[3].z = EVT.lid_todo_x50;
+      face->d.sprite.coords[0].y = EVT.lid_todo_x56;
+      face->d.sprite.coords[1].y = EVT.lid_todo_x56;
+      face->d.sprite.coords[2].y = EVT.lid_todo_x52;
+      face->d.sprite.coords[3].y = EVT.lid_todo_x52;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[8]
+
+      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
+      face->d.sprite.coords[1].x = EVT.x + 0x70;
+      face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
+      face->d.sprite.coords[0].z = EVT.z - 0x70;
+      face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
+      face->d.sprite.coords[2].z = EVT.z + 0x70;
+      face->d.sprite.coords[3].z = face->d.sprite.coords[2].z;
+      face->d.sprite.coords[0].y = EVT.y;
+      face->d.sprite.coords[1].y = face->d.sprite.coords[0].y;
+      face->d.sprite.coords[2].y = face->d.sprite.coords[0].y;
+      face->d.sprite.coords[3].y = face->d.sprite.coords[0].y;
+      face->d.sprite.otOfs = 2;
+      face->d.sprite.gfxIdx = chestGfx[idx++];
+      AddEvtPrim4(gGraphicsPtr->ot, face); //[9]
    }
 }
