@@ -94,6 +94,7 @@ extern ImpededStep *gImpededStepsQueue[5];
 extern s8 gTravelTerrainImped[14][11]; // [stepping-type][terrain-type]
 extern s8 gTravelAscentImped[14][20];  // [stepping-type][elevation-diff]
 extern s8 gTravelDescentImped[14][20];
+extern s8 gTravelRange[14];
 extern u8 gPathBackToUnit[300];
 
 extern s16 gTerrainBonus[];
@@ -120,6 +121,7 @@ extern PathGridRow *gPathGrid0_Ptr;
 extern PathGridRow *gPathGrid1_Ptr;
 extern PathGridRow *gPathGrid2_Ptr;
 extern PathGridRow *gPathGrid3_Ptr;
+extern PathGridRow *gPathGrid4_Ptr;
 extern PathGridRow *gPathGrid5_Ptr;
 extern PathGridRow *gPathGrid6_Ptr;
 extern PathGridRow *gCrateGrid_Ptr;

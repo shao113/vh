@@ -27,6 +27,7 @@ typedef enum EvtFunctionIdx {
    EVTF_LOGO = 6,
    EVTF_APPLY_POISON = 7,
    EVTF_BATTLE_PORTRAIT = 8,
+   EVTF_BATTLE_UNIT = 14,
    EVTF_TARGETING_ATTACK = 15,
    EVTF_CHOOSE_DONE_DIRECTION = 16,
    EVTF_CAMERA_TBD_017 = 17,
@@ -86,10 +87,13 @@ typedef enum EvtFunctionIdx {
    EVTF_SCREEN_EFFECT = 369,
    EVTF_FILE_LOAD_DIALOG = 373,
    EVTF_FILE_LOAD_DIALOG_IBS = 374,
+   EVTF_FILE_LOAD_DIALOG_376 = 376,
    EVTF_LEVEL_UP_FX = 380,
    EVTF_FLAME_BREATH = 382,
    EVTF_REVEAL_MIMIC = 385,
    EVTF_FULLSCREEN_IMAGE = 387,
+   EVTF_AI_TBD_400 = 400,
+   EVTF_AI_TBD_401 = 401,
    EVTF_AI_TBD_402 = 402,
    EVTF_AI_TBD_403 = 403,
    EVTF_AI_TBD_404 = 404,
@@ -106,6 +110,7 @@ typedef enum EvtFunctionIdx {
    EVTF_BATTLE_VICTORY = 420,
    EVTF_UPPER_MSGBOX_TAIL = 421,
    EVTF_LOWER_MSGBOX_TAIL = 422,
+   EVTF_BATTLE_DEFEAT = 423,
    EVTF_BATTLE_ENDER = 424,
    EVTF_EVALUATE_BATTLE_10 = 426,
    EVTF_EVALUATE_BATTLE_11 = 427,
@@ -631,7 +636,7 @@ typedef struct EvtData_048 {
    /* :0x2C */ s8 targetX;
    /* :0x2D */ s8 targetZ;
    /* :0x2E */ u8 unk_0x2E[2];
-   /* :0x30 */ ushort osc;
+   /* :0x30 */ s16 osc;
    /* :0x32 */ u8 unk_0x32[42];
    /* :0x5C */ s8 timer;
    /* :0x5D */ u8 unk_0x5D[3];
@@ -1024,6 +1029,18 @@ typedef struct EvtData_401 {
    /* :0x28 */ u8 unk_0x28[56];
 } EvtData_401;
 
+/* AI - TBD */
+typedef struct EvtData_402_Etc {
+   /* :0x10 */ u8 unk_0x10[2];
+   /* :0x12 */ s16 x;
+   /* :0x14 */ s16 y;
+   /* :0x16 */ s16 z;
+   /* :0x18 */ u8 unk_0x18[12];
+   /* :0x24 */ s16 resumeZ;
+   /* :0x26 */ s16 resumeX;
+   /* :0x28 */ u8 unk_0x28[56];
+} EvtData_402_Etc;
+
 /* Panorama */
 typedef struct EvtData_405 {
    /* :0x10 */ u8 unk_0x10[2];
@@ -1112,6 +1129,13 @@ typedef struct EvtData_421_422 {
    /* :0x2E */ s16 bottom;
    /* :0x30 */ u8 unk_0x30[48];
 } EvtData_421_422;
+
+/* Battle Ender */
+typedef struct EvtData_424 {
+   /* :0x10 */ u8 unk_0x10[20];
+   /* :0x24 */ s8 timer;
+   /* :0x25 */ u8 unk_0x25[59];
+} EvtData_424;
 
 /* Battle - Options */
 typedef struct EvtData_425 {
@@ -1474,6 +1498,9 @@ typedef struct EvtData {
       EvtData_369 evtf369;         /* Screen Effect */
       EvtData_400 evtf400;         /* AI - TBD */
       EvtData_401 evtf401;         /* AI - TBD */
+      EvtData_402_Etc evtf402;     /* AI - TBD */
+      EvtData_402_Etc evtf403;     /* AI - TBD */
+      EvtData_402_Etc evtf404;     /* AI - TBD */
       EvtData_405 evtf405;         /* Panorama */
       EvtData_409 evtf409;         /* Event Entity */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
@@ -1481,6 +1508,7 @@ typedef struct EvtData {
       EvtData_MapObject evtf415;   /* Map Object - Torch */
       EvtData_420_423 evtf420;     /* Battle Victory/Defeat */
       EvtData_421_422 evtf421;     /* MsgBox Tail (Upper) */
+      EvtData_424 evtf424;         /* Battle Ender */
       EvtData_425 evtf425;         /* Battle - Options */
       EvtData_438 evtf438;         /* Evaluate Battle 08 */
       EvtData_446 evtf446;         /* Battle - Victory/Defeat Particle */
@@ -1497,6 +1525,7 @@ typedef struct EvtData {
       EvtData_586 evtf586;         /* Battle - MsgBox */
       EvtData_587 evtf587;         /* Battle - Enemy Event */
       EvtData_026_588 evtf588;     /* Camera - TBD */
+      EvtData_402_Etc evtf589;     /* AI - TBD */
       EvtData_591 evtf591;         /* Map Object - Boulder */
       EvtData_592 evtf592;         /* Battle - Turn Start */
       EvtData_593 evtf593;         /* Battle - Results - Unit (Reward or Penalty) */

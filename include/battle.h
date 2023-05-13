@@ -62,6 +62,24 @@ typedef struct TileState {
    s16 cachedShort;
 } TileState;
 
+typedef struct BattlePartyUnitInitialState {
+   u8 partyIdx;
+   u8 z;
+   u8 x;
+   u8 direction;
+} BattlePartyUnitInitialState;
+
+typedef struct BattleEnemyUnitInitialState {
+   u8 stripIdx;
+   u8 z;
+   u8 x;
+   u8 level;
+   u8 direction;
+   u8 to_x1c;
+   u8 expMulti;
+   u8 to_x1d;
+} BattleEnemyUnitInitialState;
+
 typedef struct BattleBGM {
    s16 seqSetIdx;
    s16 seqId;
@@ -72,7 +90,12 @@ extern s16 gBattleEvaluator[BATTLE_CT];
 extern s8 gBattleExpScalingLevels[BATTLE_CT];
 extern s16 gBattleUnitRewards[BATTLE_CT][20];
 extern s16 gBattlePenalties[BATTLE_CT];
-extern u8 gBattleSceneId[50];
+extern BattleEnemyUnitInitialState *gBattleEnemyUnitInitialStates[74];
+extern BattlePartyUnitInitialState *gBattlePartyUnitInitialStates[50];
+
+// TBD: Why two of these? A couple of elements differ;
+extern u8 gBattleSceneId[50]; //? Only for portraits?
+extern u8 gBattleSceneId2[BATTLE_CT];
 
 extern u8 gIsEnemyTurn;
 extern SlainUnit gSlainUnits[20];

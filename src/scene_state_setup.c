@@ -6,8 +6,6 @@
 
 extern s16 gSceneLoaders[96];
 extern s8 gSceneMapNum[96];
-extern s16 gSceneSpriteStripUnitIds[105][20];
-extern s16 gSceneUnitSets[100][20];
 
 void State_SetupScene(void) {
    s32 i;

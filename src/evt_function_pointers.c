@@ -14,6 +14,7 @@ void Evtf015_TargetingAttack(EvtData *);
 void Evtf016_ChooseDoneDirection(EvtData *);
 void Evtf017_Camera_TBD(EvtData *);
 void Evtf019_Compass(EvtData *);
+void Evtf020_PushedBoulder(EvtData *);
 void Evtf021_UnitAttacking(EvtData *);
 void Evtf022_029_Projectile(EvtData *);
 void Evtf023_Camera_RangedTarget(EvtData *);
@@ -30,11 +31,13 @@ void Evtf036_MapObject_GraveMarker(EvtData *);
 void Evtf037_MapObject_Fountain(EvtData *);
 void Evtf038_MapObject_LampPost(EvtData *);
 void Evtf039_MapObject_Flag(EvtData *);
+void Evtf040_MapObject_Chest(EvtData *);
 void Evtf042_MapObject_FlowingSand(EvtData *);
 void Evtf043_SetupMapObjects(EvtData *);
 void Evtf045_BloodSpurtOffset(EvtData *);
 void Evtf046_MapObject_Crate(EvtData *);
 void Evtf047_BattleMapCursor(EvtData *);
+void Evtf048_Push(EvtData *);
 void Evtf049_BattleMapCursorControl(EvtData *);
 void Evtf062_StretchWarpSprite(EvtData *);
 void Evtf070_FadeFromBlack(EvtData *);
@@ -71,6 +74,11 @@ void Evtf263_LoadEvent54(EvtData *);
 void Evtf264_LoadEvent57(EvtData *);
 void Evtf267_LoadEvent62(EvtData *);
 void Evtf268_LoadEvent67(EvtData *);
+void Evtf400_AI_TBD(EvtData *);
+void Evtf401_AI_TBD(EvtData *);
+void Evtf402_AI_TBD(EvtData *);
+void Evtf403_AI_TBD(EvtData *);
+void Evtf404_AI_TBD(EvtData *);
 void Evtf405_Panorama(EvtData *);
 void Evtf407_NoopIncState(EvtData *);
 void Evtf409_EventEntity(EvtData *);
@@ -88,6 +96,7 @@ void Evtf420_BattleVictory(EvtData *);
 void Evtf421_UpperMsgBoxTail(EvtData *);
 void Evtf422_LowerMsgBoxTail(EvtData *);
 void Evtf423_BattleDefeat(EvtData *);
+void Evtf424_BattleEnder(EvtData *);
 void Evtf425_BattleOptions(EvtData *);
 void Evtf426_EvaluateBattle10(EvtData *);
 void Evtf427_EvaluateBattle11(EvtData *);
@@ -200,6 +209,7 @@ void Evtf564_565_566_MapObject_Water(EvtData *);
 void Evtf567_OpeningChest(EvtData *);
 void Evtf568_MapObject_Rail(EvtData *);
 void Evtf569_572_MapObject_Lava(EvtData *);
+void Evtf570_AI_TBD(EvtData *);
 void Evtf571_LevelUp(EvtData *);
 void Evtf573_BattleItemsList(EvtData *);
 void Evtf574_DisplayIcon(EvtData *);
@@ -212,6 +222,7 @@ void Evtf584_Noop(EvtData *);
 void Evtf585_BattlePlayerEvent(EvtData *);
 void Evtf586_BattleMsgBox(EvtData *);
 void Evtf587_BattleEnemyEvent(EvtData *);
+void Evtf589_AI_TBD(EvtData *);
 void Evtf590_BattleTurnTicker(EvtData *);
 void Evtf591_MapObject_Boulder(EvtData *);
 void Evtf592_BattleTurnStart(EvtData *);
@@ -247,7 +258,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [17] = Evtf017_Camera_TBD,
     [18] = (EvtFunction)NULL,
     [19] = Evtf019_Compass,
-    [20] = (EvtFunction)0x80053d34,
+    [20] = Evtf020_PushedBoulder,
     [21] = Evtf021_UnitAttacking,
     [22] = Evtf022_029_Projectile,
     [23] = Evtf023_Camera_RangedTarget,
@@ -267,7 +278,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [37] = Evtf037_MapObject_Fountain,
     [38] = Evtf038_MapObject_LampPost,
     [39] = Evtf039_MapObject_Flag,
-    [40] = (EvtFunction)0x80054ca4,
+    [40] = Evtf040_MapObject_Chest,
     [41] = (EvtFunction)NULL,
     [42] = Evtf042_MapObject_FlowingSand,
     [43] = Evtf043_SetupMapObjects,
@@ -275,7 +286,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [45] = Evtf045_BloodSpurtOffset,
     [46] = Evtf046_MapObject_Crate,
     [47] = Evtf047_BattleMapCursor,
-    [48] = (EvtFunction)0x800540e4,
+    [48] = Evtf048_Push,
     [49] = Evtf049_BattleMapCursorControl,
     [50] = (EvtFunction)0x800bfcd0,
     [51] = (EvtFunction)0x800bffe8,
@@ -627,11 +638,11 @@ EvtFunction gEvtFunctionPointers[804] = {
     [397] = (EvtFunction)0x8008b4a0,
     [398] = (EvtFunction)0x8008b36c,
     [399] = (EvtFunction)0x80095600,
-    [400] = (EvtFunction)0x800561f8,
-    [401] = (EvtFunction)0x800570e4,
-    [402] = (EvtFunction)0x800573a4,
-    [403] = (EvtFunction)0x80057d70,
-    [404] = (EvtFunction)0x800585c8,
+    [400] = Evtf400_AI_TBD,
+    [401] = Evtf401_AI_TBD,
+    [402] = Evtf402_AI_TBD,
+    [403] = Evtf403_AI_TBD,
+    [404] = Evtf404_AI_TBD,
     [405] = Evtf405_Panorama,
     [406] = (EvtFunction)0x801e6704,
     [407] = Evtf407_NoopIncState,
@@ -651,7 +662,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [421] = Evtf421_UpperMsgBoxTail,
     [422] = Evtf422_LowerMsgBoxTail,
     [423] = Evtf423_BattleDefeat,
-    [424] = (EvtFunction)0x8005a1e0,
+    [424] = Evtf424_BattleEnder,
     [425] = Evtf425_BattleOptions,
     [426] = Evtf426_EvaluateBattle10,
     [427] = Evtf427_EvaluateBattle11,
@@ -797,7 +808,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [567] = Evtf567_OpeningChest,
     [568] = Evtf568_MapObject_Rail,
     [569] = Evtf569_572_MapObject_Lava,
-    [570] = (EvtFunction)0x80055a0c,
+    [570] = Evtf570_AI_TBD,
     [571] = Evtf571_LevelUp,
     [572] = Evtf569_572_MapObject_Lava,
     [573] = Evtf573_BattleItemsList,
@@ -816,7 +827,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [586] = Evtf586_BattleMsgBox,
     [587] = Evtf587_BattleEnemyEvent,
     [588] = Evtf026_588_Camera_TBD,
-    [589] = (EvtFunction)0x80058a14,
+    [589] = Evtf589_AI_TBD,
     [590] = Evtf590_BattleTurnTicker,
     [591] = Evtf591_MapObject_Boulder,
     [592] = Evtf592_BattleTurnStart,

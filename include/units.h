@@ -249,14 +249,17 @@ typedef enum UnitNameIdx {
    UNIT_DOLF = 29,
    UNIT_LEENA = 30,
    UNIT_CLIVE = 31,
-   UNIT_KIRA_2 = 34
+   UNIT_KIRA_2 = 34,
+   UNIT_INVALID = 255
 } UnitNameIdx;
 
 /* Partial; defining as needed */
 typedef enum UnitId {
+   UNIT_ID_ELENI_MAGE = 4,
    UNIT_ID_DIEGO_BOWMAN = 15,
    UNIT_ID_KIRA_BOWMAN = 18,
    UNIT_ID_AMON_BOWMAN = 21,
+   UNIT_ID_ZOHAR_SORCEROR = 23,
    UNIT_ID_DARIUS_BOWMAN = 24,
    UNIT_ID_DIEGO_SNIPER = 39,
    UNIT_ID_KIRA_SNIPER = 42,
@@ -275,6 +278,8 @@ typedef enum UnitId {
    UNIT_ID_MAGE_TOWER = 93,
    UNIT_ID_JUGGERNAUT = 94,
    UNIT_ID_DEATH_DEV = 95,
+   UNIT_ID_DARK_MAGE = 96,
+   UNIT_ID_DUMAS = 106,
    UNIT_ID_DOLF_DARK_ANGEL = 109,
    UNIT_ID_GRENADIER = 111,
    UNIT_ID_CLAY_GOLEM = 113,
@@ -285,6 +290,7 @@ typedef enum UnitId {
    UNIT_ID_MEGA_GUARD = 128,
    UNIT_ID_M_CANNON = 129,
    UNIT_ID_BAHAMUT = 130,
+   UNIT_ID_LEENA = 132,
 } UnitId;
 
 typedef enum UnitTeam {
@@ -475,6 +481,24 @@ typedef struct PartyMember {
    s16 agiVar100;
 } PartyMember;
 
+typedef struct UnitInfo {
+   s8 name;
+   s8 unitType;
+   s8 advantage;
+   s8 class;
+   s8 step;
+   s8 magicSusceptibility;
+   s8 ailmentSusceptibility;
+   s8 attackRange;
+   u8 weapon;
+   u8 helmet;
+   u8 armor;
+   u8 heldItem;
+   u8 maxMp;
+   s8 spell1;
+   s8 spell2;
+} UnitInfo;
+
 typedef enum SpellArea { SPELL_AREA_NULL = 0, SPELL_AREA_SINGLE = 1, SPELL_AREA_AOE = 2 } SpellArea;
 
 typedef enum SpellTargeting {
@@ -547,12 +571,19 @@ extern s16 gSpellSounds[72];
 extern s16 gSpellSounds2[72];
 // extern SpellEx gSpellsEx[73];
 extern s16 gSpellsEx[73][5];
+extern s32 gSpellLists[PARTY_CT][2][10];
+extern u8 gSpellLevelRequirement[36];
 
 extern UnitStatus gUnits[UNIT_CT];
+extern UnitInfo gUnitInfo[UNIT_DB_CT];
 extern PartyMember gPartyMembers[PARTY_CT];
 extern BigInt gExperienceLevels[];
+extern u8 gInitialLevels[8][12];
+extern u8 gPartyDefaultLevels[PARTY_CT][BATTLE_CT];
 extern void *gUnitDataPtr;
 extern s16 gCurrentUnitSet[20];
+extern s16 gSceneUnitSets[100][20];
+extern s32 gPartyUnitIds[PARTY_CT][2][3];
 
 extern s16 gUnitPortraitIds[UNIT_CT];
 
@@ -569,7 +600,13 @@ extern s16 gClassBaseMaxHp[10];
 extern s16 gClassBaseAgility[10];
 extern u16 gClassBlockChance[10];
 extern u8 gClassMpMultiplier[8];
+extern u8 gClassDefaultLoadouts[9][3][BATTLE_CT];
 
 u8 GetItemNameLength(u8);
+
+void ClearUnits(void);
+UnitStatus *CreateUnitInNextSlot(void);
+UnitStatus *CreateUnitInLastSlot(void);
+UnitStatus *CreateUnit(u8);
 
 #endif

@@ -7,6 +7,8 @@
 
 #define OT_SIZE 1024
 #define GFX_CT 870
+#define VRAM_WIDTH 1024
+#define VRAM_HEIGHT 512
 
 typedef enum GfxIdx {
    GFX_NULL = 0,
@@ -435,6 +437,7 @@ extern u16 gSpriteStripClutIds[25];
 extern s16 gSpriteStripTPageCells[50];
 extern s16 gSpriteStripTPageIds[50];
 extern s16 gSpriteStripUnitIds[23];
+extern s16 gSceneSpriteStripUnitIds[105][20];
 extern u8 **gSpriteStripAnimSets[25];
 extern u8 gUnitClutIds[492];
 

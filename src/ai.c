@@ -16,6 +16,7 @@ void func_800569A0(UnitStatus *);
 s32 func_80056C30(UnitStatus *, UnitStatus *, u8, u8, u8, u8);
 s32 func_80056F94(UnitStatus *, u8, u8, u8, u8);
 void Evtf401_AI_TBD(EvtData *);
+void Evtf402_AI_TBD(EvtData *);
 //...
 
 extern u8 D_80123410, D_80123480, D_80123484;
@@ -81,19 +82,19 @@ void Evtf570_AI_TBD(EvtData *evt) {
                evt->state2 = 0;
             } else if (spellEffectA != SPELL_EFFECT_DAMAGE + 1) {
                if (gSpells[gCurrentSpell].range == 0 && gSpells[gCurrentSpell].fieldSize == 0) {
-                  if (unit->hpFrac >= 5000) {
-                     evt->state = 1;
+                  if (unit->hpFrac < 5000) {
+                     evt->state = 3;
                      evt->state2 = 0;
                   } else {
-                     evt->state = 3;
+                     evt->state = 1;
                      evt->state2 = 0;
                   }
                } else {
-                  if (unit->class != CLASS_PRIEST && unit->hpFrac >= 5000) {
-                     evt->state = 1;
+                  if (unit->class == CLASS_PRIEST || unit->hpFrac < 5000) {
+                     evt->state = 4;
                      evt->state2 = 0;
                   } else {
-                     evt->state = 4;
+                     evt->state = 1;
                      evt->state2 = 0;
                   }
                }
@@ -133,9 +134,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          newEvt = Evt_GetUnused();
-         // todo replace
-         HI(newEvt->d.sprite.x1) = HI(EVT.x);
-         HI(newEvt->d.sprite.z1) = HI(EVT.z);
+         HI(newEvt->d.evtf403.x) = HI(EVT.x);
+         HI(newEvt->d.evtf403.z) = HI(EVT.z);
          newEvt->functionIndex = EVTF_AI_TBD_403;
          evt->state2++;
 
@@ -154,9 +154,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          newEvt = Evt_GetUnused();
-         // todo replace
-         HI(newEvt->d.sprite.x1) = HI(EVT.x);
-         HI(newEvt->d.sprite.z1) = HI(EVT.z);
+         HI(newEvt->d.evtf402.x) = HI(EVT.x);
+         HI(newEvt->d.evtf402.z) = HI(EVT.z);
          newEvt->functionIndex = EVTF_AI_TBD_402;
          evt->state2++;
 
@@ -175,9 +174,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          newEvt = Evt_GetUnused();
-         // todo replace
-         HI(newEvt->d.sprite.x1) = HI(EVT.x);
-         HI(newEvt->d.sprite.z1) = HI(EVT.z);
+         HI(newEvt->d.evtf404.x) = HI(EVT.x);
+         HI(newEvt->d.evtf404.z) = HI(EVT.z);
          newEvt->functionIndex = EVTF_AI_TBD_404;
          evt->state2++;
 
@@ -199,9 +197,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          newEvt = Evt_GetUnused();
-         // todo replace
-         HI(newEvt->d.sprite.x1) = HI(EVT.x);
-         HI(newEvt->d.sprite.z1) = HI(EVT.z);
+         HI(newEvt->d.evtf402.x) = HI(EVT.x);
+         HI(newEvt->d.evtf402.z) = HI(EVT.z);
          newEvt->functionIndex = EVTF_AI_TBD_402;
          evt->state2++;
 
@@ -211,9 +208,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
             if (D_80123410) {
                D_80123480 = 0;
                newEvt = Evt_GetUnused();
-               // todo replace
-               HI(newEvt->d.sprite.x1) = HI(EVT.x);
-               HI(newEvt->d.sprite.z1) = HI(EVT.z);
+               HI(newEvt->d.evtf404.x) = HI(EVT.x);
+               HI(newEvt->d.evtf404.z) = HI(EVT.z);
                newEvt->functionIndex = EVTF_AI_TBD_404;
                evt->state2++;
             } else {
@@ -240,9 +236,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       case 0:
          D_80123480 = 0;
          newEvt = Evt_GetUnused();
-         // todo replace
-         HI(newEvt->d.sprite.x1) = HI(EVT.x);
-         HI(newEvt->d.sprite.z1) = HI(EVT.z);
+         HI(newEvt->d.evtf404.x) = HI(EVT.x);
+         HI(newEvt->d.evtf404.z) = HI(EVT.z);
          newEvt->functionIndex = EVTF_AI_TBD_404;
          evt->state2++;
          break;
@@ -262,9 +257,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       case 0:
          D_80123480 = 0;
          newEvt = Evt_GetUnused();
-         // todo replace
-         HI(newEvt->d.sprite.x1) = HI(EVT.x);
-         HI(newEvt->d.sprite.z1) = HI(EVT.z);
+         HI(newEvt->d.evtf589.x) = HI(EVT.x);
+         HI(newEvt->d.evtf589.z) = HI(EVT.z);
          newEvt->functionIndex = EVTF_AI_TBD_589;
          evt->state2++;
          break;
@@ -656,3 +650,285 @@ void Evtf401_AI_TBD(EvtData *evt) {
       return;
    }
 }
+
+/*
+u8 s_shouldHealSelf_801232d8;
+s32 s_x1_801232dc;
+s32 s_z1_801232e0;
+s32 s_pref_801232e4;
+s32 s_z2_801232e8;
+s32 s_x2_801232ec;
+s32 s_x3_801232f0;
+s32 s_z3_801232f4;
+
+#undef EVTF
+#define EVTF 402
+void Evtf402_AI_TBD(EvtData *evt) {
+   UnitStatus *unit;
+   EvtData *sprite;
+   EvtData *newEvt;
+   s32 i;
+   s32 ix2, iz2;
+   s32 tmp;
+
+   unit = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+   sprite = unit->evtSprite;
+
+   switch (evt->state) {
+   case 0:
+      if (IsLagging()) {
+         return;
+      }
+
+      D_80123480 = 0;
+      D_80123410 = 0;
+
+      if (unit->hpFrac < 5000 &&
+          gSpellsEx[gCurrentSpell][SPELL_EX_EFFECT] == SPELL_EFFECT_RESTORE_HP) {
+         s_shouldHealSelf_801232d8 = 1;
+      } else {
+         s_shouldHealSelf_801232d8 = 0;
+      }
+
+      func_800569A0(unit);
+      gDir_80123470 = 0xffff;
+      ClearGrid(0);
+      ClearGrid(1);
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      if (IsLagging()) {
+         return;
+      }
+
+      PopulateMovementGrid(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 0xff, 2);
+      evt->state++;
+
+   // fallthrough
+   case 2:
+      if (IsLagging()) {
+         return;
+      }
+
+      i = (unit->field7_0x1c + 1) * unit->travelRange;
+      if (i > 0xff) {
+         i = 0xff;
+      }
+      if (unit->hp != unit->maxHp) {
+         i = 0xff;
+      }
+      if (func_800560F8(unit)) {
+         i = 0xff;
+      }
+
+      func_8002B3A8(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), i, 3);
+      evt->state++;
+
+   // fallthrough
+   case 3:
+      if (IsLagging()) {
+         return;
+      }
+
+      func_8002B3A8(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), unit->travelRange, 4);
+      evt->state++;
+
+   // fallthrough
+   case 4:
+      if (IsLagging()) {
+         return;
+      }
+
+      newEvt = Evt_GetLastUnused();
+      newEvt->functionIndex = EVTF_AI_TBD_400;
+      newEvt->d.evtf400.unit = unit;
+      D_80123484 = 0;
+      evt->state++;
+      return;
+
+   case 5:
+      if (D_80123484 != 0) {
+         newEvt = Evt_GetLastUnused();
+         newEvt->functionIndex = EVTF_AI_TBD_401;
+         HI(newEvt->d.evtf401.x) = HI(EVT.x);
+         HI(newEvt->d.evtf401.z) = HI(EVT.z);
+         D_80123484 = 0;
+         evt->state++;
+      }
+      return;
+
+   case 6:
+      if (D_80123484 != 0) {
+         EVT.resumeZ = gMapMinZ;
+         EVT.resumeX = gMapMinX;
+         s_pref_801232e4 = 0;
+         evt->state++;
+      }
+      return;
+
+   case 7:
+      if (IsLagging()) {
+         return;
+      }
+
+      s_z1_801232e0 = EVT.resumeZ;
+      s_x1_801232dc = EVT.resumeX;
+
+      while (s_z1_801232e0 <= gMapMaxZ) {
+         while (s_x1_801232dc <= gMapMaxX) {
+
+            if ((s_x1_801232dc == HI(sprite->d.sprite.x1) &&
+                 s_z1_801232e0 == HI(sprite->d.sprite.z1)) ||
+                (gPathGrid3_Ptr[s_z1_801232e0][s_x1_801232dc] != PATH_STEP_UNSET &&
+                 gMapUnitsPtr[s_z1_801232e0][s_x1_801232dc].s.unitIdx == 0)) {
+
+               if (GetRCnt(RCntCNT1) > 450) {
+                  EVT.resumeX = s_x1_801232dc;
+                  EVT.resumeZ = s_z1_801232e0;
+                  return;
+               }
+
+               if (s_shouldHealSelf_801232d8 && gSpells[gCurrentSpell].range != 0) {
+                  ClearGrid(5);
+                  gPathGrid5_Ptr[s_z1_801232e0][s_x1_801232dc] += 1;
+               } else {
+                  PopulateCastingGrid(s_z1_801232e0, s_x1_801232dc, gSpells[gCurrentSpell].range,
+                                      5);
+               }
+
+               for (iz2 = gMapMinZ; iz2 <= gMapMaxZ; iz2++) {
+                  for (ix2 = gMapMinX; ix2 <= gMapMaxX; ix2++) {
+                     if (gPathGrid5_Ptr[iz2][ix2] != PATH_STEP_UNSET) {
+                        i = func_80056F94(unit, s_z1_801232e0, s_x1_801232dc, iz2, ix2);
+                        if (i > s_pref_801232e4) {
+                           s_pref_801232e4 = i;
+                           s_z2_801232e8 = s_z1_801232e0;
+                           s_x2_801232ec = s_x1_801232dc;
+                           s_z3_801232f4 = iz2;
+                           s_x3_801232f0 = ix2;
+                        }
+                     }
+                  }
+               }
+            }
+
+            s_x1_801232dc++;
+         }
+
+         s_z1_801232e0++;
+         s_x1_801232dc = gMapMinX;
+
+         if (GetRCnt(RCntCNT1) > 450) {
+            EVT.resumeX = s_x1_801232dc;
+            EVT.resumeZ = s_z1_801232e0;
+            return;
+         }
+      }
+      if (s_pref_801232e4 < 1) {
+         s_x2_801232ec = HI(EVT.x);
+         s_z2_801232e8 = HI(EVT.z);
+      }
+      evt->state++;
+      return;
+
+   case 8:
+      if (IsLagging()) {
+         return;
+      }
+
+      gX_801233d8 = s_x2_801232ec;
+      gZ_801233dc = s_z2_801232e8;
+
+      if (HI(EVT.x) == s_x2_801232ec && HI(EVT.z) == s_z2_801232e8) {
+         if (s_pref_801232e4 > 0) {
+            D_8012337C = 2;
+            gTargetX_80123414 = s_x3_801232f0;
+            gTargetZ_80123418 = s_z3_801232f4;
+         } else {
+            D_8012337C = 0;
+            func_80056760(unit);
+         }
+         evt->state = 99;
+      } else if (gPathGrid4_Ptr[s_z2_801232e8][s_x2_801232ec] != PATH_STEP_UNSET) {
+         D_8012337C = 1;
+         gX_801233d8 = s_x2_801232ec;
+         gZ_801233dc = s_z2_801232e8;
+         gTargetX_80123414 = s_x3_801232f0;
+         gTargetZ_80123418 = s_z3_801232f4;
+         D_8012337C = 2;
+         evt->state = 99;
+      } else {
+         evt->state++;
+      }
+
+      return;
+
+   case 9:
+
+      while (gPathGrid4_Ptr[s_z2_801232e8][s_x2_801232ec] == PATH_STEP_UNSET ||
+             gMapUnitsPtr[s_z2_801232e8][s_x2_801232ec].s.unitIdx != 0) {
+
+         switch (gPathGrid2_Ptr[s_z2_801232e8][s_x2_801232ec]) {
+         case PATH_STEP_SOUTH:
+            s_z2_801232e8--;
+            continue;
+         case PATH_STEP_WEST:
+            s_x2_801232ec--;
+            continue;
+         case PATH_STEP_NORTH:
+            s_z2_801232e8++;
+            continue;
+         case PATH_STEP_EAST:
+            s_x2_801232ec++;
+            continue;
+         }
+
+         break;
+      }
+
+      D_8012337C = 0;
+      gX_801233d8 = s_x2_801232ec;
+      gZ_801233dc = s_z2_801232e8;
+      func_80056760(unit);
+      evt->state = 99;
+      return;
+
+   case 99:
+
+      // No luck getting this part to match.
+      if (s_shouldHealSelf_801232d8) {
+
+         if (gSpells[gCurrentSpell].area != 2) {
+            // 22ac:    lui     v0,%hi(gCurrentSpell)
+            // 22b0:    lh      v0,%lo(gCurrentSpell)(v0)
+            // 22b4:    j       22d4 ~>
+            // 22b8:    sll     v1,v0,0x1
+            // asm volatile("lh $2,%0" ::"m"(gCurrentSpell));
+            // asm volatile(".set noreorder\n j L22D4\n .set reorder\n");
+            // asm volatile("sll $3,$2,0x1");
+            if (D_8012337C == 0) {
+               D_8012337C = 2;
+               gTargetZ_80123418 = gZ_801233dc;
+               gTargetX_80123414 = gX_801233d8;
+               D_80123410 = 1;
+            }
+
+         } else {
+            // if (gCurrentSpell == 0) {
+            // asm volatile("L22D4:");
+            if (D_8012337C == 0) {
+               D_8012337C = 2;
+               gTargetZ_80123418 = gZ_801233dc;
+               gTargetX_80123414 = gX_801233d8;
+               D_80123410 = 1;
+            }
+         }
+      }
+
+      D_80123480 = 1;
+      evt->functionIndex = EVTF_NULL;
+      return;
+   }
+}
+*/

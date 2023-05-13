@@ -29,6 +29,7 @@ typedef enum PrimaryState {
    STATE_26 = 26,
    STATE_27 = 27,
    STATE_28 = 28,
+   STATE_29 = 29,
    STATE_30 = 30,
    STATE_31 = 31,
    STATE_TITLE_SCREEN = 51,
