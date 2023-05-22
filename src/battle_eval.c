@@ -46,7 +46,7 @@ void PlayBattleBGM(u8 battleNum) {
       LoadSeqSet(23);
       FinishLoadingSeq();
       PerformAudioCommand(0x202);
-   } else if (gState.mapNum == 40 && gState.mapState.n.field_0x0 != 0) {
+   } else if (gState.mapNum == 40 && gState.mapState.s.field_0x0 != 0) {
       LoadSeqSet(25);
       FinishLoadingSeq();
       PerformAudioCommand(0x20b);
@@ -193,7 +193,7 @@ s32 State_Battle(void) {
             LoadMap();
             SetupLight();
          }
-         SetupTerrain();
+         SetupField();
          SetupMap();
          gState.fieldRenderingDisabled = 0;
          gState.battleEval = BATTLE_EVAL_NONE;
@@ -261,14 +261,14 @@ s32 State_Battle(void) {
          break;
       } // switch (gState.state3)
 
-      if (gState.mapNum == 13 && gState.mapState.n.field_0x0 < 3) {
-         gState.mapState.n.field_0x0 = 3;
+      if (gState.mapNum == 13 && gState.mapState.s.field_0x0 < 3) {
+         gState.mapState.s.field_0x0 = 3;
       }
-      if (gState.mapNum == 33 && gState.mapState.n.field_0x0 == 0) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapNum == 33 && gState.mapState.s.field_0x0 == 0) {
+         gState.mapState.s.field_0x0 = 1;
       }
-      if (gState.mapNum == 39 && gState.mapState.n.field_0x0 == 0) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapNum == 39 && gState.mapState.s.field_0x0 == 0) {
+         gState.mapState.s.field_0x0 = 1;
       }
 
       break;
@@ -447,8 +447,8 @@ void Evtf427_EvaluateBattle11(EvtData *evt) {
    }
    if (gState.signal == 1) {
       gState.signal = 0;
-      if (gState.mapState.n.field_0x0 == 0 && gState.searchX == 11 && gState.searchZ == 1) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapState.s.field_0x0 == 0 && gState.searchX == 11 && gState.searchZ == 1) {
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
    }
@@ -548,8 +548,8 @@ void Evtf433_EvaluateBattle17(EvtData *evt) {
    }
    if (gState.signal == 1) {
       gState.signal = 0;
-      if (gState.mapState.n.field_0x0 == 0 && gState.searchX == 10 && gState.searchZ == 16) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapState.s.field_0x0 == 0 && gState.searchX == 10 && gState.searchZ == 16) {
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
    }
@@ -625,11 +625,11 @@ void Evtf435_EvaluateBattle19(EvtData *evt) {
    if (gState.signal == 1) {
       gState.signal = 0;
       if (gState.searchX == 19 && gState.searchZ == 3) {
-         gState.mapState.n.field_0x0 = 1;
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
       if (gState.searchX == 19 && gState.searchZ == 12) {
-         gState.mapState.n.field_0x0 = 2;
+         gState.mapState.s.field_0x0 = 2;
          gState.signal = 2;
       }
    }
@@ -713,8 +713,8 @@ void Evtf442_EvaluateBattle26(EvtData *evt) {
    }
    if (gState.signal == 1) {
       gState.signal = 0;
-      if (gState.mapState.n.field_0x0 == 0 && gState.searchX == 35 && gState.searchZ == 8) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapState.s.field_0x0 == 0 && gState.searchX == 35 && gState.searchZ == 8) {
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
    }
@@ -732,20 +732,20 @@ void Evtf443_EvaluateBattle27(EvtData *evt) {
    }
    if (gState.signal == 1) {
       gState.signal = 0;
-      if (gState.mapState.n.field_0x0 == 0 && gState.searchX == 22 && gState.searchZ == 14) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapState.s.field_0x0 == 0 && gState.searchX == 22 && gState.searchZ == 14) {
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
-      if (gState.mapState.n.field_0x1 == 0 && gState.searchX == 9 && gState.searchZ == 9) {
-         gState.mapState.n.field_0x1 = 1;
+      if (gState.mapState.s.field_0x1 == 0 && gState.searchX == 9 && gState.searchZ == 9) {
+         gState.mapState.s.field_0x1 = 1;
          gState.signal = 2;
       }
-      if (gState.mapState.n.field_0x2 == 0 && gState.searchX == 15 && gState.searchZ == 12) {
-         gState.mapState.n.field_0x2 = 1;
+      if (gState.mapState.s.field_0x2 == 0 && gState.searchX == 15 && gState.searchZ == 12) {
+         gState.mapState.s.field_0x2 = 1;
          gState.signal = 2;
       }
-      if (gState.mapState.n.field_0x3 == 0 && gState.searchX == 1 && gState.searchZ == 1) {
-         gState.mapState.n.field_0x3 = 1;
+      if (gState.mapState.s.field_0x3 == 0 && gState.searchX == 1 && gState.searchZ == 1) {
+         gState.mapState.s.field_0x3 = 1;
          gState.signal = 2;
       }
    }
@@ -763,8 +763,8 @@ void Evtf444_EvaluateBattle28(EvtData *evt) {
    }
    if (gState.signal == 1) {
       gState.signal = 0;
-      if (gState.mapState.n.field_0x0 == 0 && gState.searchX == 2 && gState.searchZ == 19) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapState.s.field_0x0 == 0 && gState.searchX == 2 && gState.searchZ == 19) {
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
    }
@@ -806,8 +806,8 @@ void Evtf445_EvaluateBattle29(EvtData *evt) {
    }
    if (gState.signal == 1) {
       gState.signal = 0;
-      if (gState.mapState.n.field_0x0 == 0 && gState.searchX == 18 && gState.searchZ == 12) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapState.s.field_0x0 == 0 && gState.searchX == 18 && gState.searchZ == 12) {
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
    }
@@ -861,8 +861,8 @@ void Evtf555_EvaluateBattle35(EvtData *evt) {
    }
    if (gState.signal == 1) {
       gState.signal = 0;
-      if (gState.mapState.n.field_0x0 == 0 && gState.searchX == 18 && gState.searchZ == 8) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapState.s.field_0x0 == 0 && gState.searchX == 18 && gState.searchZ == 8) {
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
    }
@@ -895,8 +895,8 @@ void Evtf558_EvaluateBattle38(EvtData *evt) {
    }
    if (gState.signal == 1) {
       gState.signal = 0;
-      if (gState.mapState.n.field_0x0 == 0 && gState.searchX == 21 && gState.searchZ == 4) {
-         gState.mapState.n.field_0x0 = 1;
+      if (gState.mapState.s.field_0x0 == 0 && gState.searchX == 21 && gState.searchZ == 4) {
+         gState.mapState.s.field_0x0 = 1;
          gState.signal = 2;
       }
    }

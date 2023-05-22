@@ -960,7 +960,7 @@ void UpdateCompactUnitInfoWindow(UnitStatus *unit, UnitStatus *unused, u8 param_
    if (param_3 != 2) {
       sprite = &unit->evtSprite->d.sprite;
       terrainBonus =
-          gTerrainBonus[gTerrainPtr[TO_TILE(sprite->z1)][TO_TILE(sprite->x1)].terrain] / 100;
+          gTerrainBonus[gTerrainPtr[TO_TILE(sprite->z1)][TO_TILE(sprite->x1)].s.terrain] / 100;
       IntToLeftPaddedGlyphs(terrainBonus, &pBtm[2]);
    } else {
       terrainBonus = 0;
@@ -1051,7 +1051,7 @@ void UpdateUnitInfoWindow(UnitStatus *unit) {
    thirdRow[4] = GLYPH_BG;
    thirdRow[5] = GLYPH_BG;
    terrainBonus =
-       gTerrainBonus[gTerrainPtr[TO_TILE(sprite->z1)][TO_TILE(sprite->x1)].terrain] / 100;
+       gTerrainBonus[gTerrainPtr[TO_TILE(sprite->z1)][TO_TILE(sprite->x1)].s.terrain] / 100;
    IntToLeftPaddedGlyphs(terrainBonus, &fourthRow[2]);
    fourthRow[2] = GLYPH_BG;
 

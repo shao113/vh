@@ -496,7 +496,7 @@ void func_800569A0(UnitStatus *unit) {
                sVar4 += 280;
                sVar4 -= (otherUnit->hpFrac / 125);
                sVar4 -= gAdvantage[unit->advantage][otherUnit->advantage];
-               sVar4 -= gTerrainPreference[SPR_TERRAIN(sprite).terrain] / 100;
+               sVar4 -= gTerrainPreference[SPR_TERRAIN(sprite).s.terrain] / 100;
             }
             break;
 
@@ -561,8 +561,8 @@ s32 func_80056C30(UnitStatus *unit1, UnitStatus *unit2, u8 z1, u8 x1, u8 z2, u8 
    if (result < 1) {
       result = 1;
    }
-   result += (gTerrainPtr[z1][x1].elevation - gTerrainPtr[z2][x2].elevation) * 10;
-   result += gTerrainPreference[gTerrainPtr[z1][x1].terrain] / 100;
+   result += (gTerrainPtr[z1][x1].s.elevation - gTerrainPtr[z2][x2].s.elevation) * 10;
+   result += gTerrainPreference[gTerrainPtr[z1][x1].s.terrain] / 100;
 
    if (unit1->class == CLASS_ARCHER) {
       if (unit2->class == CLASS_ARCHER) {
@@ -590,7 +590,7 @@ s32 func_80056F94(UnitStatus *unit, u8 z1, u8 x1, u8 z2, u8 x2) {
    if (result >= 1) {
       result += 10000;
       result -= (gPathGrid3_Ptr[z1][x1] - 1) / unit->travelRange * 1000;
-      result += gTerrainPreference[gTerrainPtr[z1][x1].terrain] / 100;
+      result += gTerrainPreference[gTerrainPtr[z1][x1].s.terrain] / 100;
       result -= gPathGrid6_Ptr[z1][x1] * 3;
    } else {
       result = 0;

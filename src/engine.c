@@ -123,7 +123,7 @@ void Evtf047_BattleMapCursor(EvtData *evt) {
       HI(evt->d.sprite.x1) = x;
       HI(evt->d.sprite.z1) = z;
 
-      if (gTerrainPtr[z][x].terrain != TERRAIN_NO_ENTRY) {
+      if (gTerrainPtr[z][x].s.terrain != TERRAIN_NO_ENTRY) {
          SetElevationFromTerrain(evt);
       } else {
          evt->d.sprite.y1 = gMapRowPointers[z][x].height * 128;
@@ -488,13 +488,13 @@ s32 SmoothStepTo(EvtData *sprite, s32 destZ, s32 destX, s32 cont) {
       s_destX_8012314c = destX << 8;
 
       s_currentY_80123158 = sprite->d.sprite.y1 << 8;
-      s_destY_8012315c = gTerrainPtr[destZ >> 8][destX >> 8].elevation << 8 << 7;
+      s_destY_8012315c = gTerrainPtr[destZ >> 8][destX >> 8].s.elevation << 8 << 7;
 
       s_currentZ_80123150 = sprite->d.sprite.z1 << 8;
       s_destZ_80123154 = destZ << 8;
 
-      destElevation = gTerrainPtr[destZ >> 8][destX >> 8].elevation;
-      currentElevation = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].elevation;
+      destElevation = gTerrainPtr[destZ >> 8][destX >> 8].s.elevation;
+      currentElevation = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].s.elevation;
       diff = destElevation - currentElevation;
       elevationDiff = diff;
       if (elevationDiff > 0) {

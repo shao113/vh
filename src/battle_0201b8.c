@@ -405,7 +405,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
    case 0:
       gPlayerControlSuppressed = 1;
       if (gState.mapNum == 40) {
-         if (gState.mapState.n.field_0x0 == 1) {
+         if (gState.mapState.s.field_0x0 == 1) {
             evt->state = 16;
             return;
          }
@@ -415,8 +415,8 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
          }
       }
       if (gState.mapNum == 26) {
-         if (gState.mapState.n.field_0x13 == 1 && FindUnitByNameIdx(UNIT_LANDO)) {
-            gState.mapState.n.field_0x13 = 2;
+         if (gState.mapState.s.field_0x13 == 1 && FindUnitByNameIdx(UNIT_LANDO)) {
+            gState.mapState.s.field_0x13 = 2;
             evt->state = 11;
             return;
          }
@@ -481,7 +481,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         gState.mapState.n.field_0x13 = 2;
+         gState.mapState.s.field_0x13 = 2;
          SetupBattleMsgBox(UNIT_LANDO, PORTRAIT_LANDO_514, 19);
          evt->state2++;
          break;
@@ -510,7 +510,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
       case 2:
          if (gState.msgFinished) {
             gState.field_0x96 = 1;
-            gState.mapState.n.field_0x0++;
+            gState.mapState.s.field_0x0++;
             evt->state2++;
          }
          break;
@@ -539,7 +539,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
       case 2:
          if (gState.msgFinished) {
             gState.field_0x96 = 1;
-            gState.mapState.n.field_0x0++;
+            gState.mapState.s.field_0x0++;
             evt->state2++;
          }
          break;
@@ -568,7 +568,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
       case 2:
          if (gState.msgFinished) {
             gState.field_0x96 = 1;
-            gState.mapState.n.field_0x0++;
+            gState.mapState.s.field_0x0++;
             evt->state2++;
          }
          break;
@@ -591,7 +591,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
       case 1:
          if (gState.msgFinished) {
             gState.field_0x96 = 1;
-            gState.mapState.n.field_0x0++;
+            gState.mapState.s.field_0x0++;
             evt->state2++;
          }
          break;
@@ -609,7 +609,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          PerformAudioCommand(0x131c);
-         gState.mapState.n.field_0x0 = 2;
+         gState.mapState.s.field_0x0 = 2;
          SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_HAPPY, 16);
 
          // Find an open tile for Xeno to spawn onto
@@ -784,7 +784,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         gState.mapState.n.field_0x13 = 1;
+         gState.mapState.s.field_0x13 = 1;
          SetupBattleMsgBox(UNIT_SABINA, PORTRAIT_SABINA, 20);
          evt->state2++;
          break;
@@ -805,7 +805,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
             ix = pSpawn->x;
 
             while (gMapUnitsPtr[iz][ix].s.team != TEAM_NULL ||
-                   gTerrainPtr[iz][ix].terrain >= TERRAIN_BARREN) {
+                   gTerrainPtr[iz][ix].s.terrain >= TERRAIN_BARREN) {
                iz++;
                if (iz == 16) {
                   iz = 0;
@@ -894,7 +894,7 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
                return;
             }
          }
-         if (gState.turn == 3 && gState.mapState.n.field_0x0 == 0) {
+         if (gState.turn == 3 && gState.mapState.s.field_0x0 == 0) {
             // Call attention to drawbridge switch
             evt->state = 11;
             return;
@@ -939,15 +939,15 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
          }
       }
       if (gState.mapNum == 26) {
-         if (gState.turn == 2 && gState.mapState.n.field_0x13 == 0) {
+         if (gState.turn == 2 && gState.mapState.s.field_0x13 == 0) {
             evt->state = 18;
             return;
          }
-         if (gState.turn == 3 && gState.mapState.n.field_0x13 == 0) {
+         if (gState.turn == 3 && gState.mapState.s.field_0x13 == 0) {
             evt->state = 19;
             return;
          }
-         if (gState.turn == 4 && gState.mapState.n.field_0x13 == 0) {
+         if (gState.turn == 4 && gState.mapState.s.field_0x13 == 0) {
             evt->state = 20;
             return;
          }
@@ -1873,7 +1873,7 @@ void Evtf003_BattleActions(EvtData *evt) {
          gState.searchZ = HI(EVT.unitZ);
          s_hiddenItem_801231f0 = ITEM_NULL;
          i = gState.mapNum;
-         if (!gState.mapState.n.foundHiddenItem1 && gState.searchZ == gMapHiddenItems[i][0].z &&
+         if (!gState.mapState.s.foundHiddenItem1 && gState.searchZ == gMapHiddenItems[i][0].z &&
              gState.searchX == gMapHiddenItems[i][0].x) {
             s_hiddenItem_801231f0 = gMapHiddenItems[i][0].item;
             if (unit->items[0] == ITEM_NULL) {
@@ -1886,9 +1886,9 @@ void Evtf003_BattleActions(EvtData *evt) {
                gState.depot[s_hiddenItem_801231f0]++;
                s_hiddenItemSentToDepot_801231f4 = 1;
             }
-            gState.mapState.n.foundHiddenItem1 = 1;
+            gState.mapState.s.foundHiddenItem1 = 1;
             evt->state2++;
-         } else if (!gState.mapState.n.foundHiddenItem2 &&
+         } else if (!gState.mapState.s.foundHiddenItem2 &&
                     gState.searchZ == gMapHiddenItems[i][1].z &&
                     gState.searchX == gMapHiddenItems[i][1].x) {
             s_hiddenItem_801231f0 = gMapHiddenItems[i][1].item;
@@ -1902,7 +1902,7 @@ void Evtf003_BattleActions(EvtData *evt) {
                gState.depot[s_hiddenItem_801231f0]++;
                s_hiddenItemSentToDepot_801231f4 = 1;
             }
-            gState.mapState.n.foundHiddenItem2 = 1;
+            gState.mapState.s.foundHiddenItem2 = 1;
             evt->state2++;
          } else {
             evt->state2 += 4;
@@ -2329,7 +2329,7 @@ void Evtf003_BattleActions(EvtData *evt) {
          gClearSavedPadState = 1;
          gState.mapCursorOutOfRange = 0;
          evt2 = unit->evtSprite;
-         if (SPR_TERRAIN(evt2).terrain == TERRAIN_VILE_BOG) {
+         if (SPR_TERRAIN(evt2).s.terrain == TERRAIN_VILE_BOG) {
             unit->poisoned = 1;
          }
          if (gState.droppedItem != ITEM_NULL) {
@@ -2351,9 +2351,9 @@ void Evtf003_BattleActions(EvtData *evt) {
 
       case 2:
          unit->done++;
-         if (gState.mapNum == 26 && gState.mapState.n.field_0x13 == 0) {
+         if (gState.mapNum == 26 && gState.mapState.s.field_0x13 == 0) {
             // Moved during ambush (Reed Highway)
-            gState.mapState.n.field_0x13 = 1;
+            gState.mapState.s.field_0x13 = 1;
          }
          evt->state++;
          break;
@@ -2983,8 +2983,8 @@ void Evtf030_FieldInfo(EvtData *evt) {
       break;
 
    case 1:
-      if (EVT.previousTerrain != gTerrainPtr[gMapCursorZ][gMapCursorX].terrain) {
-         EVT.previousTerrain = gTerrainPtr[gMapCursorZ][gMapCursorX].terrain;
+      if (EVT.previousTerrain != gTerrainPtr[gMapCursorZ][gMapCursorX].s.terrain) {
+         EVT.previousTerrain = gTerrainPtr[gMapCursorZ][gMapCursorX].s.terrain;
          DrawText(396, 11, 25, 0, 0, terrainText[EVT.previousTerrain]);
       }
       if (gPlayerControlSuppressed || gIsEnemyTurn || gState.inEvent || gClearSavedPadState) {
@@ -3237,7 +3237,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
             PerformAudioCommand(0x388);
             unitSprite->d.sprite.hidden = 1;
             SPR_TILE_STATE(unitSprite).cachedByte = 0;
-            gState.mapState.n.field_0x0 = 2;
+            gState.mapState.s.field_0x0 = 2;
             gState.field_0x96 = 1;
             evt->state2++;
          }
@@ -3294,9 +3294,9 @@ void Evtf013_BattleMgr(EvtData *evt) {
             SPR_TILE_STATE(unitSprite).cachedByte = 0;
             PerformAudioCommand(0x389);
             gState.field_0x96 = 1;
-            gState.mapState.n.field_0x0 = 1;
-            gState.mapState.n.field_0x1 = gZ_801233dc;
-            gState.mapState.n.field_0x2 = gX_801233d8;
+            gState.mapState.s.field_0x0 = 1;
+            gState.mapState.s.field_0x1 = gZ_801233dc;
+            gState.mapState.s.field_0x2 = gX_801233d8;
             evt->state2++;
          }
          break;
@@ -3669,7 +3669,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          evt1 = unit->evtSprite;
-         if (SPR_TERRAIN(evt1).terrain == TERRAIN_VILE_BOG) {
+         if (SPR_TERRAIN(evt1).s.terrain == TERRAIN_VILE_BOG) {
             unit->poisoned = 1;
          }
          if (gState.droppedItem != ITEM_NULL) {
@@ -3709,11 +3709,11 @@ void Evtf013_BattleMgr(EvtData *evt) {
       break;
 
    case 101:
-      if (gState.mapState.n.field_0x0 != 2 &&
+      if (gState.mapState.s.field_0x0 != 2 &&
           (HI(unitSprite->d.sprite.z1) == 11 && HI(unitSprite->d.sprite.x1) == 16)) {
          SetupBattleMsgBox(UNIT_LEENA, PORTRAIT_LEENA, 17);
          evt->state++;
-      } else if (gState.mapState.n.field_0x0 != 3 &&
+      } else if (gState.mapState.s.field_0x0 != 3 &&
                  (HI(unitSprite->d.sprite.z1) == 2 && HI(unitSprite->d.sprite.x1) == 10)) {
          SetupBattleMsgBox(UNIT_LEENA, PORTRAIT_LEENA, 18);
          evt->state++;
@@ -3730,9 +3730,9 @@ void Evtf013_BattleMgr(EvtData *evt) {
    case 103:
       if (gState.msgFinished) {
          if (HI(unitSprite->d.sprite.z1) == 11) {
-            gState.mapState.n.field_0x0 = 2;
+            gState.mapState.s.field_0x0 = 2;
          } else {
-            gState.mapState.n.field_0x0 = 3;
+            gState.mapState.s.field_0x0 = 3;
          }
          gState.field_0x96 = 1;
          EVT.timer = 60;

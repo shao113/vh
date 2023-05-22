@@ -35,7 +35,7 @@ void Evtf035_MapObject_Tree(EvtData *evt) {
       EVT.param = 0;
       LO(EVT.x) = 0x80;
       LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_NO_ENTRY;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
       gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
           (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 4;
       SetElevationFromTerrain(evt);
@@ -58,7 +58,7 @@ void Evtf036_MapObject_GraveMarker(EvtData *evt) {
       EVT.param = 0;
       LO(EVT.x) = 0x80;
       LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_NO_ENTRY;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
       gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
           (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 3;
       SetElevationFromTerrain(evt);
@@ -82,7 +82,7 @@ void Evtf415_MapObject_Torch(EvtData *evt) {
       LO(EVT.x) = 0x80;
       LO(EVT.z) = 0x80;
       EVT.animData = torchAnimData;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_NO_ENTRY;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
       gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
           (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 3;
       SetElevationFromTerrain(evt);
@@ -108,7 +108,7 @@ void Evtf037_MapObject_Fountain(EvtData *evt) {
       EVT.animData = fountainAnimData;
       LO(EVT.x) = 0x80;
       LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_NO_ENTRY;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
       SetElevationFromTerrain(evt);
       evt->state++;
       break;
@@ -130,7 +130,7 @@ void Evtf038_MapObject_LampPost(EvtData *evt) {
       EVT.gfxIdx = GFX_LAMP_POST;
       LO(EVT.x) = 0x80;
       LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_NO_ENTRY;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
       gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
           (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 5;
       SetElevationFromTerrain(evt);
@@ -154,7 +154,7 @@ void Evtf039_MapObject_Flag(EvtData *evt) {
       EVT.animData = flagAnimData;
       LO(EVT.x) = 0x80;
       LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_NO_ENTRY;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
       gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
           (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 6;
       SetElevationFromTerrain(evt);
@@ -207,7 +207,7 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
    // fallthrough
    case 1:
       if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_BOULDER_PUSHED) {
-         if (gState.mapNum == 40 && gState.mapState.n.field_0x0 == 0) {
+         if (gState.mapNum == 40 && gState.mapState.s.field_0x0 == 0) {
             PerformAudioCommand(0x1370);
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_AUDIO_CMD;
@@ -286,13 +286,13 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
 
    case 3:
       newEvt = Evt_GetUnused();
-      if (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain == TERRAIN_WATER ||
-          gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain == TERRAIN_LAVA) {
+      if (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain == TERRAIN_WATER ||
+          gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain == TERRAIN_LAVA) {
          newEvt->functionIndex = EVTF_PUSHED_OBJECT_SPLASH;
          PerformAudioCommand(0x5ea);
       } else {
          newEvt->functionIndex = EVTF_BOULDER_RUBBLE;
-         if (!(gState.mapNum == 40 && gState.mapState.n.field_0x0 == 0)) {
+         if (!(gState.mapNum == 40 && gState.mapState.s.field_0x0 == 0)) {
             PerformAudioCommand(0x36f);
          }
       }
@@ -305,9 +305,9 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
 
    // fallthrough
    case 4:
-      if (gState.mapNum == 40 && gState.mapState.n.field_0x0 == 0) {
+      if (gState.mapNum == 40 && gState.mapState.s.field_0x0 == 0) {
          // Destroyed barricade
-         gState.mapState.n.field_0x0 = 1;
+         gState.mapState.s.field_0x0 = 1;
          gState.field_0x96 = 1;
          EVT.timer = 120;
          evt->state++;
@@ -340,7 +340,7 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
    }
 
    if (evt->state != 1) {
-      EVT.y += (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].elevation * 0x80 - EVT.y) >> 2;
+      EVT.y += (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.elevation * 0x80 - EVT.y) >> 2;
    }
 
    if (shouldDraw) {
@@ -474,9 +474,9 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       UpdateCrateElevation(evt);
       EVT.y += gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)] * 0x100;
       EVT.stack = ++gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)];
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].elevation += 2;
-      EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_PLAINS;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.elevation += 2;
+      EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_PLAINS;
       evt->state++;
 
    // fallthrough
@@ -491,7 +491,7 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
             } else {
                gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_CRATE_PUSHED;
                gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)]--;
-               gTerrainPtr[HI(EVT.z)][HI(EVT.x)].elevation -= 2;
+               gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.elevation -= 2;
                evt->state += 2;
                evt->state2 = 0;
             }
@@ -538,7 +538,7 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       case 0:
          if (EVT.terrain != TERRAIN_PLAINS) {
             if (gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)] == 0) {
-               gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = EVT.terrain;
+               gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = EVT.terrain;
             } else {
                evt1 = gEvtDataArray;
                for (i = 0; i < EVT_DATA_CT; i++) {
@@ -622,8 +622,8 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       break;
 
    case 5:
-      if (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain == TERRAIN_WATER ||
-          gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain == TERRAIN_LAVA) {
+      if (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain == TERRAIN_WATER ||
+          gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain == TERRAIN_LAVA) {
          PerformAudioCommand(0x5ea);
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_PUSHED_OBJECT_SPLASH;
@@ -634,10 +634,10 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
          evt1->d.sprite.y2 = 0x100;
          evt->functionIndex = EVTF_NULL;
       } else {
-         EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain;
-         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_PLAINS;
+         EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain;
+         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_PLAINS;
          EVT.stack = ++gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)];
-         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].elevation += 2;
+         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.elevation += 2;
          evt->state = 1;
       }
       break;
@@ -681,7 +681,8 @@ s32 ScanForCrateDestination(EvtData *evt) {
       unitHeight = 0;
    }
 
-   if (gTerrainPtr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].terrain == TERRAIN_NO_ENTRY) {
+   if (gTerrainPtr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].s.terrain ==
+       TERRAIN_NO_ENTRY) {
       HI(evt->d.evtf046.dstX) -= dx;
       HI(evt->d.evtf046.dstZ) -= dz;
       evt->d.evtf046.dstY = evt->d.evtf046.y;
@@ -781,12 +782,13 @@ s32 ScanForBoulderDestination(EvtData *evt) {
          return hasRoom;
       }
 
-      if (gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].terrain == TERRAIN_WATER ||
-          gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].terrain == TERRAIN_LAVA) {
+      if (gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.terrain ==
+              TERRAIN_WATER ||
+          gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.terrain == TERRAIN_LAVA) {
          return 1;
       }
 
-      elevation = gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].elevation * 128;
+      elevation = gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.elevation * 128;
       hasRoom = 1;
    }
 }
@@ -806,7 +808,7 @@ void Evtf020_PushedBoulder(EvtData *evt) {
    switch (evt->state) {
    case 0:
       gPlayerControlSuppressed = 1;
-      if (gState.mapNum == 40 && gState.mapState.n.field_0x0 == 0) {
+      if (gState.mapNum == 40 && gState.mapState.s.field_0x0 == 0) {
          PerformAudioCommand(0x1370);
       } else {
          PerformAudioCommand(0x136f);
@@ -969,8 +971,8 @@ void Evtf048_Push(EvtData *evt) {
       if ((gPadStateNewPresses & PAD_CIRCLE) &&
           gMapUnitsPtr[targetZ][targetX].s.team == TEAM_BOULDER) {
 
-         i = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].elevation -
-             gTerrainPtr[targetZ][targetX].elevation;
+         i = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].s.elevation -
+             gTerrainPtr[targetZ][targetX].s.elevation;
          //?
          if (i + 1U < 3) {
             gTileStateGridPtr[targetZ][targetX].cachedShort = gSignal4;
@@ -995,10 +997,10 @@ void Evtf048_Push(EvtData *evt) {
           gCrateGrid_Ptr[targetZ][targetX] != 0x7f) {
          // TODO: Clean-up.
          //@2a68
-         tmp2 = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].elevation + 2;
-         targetElevation = gTerrainPtr[targetZ][targetX].elevation;
+         tmp2 = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].s.elevation + 2;
+         targetElevation = gTerrainPtr[targetZ][targetX].s.elevation;
 
-         if (gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].elevation >=
+         if (gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].s.elevation >=
              targetElevation - gCrateGrid_Ptr[targetZ][targetX] * 2 - 1) {
 
             if (tmp2 - 1 <= targetElevation) {
@@ -1144,8 +1146,8 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
    case 0:
       EVT.item = EVT.item;
       gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team = TEAM_CHEST;
-      EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = TERRAIN_OBSTACLE;
+      EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain;
+      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_OBSTACLE;
       LO(EVT.x) = 0x80;
       LO(EVT.z) = 0x80;
       EVT.y = GetTerrainElevation(HI(EVT.z), HI(EVT.x));
@@ -1162,7 +1164,7 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
 
    case 1:
       if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_CHEST_1) {
-         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].terrain = EVT.terrain;
+         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = EVT.terrain;
          gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team = TEAM_NULL;
          EVT.lidAngleVel = -0xc0;
          evt->mem = 3;

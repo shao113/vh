@@ -213,14 +213,29 @@ typedef enum GfxIdx {
    GFX_MAP_TEXTURE_1 = 401,
    GFX_MAP_TEXTURE_4 = 404,
    GFX_MAP_TEXTURE_5 = 405,
+   GFX_MAP_TEXTURE_6 = 406,
    GFX_MAP_TEXTURE_7 = 407,
+   GFX_MAP_TEXTURE_8 = 408,
+   GFX_MAP_TEXTURE_12 = 412,
+   GFX_MAP_TEXTURE_18 = 418,
+   GFX_MAP_TEXTURE_19 = 419,
    GFX_MAP_TEXTURE_21 = 421,
    GFX_MAP_TEXTURE_23 = 423,
+   GFX_MAP_TEXTURE_25 = 425,
+   GFX_MAP_TEXTURE_28 = 428,
    GFX_MAP_TEXTURE_51 = 451,
    GFX_MAP_TEXTURE_52 = 452,
+   GFX_MAP_TEXTURE_54 = 454,
+   GFX_MAP_TEXTURE_55 = 455,
+   GFX_MAP_TEXTURE_56 = 456,
+   GFX_MAP_TEXTURE_62 = 462,
    GFX_MAP_TEXTURE_90 = 490,
    GFX_MAP_TEXTURE_128 = 528,
    GFX_MAP_TEXTURE_198 = 598,
+   GFX_MAP_TEXTURE_206 = 606,
+   GFX_MAP_TEXTURE_207 = 607,
+   GFX_MAP_TEXTURE_212 = 612,
+   GFX_MAP_TEXTURE_229 = 629,
    GFX_WINDOW_TBD_657 = 657,
    GFX_WINDOW_TBD_658 = 658,
    GFX_TBD_685 = 685,
@@ -321,6 +336,7 @@ typedef enum PortraitId {
    PORTRAIT_SARA = 64,
    PORTRAIT_SARA_HAPPY = 66,
    PORTRAIT_ZOHAR = 71,
+   PORTRAIT_END_OF_PARTY = 431,
    PORTRAIT_ZOOT_449 = 449,
    PORTRAIT_C_KNIGHT = 463,
    PORTRAIT_HASSAN_INJURED = 478,
@@ -404,8 +420,11 @@ typedef enum PortraitId {
    PORTRAIT_690 = 690,
 } PortraitId;
 
-typedef struct PortraitOverlayOffsets {
-   u8 blinkX, blinkY, speakX, speakY;
+typedef union PortraitOverlayOffsets {
+   struct {
+      u8 blinkX, blinkY, speakX, speakY;
+   } s;
+   u8 bytes[4];
 } PortraitOverlayOffsets;
 
 typedef struct PortraitsDb {
@@ -433,12 +452,13 @@ extern RECT gTempRect;
 // For each idx of gCurrentUnitSet, stores the corresponding idx of gEncodedUnitSpriteData
 extern s16 gUnitSetEncodedSpriteDataIdx[20];
 extern void *gEncodedUnitSpriteData[20];
-extern u16 gSpriteStripClutIds[25];
+extern s16 gSpriteStripClutIds[25];
 extern s16 gSpriteStripTPageCells[50];
 extern s16 gSpriteStripTPageIds[50];
 extern s16 gSpriteStripUnitIds[23];
 extern s16 gSceneSpriteStripUnitIds[105][20];
 extern u8 **gSpriteStripAnimSets[25];
+extern u8 **gUnitAnimSets[UNIT_DB_CT];
 extern u8 gUnitClutIds[492];
 
 // Mix of 48x48 and 64x48 px frames (tpages 11 & 27); wider frames allow for e.g. slash animations
@@ -449,17 +469,17 @@ extern TextureWindow gTexwSpriteStripFrames[25];
 extern TextureWindow gTexwWideSpriteSetFrames[10];
 
 // Hard-coded values start as indices into gClutIds & are replaced w/ actual CLUT IDs in SetupGfx()
-extern u16 gGfxClutIds[GFX_CT];
-extern u16 gGfxTPageIds[GFX_CT];
+extern s16 gGfxClutIds[GFX_CT];
+extern s16 gGfxTPageIds[GFX_CT];
 extern s16 gGfxTPageCells[GFX_CT];
 extern TextureWindow gGfxSubTextures[GFX_CT];
 // extern u16 gTPageIds[4][32];
-extern u16 gTPageIds[128];
+extern s16 gTPageIds[128];
 
 // ?: Going off of the loop at {@addr 0x8005cd94}, this should
 // have 128 elements, but the last few bytes ({@addr 0x8014014c})
 // are used in a completely unrelated manner: {@addr 800c471c}
-extern u16 gClutIds[124];
+extern s16 gClutIds[124];
 
 extern PortraitOverlayOffsets gPortraitOverlayOffsetsDb[692];
 extern PortraitsDb gPortraitsDb;

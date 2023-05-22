@@ -346,8 +346,8 @@ void Evtf404_AI_TBD(EvtData *evt) {
                }
 
                i = (gPathGrid6_Ptr[iz][ix] * 10) -
-                   (gTerrainPreference[gTerrainPtr[iz][ix].terrain] / 100) +
-                   -(gTerrainPtr[iz][ix].elevation * 10);
+                   (gTerrainPreference[gTerrainPtr[iz][ix].s.terrain] / 100) +
+                   -(gTerrainPtr[iz][ix].s.elevation * 10);
                if (s_pref_80123314 > i) {
                   s_pref_80123314 = i;
                   s_z_80123318 = iz;
@@ -435,11 +435,11 @@ void Evtf589_AI_TBD(EvtData *evt) {
       if (gState.mapNum == 39) {
          iz = 11;
          ix = 16;
-         if (gTerrainPtr[2][10].terrain == TERRAIN_PLAINS) {
+         if (gTerrainPtr[2][10].s.terrain == TERRAIN_PLAINS) {
             iz = 2;
             ix = 10;
          }
-         if (gTerrainPtr[7][7].terrain == TERRAIN_PLAINS) {
+         if (gTerrainPtr[7][7].s.terrain == TERRAIN_PLAINS) {
             iz = 6;
             ix = 3;
          }
@@ -454,7 +454,7 @@ void Evtf589_AI_TBD(EvtData *evt) {
                PVar4 = gPathGrid6_Ptr[i][47];
             }
          }
-         if (gState.mapState.n.field_0x13 != 0) {
+         if (gState.mapState.s.field_0x13 != 0) {
             for (i = 0; i < 12; i++) {
                if (PVar4 < gPathGrid6_Ptr[i][0]) {
                   iz = i;

@@ -450,8 +450,7 @@ void DisplaySupporterBonus(u8 z, u8 x, u8 attackerZ, u8 attackerX, u8 team) {
 }
 
 s16 CalculateAttackDamage(UnitStatus *attacker, UnitStatus *defender) {
-   // FIXME: Fake match (forced register)
-   // Also gExperienceLevels[n-2] etc results in negative addends, requiring the same fixup as large
+   // gExperienceLevels[n-2] etc results in negative addends, requiring the same fixup as large
    // addends to match
    EvtData *attackerSprite, *defenderSprite;
    u8 ax, az, dx, dz;
@@ -490,9 +489,10 @@ s16 CalculateAttackDamage(UnitStatus *attacker, UnitStatus *defender) {
 
    // High-ground bonus
    if (attacker->class == CLASS_ARCHER) {
-      resist -= (SPR_TERRAIN(attackerSprite).elevation - SPR_TERRAIN(defenderSprite).elevation);
+      resist -= (SPR_TERRAIN(attackerSprite).s.elevation - SPR_TERRAIN(defenderSprite).s.elevation);
    } else {
-      resist -= (SPR_TERRAIN(attackerSprite).elevation - SPR_TERRAIN(defenderSprite).elevation) * 3;
+      resist -=
+          (SPR_TERRAIN(attackerSprite).s.elevation - SPR_TERRAIN(defenderSprite).s.elevation) * 3;
    }
 
    // Direction bonus
@@ -531,26 +531,21 @@ s16 CalculateAttackDamage(UnitStatus *attacker, UnitStatus *defender) {
 
    // Level disparity bonus
    levelDiff = (attacker->level + attacker->atkBoosted) - (defender->level + defender->defBoosted);
-   {
-      // FIXME
-      register s16 tmp asm("v0");
-      // s16 tmp;
 
-      if (levelDiff > 0) {
-         tmp = -gLevelDisparityBonus[levelDiff] + resist;
-      } else {
-         tmp = gLevelDisparityBonus[-levelDiff] + resist;
+   if (levelDiff > 0) {
+      resist -= gLevelDisparityBonus[levelDiff];
+      if (resist < 1) {
+         resist = 1;
       }
-      resist = tmp;
-
-      //@a3c
-      if (tmp < 1) {
+   } else {
+      resist += gLevelDisparityBonus[-levelDiff];
+      if (resist < 1) {
          resist = 1;
       }
    }
 
    power = attacker->atkVar10000 + (100000 / resist);
-   damage = power - (defender->defVar10000 + gTerrainBonus[SPR_TERRAIN(defenderSprite).terrain]);
+   damage = power - (defender->defVar10000 + gTerrainBonus[SPR_TERRAIN(defenderSprite).s.terrain]);
 
    if (damage <= 0) {
       damage = 100;
@@ -1231,18 +1226,18 @@ void ApplyAirmanAdjustments(u8 team) {
    for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
       for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
          gTileStateGridPtr[iz][ix].cachedShort = gMapUnitsPtr[iz][ix].raw;
-         gTileStateGridPtr[iz][ix].cachedByte = gTerrainPtr[iz][ix].terrain;
+         gTileStateGridPtr[iz][ix].cachedByte = gTerrainPtr[iz][ix].s.terrain;
 
          if (gMapUnitsPtr[iz][ix].s.unitIdx != 0 && gMapUnitsPtr[iz][ix].s.team != team) {
             gMapUnitsPtr[iz][ix].raw = 0;
 
-            if (gTerrainPtr[iz][ix].terrain == TERRAIN_BOUNDARY) {
-               gTerrainPtr[iz][ix].terrain = TERRAIN_10;
+            if (gTerrainPtr[iz][ix].s.terrain == TERRAIN_BOUNDARY) {
+               gTerrainPtr[iz][ix].s.terrain = TERRAIN_10;
             } else {
-               gTerrainPtr[iz][ix].terrain = TERRAIN_OBSTACLE;
+               gTerrainPtr[iz][ix].s.terrain = TERRAIN_OBSTACLE;
             }
          }
-         if (gTerrainPtr[iz][ix].terrain == TERRAIN_OBSTACLE) {
+         if (gTerrainPtr[iz][ix].s.terrain == TERRAIN_OBSTACLE) {
             gMapUnitsPtr[iz][ix].s.team = TEAM_NULL;
          }
       }
@@ -1255,7 +1250,7 @@ void RevertAirmanAdjustments(void) {
    for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
       for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
          gMapUnitsPtr[iz][ix].raw = gTileStateGridPtr[iz][ix].cachedShort;
-         gTerrainPtr[iz][ix].terrain = gTileStateGridPtr[iz][ix].cachedByte;
+         gTerrainPtr[iz][ix].s.terrain = gTileStateGridPtr[iz][ix].cachedByte;
       }
    }
 }

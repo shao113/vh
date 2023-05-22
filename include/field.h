@@ -18,9 +18,13 @@ typedef enum TerrainType {
    TERRAIN_10 = 10
 } TerrainType;
 
-typedef struct TerrainTile {
-   s8 elevation;
-   s8 terrain;
+typedef union TerrainTile {
+   s8 bytes[2];
+   s16 raw;
+   struct {
+      s8 elevation;
+      s8 terrain;
+   } s;
 } TerrainTile;
 
 /* Crates, Boulders, ... */
@@ -50,7 +54,7 @@ typedef struct MapTileModel {
    s16 gfx[18];
    s8 faces[18][4];
    s8 shades[18]; // TBD
-   s8 faceCt;
+   u8 faceCt;
    u8 height;
 } MapTileModel;
 
@@ -78,41 +82,16 @@ typedef struct HiddenItem {
 
 // ?: a PathGrid can contain PathStep (direction), num steps from start, ...
 typedef u8 PathGridRow[65];
+
 extern PathGridRow gPathGrid0[30];
 extern PathGridRow gPathGrid1[30];
-// extern PathGridRow gPathGrid0_1[29];
-// extern PathGridRow gPathGrid1_1[29];
 extern PathGridRow gPathGrid2[30];
 extern PathGridRow gPathGrid3[30];
 extern PathGridRow gPathGrid4[30];
 extern PathGridRow gPathGrid5[30];
 extern PathGridRow gPathGrid6[30];
 extern PathGridRow gPathGrid10[30];
-
-extern ImpededStep gImpededSteps[5][50];
-extern ImpededStep *gImpededStepsQueue[5];
-extern s8 gTravelTerrainImped[14][11]; // [stepping-type][terrain-type]
-extern s8 gTravelAscentImped[14][20];  // [stepping-type][elevation-diff]
-extern s8 gTravelDescentImped[14][20];
-extern s8 gTravelRange[14];
-extern u8 gPathBackToUnit[300];
-
-extern s16 gTerrainBonus[];
-extern s16 gTerrainPreference[];
-extern TerrainTile (*gTerrainPtr)[65];
-extern MapUnit (*gMapUnitsPtr)[65];
-extern u8 *gMapDataPtr;
-extern MapTileModel *gMapRowPointers[28];
-extern s16 gMapCursorX, gMapCursorZ;
-extern s16 gMapMinX, gMapMinZ, gMapMaxX, gMapMaxZ;
-extern s16 gMapMarginX, gMapMarginZ;
-extern s16 gMapSizeX, gMapSizeZ;
-extern VECTOR gMapScale;
-extern s32 D_80122E28, D_80122E2C;
-extern u8 gOverheadMapState;
-extern BVectorZXY gMapCursorStartingPos[BATTLE_CT];
-extern HiddenItem gMapHiddenItems[BATTLE_CT][2];
-extern u8 gShowBlueMovementGrid;
+extern PathGridRow gCrateGrid[30];
 
 extern PathGridRow *gRedAttackGridPtr;
 extern PathGridRow *gYellowTargetGridPtr;
@@ -125,5 +104,33 @@ extern PathGridRow *gPathGrid4_Ptr;
 extern PathGridRow *gPathGrid5_Ptr;
 extern PathGridRow *gPathGrid6_Ptr;
 extern PathGridRow *gCrateGrid_Ptr;
+
+extern ImpededStep gImpededSteps[5][50];
+extern ImpededStep *gImpededStepsQueue[5];
+extern s8 gTravelTerrainImped[14][11]; // [stepping-type][terrain-type]
+extern s8 gTravelAscentImped[14][20];  // [stepping-type][elevation-diff]
+extern s8 gTravelDescentImped[14][20];
+extern s8 gTravelRange[14];
+extern u8 gPathBackToUnit[300];
+
+extern s16 gTerrainBonus[];
+extern s16 gTerrainPreference[];
+extern TerrainTile gTerrain[30][65];
+extern TerrainTile (*gTerrainPtr)[65];
+extern MapUnit gMapUnits[30][65];
+extern MapUnit (*gMapUnitsPtr)[65];
+extern u8 *gMapDataPtr;
+extern MapTileModel *gMapRowPointers[28];
+extern s16 gMapCursorX, gMapCursorZ;
+extern s16 gMapMinX, gMapMinZ, gMapMaxX, gMapMaxZ;
+extern s16 gMapMarginX, gMapMarginZ;
+extern s16 gMapSizeX, gMapSizeZ;
+extern s16 gMapDataSizeX, gMapDataSizeZ;
+extern VECTOR gMapScale;
+extern s32 D_80122E28, D_80122E2C;
+extern u8 gOverheadMapState;
+extern BVectorZXY gMapCursorStartingPos[BATTLE_CT];
+extern HiddenItem gMapHiddenItems[BATTLE_CT][2];
+extern u8 gShowBlueMovementGrid;
 
 #endif

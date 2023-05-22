@@ -123,7 +123,7 @@ void PopulateMeleeAttackGridInDir(s16 attackerZ, s16 attackerX, s16 targetZ, s16
        (targetZ >= gMapMinZ && targetZ <= gMapMaxZ && targetX >= gMapMinX && targetX <= gMapMaxX)) {
 
       elevationDiff =
-          gTerrainPtr[targetZ][targetX].elevation - gTerrainPtr[attackerZ][attackerX].elevation;
+          gTerrainPtr[targetZ][targetX].s.elevation - gTerrainPtr[attackerZ][attackerX].s.elevation;
       if (elevationDiff < 0) {
          elevationDiff = -elevationDiff;
       }
@@ -189,7 +189,7 @@ void PopulateCastingGrid(s16 z, s16 x, s32 range, s32 gridNum) {
 
    if (z >= gMapMinZ && z <= gMapMaxZ && x >= gMapMinX && x <= gMapMaxX) {
 
-      srcElevation = gTerrainPtr[z][x].elevation;
+      srcElevation = gTerrainPtr[z][x].s.elevation;
 
       switch (gridNum) {
       case 0:
@@ -297,7 +297,7 @@ void PopulateCastingGrid(s16 z, s16 x, s32 range, s32 gridNum) {
          for (i = gMapMinZ; i <= gMapMaxZ; i++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (pGrid[i][ix] != PATH_STEP_UNSET) {
-                  elevationDiff = gTerrainPtr[i][ix].elevation - srcElevation;
+                  elevationDiff = gTerrainPtr[i][ix].s.elevation - srcElevation;
                   if (elevationDiff < 0) {
                      elevationDiff = -elevationDiff;
                   }

@@ -252,7 +252,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
             SetupBattleMsgBox(UNIT_SABINA, PORTRAIT_SABINA_509, 0x22);
          } else if (unit->name == UNIT_KANE) {
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_ANGRY, 0x23);
-            gState.mapState.n.field_0x12 = 1;
+            gState.mapState.s.field_0x12 = 1;
          } else if (unit->name > UNIT_END_OF_PARTY) {
             gState.msgFinished = 1;
          } else {
@@ -287,13 +287,13 @@ void Evtf014_BattleUnit(EvtData *evt) {
          sprite->d.sprite.x2 = 0x20;
          sprite->d.sprite.z2 = 0x20;
          if (unit->class == CLASS_AIRMAN) {
-            elevation = SPR_TERRAIN(sprite).elevation;
+            elevation = SPR_TERRAIN(sprite).s.elevation;
             i_s0 = EVT.pathIdx;
             while (gPathBackToUnit[i_s0 - 1] != PATH_STEP_INVALID) {
                tmpz = gPathBackToUnit[i_s0 - 2];
                tmpx = gPathBackToUnit[i_s0 - 1];
-               if (gTerrainPtr[tmpz][tmpx].elevation > elevation) {
-                  elevation = gTerrainPtr[tmpz][tmpx].elevation;
+               if (gTerrainPtr[tmpz][tmpx].s.elevation > elevation) {
+                  elevation = gTerrainPtr[tmpz][tmpx].s.elevation;
                }
                i_s0 -= 2;
             }
@@ -629,9 +629,9 @@ void Evtf014_BattleUnit(EvtData *evt) {
          } else {
             EVT.animIdx = ANIM_ATTACKING_B;
          }
-         if (gState.mapNum == 13 && unit->name == UNIT_KIRA && gState.mapState.n.field_0x13 == 0) {
+         if (gState.mapNum == 13 && unit->name == UNIT_KIRA && gState.mapState.s.field_0x13 == 0) {
             evt->state2++;
-            gState.mapState.n.field_0x13 = 1;
+            gState.mapState.s.field_0x13 = 1;
          } else {
             evt->state2 = 4;
          }
@@ -898,13 +898,13 @@ void Evtf014_BattleUnit(EvtData *evt) {
          evt->state2 = 99;
          if (unit->unitType == UNIT_TYPE_MAGE_TOWER) {
             ShowMsgBoxForSprite(sprite, 1, 1);
-            if (gState.mapState.n.field_0x13 < 2) {
+            if (gState.mapState.s.field_0x13 < 2) {
                SetMsgBoxPortrait(PORTRAIT_ASH_UPSET, 1);
             } else {
                SetMsgBoxPortrait(PORTRAIT_ASH_ANGRY, 1);
             }
-            SetMsgBoxText(2, gState.mapState.n.field_0x13 + 15, 0x100);
-            gState.mapState.n.field_0x13++;
+            SetMsgBoxText(2, gState.mapState.s.field_0x13 + 15, 0x100);
+            gState.mapState.s.field_0x13++;
             evt->state2 = 98;
          } else {
             ShowMsgBoxForSprite(sprite, 0, 0);
@@ -930,12 +930,12 @@ void Evtf014_BattleUnit(EvtData *evt) {
             if (unit->unitType == UNIT_TYPE_VILLAGER) {
                i_s0 = gUnitPortraitIds[unit->unitId] + 1;
                evt->state2 = 98;
-               gState.mapState.n.field_0x13++;
+               gState.mapState.s.field_0x13++;
                textPtrIdx = 13;
-               if (gState.mapState.n.field_0x13 == 1) {
+               if (gState.mapState.s.field_0x13 == 1) {
                   evt->state2 = 2;
                }
-               if (gState.mapState.n.field_0x13 == 9) {
+               if (gState.mapState.s.field_0x13 == 9) {
                   evt->state2 = 3;
                }
             }
@@ -1001,14 +1001,14 @@ void Evtf014_BattleUnit(EvtData *evt) {
                if (unit->name == UNIT_KANE) {
                   i_s0 = PORTRAIT_KANE_INJURED;
                   textPtrIdx = 16;
-                  gState.mapState.n.field_0x12 = 1;
+                  gState.mapState.s.field_0x12 = 1;
                   evt->state2 = 4;
                }
                if (unit->name == UNIT_SABINA) {
                   i_s0 = PORTRAIT_SABINA_509;
                   evt->state2 = 98;
                   textPtrIdx = 18;
-                  if (gState.mapState.n.field_0x13 != 0 && gState.mapState.n.field_0x12 == 0) {
+                  if (gState.mapState.s.field_0x13 != 0 && gState.mapState.s.field_0x12 == 0) {
                      evt->state2 = 5;
                   }
                }
@@ -1507,7 +1507,7 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
       if (sprite->d.sprite.y1 < sprite->d.sprite.y3) {
          sprite->state++;
       } else {
-         if ((gTerrainPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].elevation * 128 <
+         if ((gTerrainPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].s.elevation * 128 <
               sprite->d.sprite.y1) &&
              (gPathBackToUnit[battler->d.evtf014.pathIdx - 1] == PATH_STEP_INVALID)) {
             sprite->state += (sprite->d.sprite.direction >> 9) + 3;
@@ -1596,7 +1596,7 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
    case 11:
    HandleState11:
       sprite->d.sprite.y3 =
-          gTerrainPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].elevation * 128;
+          gTerrainPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].s.elevation * 128;
       sprite->state++;
       break;
 
@@ -2685,12 +2685,12 @@ void Evtf590_BattleTurnTicker(EvtData *evt) {
       switch (gState.mapNum) {
       case 13:
          // Bridge crumbling in sections
-         gState.mapState.n.field_0x0++;
+         gState.mapState.s.field_0x0++;
          evt->state++;
          break;
       case 33:
          // Kira being gradually lowered into lava pit
-         gState.mapState.n.field_0x0++;
+         gState.mapState.s.field_0x0++;
          evt->state++;
          break;
       default:

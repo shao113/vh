@@ -82,8 +82,6 @@ segments:
     - [0x004870, rdata]                        # 0x80014070 (TODO)
     - [0x004a00, .rdata, ai_048570]            # 0x80014200
     - [0x004b90, .rdata, split_0496f8]         # 0x80014390
-    - [0x004c8c, rdata]
-
     - [0x005088, .rdata, fx_0506c0]            # 0x80014888
     - [0x0050a4, rdata]
 
@@ -123,8 +121,6 @@ segments:
     - [0x047ba4, bin]                          # 0x800573a4 Evtf402_AI_TBD (TODO)
     - [0x048570, c, ai_048570]                 # 0x80057d70 Evtf403_AI_TBD ...
     - [0x0496f8, c, split_0496f8]              # 0x80058ef8 ClearPortraitSet ...
-    - [0x04c16c, bin]
-
     - [0x0506c0, c, fx_0506c0]                 # 0x8005fec0 Evtf119_Fx_TBD ...
     - [0x054bc8, bin]
 

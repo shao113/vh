@@ -653,23 +653,23 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
    faceSprite->d.sprite.y3 = EVT.y + 47;
 
    if (!EVT.flipped) {
-      speakSprite->d.sprite.x1 = EVT.x + gPortraitOverlayOffsets[portrait_u8].speakX;
+      speakSprite->d.sprite.x1 = EVT.x + gPortraitOverlayOffsets[portrait_u8].s.speakX;
       speakSprite->d.sprite.x3 = speakSprite->d.sprite.x1 + 15;
    } else {
-      speakSprite->d.sprite.x1 = EVT.x + 46 - gPortraitOverlayOffsets[portrait_u8].speakX + 1;
+      speakSprite->d.sprite.x1 = EVT.x + 46 - gPortraitOverlayOffsets[portrait_u8].s.speakX + 1;
       speakSprite->d.sprite.x3 = speakSprite->d.sprite.x1 - 15;
    }
-   speakSprite->d.sprite.y1 = EVT.y + gPortraitOverlayOffsets[portrait_u8].speakY;
+   speakSprite->d.sprite.y1 = EVT.y + gPortraitOverlayOffsets[portrait_u8].s.speakY;
    speakSprite->d.sprite.y3 = speakSprite->d.sprite.y1 + 16;
 
    if (!EVT.flipped) {
-      blinkSprite->d.sprite.x1 = EVT.x + gPortraitOverlayOffsets[portrait_u8].blinkX;
+      blinkSprite->d.sprite.x1 = EVT.x + gPortraitOverlayOffsets[portrait_u8].s.blinkX;
       blinkSprite->d.sprite.x3 = blinkSprite->d.sprite.x1 + 15;
    } else {
-      blinkSprite->d.sprite.x1 = EVT.x + 46 - gPortraitOverlayOffsets[portrait_u8].blinkX + 1;
+      blinkSprite->d.sprite.x1 = EVT.x + 46 - gPortraitOverlayOffsets[portrait_u8].s.blinkX + 1;
       blinkSprite->d.sprite.x3 = blinkSprite->d.sprite.x1 - 15;
    }
-   blinkSprite->d.sprite.y1 = EVT.y + gPortraitOverlayOffsets[portrait_u8].blinkY;
+   blinkSprite->d.sprite.y1 = EVT.y + gPortraitOverlayOffsets[portrait_u8].s.blinkY;
    blinkSprite->d.sprite.y3 = blinkSprite->d.sprite.y1 + 16;
 
    if (gState.msgTextWaitTimer[EVT.flipped + 1] != 0) {

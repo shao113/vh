@@ -409,7 +409,7 @@ void State_EventScene(void) {
          LoadMapTextures();
          LoadMap();
       }
-      SetupTerrain();
+      SetupField();
       SetupLight();
       gState.fieldRenderingDisabled = 0;
       gState.primary = STATE_4;

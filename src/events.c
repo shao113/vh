@@ -2,6 +2,7 @@
 #include "evt.h"
 #include "state.h"
 #include "cd_files.h"
+#include "graphics.h"
 
 typedef struct EvtEntityProperties {
    u8 **altAnims;
@@ -15,7 +16,6 @@ extern s32 gEvtDataFiles[95];
 extern s32 gEvtSeqSetFiles[95];
 extern EvtEntityProperties *gEvtEntities[95];
 extern s16 *gEvtEntityDataPointers[100];
-extern u8 **gUnitAnimSets[UNIT_DB_CT];
 extern u8 *gAnimSet_80101fc0[56];
 extern u8 *gAnimSet_80103f8c[8];
 extern u8 *gAnimSet_80103fd0[8];

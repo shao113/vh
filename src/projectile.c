@@ -323,7 +323,7 @@ s32 CalculateProjectileHeight(s8 x1, s8 z1, s8 x2, s8 z2) {
    do {
       ox = x1;
       oz = z1;
-      startingElevation = gTerrainPtr[z1][x1].elevation;
+      startingElevation = gTerrainPtr[z1][x1].s.elevation;
 
       if (x1 > x2) {
          xstep = -1;
@@ -345,10 +345,10 @@ s32 CalculateProjectileHeight(s8 x1, s8 z1, s8 x2, s8 z2) {
       x1 += xstep;
       z1 += zstep;
 
-      if (gTerrainPtr[z1][x1].terrain != TERRAIN_NO_ENTRY &&
-          gTerrainPtr[z1][x1].terrain != TERRAIN_OBSTACLE) {
-         if (gTerrainPtr[z1][x1].elevation > highest) {
-            highest = gTerrainPtr[z1][x1].elevation;
+      if (gTerrainPtr[z1][x1].s.terrain != TERRAIN_NO_ENTRY &&
+          gTerrainPtr[z1][x1].s.terrain != TERRAIN_OBSTACLE) {
+         if (gTerrainPtr[z1][x1].s.elevation > highest) {
+            highest = gTerrainPtr[z1][x1].s.elevation;
          }
       } else {
          if (gMapRowPointers[z1][x1].height > highest) {
@@ -401,7 +401,7 @@ void PopulateRangedAttackGridInDir(s16 z, s16 x, s16 dz, s16 dx, s32 range, s32 
    }
 
    range /= 2;
-   elevation = gTerrainPtr[z][x].elevation;
+   elevation = gTerrainPtr[z][x].s.elevation;
    reach = elevation;
 
    while (1) {
@@ -415,13 +415,13 @@ void PopulateRangedAttackGridInDir(s16 z, s16 x, s16 dz, s16 dx, s32 range, s32 
          reach += 2;
       }
 
-      newElevation = gTerrainPtr[z][x].elevation;
+      newElevation = gTerrainPtr[z][x].s.elevation;
       elevation -= 2;
 
-      if (gTerrainPtr[z][x].terrain == TERRAIN_NO_ENTRY && pGrid[z][x] == 0) {
+      if (gTerrainPtr[z][x].s.terrain == TERRAIN_NO_ENTRY && pGrid[z][x] == 0) {
          newElevation = gMapRowPointers[z][x].height;
       }
-      if (gTerrainPtr[z][x].terrain == TERRAIN_OBSTACLE && pGrid[z][x] == 0) {
+      if (gTerrainPtr[z][x].s.terrain == TERRAIN_OBSTACLE && pGrid[z][x] == 0) {
          newElevation = gMapRowPointers[z][x].height;
       }
       if (newElevation > reach || pGrid[z][x] != 0) {
@@ -430,7 +430,7 @@ void PopulateRangedAttackGridInDir(s16 z, s16 x, s16 dz, s16 dx, s32 range, s32 
       if (newElevation > elevation) {
          elevation = newElevation;
       }
-      if (newElevation >= elevation && gTerrainPtr[z][x].terrain != TERRAIN_OBSTACLE) {
+      if (newElevation >= elevation && gTerrainPtr[z][x].s.terrain != TERRAIN_OBSTACLE) {
          pGrid[z][x] = steps;
       }
    }

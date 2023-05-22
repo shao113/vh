@@ -1488,7 +1488,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
       for (i = 1; i < UNIT_CT; i++, s_unit_801231c0++) {
          evt_s1 = s_unit_801231c0->evtSprite;
          if (s_unit_801231c0->idx != 0 && s_unit_801231c0->team == EVT.team &&
-             gTerrainPtr[HI(evt_s1->d.sprite.z1)][HI(evt_s1->d.sprite.x1)].terrain ==
+             gTerrainPtr[HI(evt_s1->d.sprite.z1)][HI(evt_s1->d.sprite.x1)].s.terrain ==
                  TERRAIN_BOUNDARY) {
             *s_pTargetCoordsToSet_801231bc++ = HI(evt_s1->d.sprite.z1);
             *s_pTargetCoordsToSet_801231bc++ = HI(evt_s1->d.sprite.x1);

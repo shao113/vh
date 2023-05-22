@@ -1133,7 +1133,7 @@ void RenderOverheadMapUnitMarker(u32 *ot_unused, EvtData *unitSprite, s32 showEl
 
    marker = Evt_GetUnused();
    if (showElevation) {
-      unitSprite->d.sprite.y1 = SPR_TERRAIN(unitSprite).elevation * 0x80 + 0x100;
+      unitSprite->d.sprite.y1 = SPR_TERRAIN(unitSprite).s.elevation * 0x80 + 0x100;
    }
 
    marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_BLUE_GEM : GFX_RED_GEM;
@@ -1189,7 +1189,7 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
       }
       if (!hideMarker && !gIsEnemyTurn && !gPlayerControlSuppressed) {
          marker = Evt_GetUnused();
-         marker->d.sprite.y1 = SPR_TERRAIN(unitSprite).elevation * 128;
+         marker->d.sprite.y1 = SPR_TERRAIN(unitSprite).s.elevation * 128;
          marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_PLAYER_CIRCLE : GFX_ENEMY_CIRCLE;
          marker->d.sprite.x1 = unitSprite->d.sprite.x1;
          marker->d.sprite.z1 = unitSprite->d.sprite.z1;
@@ -1273,7 +1273,7 @@ void SetElevationFromTerrain(EvtData *evt) {
        HI(evt->d.sprite.z1) < gMapMinZ || HI(evt->d.sprite.z1) > gMapMaxZ) {
       evt->d.sprite.y1 = 0;
    } else {
-      evt->d.sprite.y1 = SPR_TERRAIN(evt).elevation * 128;
+      evt->d.sprite.y1 = SPR_TERRAIN(evt).s.elevation * 128;
    }
 }
 
@@ -1281,7 +1281,7 @@ s32 GetTerrainElevation(s8 z, s8 x) {
    if (x < gMapMinX || x > gMapMaxX || z < gMapMinZ || z > gMapMaxZ) {
       return 0;
    } else {
-      return gTerrainPtr[z][x].elevation * 128;
+      return gTerrainPtr[z][x].s.elevation * 128;
    }
 }
 

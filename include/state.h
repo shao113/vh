@@ -106,7 +106,7 @@ typedef struct State {
          u8 field_0x11;
          u8 field_0x12;
          u8 field_0x13;
-      } n;
+      } s;
       u8 bytes[20];
    } mapState;
 

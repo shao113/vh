@@ -103,6 +103,7 @@ extern u8 gPartyMemberSlain[PARTY_CT];
 extern s16 gTargetX, gTargetZ;
 extern u8 gTargetCoords[72];
 extern s16 gCurrentSpell;
+extern TileState gTileStateGrid[30][65];
 extern TileState (*gTileStateGridPtr)[65];
 
 extern s8 gZ_801233dc, gX_801233d8, gTargetZ_80123418, gTargetX_80123414;
