@@ -53,11 +53,11 @@ s32 ArcProjectileTo(EvtData *sprite, s32 destX, s32 destZ, s32 height, s32 cont)
    static const s32 unused = 0; //<- to fix sdata spacing
 
    if (cont == 0) {
-      s_currentX_80123174 = sprite->d.sprite.x1 << 8;
+      s_currentX_80123174 = sprite->x1.n << 8;
       s_destX_80123178 = destX << 8;
-      s_currentY_80123184 = sprite->d.sprite.y1 << 8;
+      s_currentY_80123184 = sprite->y1.n << 8;
       s_destY_80123188 = (-gMapRowPointers[destZ >> 8][destX >> 8].vertices[0].vy + 16) * 0x800;
-      s_currentZ_8012317c = sprite->d.sprite.z1 << 8;
+      s_currentZ_8012317c = sprite->z1.n << 8;
       s_destZ_80123180 = destZ << 8;
       if (s_currentX_80123174 != s_destX_80123178) {
          CalculateProjectileDeltas(s_currentX_80123174, s_currentY_80123184, s_destX_80123178,
@@ -75,15 +75,15 @@ s32 ArcProjectileTo(EvtData *sprite, s32 destX, s32 destZ, s32 height, s32 cont)
       s_currentZ_8012317c += deltaZ;
       s_currentY_80123184 += deltaY;
       deltaY -= rise;
-      sprite->d.sprite.y2 = deltaY >> 2;
+      sprite->y2.n = deltaY >> 2;
       if (deltaZ == 0) {
-         sprite->d.sprite.x2 = deltaX >> 2;
+         sprite->x2.n = deltaX >> 2;
       } else {
-         sprite->d.sprite.x2 = deltaZ >> 2;
+         sprite->x2.n = deltaZ >> 2;
       }
-      sprite->d.sprite.x1 = s_currentX_80123174 >> 8;
-      sprite->d.sprite.z1 = s_currentZ_8012317c >> 8;
-      sprite->d.sprite.y1 = s_currentY_80123184 >> 8;
+      sprite->x1.n = s_currentX_80123174 >> 8;
+      sprite->z1.n = s_currentZ_8012317c >> 8;
+      sprite->y1.n = s_currentY_80123184 >> 8;
       s_isubstep_8012318c++;
       // For cont:1, return 1 when movement completes
       return s_isubstep_8012318c == substeps;
@@ -146,7 +146,7 @@ void RotateProjectile(s16 rotx, s16 roty, s16 rotz) {
 void Evtf022_029_Projectile(EvtData *evt) {
    EvtData *targetSprite;
    EvtData *projectileSprite;
-   EvtData *evtParticles;
+   EvtData *particles;
    s32 unitIdx;
    s32 projectileHeight;
    UnitStatus *target, *attacker;
@@ -155,19 +155,19 @@ void Evtf022_029_Projectile(EvtData *evt) {
 
    projectileSprite = EVT.sprite;
    target = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx];
-   unitIdx = gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx;
+   unitIdx = OBJ_MAP_UNIT(evt).s.unitIdx;
    attacker = &gUnits[unitIdx];
 
    if (evt->functionIndex == EVTF_PROJECTILE) {
-      targetSprite = target->evtSprite;
+      targetSprite = target->sprite;
    } else {
       // EVTF_PROJECTILE_INDIRECT: Unused? maybe to open chest w/ ranged attacker?
       targetSprite = gTempGfxEvt;
-      HI(targetSprite->d.sprite.x1) = LO(gTargetX);
-      HI(targetSprite->d.sprite.z1) = LO(gTargetZ);
-      LO(targetSprite->d.sprite.x1) = 0x80;
-      LO(targetSprite->d.sprite.z1) = 0x80;
-      targetSprite->d.sprite.y1 = GetTerrainElevation(LO(gTargetZ), LO(gTargetX));
+      targetSprite->x1.s.hi = LO(gTargetX);
+      targetSprite->z1.s.hi = LO(gTargetZ);
+      targetSprite->x1.s.lo = 0x80;
+      targetSprite->z1.s.lo = 0x80;
+      targetSprite->y1.n = GetTerrainElevation(LO(gTargetZ), LO(gTargetX));
    }
 
    switch (evt->state) {
@@ -188,27 +188,27 @@ void Evtf022_029_Projectile(EvtData *evt) {
       }
 
       EVT.sprite = projectileSprite;
-      projectileSprite->d.sprite.x1 = EVT.x;
-      projectileSprite->d.sprite.z1 = EVT.z;
-      projectileSprite->d.sprite.y1 = EVT.y;
+      projectileSprite->x1.n = evt->x1.n;
+      projectileSprite->z1.n = evt->z1.n;
+      projectileSprite->y1.n = evt->y1.n;
 
-      projectileHeight = CalculateProjectileHeight(
-          HI(projectileSprite->d.sprite.x1), HI(projectileSprite->d.sprite.z1),
-          HI(targetSprite->d.sprite.x1), HI(targetSprite->d.sprite.z1));
-      ArcProjectileTo(projectileSprite, targetSprite->d.sprite.x1, targetSprite->d.sprite.z1,
-                      projectileHeight, 0);
-      EVT.xMid = EVT.x + ((targetSprite->d.sprite.x1 - EVT.x) / 2);
-      EVT.zMid = EVT.z + ((targetSprite->d.sprite.z1 - EVT.z) / 2);
+      projectileHeight =
+          CalculateProjectileHeight(projectileSprite->x1.s.hi, projectileSprite->z1.s.hi,
+                                    targetSprite->x1.s.hi, targetSprite->z1.s.hi);
+      ArcProjectileTo(projectileSprite, targetSprite->x1.n, targetSprite->z1.n, projectileHeight,
+                      0);
+      EVT.xMid = evt->x1.n + ((targetSprite->x1.n - evt->x1.n) / 2);
+      EVT.zMid = evt->z1.n + ((targetSprite->z1.n - evt->z1.n) / 2);
 
-      EVT.xzMidDist = (targetSprite->d.sprite.x1 - EVT.x) / 2;
+      EVT.xzMidDist = (targetSprite->x1.n - evt->x1.n) / 2;
       SET_ABS(EVT.xzMidDist);
 
-      EVT.zMidDist = (targetSprite->d.sprite.z1 - EVT.z) / 2;
+      EVT.zMidDist = (targetSprite->z1.n - evt->z1.n) / 2;
       SET_ABS(EVT.zMidDist);
 
       EVT.xzMidDist += EVT.zMidDist;
 
-      if (projectileSprite->d.sprite.x1 == targetSprite->d.sprite.x1) {
+      if (projectileSprite->x1.n == targetSprite->x1.n) {
          EVT.yRotOfs = ANGLE_90_DEGREES;
          EVT.zRotOfs = ANGLE_180_DEGREES;
       }
@@ -216,28 +216,28 @@ void Evtf022_029_Projectile(EvtData *evt) {
       ArcProjectileTo(projectileSprite, 0, 0, 0, 1);
       break;
    case 1:
-      evtParticles = Evt_GetUnused();
-      evtParticles->d.sprite.x1 = projectileSprite->d.sprite.x1;
-      evtParticles->d.sprite.y1 = projectileSprite->d.sprite.y1;
-      evtParticles->d.sprite.z1 = projectileSprite->d.sprite.z1;
+      particles = Evt_GetUnused();
+      particles->x1.n = projectileSprite->x1.n;
+      particles->y1.n = projectileSprite->y1.n;
+      particles->z1.n = projectileSprite->z1.n;
 
       if (attacker->unitId == UNIT_ID_DIEGO_SNIPER || attacker->unitId == UNIT_ID_AMON_SNIPER ||
           attacker->unitId == UNIT_ID_DARIUS_SNIPER || attacker->unitId == UNIT_ID_LANDO ||
           attacker->unitId == UNIT_ID_SABINA) {
-         evtParticles->functionIndex = EVTF_SPARKLE_DUST;
+         particles->functionIndex = EVTF_SPARKLE_DUST;
       }
       if (attacker->unitId == UNIT_ID_DIEGO_BOWMAN || attacker->unitId == UNIT_ID_KIRA_BOWMAN ||
           attacker->unitId == UNIT_ID_AMON_BOWMAN || attacker->unitId == UNIT_ID_DARIUS_BOWMAN) {
-         evtParticles->functionIndex = EVTF_PROJECTILE_TRAIL_SPARKLES;
+         particles->functionIndex = EVTF_PROJECTILE_TRAIL_SPARKLES;
       }
       if (attacker->unitId == UNIT_ID_BUGABOO || attacker->unitId == UNIT_ID_EGGWORM) {
-         evtParticles->functionIndex = EVTF_PROJECTILE_TRAIL_POISON;
+         particles->functionIndex = EVTF_PROJECTILE_TRAIL_POISON;
       }
       if (attacker->unitId == UNIT_ID_BASILISK || attacker->unitId == UNIT_ID_M_CANNON) {
-         evtParticles->functionIndex = EVTF_PROJECTILE_TRAIL_EXPLOSION;
+         particles->functionIndex = EVTF_PROJECTILE_TRAIL_EXPLOSION;
       }
       if (attacker->unitId == UNIT_ID_KIRA_SNIPER) {
-         evtParticles->functionIndex = EVTF_PROJECTILE_TRAIL_SMOKE;
+         particles->functionIndex = EVTF_PROJECTILE_TRAIL_SMOKE;
       }
 
       if (ArcProjectileTo(projectileSprite, 0, 0, 0, 1)) {
@@ -247,9 +247,9 @@ void Evtf022_029_Projectile(EvtData *evt) {
          projectileSprite->functionIndex = EVTF_NULL;
       }
 
-      xmdist = EVT.xMid - projectileSprite->d.sprite.x1;
+      xmdist = EVT.xMid - projectileSprite->x1.n;
       SET_ABS(xmdist);
-      zmdist = EVT.zMid - projectileSprite->d.sprite.z1;
+      zmdist = EVT.zMid - projectileSprite->z1.n;
       SET_ABS(zmdist);
       mdist = xmdist + zmdist;
 
@@ -263,12 +263,12 @@ void Evtf022_029_Projectile(EvtData *evt) {
       break;
    }
 
-   gCameraPos.vx = -(projectileSprite->d.sprite.x1 >> 3);
-   gCameraPos.vz = -(projectileSprite->d.sprite.z1 >> 3);
-   gCameraPos.vy = projectileSprite->d.sprite.y1 >> 3;
+   gCameraPos.vx = -(projectileSprite->x1.n >> 3);
+   gCameraPos.vz = -(projectileSprite->z1.n >> 3);
+   gCameraPos.vy = projectileSprite->y1.n >> 3;
 
    // x2,y2 (delta) set in ArcProjectileTo
-   EVT.zRot = ratan2(projectileSprite->d.sprite.y2, projectileSprite->d.sprite.x2);
+   EVT.zRot = ratan2(projectileSprite->y2.n, projectileSprite->x2.n);
 
    if (EVT.yRotOfs == 0) {
       EVT.zRot = ANGLE_360_DEGREES - EVT.zRot;
@@ -288,8 +288,7 @@ void Evtf023_Camera_RangedTarget(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      EVT.yRotDst =
-          GetBestViewOfTarget(HI(targetSprite->d.sprite.z1), HI(targetSprite->d.sprite.x1), 1);
+      EVT.yRotDst = GetBestViewOfTarget(targetSprite->z1.s.hi, targetSprite->x1.s.hi, 1);
 
       diff = EVT.yRotDst - gCameraRotation.vy;
       if (diff > 0) {

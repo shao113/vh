@@ -705,9 +705,8 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
             sprite = FindUnitSpriteByNameIdx(UNIT_KANE);
             fx = Evt_GetUnused();
             fx->functionIndex = EVTF_TBD_732;
-            // TODO replace
-            fx->d.sprite.x1 = sprite->d.sprite.x1;
-            fx->d.sprite.z1 = sprite->d.sprite.z1;
+            fx->x1.n = sprite->x1.n;
+            fx->z1.n = sprite->z1.n;
             gState.D_801405A4 = 0;
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_CURSED, 24);
             evt->state2++;
@@ -732,9 +731,9 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
       case 14:
          if (gState.msgFinished) {
             sprite = FindUnitSpriteByNameIdx(UNIT_KANE);
-            SPR_TILE_STATE(sprite).action = TA_X16;
-            EVT.spawnZ = HI(sprite->d.sprite.z1);
-            EVT.spawnX = HI(sprite->d.sprite.x1);
+            OBJ_TILE_STATE(sprite).action = TA_X16;
+            EVT.spawnZ = sprite->z1.s.hi;
+            EVT.spawnX = sprite->x1.s.hi;
             PerformAudioCommand(0x31c);
             sprite = GetUnitSpriteAtPosition(EVT.xenoSpawnZ, 2);
             fx = Evt_GetUnused();
@@ -1482,9 +1481,8 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
          if (--EVT.timer == 0) {
             EvtData *bloodSpurt = Evt_GetUnused();
             bloodSpurt->functionIndex = EVTF_BLOOD_SPURT;
-            // TODO replace
-            HI(bloodSpurt->d.sprite.z1) = 19;
-            HI(bloodSpurt->d.sprite.x1) = 13;
+            bloodSpurt->z1.s.hi = 19;
+            bloodSpurt->x1.s.hi = 13;
             EVT.timer = 30;
             evt->state2++;
          }
@@ -1660,15 +1658,15 @@ void DisplayItemsStatusWindow(UnitStatus *unit, u8 windowId) {
    icon = Evt_GetUnused();
    icon->functionIndex = EVTF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[0];
-   icon->d.sprite.x1 = 79;
-   icon->d.sprite.y1 = (10 - numItems) * 9 + 20;
+   icon->x1.n = 79;
+   icon->y1.n = (10 - numItems) * 9 + 20;
    y = (unit->items[0] != ITEM_NULL) ? 18 : 0;
 
    icon = Evt_GetUnused();
    icon->functionIndex = EVTF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[1];
-   icon->d.sprite.x1 = 79;
-   icon->d.sprite.y1 = (10 - numItems) * 9 + 20 + y;
+   icon->x1.n = 79;
+   icon->y1.n = (10 - numItems) * 9 + 20 + y;
 }
 
 u8 s_unitX_801231e8;
@@ -1680,6 +1678,9 @@ u8 s_hiddenItemSentToDepot_801231f4;
 #define EVTF 003
 void Evtf003_BattleActions(EvtData *evt) {
    // TODO: Eliminate gotos?
+   // evt->state3: cursorState
+   // evt->x3: unitX
+   // evt->z3: unitZ
    UnitStatus *unit, *cursorUnit;
    EvtData *evt1, *evt2;
    s32 i; // iz, mapNum
@@ -1696,18 +1697,18 @@ void Evtf003_BattleActions(EvtData *evt) {
    case 0:
       if (evt->state2 == 0) {
          gState.droppedItem = ITEM_NULL;
-         s_unitX_801231e8 = HI(EVT.unitX) = HI(EVT.x);
-         s_unitZ_801231ec = HI(EVT.unitZ) = HI(EVT.z);
-         EVT.unit = unit = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+         s_unitX_801231e8 = evt->x3.s.hi = evt->x1.s.hi;
+         s_unitZ_801231ec = evt->z3.s.hi = evt->z1.s.hi;
+         EVT.unit = unit = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
          gState.lastSelectedUnit = unit->name + 1;
          unit->hideMarker = 1;
          EVT.range = unit->travelRange;
          EVT.remainingRange = EVT.range;
          UpdateUnitInfoWindow(unit);
          DisplayBasicWindow(0x1f);
-         PopulateBlueMovementGrid(HI(EVT.z), HI(EVT.x), unit->travelRange);
+         PopulateBlueMovementGrid(evt->z1.s.hi, evt->x1.s.hi, unit->travelRange);
          gShowBlueMovementGrid = 0;
-         evt2 = unit->evtSprite;
+         evt2 = unit->sprite;
          StartUnitSpritesDecoder(evt2->d.sprite.stripIdx);
          evt->state = 16;
          evt->state2 = 0;
@@ -1757,10 +1758,10 @@ void Evtf003_BattleActions(EvtData *evt) {
          // Cancel
          if (EVT.range != 0) {
             CloseWindow(0x35);
-            if (HI(EVT.unitX) != HI(EVT.x) || HI(EVT.unitZ) != HI(EVT.z)) {
-               gTileStateGridPtr[HI(EVT.unitZ)][HI(EVT.unitX)].action = TA_X9;
-               HI(EVT.unitX) = HI(EVT.x);
-               HI(EVT.unitZ) = HI(EVT.z);
+            if (evt->x3.s.hi != evt->x1.s.hi || evt->z3.s.hi != evt->z1.s.hi) {
+               OBJ_TARGET_TILE_STATE(evt).action = TA_X9;
+               evt->x3.s.hi = evt->x1.s.hi;
+               evt->z3.s.hi = evt->z1.s.hi;
             }
             evt->state = 7;
             evt->state2 = 0;
@@ -1791,12 +1792,12 @@ void Evtf003_BattleActions(EvtData *evt) {
              gBlueMovementGridPtr[gMapCursorZ][gMapCursorX] != PATH_STEP_INVALID &&
              gBlueMovementGridPtr[gMapCursorZ][gMapCursorX] != PATH_STEP_UNSET &&
              gMapUnitsPtr[gMapCursorZ][gMapCursorX].raw == 0) {
-            func_8002B3A8(HI(EVT.z), HI(EVT.x), EVT.range, 2);
+            func_8002B3A8(evt->z1.s.hi, evt->x1.s.hi, EVT.range, 2);
             EVT.remainingRange = EVT.range - gPathGrid2_Ptr[gMapCursorZ][gMapCursorX];
-            HI(EVT.unitX) = gMapCursorX;
-            HI(EVT.unitZ) = gMapCursorZ;
+            evt->x3.s.hi = gMapCursorX;
+            evt->z3.s.hi = gMapCursorZ;
             PlotPathBackToUnit(gMapCursorZ, gMapCursorX);
-            gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_X6;
+            OBJ_TILE_STATE(evt).action = TA_X6;
             gSignal3 = 0;
             gClearSavedPadState = 1;
             evt->state2++;
@@ -1833,7 +1834,7 @@ void Evtf003_BattleActions(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         gTileStateGridPtr[HI(EVT.unitZ)][HI(EVT.unitX)].action = TA_CHOOSING_DIRECTION;
+         OBJ_TARGET_TILE_STATE(evt).action = TA_CHOOSING_DIRECTION;
          evt2 = Evt_GetUnused();
          evt2->functionIndex = EVTF_CHOOSE_DONE_DIRECTION;
          evt2->d.evtf016.unit = EVT.unit;
@@ -1853,7 +1854,7 @@ void Evtf003_BattleActions(EvtData *evt) {
             } else {
                evt->state = 1;
             }
-            if (HI(EVT.unitX) != HI(EVT.x) || HI(EVT.unitZ) != HI(EVT.z)) {
+            if (evt->x3.s.hi != evt->x1.s.hi || evt->z3.s.hi != evt->z1.s.hi) {
                evt->state = 1;
             }
          }
@@ -1869,8 +1870,8 @@ void Evtf003_BattleActions(EvtData *evt) {
       case 0:
          CloseWindow(0x1e);
          EVT.performedSubaction = 1;
-         gState.searchX = HI(EVT.unitX);
-         gState.searchZ = HI(EVT.unitZ);
+         gState.searchX = evt->x3.s.hi;
+         gState.searchZ = evt->z3.s.hi;
          s_hiddenItem_801231f0 = ITEM_NULL;
          i = gState.mapNum;
          if (!gState.mapState.s.foundHiddenItem1 && gState.searchZ == gMapHiddenItems[i][0].z &&
@@ -1912,11 +1913,11 @@ void Evtf003_BattleActions(EvtData *evt) {
       case 1:
          PerformAudioCommand(0x374);
          gSignal3 = 0;
-         evt2 = unit->evtSprite;
+         evt2 = unit->sprite;
          evt1 = Evt_GetUnused();
-         evt1->d.evtf294.x = evt2->d.sprite.x1;
-         evt1->d.evtf294.z = evt2->d.sprite.z1;
-         evt1->d.evtf294.y = evt2->d.sprite.y1;
+         evt1->x1.n = evt2->x1.n;
+         evt1->z1.n = evt2->z1.n;
+         evt1->y1.n = evt2->y1.n;
          evt1->functionIndex = EVTF_REVEAL_HIDDEN_ITEM;
          evt1->d.evtf294.gfxIdx = GFX_ITEM_ICONS_OFS + s_hiddenItem_801231f0;
          EVT.timer = 80;
@@ -1977,9 +1978,9 @@ void Evtf003_BattleActions(EvtData *evt) {
 
       case 7:
          EVT.range = EVT.remainingRange;
-         HI(EVT.x) = HI(EVT.unitX);
-         HI(EVT.z) = HI(EVT.unitZ);
-         PopulateBlueMovementGrid(HI(EVT.z), HI(EVT.x), EVT.range);
+         evt->x1.s.hi = evt->x3.s.hi;
+         evt->z1.s.hi = evt->z3.s.hi;
+         PopulateBlueMovementGrid(evt->z1.s.hi, evt->x1.s.hi, EVT.range);
          evt->state2++;
          break;
 
@@ -2033,7 +2034,7 @@ void Evtf003_BattleActions(EvtData *evt) {
             //@3e44
             CloseWindow(0x36);
          LAB_80033808:
-            if (HI(EVT.unitX) == HI(EVT.x) && HI(EVT.unitZ) == HI(EVT.z)) {
+            if (evt->x3.s.hi == evt->x1.s.hi && evt->z3.s.hi == evt->z1.s.hi) {
                evt->state = 16;
                evt->state2 = 0;
                if (EVT.range == 0) {
@@ -2092,15 +2093,15 @@ void Evtf003_BattleActions(EvtData *evt) {
          evt2 = Evt_GetUnused();
          evt2->functionIndex = EVTF_TARGETING_ATTACK;
          gSignal2 = 0;
-         evt2->d.evtf015.x = EVT.unitX;
-         evt2->d.evtf015.z = EVT.unitZ;
+         evt2->x1.n = evt->x3.n;
+         evt2->z1.n = evt->z3.n;
          evt->state2++;
 
       // fallthrough
       case 1:
          if (gSignal2 == 1) {
             gState.mapCursorOutOfRange = 0;
-            if (HI(EVT.unitX) == HI(EVT.x) && HI(EVT.unitZ) == HI(EVT.z)) {
+            if (evt->x3.s.hi == evt->x1.s.hi && evt->z3.s.hi == evt->z1.s.hi) {
                evt->state = 16;
                evt->state2 = 0;
                if (EVT.range == 0) {
@@ -2151,7 +2152,7 @@ void Evtf003_BattleActions(EvtData *evt) {
          if (gSignal2 == 1) {
             gState.mapCursorOutOfRange = 0;
             SlideWindowTo(0x39, 8, 188);
-            if (HI(EVT.unitX) == HI(EVT.x) && HI(EVT.unitZ) == HI(EVT.z)) {
+            if (evt->x3.s.hi == evt->x1.s.hi && evt->z3.s.hi == evt->z1.s.hi) {
                evt->state = 16;
                evt->state2 = 0;
                if (EVT.range == 0) {
@@ -2171,8 +2172,8 @@ void Evtf003_BattleActions(EvtData *evt) {
          evt2 = Evt_GetLastUnused();
          evt2->functionIndex = EVTF_TARGETING_SPELL;
          gSignal2 = 0;
-         evt2->d.evtf027.x = EVT.unitX;
-         evt2->d.evtf027.z = EVT.unitZ;
+         evt2->x1.n = evt->x3.n;
+         evt2->z1.n = evt->z3.n;
          evt->state2++;
 
       // fallthrough
@@ -2186,7 +2187,7 @@ void Evtf003_BattleActions(EvtData *evt) {
          }
          if (gSignal2 == 2) {
             gClearSavedPadState = 1;
-            evt2 = unit->evtSprite;
+            evt2 = unit->sprite;
             unit->direction = evt2->d.sprite.direction;
             for (i = gMapMinZ; i <= gMapMaxZ; i++) {
                for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
@@ -2212,15 +2213,14 @@ void Evtf003_BattleActions(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         gTileStateGridPtr[HI(EVT.unitZ)][HI(EVT.unitX)].action = TA_CHOOSING_DIRECTION;
+         OBJ_TARGET_TILE_STATE(evt).action = TA_CHOOSING_DIRECTION;
          evt->state2++;
          break;
 
       case 1:
          evt2 = Evt_GetUnused();
          evt2->functionIndex = EVTF_PUSH;
-         // TODO replace with evtf048
-         evt2->d.evtf031.unit = EVT.unit;
+         evt2->d.evtf048.unit = EVT.unit;
          gSignal3 = 0;
          gSignal2 = 0;
          evt->state2++;
@@ -2230,9 +2230,9 @@ void Evtf003_BattleActions(EvtData *evt) {
          if (gSignal2 == 99) {
             EVT.performedSubaction = 1;
             EVT.range = EVT.remainingRange;
-            PopulateBlueMovementGrid(HI(EVT.unitZ), HI(EVT.unitX), EVT.range);
-            HI(EVT.x) = HI(EVT.unitX);
-            HI(EVT.z) = HI(EVT.unitZ);
+            PopulateBlueMovementGrid(evt->z3.s.hi, evt->x3.s.hi, EVT.range);
+            evt->x1.s.hi = evt->x3.s.hi;
+            evt->z1.s.hi = evt->z3.s.hi;
             if (EVT.range != 0) {
                evt->state = 16;
                evt->state2 = 0;
@@ -2240,7 +2240,7 @@ void Evtf003_BattleActions(EvtData *evt) {
                evt->state = 1;
             }
          } else if (gSignal2 == 2) {
-            if (HI(EVT.unitX) == HI(EVT.x) && HI(EVT.unitZ) == HI(EVT.z)) {
+            if (evt->x3.s.hi == evt->x1.s.hi && evt->z3.s.hi == evt->z1.s.hi) {
                if (EVT.range != 0) {
                   evt->state = 16;
                   evt->state2 = 0;
@@ -2328,8 +2328,8 @@ void Evtf003_BattleActions(EvtData *evt) {
       case 0:
          gClearSavedPadState = 1;
          gState.mapCursorOutOfRange = 0;
-         evt2 = unit->evtSprite;
-         if (SPR_TERRAIN(evt2).s.terrain == TERRAIN_VILE_BOG) {
+         evt2 = unit->sprite;
+         if (OBJ_TERRAIN(evt2).s.terrain == TERRAIN_VILE_BOG) {
             unit->poisoned = 1;
          }
          if (gState.droppedItem != ITEM_NULL) {
@@ -2382,19 +2382,19 @@ void Evtf003_BattleActions(EvtData *evt) {
       break;
    } // switch (evt->state)
 
-   switch (EVT.cursorState) {
+   switch (evt->state3) {
    case 0:
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == unit->idx) {
          break;
       }
-      EVT.cursorState++;
+      evt->state3++;
 
    // fallthrough
    case 1:
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == 0) {
          break;
       }
-      EVT.cursorState++;
+      evt->state3++;
 
    // fallthrough
    case 2:
@@ -2408,20 +2408,20 @@ void Evtf003_BattleActions(EvtData *evt) {
       } else {
          DisplayCustomWindow(0x1e, 0, 1, 0, 0, 23);
       }
-      EVT.cursorState++;
+      evt->state3++;
       break;
 
    case 3:
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == 0) {
          CloseWindow(0x1e);
          EVT.cursorUnitIdx = 0;
-         EVT.cursorState = 1;
+         evt->state3 = 1;
          break;
       }
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == EVT.cursorUnitIdx) {
          break;
       }
-      EVT.cursorState--;
+      evt->state3--;
       goto BattleActions_CursorState2;
    } // switch (cursorState)
 }
@@ -2473,8 +2473,8 @@ void Evtf425_BattleOptions(EvtData *evt) {
             dx = 0;
             dz = 0;
             gState.lastSelectedUnit++;
-            unitX = HI(unit->evtSprite->d.sprite.x1);
-            unitZ = HI(unit->evtSprite->d.sprite.z1);
+            unitX = unit->sprite->x1.s.hi;
+            unitZ = unit->sprite->z1.s.hi;
 
             if (gMapCursorX < unitX) {
                dx = 1;
@@ -2497,8 +2497,8 @@ void Evtf425_BattleOptions(EvtData *evt) {
             }
 
             evt1 = Evt_FindByFunction(EVTF_BATTLE_MAP_CURSOR_CONTROL);
-            HI(evt1->d.sprite.x1) = gMapCursorX;
-            HI(evt1->d.sprite.z1) = gMapCursorZ;
+            evt1->x1.s.hi = gMapCursorX;
+            evt1->z1.s.hi = gMapCursorZ;
             // break; // -> to next if
          } // Square
 
@@ -2843,6 +2843,7 @@ void Evtf030_FieldInfo(EvtData *evt) {
    static s8 terrainText[10][12] = {"Plains   0%", "Prairie  5%", "Thicket 15%", "Barren   0%",
                                     "Water   20%", "Vile bog 0%", "Lava     0%", "Boundary30%",
                                     "Obstacle   ", "No entry   "};
+   // evt->state3: terrainInfoState
    EvtData *evt1;
    UnitStatus *unit;
 
@@ -2884,15 +2885,15 @@ void Evtf030_FieldInfo(EvtData *evt) {
             gSignal1 = 1;
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_BATTLE_ACTIONS;
-            HI(evt1->d.evtf003.x) = gMapCursorX;
-            HI(evt1->d.evtf003.z) = gMapCursorZ;
+            evt1->x1.s.hi = gMapCursorX;
+            evt1->z1.s.hi = gMapCursorZ;
             gClearSavedPadState = 1;
 
          } else if ((gSavedPadStateNewPresses & PAD_X) && gSignal1 == 0 &&
                     gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx != 0) {
             CloseWindow(0x1e);
-            HI(EVT.x) = gMapCursorX;
-            HI(EVT.z) = gMapCursorZ;
+            evt->x1.s.hi = gMapCursorX;
+            evt->z1.s.hi = gMapCursorZ;
             gClearSavedPadState = 1;
             gSignal1 = 1;
             evt->state += 2;
@@ -2917,8 +2918,7 @@ void Evtf030_FieldInfo(EvtData *evt) {
             gSignal2 = 0;
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_STATUS_WINDOW;
-            // TODO replace
-            evt1->d.evtf031.unit = unit = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+            evt1->d.evtf595.unit = unit = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
             evt->state2++;
 
          // fallthrough
@@ -2974,12 +2974,12 @@ void Evtf030_FieldInfo(EvtData *evt) {
       } // switch (evt->state)
    }
 
-   switch (EVT.terrainInfoState) {
+   switch (evt->state3) {
    case 0:
       DrawWindow(0x39, 396, 0, 112, 36, 8, 188, WBS_CROSSED, 0);
       DisplayCustomWindow(0x39, 2, 1, 0, 0, 0);
       EVT.previousTerrain = -1;
-      EVT.terrainInfoState++;
+      evt->state3++;
       break;
 
    case 1:
@@ -2989,7 +2989,7 @@ void Evtf030_FieldInfo(EvtData *evt) {
       }
       if (gPlayerControlSuppressed || gIsEnemyTurn || gState.inEvent || gClearSavedPadState) {
          CloseWindow(0x39);
-         EVT.terrainInfoState++;
+         evt->state3++;
       }
       break;
 
@@ -2998,7 +2998,7 @@ void Evtf030_FieldInfo(EvtData *evt) {
          gWindowChoicesCount = 0;
          DisplayCustomWindow(0x39, 2, 1, 0, 0, 0);
          EVT.previousTerrain = -1;
-         EVT.terrainInfoState--;
+         evt->state3--;
       }
       break;
    }
@@ -3161,7 +3161,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
       } while (1);
       //} while (unit->idx == 0 || unit->paralyzed);
 
-      evt1 = unit->evtSprite;
+      evt1 = unit->sprite;
       EVT.unit = unit;
       EVT.unitSprite = evt1;
       unitSprite = evt1;
@@ -3170,8 +3170,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
       break;
 
    case 3:
-      PopulateBlueMovementGrid(HI(unitSprite->d.sprite.z1), HI(unitSprite->d.sprite.x1),
-                               unit->travelRange);
+      PopulateBlueMovementGrid(unitSprite->z1.s.hi, unitSprite->x1.s.hi, unit->travelRange);
       StartUnitSpritesDecoder(unitSprite->d.sprite.stripIdx);
       evt->state++;
       break;
@@ -3193,15 +3192,14 @@ void Evtf013_BattleMgr(EvtData *evt) {
       D_80123468 = 0;
       evt1 = Evt_GetLastUnused();
       evt1->functionIndex = EVTF_AI_TBD_570;
-      HI(evt1->d.evtf570.x) = HI(unitSprite->d.sprite.x1);
-      HI(evt1->d.evtf570.z) = HI(unitSprite->d.sprite.z1);
+      evt1->x1.s.hi = unitSprite->x1.s.hi;
+      evt1->z1.s.hi = unitSprite->z1.s.hi;
       evt->state++;
       break;
 
    case 6:
       if (D_80123468 != 0) {
-         if (HI(unitSprite->d.sprite.x1) == gX_801233d8 &&
-             HI(unitSprite->d.sprite.z1) == gZ_801233dc) {
+         if (unitSprite->x1.s.hi == gX_801233d8 && unitSprite->z1.s.hi == gZ_801233dc) {
             evt->state += 2;
             evt->state2 = 0;
          } else {
@@ -3217,8 +3215,8 @@ void Evtf013_BattleMgr(EvtData *evt) {
       case 0:
          PerformAudioCommand(0x1388);
          if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
-            SPR_TILE_STATE(unitSprite).action = TA_X1D;
-            SPR_TILE_STATE(unitSprite).cachedByte = 16;
+            OBJ_TILE_STATE(unitSprite).action = TA_X1D;
+            OBJ_TILE_STATE(unitSprite).cachedByte = 16;
             gSignal3 = 0;
             evt->state2++;
          } else {
@@ -3229,14 +3227,14 @@ void Evtf013_BattleMgr(EvtData *evt) {
       case 1:
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_CLOUD;
-         evt1->d.sprite.x1 = unitSprite->d.sprite.x1;
-         evt1->d.sprite.z1 = unitSprite->d.sprite.z1;
-         evt1->d.sprite.y1 = unitSprite->d.sprite.y1;
+         evt1->x1.n = unitSprite->x1.n;
+         evt1->z1.n = unitSprite->z1.n;
+         evt1->y1.n = unitSprite->y1.n;
 
          if (gSignal3 != 0) {
             PerformAudioCommand(0x388);
             unitSprite->d.sprite.hidden = 1;
-            SPR_TILE_STATE(unitSprite).cachedByte = 0;
+            OBJ_TILE_STATE(unitSprite).cachedByte = 0;
             gState.mapState.s.field_0x0 = 2;
             gState.field_0x96 = 1;
             evt->state2++;
@@ -3248,7 +3246,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
             PerformAudioCommand(0x1389);
             gShowBlueMovementGrid = 1;
             PlotPathBackToUnit(gZ_801233dc, gX_801233d8);
-            SPR_TILE_STATE(unitSprite).action = TA_X6;
+            OBJ_TILE_STATE(unitSprite).action = TA_X6;
             gSignal3 = 0;
             evt->state2++;
          }
@@ -3258,15 +3256,15 @@ void Evtf013_BattleMgr(EvtData *evt) {
          if (unit->unitType == UNIT_TYPE_ANT_ARM) {
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_CLOUD;
-            evt1->d.sprite.x1 = unitSprite->d.sprite.x1;
-            evt1->d.sprite.z1 = unitSprite->d.sprite.z1;
-            evt1->d.sprite.y1 = unitSprite->d.sprite.y1;
+            evt1->x1.n = unitSprite->x1.n;
+            evt1->z1.n = unitSprite->z1.n;
+            evt1->y1.n = unitSprite->y1.n;
          }
          if (gSignal3 == 1) {
             gShowBlueMovementGrid = 0;
             if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
-               SPR_TILE_STATE(unitSprite).action = TA_X1D;
-               SPR_TILE_STATE(unitSprite).cachedByte = 22;
+               OBJ_TILE_STATE(unitSprite).action = TA_X1D;
+               OBJ_TILE_STATE(unitSprite).cachedByte = 22;
                EVT.timer = 2;
                gSignal3 = 0;
                evt->state2++;
@@ -3286,12 +3284,12 @@ void Evtf013_BattleMgr(EvtData *evt) {
       case 5:
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_CLOUD;
-         evt1->d.sprite.x1 = unitSprite->d.sprite.x1;
-         evt1->d.sprite.z1 = unitSprite->d.sprite.z1;
-         evt1->d.sprite.y1 = unitSprite->d.sprite.y1;
+         evt1->x1.n = unitSprite->x1.n;
+         evt1->z1.n = unitSprite->z1.n;
+         evt1->y1.n = unitSprite->y1.n;
 
          if (gSignal3 != 0) {
-            SPR_TILE_STATE(unitSprite).cachedByte = 0;
+            OBJ_TILE_STATE(unitSprite).cachedByte = 0;
             PerformAudioCommand(0x389);
             gState.field_0x96 = 1;
             gState.mapState.s.field_0x0 = 1;
@@ -3365,7 +3363,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          unit->direction = gDir_80123470;
-         SPR_TILE_STATE(unitSprite).action = TA_XB;
+         OBJ_TILE_STATE(unitSprite).action = TA_XB;
          EVT.timer = 5;
          evt->state2++;
          // fallthrough
@@ -3386,11 +3384,10 @@ void Evtf013_BattleMgr(EvtData *evt) {
       case 0:
          ClearGrid(1);
          if (unit->class == CLASS_ARCHER) {
-            PopulateRangedAttackGrid(HI(unitSprite->d.sprite.z1), HI(unitSprite->d.sprite.x1),
-                                     unit->attackRange, 0);
+            PopulateRangedAttackGrid(unitSprite->z1.s.hi, unitSprite->x1.s.hi, unit->attackRange,
+                                     0);
          } else {
-            PopulateMeleeAttackGrid(HI(unitSprite->d.sprite.z1), HI(unitSprite->d.sprite.x1), 0,
-                                    unit->attackRange);
+            PopulateMeleeAttackGrid(unitSprite->z1.s.hi, unitSprite->x1.s.hi, 0, unit->attackRange);
          }
          gYellowTargetGridPtr[gTargetZ_80123418][gTargetX_80123414] += 1;
          EVT.timer = 30;
@@ -3403,8 +3400,8 @@ void Evtf013_BattleMgr(EvtData *evt) {
             ClearGrid(1);
             evt1 = Evt_GetLastUnused();
             evt1->functionIndex = EVTF_UNIT_ATTACKING;
-            HI(evt1->d.evtf021.x) = gX_801233d8;
-            HI(evt1->d.evtf021.z) = gZ_801233dc;
+            evt1->x1.s.hi = gX_801233d8;
+            evt1->z1.s.hi = gZ_801233dc;
             gTargetX = gTargetX_80123414;
             gTargetZ = gTargetZ_80123418;
             gSignal2 = 0;
@@ -3456,8 +3453,8 @@ void Evtf013_BattleMgr(EvtData *evt) {
             ClearGrid(1);
             evt1 = Evt_GetLastUnused();
             evt1->functionIndex = EVTF_UNIT_CASTING;
-            HI(evt1->d.evtf028.x) = gX_801233d8;
-            HI(evt1->d.evtf028.z) = gZ_801233dc;
+            evt1->x1.s.hi = gX_801233d8;
+            evt1->z1.s.hi = gZ_801233dc;
             gTargetX = gTargetX_80123414;
             gTargetZ = gTargetZ_80123418;
             gSignal2 = 0;
@@ -3668,8 +3665,8 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         evt1 = unit->evtSprite;
-         if (SPR_TERRAIN(evt1).s.terrain == TERRAIN_VILE_BOG) {
+         evt1 = unit->sprite;
+         if (OBJ_TERRAIN(evt1).s.terrain == TERRAIN_VILE_BOG) {
             unit->poisoned = 1;
          }
          if (gState.droppedItem != ITEM_NULL) {
@@ -3710,11 +3707,11 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
    case 101:
       if (gState.mapState.s.field_0x0 != 2 &&
-          (HI(unitSprite->d.sprite.z1) == 11 && HI(unitSprite->d.sprite.x1) == 16)) {
+          (unitSprite->z1.s.hi == 11 && unitSprite->x1.s.hi == 16)) {
          SetupBattleMsgBox(UNIT_LEENA, PORTRAIT_LEENA, 17);
          evt->state++;
       } else if (gState.mapState.s.field_0x0 != 3 &&
-                 (HI(unitSprite->d.sprite.z1) == 2 && HI(unitSprite->d.sprite.x1) == 10)) {
+                 (unitSprite->z1.s.hi == 2 && unitSprite->x1.s.hi == 10)) {
          SetupBattleMsgBox(UNIT_LEENA, PORTRAIT_LEENA, 18);
          evt->state++;
       } else {
@@ -3729,7 +3726,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
    case 103:
       if (gState.msgFinished) {
-         if (HI(unitSprite->d.sprite.z1) == 11) {
+         if (unitSprite->z1.s.hi == 11) {
             gState.mapState.s.field_0x0 = 2;
          } else {
             gState.mapState.s.field_0x0 = 3;
@@ -3742,7 +3739,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
    case 104:
       if (--EVT.timer == 0) {
-         if (HI(unitSprite->d.sprite.z1) == 11) {
+         if (unitSprite->z1.s.hi == 11) {
             pSpawn = &sOromeLakeEnemySpawns1[0];
          } else {
             pSpawn = &sOromeLakeEnemySpawns2[0];
@@ -3767,9 +3764,9 @@ void Evtf013_BattleMgr(EvtData *evt) {
    if (!gPlayerControlSuppressed) {
       s16 a, b;
       if (EVT.todo_x2d) {
-         gCameraPos.vx += (-(unitSprite->d.sprite.x1 >> 3) - gCameraPos.vx) >> 4;
-         gCameraPos.vz += (-(unitSprite->d.sprite.z1 >> 3) - gCameraPos.vz) >> 4;
-         gCameraPos.vy += (((unitSprite->d.sprite.y1 + 0x100) >> 3) - gCameraPos.vy) >> 4;
+         gCameraPos.vx += (-(unitSprite->x1.n >> 3) - gCameraPos.vx) >> 4;
+         gCameraPos.vz += (-(unitSprite->z1.n >> 3) - gCameraPos.vz) >> 4;
+         gCameraPos.vy += (((unitSprite->y1.n + 0x100) >> 3) - gCameraPos.vy) >> 4;
       }
       if (!gPlayerControlSuppressed && gIsEnemyTurn && gState.cameraMode == CAMERA_MODE_DYNAMIC) {
          gCameraRotation.vy -= 8;

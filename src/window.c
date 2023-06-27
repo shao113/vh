@@ -23,13 +23,13 @@ void Evtf573_BattleItemsList(EvtData *);
 void Evtf031_BattleSpellsList(EvtData *);
 
 s32 WindowIsOffScreen(EvtData *evt) {
-   if (evt->d.evtf004.x < 0)
+   if (evt->x1.n < 0)
       return 1;
-   if (evt->d.evtf004.x > SCREEN_WIDTH)
+   if (evt->x1.n > SCREEN_WIDTH)
       return 1;
-   if (evt->d.evtf004.y < 0)
+   if (evt->y1.n < 0)
       return 1;
-   if (evt->d.evtf004.y > SCREEN_HEIGHT)
+   if (evt->y1.n > SCREEN_HEIGHT)
       return 1;
    return 0;
 }
@@ -892,25 +892,25 @@ void UpdateSkillStatusWindow(UnitStatus *unit) {
    icon = Evt_GetLastUnused();
    icon->functionIndex = EVTF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->weapon;
-   icon->d.sprite.x1 = 117;
-   icon->d.sprite.y1 = 128;
+   icon->x1.n = 117;
+   icon->y1.n = 128;
 
    icon = Evt_GetLastUnused();
    icon->functionIndex = EVTF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->helmet;
-   icon->d.sprite.x1 = 117;
-   icon->d.sprite.y1 = 146;
+   icon->x1.n = 117;
+   icon->y1.n = 146;
 
    icon = Evt_GetLastUnused();
    icon->functionIndex = EVTF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->armor;
-   icon->d.sprite.x1 = 117;
-   icon->d.sprite.y1 = 164;
+   icon->x1.n = 117;
+   icon->y1.n = 164;
 }
 
 void Evtf574_DisplayIcon(EvtData *evt) {
-   evt->d.sprite.x3 = evt->d.sprite.x1 + 15;
-   evt->d.sprite.y3 = evt->d.sprite.y1 + 15;
+   evt->x3.n = evt->x1.n + 15;
+   evt->y3.n = evt->y1.n + 15;
    AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
 }
 
@@ -931,7 +931,7 @@ void ClearIcons(void) {
 void UpdateCompactUnitInfoWindow(UnitStatus *unit, UnitStatus *unused, u8 param_3) {
    s32 i, px, full, rem;
    s32 terrainBonus;
-   EvtData_Sprite *sprite;
+   EvtData *sprite;
    u8 *pTop;
    u8 *pMid;
    u8 *pBtm;
@@ -958,9 +958,8 @@ void UpdateCompactUnitInfoWindow(UnitStatus *unit, UnitStatus *unused, u8 param_
    pMid[3] = gClassIconStartingGlyph[unit->class] + 3;
 
    if (param_3 != 2) {
-      sprite = &unit->evtSprite->d.sprite;
-      terrainBonus =
-          gTerrainBonus[gTerrainPtr[TO_TILE(sprite->z1)][TO_TILE(sprite->x1)].s.terrain] / 100;
+      sprite = unit->sprite;
+      terrainBonus = gTerrainBonus[OBJ_TERRAIN(sprite).s.terrain] / 100;
       IntToLeftPaddedGlyphs(terrainBonus, &pBtm[2]);
    } else {
       terrainBonus = 0;
@@ -1028,7 +1027,7 @@ void UpdateCompactUnitInfoWindow(UnitStatus *unit, UnitStatus *unused, u8 param_
 void UpdateUnitInfoWindow(UnitStatus *unit) {
    s32 i, px, full, rem;
    s32 terrainBonus;
-   EvtData_Sprite *sprite;
+   EvtData *sprite;
    u8 *firstRow, *secondRow, *thirdRow, *fourthRow;
 
    firstRow = gGlyphStrip_52;
@@ -1046,12 +1045,11 @@ void UpdateUnitInfoWindow(UnitStatus *unit) {
    secondRow[2] = gClassIconStartingGlyph[unit->class] + 2;
    secondRow[3] = gClassIconStartingGlyph[unit->class] + 3;
 
-   sprite = &unit->evtSprite->d.sprite;
+   sprite = unit->sprite;
    thirdRow[3] = GLYPH_BG;
    thirdRow[4] = GLYPH_BG;
    thirdRow[5] = GLYPH_BG;
-   terrainBonus =
-       gTerrainBonus[gTerrainPtr[TO_TILE(sprite->z1)][TO_TILE(sprite->x1)].s.terrain] / 100;
+   terrainBonus = gTerrainBonus[OBJ_TERRAIN(sprite).s.terrain] / 100;
    IntToLeftPaddedGlyphs(terrainBonus, &fourthRow[2]);
    fourthRow[2] = GLYPH_BG;
 
@@ -1175,18 +1173,18 @@ void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHig
    switch (windowId) {
    case 0x00:
    case 0x01:
-      window->d.evtf004.x = 350;
-      window->d.evtf004.y = 90;
+      window->x1.n = 350;
+      window->y1.n = 90;
       break;
    case 0x03:
-      window->d.evtf004.x = 140;
-      window->d.evtf004.y = 120;
+      window->x1.n = 140;
+      window->y1.n = 120;
       window->functionIndex = EVTF_WINDOW_TBD_005;
       break;
    case 0x1b:
       SaveRestorePos(&restored1, &restored2, 1);
-      window->d.evtf004.x = restored1 - 64;
-      window->d.evtf004.y = restored2 - 13;
+      window->x1.n = restored1 - 64;
+      window->y1.n = restored2 - 13;
       HI_H(window->d.evtf004.todo_x30) = 1;
       break;
    case 0x1c:
@@ -1194,27 +1192,27 @@ void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHig
       IntToLeftPaddedGlyphs2(restored2, &gGlyphStrip_50[1]);
       IntToLeftPaddedGlyphs2(restored1, &gGlyphStrip_50[5]);
       SaveRestorePos(&restored1, &restored2, 1);
-      window->d.evtf004.x = restored1 + 27;
-      window->d.evtf004.y = restored2 - 4;
+      window->x1.n = restored1 + 27;
+      window->y1.n = restored2 - 4;
       break;
    case 0x02:
    case 0x1d:
-      window->d.evtf004.x = 102;
-      window->d.evtf004.y = 184;
+      window->x1.n = 102;
+      window->y1.n = 184;
       break;
    case 0x04:
    case 0x1a:
    case 0x1e:
-      window->d.evtf004.x = 10;
-      window->d.evtf004.y = 16;
+      window->x1.n = 10;
+      window->y1.n = 16;
       break;
    case 0x1f:
-      window->d.evtf004.x = 102;
-      window->d.evtf004.y = 175;
+      window->x1.n = 102;
+      window->y1.n = 175;
       break;
    case 0x20:
-      window->d.evtf004.x = 14;
-      window->d.evtf004.y = 56;
+      window->x1.n = 14;
+      window->y1.n = 56;
       break;
    case 0x32:
    case 0x33:
@@ -1238,8 +1236,8 @@ void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHig
    case 0x45:
    case 0x46:
       window->functionIndex = EVTF_WINDOW_TBD_005;
-      window->d.evtf004.x = gWindowDisplayX[windowId];
-      window->d.evtf004.y = gWindowDisplayY[windowId];
+      window->x1.n = gWindowDisplayX[windowId];
+      window->y1.n = gWindowDisplayY[windowId];
       window->d.evtf004.choicesTopMargin = gWindowChoicesTopMargin;
       window->d.evtf004.highlightHeight = gWindowChoiceHeight;
       window->d.evtf004.choiceCt = gWindowChoicesCount;
@@ -1262,7 +1260,7 @@ void CloseWindow(s32 windowId) {
          p->d.evtf004.windowId = 99;
          p->functionIndex = EVTF_CLOSED_WINDOW;
          p->state = 99;
-         p->d.evtf004.effectState = 0;
+         p->state3 = 0;
 
          if (gWindowActivatedChoice.s.windowId == windowId) {
             gWindowActivatedChoice.raw = 0;
@@ -1310,8 +1308,8 @@ void SlideWindowTo(s32 windowId, s16 x, s16 y) {
       if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
           p->d.evtf004.windowId == windowId) {
          // Convert specified top-left point to window center point
-         p->d.evtf004.destX = x + p->d.evtf004.halfWidth;
-         p->d.evtf004.destY = y + p->d.evtf004.halfHeight;
+         p->x3.n = x + p->d.evtf004.halfWidth;
+         p->y3.n = y + p->d.evtf004.halfHeight;
          return;
       }
    }
@@ -1321,6 +1319,9 @@ void SlideWindowTo(s32 windowId, s16 x, s16 y) {
 #define EVTF 004
 void Evtf004_005_408_Window(EvtData *evt) {
    // TODO: todo_x2c, todo_x30 (highlight location)
+   // evt->state3: effectState
+   // evt->x3: destX
+   // evt->y3: destY
    EvtData *window;
    EvtData *highlight;
    s8 unused[8];
@@ -1330,11 +1331,11 @@ void Evtf004_005_408_Window(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      EVT.x += EVT.halfWidth;
+      evt->x1.n += EVT.halfWidth;
 
       if (EVT.windowId == 0x1c) {
          EVT.halfWidth >>= 1;
-         EVT.x -= EVT.halfWidth;
+         evt->x1.n -= EVT.halfWidth;
       }
 
       if (evt->functionIndex == EVTF_WINDOW_TBD_004) {
@@ -1342,7 +1343,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
       }
 
       EVT.todo_x3a = EVT.halfHeight + (EVT.halfHeight >> 1);
-      EVT.y += EVT.halfHeight;
+      evt->y1.n += EVT.halfHeight;
 
       window = Evt_GetUnused();
       window->functionIndex = EVTF_NOOP;
@@ -1364,11 +1365,11 @@ void Evtf004_005_408_Window(EvtData *evt) {
       EVT.highlight = highlight;
 
       evt->mem = EVT.effect;
-      if (EVT.destX == 0) {
-         EVT.destX = EVT.x;
+      if (evt->x3.n == 0) {
+         evt->x3.n = evt->x1.n;
       }
-      if (EVT.destY == 0) {
-         EVT.destY = EVT.y;
+      if (evt->y3.n == 0) {
+         evt->y3.n = evt->y1.n;
       }
 
       evt->state++;
@@ -1392,17 +1393,17 @@ void Evtf004_005_408_Window(EvtData *evt) {
 
          EVT.todo_x2c = EVT.choicesTopMargin << 16;
          evt->state++;
-         EVT.effectState = 0;
+         evt->state3 = 0;
          EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
          break;
       case 1:
       case 2:
 
-         switch (EVT.effectState) {
+         switch (evt->state3) {
          case 0:
             EVT.relQuadX1 = EVT.halfWidth << 1;
             EVT.clut = 8;
-            EVT.effectState++;
+            evt->state3++;
          // fallthrough
          case 1:
             if (--EVT.clut != 0) {
@@ -1428,7 +1429,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
                }
                EVT.todo_x2c = EVT.choicesTopMargin << 16;
                evt->state++;
-               EVT.effectState = 0;
+               evt->state3 = 0;
                EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
             }
          }
@@ -1437,7 +1438,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
       case 4:
       case 5:
 
-         switch (EVT.effectState) {
+         switch (evt->state3) {
          case 0:
             EVT.relQuadX0 = EVT.halfWidth;
             EVT.relQuadX1 = EVT.halfWidth;
@@ -1450,7 +1451,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.effectX = EVT.halfWidth >> 3;
             EVT.effectY = EVT.halfHeight >> 3;
             EVT.clut = 16;
-            EVT.effectState++;
+            evt->state3++;
          // fallthrough
          case 1:
             if (--EVT.clut != 0) {
@@ -1476,7 +1477,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
                }
                EVT.todo_x2c = EVT.choicesTopMargin << 16;
                evt->state++;
-               EVT.effectState = 0;
+               evt->state3 = 0;
                EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
             }
          }
@@ -1572,7 +1573,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
          }
          //@428c
          evt->state++;
-         EVT.effectState = 0;
+         evt->state3 = 0;
          evt->functionIndex = EVTF_NULL;
          window->functionIndex = EVTF_NULL;
          highlight->functionIndex = EVTF_NULL;
@@ -1580,7 +1581,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
       case 1:
       case 2:
 
-         switch (EVT.effectState) {
+         switch (evt->state3) {
          case 0:
             EVT.relQuadX0 = -EVT.halfWidth;
             EVT.relQuadX1 = EVT.halfWidth;
@@ -1591,7 +1592,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.relQuadY2 = EVT.halfHeight;
             EVT.relQuadY3 = EVT.halfHeight;
             EVT.clut = 8;
-            EVT.effectState++;
+            evt->state3++;
          // fallthrough
          case 1:
             if (--EVT.clut == 0) {
@@ -1599,7 +1600,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
                   highlight->d.sprite.hidden = 1;
                }
                evt->state++;
-               EVT.effectState = 0;
+               evt->state3 = 0;
             } else {
                EVT.relQuadY2 += (-EVT.relQuadY2 >> 1);
                EVT.relQuadY0 = -EVT.relQuadY2;
@@ -1618,7 +1619,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
       case 4:
       case 5:
 
-         switch (EVT.effectState) {
+         switch (evt->state3) {
          case 0:
             EVT.relQuadX0 = -EVT.halfWidth;
             EVT.relQuadX1 = EVT.halfWidth;
@@ -1631,7 +1632,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.effectX = EVT.halfWidth >> 3;
             EVT.effectY = EVT.halfHeight >> 3;
             EVT.clut = 16;
-            EVT.effectState++;
+            evt->state3++;
          // fallthrough
          case 1:
             EVT.relQuadX0 = EVT.relQuadX0 + EVT.effectX;
@@ -1646,14 +1647,14 @@ void Evtf004_005_408_Window(EvtData *evt) {
                   highlight->d.sprite.hidden = 1;
                }
                evt->state++;
-               EVT.effectState = 0;
+               evt->state3 = 0;
             }
          }
 
          break;
       case 7:
          //@457c
-         switch (EVT.effectState) {
+         switch (evt->state3) {
          case 0:
             EVT.relQuadX0 = -EVT.halfWidth;
             EVT.relQuadX1 = EVT.halfWidth;
@@ -1663,7 +1664,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.relQuadY1 = -EVT.halfHeight;
             EVT.relQuadY2 = EVT.halfHeight;
             EVT.relQuadY3 = EVT.halfHeight;
-            EVT.effectState++;
+            evt->state3++;
          // fallthrough
          case 1:
             EVT.effectPhase -= 0xc0;
@@ -1674,7 +1675,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
 
             if (EVT.effectPhase <= 0) {
                EVT.clut = 0;
-               EVT.effectState = 0;
+               evt->state3 = 0;
                evt->state++;
             }
 
@@ -1696,24 +1697,24 @@ void Evtf004_005_408_Window(EvtData *evt) {
    } // END of switch (evt->state)
 
    // switchD_8001f2ac_caseD_6: //@46a0
-   EVT.x += (EVT.destX - EVT.x) >> 2;
-   EVT.y += (EVT.destY - EVT.y) >> 2;
+   evt->x1.n += (evt->x3.n - evt->x1.n) >> 2;
+   evt->y1.n += (evt->y3.n - evt->y1.n) >> 2;
 
-   window->d.sprite2.coords[0].x = EVT.x + EVT.relQuadX0;
-   window->d.sprite2.coords[0].y = EVT.y + EVT.relQuadY0;
-   window->d.sprite2.coords[1].x = EVT.x + EVT.relQuadX1;
-   window->d.sprite2.coords[1].y = EVT.y + EVT.relQuadY1;
-   window->d.sprite2.coords[2].x = EVT.x + EVT.relQuadX2;
-   window->d.sprite2.coords[2].y = EVT.y + EVT.relQuadY2;
-   window->d.sprite2.coords[3].x = EVT.x + EVT.relQuadX3;
-   window->d.sprite2.coords[3].y = EVT.y + EVT.relQuadY3;
+   window->d.sprite2.coords[0].x = evt->x1.n + EVT.relQuadX0;
+   window->d.sprite2.coords[0].y = evt->y1.n + EVT.relQuadY0;
+   window->d.sprite2.coords[1].x = evt->x1.n + EVT.relQuadX1;
+   window->d.sprite2.coords[1].y = evt->y1.n + EVT.relQuadY1;
+   window->d.sprite2.coords[2].x = evt->x1.n + EVT.relQuadX2;
+   window->d.sprite2.coords[2].y = evt->y1.n + EVT.relQuadY2;
+   window->d.sprite2.coords[3].x = evt->x1.n + EVT.relQuadX3;
+   window->d.sprite2.coords[3].y = evt->y1.n + EVT.relQuadY3;
 
    if (highlight && EVT.choiceCt != 0 && evt->state == 2) {
       //@479c
-      highlight->d.sprite.y1 = window->d.sprite2.coords[1].y + (EVT.todo_x2c >> 16);
-      highlight->d.sprite.y3 = highlight->d.sprite.y1 + EVT.highlightHeight;
-      highlight->d.sprite.x1 = window->d.sprite2.coords[0].x;
-      highlight->d.sprite.x3 = window->d.sprite2.coords[1].x;
+      highlight->y1.n = window->d.sprite2.coords[1].y + (EVT.todo_x2c >> 16);
+      highlight->y3.n = highlight->y1.n + EVT.highlightHeight;
+      highlight->x1.n = window->d.sprite2.coords[0].x;
+      highlight->x3.n = window->d.sprite2.coords[1].x;
 
       gGfxSubTextures[GFX_WINDOW_TBD_657].x = gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].x;
       gGfxSubTextures[GFX_WINDOW_TBD_657].w = gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].w;
@@ -1958,25 +1959,27 @@ void Evtf421_UpperMsgBoxTail(EvtData *evt) {
    gTempGfxEvt->d.sprite.otOfs = 2;
 
    if (gTempGfxEvt->d.sprite.gfxIdx == GFX_MSGBOX_TAIL_DOWN) {
-      gTempGfxEvt->d.sprite.x1 = EVT.left;
-      gTempGfxEvt->d.sprite.x3 = EVT.left + 10;
+      gTempGfxEvt->x1.n = EVT.left;
+      gTempGfxEvt->x3.n = EVT.left + 10;
    } else {
-      gTempGfxEvt->d.sprite.x1 = EVT.left - 2;
-      gTempGfxEvt->d.sprite.x3 = EVT.left + 14;
+      gTempGfxEvt->x1.n = EVT.left - 2;
+      gTempGfxEvt->x3.n = EVT.left + 14;
    }
 
-   gTempGfxEvt->d.sprite.y1 = EVT.top;
-   gTempGfxEvt->d.sprite.y3 = EVT.bottom;
+   gTempGfxEvt->y1.n = EVT.top;
+   gTempGfxEvt->y3.n = EVT.bottom;
    AddEvtPrim_Gui(gGraphicsPtr->ot, gTempGfxEvt);
 }
 
+#undef EVTF
+#define EVTF 573
 void Evtf573_BattleItemsList(EvtData *evt) {
    s32 i;
    UnitStatus *unit;
    EvtData *icon;
    s32 tmp;
 
-   unit = evt->d.evtf573.unit;
+   unit = EVT.unit;
 
    switch (evt->state) {
    case 0:
@@ -1996,14 +1999,14 @@ void Evtf573_BattleItemsList(EvtData *evt) {
       icon = Evt_GetUnused();
       icon->functionIndex = EVTF_DISPLAY_ICON;
       icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[0];
-      icon->d.sprite.x1 = 79;
-      icon->d.sprite.y1 = 103;
+      icon->x1.n = 79;
+      icon->y1.n = 103;
 
       icon = Evt_GetUnused();
       icon->functionIndex = EVTF_DISPLAY_ICON;
       icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[1];
-      icon->d.sprite.x1 = 79;
-      icon->d.sprite.y1 = 121;
+      icon->x1.n = 79;
+      icon->y1.n = 121;
 
       DisplayBasicWindow(0x38);
       gWindowActiveIdx = 0x38;
@@ -2040,18 +2043,18 @@ void Evtf573_BattleItemsList(EvtData *evt) {
       break;
    }
 
-   switch (evt->d.evtf573.drawState) {
+   switch (evt->state3) {
    case 0:
-      evt->d.evtf573.item = -1;
+      EVT.item = -1;
       DrawWindow(0x3c, 0, 0, 288, 36, 14, 192, WBS_CROSSED, 0);
       DisplayBasicWindow(0x3c);
       DisplayBasicWindow(0x3d);
-      evt->d.evtf573.drawState++;
+      evt->state3++;
       break;
    case 1:
       tmp = unit->items[GetWindowChoice(0x38) - 1];
-      if (evt->d.evtf573.item != tmp) {
-         evt->d.evtf573.item = tmp;
+      if (EVT.item != tmp) {
+         EVT.item = tmp;
          DrawWindow(60, 0, 0, 288, 36, 4, 192, WBS_CROSSED, 0);
          DrawText_Internal(12, 10, 35, 2, 0, gItemDescriptions[tmp], 0);
       }
@@ -2059,6 +2062,8 @@ void Evtf573_BattleItemsList(EvtData *evt) {
    }
 }
 
+#undef EVTF
+#define EVTF 031
 void Evtf031_BattleSpellsList(EvtData *evt) {
    static u8 mpBuffer[9] = "\x82\x6c\x82\x6f\x81\x40\x81\x40\x00";
    UnitStatus *unit;
@@ -2069,7 +2074,7 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
    s32 spell;
    // evt->state2: page number
 
-   unit = evt->d.evtf031.unit;
+   unit = EVT.unit;
 
    switch (evt->state) {
    case 0:
@@ -2202,12 +2207,12 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
       break;
    }
 
-   switch (evt->d.evtf031.drawState) {
+   switch (evt->state3) {
    case 0:
       DrawWindow(0x3c, 0, 0, 288, 36, 14, 192, WBS_CROSSED, 0);
       DisplayBasicWindow(0x3c);
       DisplayBasicWindow(0x3d);
-      evt->d.evtf031.drawState++;
+      evt->state3++;
       break;
    case 1:
       spellIdx = GetWindowChoice(0x38);
@@ -2215,8 +2220,8 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
       if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
          spell = spellIdx + evt->state2 * 10;
       }
-      if (evt->d.evtf031.spell != spell) {
-         evt->d.evtf031.spell = spell;
+      if (EVT.spell != spell) {
+         EVT.spell = spell;
          DrawWindow(60, 0, 0, 288, 36, 4, 192, WBS_CROSSED, 0);
          DrawText_Internal(12, 10, 35, 2, 0, gSpellDescriptions[spell], 0);
       }

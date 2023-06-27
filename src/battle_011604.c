@@ -24,7 +24,7 @@ void Evtf571_LevelUp(EvtData *evt) {
       gSignal5 = 0;
 
       gCameraRotation.vy &= 0xfff;
-      EVT.dstRotY = func_800C4150(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 1);
+      EVT.dstRotY = func_800C4150(sprite->z1.s.hi, sprite->x1.s.hi, 1);
       EVT.camSavedX = gCameraPos.vx;
       EVT.camSavedZ = gCameraPos.vz;
       EVT.camSavedY = gCameraPos.vy;
@@ -56,9 +56,9 @@ void Evtf571_LevelUp(EvtData *evt) {
          PerformAudioCommand(0x365);
       }
       if (--EVT.timer != 0) {
-         gCameraPos.vx += (-(sprite->d.sprite.x1 >> 3) - gCameraPos.vx) >> 2;
-         gCameraPos.vz += (-(sprite->d.sprite.z1 >> 3) - gCameraPos.vz) >> 2;
-         gCameraPos.vy += ((sprite->d.sprite.y1 >> 3) - gCameraPos.vy) >> 2;
+         gCameraPos.vx += (-(sprite->x1.n >> 3) - gCameraPos.vx) >> 2;
+         gCameraPos.vz += (-(sprite->z1.n >> 3) - gCameraPos.vz) >> 2;
+         gCameraPos.vy += ((sprite->y1.n >> 3) - gCameraPos.vy) >> 2;
 
          gCameraRotation.vy += (EVT.dstRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vy += (EVT.dstRotY - gCameraRotation.vy) >> 4;
@@ -71,7 +71,7 @@ void Evtf571_LevelUp(EvtData *evt) {
          SetGeomOffset(160, EVT.geomOfsY);
          gGeomOffsetY = EVT.geomOfsY;
       } else {
-         gTileStateGridPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].action = TA_LEVEL_UP;
+         OBJ_TILE_STATE(sprite).action = TA_LEVEL_UP;
          gSignal3 = 0;
          evt->state++;
       }
@@ -176,10 +176,10 @@ void Evtf017_Camera_TBD(EvtData *evt) {
       // ?: LO byte of camSavedX doubles as a caller-set arg for specifying melee/ranged
       if (LO(EVT.camSavedX) != 0) {
          // ?: melee
-         EVT.dstCamRotY = func_800C4150(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 0);
+         EVT.dstCamRotY = func_800C4150(sprite->z1.s.hi, sprite->x1.s.hi, 0);
       } else {
          // ?: ranged
-         EVT.dstCamRotY = func_800C3F50(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 1);
+         EVT.dstCamRotY = func_800C3F50(sprite->z1.s.hi, sprite->x1.s.hi, 1);
       }
       EVT.camSavedX = gCameraPos.vx;
       EVT.camSavedZ = gCameraPos.vz;
@@ -207,9 +207,9 @@ void Evtf017_Camera_TBD(EvtData *evt) {
    // fallthrough
    case 1:
       if (--EVT.timer != 0) {
-         gCameraPos.vx += (-(sprite->d.sprite.x1 >> 3) - gCameraPos.vx) >> 2;
-         gCameraPos.vz += (-(sprite->d.sprite.z1 >> 3) - gCameraPos.vz) >> 2;
-         gCameraPos.vy += ((sprite->d.sprite.y1 >> 3) - gCameraPos.vy) >> 2;
+         gCameraPos.vx += (-(sprite->x1.n >> 3) - gCameraPos.vx) >> 2;
+         gCameraPos.vz += (-(sprite->z1.n >> 3) - gCameraPos.vz) >> 2;
+         gCameraPos.vy += ((sprite->y1.n >> 3) - gCameraPos.vy) >> 2;
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 4;
          gCameraRotation.vx += (0x180 - gCameraRotation.vx) >> 2;
@@ -290,19 +290,16 @@ void Evtf026_588_Camera_TBD(EvtData *evt) {
 
       switch (EVT.type) {
       case 0:
-         EVT.dstCamRotY = GetBestViewOfTarget(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 1);
+         EVT.dstCamRotY = GetBestViewOfTarget(sprite->z1.s.hi, sprite->x1.s.hi, 1);
          break;
       case 1:
-         EVT.dstCamRotY =
-             func_800C4150(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), EVT.todo_x44);
+         EVT.dstCamRotY = func_800C4150(sprite->z1.s.hi, sprite->x1.s.hi, EVT.todo_x44);
          break;
       case 2:
-         EVT.dstCamRotY =
-             func_800C3F50(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), EVT.todo_x44);
+         EVT.dstCamRotY = func_800C3F50(sprite->z1.s.hi, sprite->x1.s.hi, EVT.todo_x44);
          break;
       case 3:
-         EVT.dstCamRotY =
-             func_800C3D50(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), EVT.todo_x44);
+         EVT.dstCamRotY = func_800C3D50(sprite->z1.s.hi, sprite->x1.s.hi, EVT.todo_x44);
          break;
       }
 
@@ -327,12 +324,12 @@ void Evtf026_588_Camera_TBD(EvtData *evt) {
    // fallthrough
    case 1:
       if (--EVT.timer != 0) {
-         gCameraPos.vx += (-(sprite->d.sprite.x1 >> 3) - gCameraPos.vx) >> 2;
-         gCameraPos.vz += (-(sprite->d.sprite.z1 >> 3) - gCameraPos.vz) >> 2;
+         gCameraPos.vx += (-(sprite->x1.n >> 3) - gCameraPos.vx) >> 2;
+         gCameraPos.vz += (-(sprite->z1.n >> 3) - gCameraPos.vz) >> 2;
          if (evt->functionIndex == EVTF_CAMERA_TBD_588) {
-            gCameraPos.vy += (((sprite->d.sprite.y1 + 0x80) >> 3) - gCameraPos.vy) >> 2;
+            gCameraPos.vy += (((sprite->y1.n + 0x80) >> 3) - gCameraPos.vy) >> 2;
          } else {
-            gCameraPos.vy += ((sprite->d.sprite.y1 >> 3) - gCameraPos.vy) >> 2;
+            gCameraPos.vy += ((sprite->y1.n >> 3) - gCameraPos.vy) >> 2;
          }
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 4;
@@ -377,12 +374,12 @@ void Evtf016_ChooseDoneDirection(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      otherEvt = EVT.unit->evtBattler;
+      otherEvt = EVT.unit->battler;
       otherEvt = otherEvt->d.evtf014.sprite;
       gSignal4 = otherEvt->d.sprite.direction;
-      EVT.x = otherEvt->d.sprite.x1;
-      EVT.z = otherEvt->d.sprite.z1;
-      EVT.y = otherEvt->d.sprite.y1 + 0x80;
+      evt->x1.n = otherEvt->x1.n;
+      evt->z1.n = otherEvt->z1.n;
+      evt->y1.n = otherEvt->y1.n + 0x80;
       evt->state++;
    // fallthrough
    case 1:
@@ -469,29 +466,29 @@ void RenderDirectionArrow(EvtData *owner, EvtData *sprite, s16 angle, u8 filled,
    }
 
    sprite->d.sprite.coords[0].x =
-       owner->d.evtf016.x + (rcos((angle0 - ANGLE_90_DEGREES) & 0xfff) * outer >> 12);
-   sprite->d.sprite.coords[0].z = owner->d.evtf016.z + (rcos(angle0 & 0xfff) * outer >> 12);
+       owner->x1.n + (rcos((angle0 - ANGLE_90_DEGREES) & 0xfff) * outer >> 12);
+   sprite->d.sprite.coords[0].z = owner->z1.n + (rcos(angle0 & 0xfff) * outer >> 12);
 
    sprite->d.sprite.coords[2].x =
-       owner->d.evtf016.x + (rcos((angle2 - ANGLE_90_DEGREES) & 0xfff) * inner >> 12);
-   sprite->d.sprite.coords[2].z = owner->d.evtf016.z + (rcos(angle2 & 0xfff) * inner >> 12);
+       owner->x1.n + (rcos((angle2 - ANGLE_90_DEGREES) & 0xfff) * inner >> 12);
+   sprite->d.sprite.coords[2].z = owner->z1.n + (rcos(angle2 & 0xfff) * inner >> 12);
 
    sprite->d.sprite.coords[1].x =
-       owner->d.evtf016.x + (rcos((angle1 - ANGLE_90_DEGREES) & 0xfff) * outer >> 12);
-   sprite->d.sprite.coords[1].z = owner->d.evtf016.z + (rcos(angle1 & 0xfff) * outer >> 12);
+       owner->x1.n + (rcos((angle1 - ANGLE_90_DEGREES) & 0xfff) * outer >> 12);
+   sprite->d.sprite.coords[1].z = owner->z1.n + (rcos(angle1 & 0xfff) * outer >> 12);
 
    sprite->d.sprite.coords[3].x =
-       owner->d.evtf016.x + (rcos((angle3 - ANGLE_90_DEGREES) & 0xfff) * inner >> 12);
-   sprite->d.sprite.coords[3].z = owner->d.evtf016.z + (rcos(angle3 & 0xfff) * inner >> 12);
+       owner->x1.n + (rcos((angle3 - ANGLE_90_DEGREES) & 0xfff) * inner >> 12);
+   sprite->d.sprite.coords[3].z = owner->z1.n + (rcos(angle3 & 0xfff) * inner >> 12);
 
-   sprite->d.sprite.coords[0].y = owner->d.evtf016.y;
-   sprite->d.sprite.coords[1].y = owner->d.evtf016.y;
-   sprite->d.sprite.coords[2].y = owner->d.evtf016.y;
-   sprite->d.sprite.coords[3].y = owner->d.evtf016.y;
+   sprite->d.sprite.coords[0].y = owner->y1.n;
+   sprite->d.sprite.coords[1].y = owner->y1.n;
+   sprite->d.sprite.coords[2].y = owner->y1.n;
+   sprite->d.sprite.coords[3].y = owner->y1.n;
 
-   sprite->d.sprite.x1 = sprite->d.sprite.coords[2].x;
-   sprite->d.sprite.z1 = sprite->d.sprite.coords[2].z;
-   sprite->d.sprite.y1 = sprite->d.sprite.coords[2].y;
+   sprite->x1.n = sprite->d.sprite.coords[2].x;
+   sprite->z1.n = sprite->d.sprite.coords[2].z;
+   sprite->y1.n = sprite->d.sprite.coords[2].y;
    sprite->d.sprite.otOfs = 10;
    AddEvtPrim5(gGraphicsPtr->ot, sprite);
 }

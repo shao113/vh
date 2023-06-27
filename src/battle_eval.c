@@ -407,7 +407,6 @@ void Evtf427_EvaluateBattle11(EvtData *evt) {
    UnitStatus *p;
    s32 i, arrived;
    u8 x, z;
-   EvtData_Sprite *sprite;
 
    if (gState.needEval != 0) {
       gState.needEval = 0;
@@ -415,9 +414,8 @@ void Evtf427_EvaluateBattle11(EvtData *evt) {
       for (i = 1; i < UNIT_CT; i++) {
          p = &gUnits[i];
          if ((p->idx != 0) && (p->team == TEAM_PLAYER)) {
-            sprite = &p->evtSprite->d.sprite;
-            z = TO_TILE(sprite->z1);
-            x = TO_TILE(sprite->x1);
+            z = p->sprite->z1.s.hi;
+            x = p->sprite->x1.s.hi;
             if (x == 3) {
                if (z == 7)
                   continue;
@@ -574,7 +572,6 @@ void Evtf435_EvaluateBattle19(EvtData *evt) {
    UnitStatus *p;
    s32 i, arrived;
    u8 x, z;
-   EvtData_Sprite *sprite;
 
    if (gState.needEval != 0) {
       gState.needEval = 0;
@@ -582,9 +579,8 @@ void Evtf435_EvaluateBattle19(EvtData *evt) {
       for (i = 1; i < UNIT_CT; i++) {
          p = &gUnits[i];
          if ((p->idx != 0) && (p->team == TEAM_PLAYER)) {
-            sprite = &p->evtSprite->d.sprite;
-            z = TO_TILE(sprite->z1);
-            x = TO_TILE(sprite->x1);
+            z = p->sprite->z1.s.hi;
+            x = p->sprite->x1.s.hi;
             if (x == 2) {
                if (z == 7)
                   continue;
@@ -690,7 +686,6 @@ void Evtf442_EvaluateBattle26(EvtData *evt) {
    UnitStatus *p;
    s32 i;
    s8 x;
-   EvtData_Sprite *sprite;
 
    if (gState.needEval != 0) {
       gState.needEval = 0;
@@ -703,8 +698,7 @@ void Evtf442_EvaluateBattle26(EvtData *evt) {
       for (i = 1; i < UNIT_CT; i++) {
          p = &gUnits[i];
          if ((p->idx != 0) && (p->team == TEAM_ENEMY)) {
-            sprite = &p->evtSprite->d.sprite;
-            x = TO_TILE(sprite->x1);
+            x = p->sprite->x1.s.hi;
             if (x == 0 || x == 47) {
                gState.battleEval = BATTLE_EVAL_DEFEAT;
             }
@@ -774,7 +768,7 @@ void Evtf445_EvaluateBattle29(EvtData *evt) {
    UnitStatus *p;
    s32 i, arrived;
    u8 x, z;
-   EvtData_Sprite *sprite;
+   EvtData *sprite;
 
    if (gState.needEval != 0) {
       gState.needEval = 0;
@@ -782,9 +776,9 @@ void Evtf445_EvaluateBattle29(EvtData *evt) {
       for (i = 1; i < UNIT_CT; i++) {
          p = &gUnits[i];
          if ((p->idx != 0) && (p->team == TEAM_PLAYER)) {
-            sprite = &p->evtSprite->d.sprite;
-            z = TO_TILE(sprite->z1);
-            x = TO_TILE(sprite->x1);
+            sprite = p->sprite;
+            z = sprite->z1.s.hi;
+            x = sprite->x1.s.hi;
             if (z == 27 && x > 5 && x < 14)
                continue;
             if (z == 26 && x > 5 && x < 14)
@@ -1007,8 +1001,8 @@ void Evtf420_BattleVictory(EvtData *evt) {
       for (i = 0; i < 4; i++) {
          newEvt = Evt_GetUnused();
          newEvt->functionIndex = EVTF_BATTLE_VICTORY_PARTICLE;
-         newEvt->d.evtf446.x = *p++;
-         newEvt->d.evtf446.y = *p++;
+         newEvt->x1.n = *p++;
+         newEvt->y1.n = *p++;
          newEvt->d.evtf446.gfxIdx = *p++;
          newEvt->d.evtf446.delay = delay;
          delay += 2;
@@ -1106,8 +1100,8 @@ void Evtf446_BattleVictoryParticle(EvtData *evt) {
    }
 
    d = (SquareRoot0(d) / 4) + 32;
-   x += EVT.x;
-   y += EVT.y;
+   x += evt->x1.n;
+   y += evt->y1.n;
    EVT.coords[1].x = x + ((rcos(angle & 0xfff) * d) >> 12);
    EVT.coords[0].x = x + ((rcos((angle + ANGLE_90_DEGREES) & 0xfff) * d) >> 12);
    EVT.coords[3].x = x + ((rcos((angle + ANGLE_270_DEGREES) & 0xfff) * d) >> 12);

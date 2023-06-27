@@ -31,7 +31,7 @@ void Evtf570_AI_TBD(EvtData *evt) {
    UnitStatus *unit;
    u8 spellEffectA, spellEffectB;
 
-   unit = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+   unit = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
 
    switch (evt->state) {
    case 0:
@@ -134,8 +134,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          newEvt = Evt_GetUnused();
-         HI(newEvt->d.evtf403.x) = HI(EVT.x);
-         HI(newEvt->d.evtf403.z) = HI(EVT.z);
+         newEvt->x1.s.hi = evt->x1.s.hi;
+         newEvt->z1.s.hi = evt->z1.s.hi;
          newEvt->functionIndex = EVTF_AI_TBD_403;
          evt->state2++;
 
@@ -154,8 +154,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          newEvt = Evt_GetUnused();
-         HI(newEvt->d.evtf402.x) = HI(EVT.x);
-         HI(newEvt->d.evtf402.z) = HI(EVT.z);
+         newEvt->x1.s.hi = evt->x1.s.hi;
+         newEvt->z1.s.hi = evt->z1.s.hi;
          newEvt->functionIndex = EVTF_AI_TBD_402;
          evt->state2++;
 
@@ -174,8 +174,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          newEvt = Evt_GetUnused();
-         HI(newEvt->d.evtf404.x) = HI(EVT.x);
-         HI(newEvt->d.evtf404.z) = HI(EVT.z);
+         newEvt->x1.s.hi = evt->x1.s.hi;
+         newEvt->z1.s.hi = evt->z1.s.hi;
          newEvt->functionIndex = EVTF_AI_TBD_404;
          evt->state2++;
 
@@ -197,8 +197,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          newEvt = Evt_GetUnused();
-         HI(newEvt->d.evtf402.x) = HI(EVT.x);
-         HI(newEvt->d.evtf402.z) = HI(EVT.z);
+         newEvt->x1.s.hi = evt->x1.s.hi;
+         newEvt->z1.s.hi = evt->z1.s.hi;
          newEvt->functionIndex = EVTF_AI_TBD_402;
          evt->state2++;
 
@@ -208,8 +208,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
             if (D_80123410) {
                D_80123480 = 0;
                newEvt = Evt_GetUnused();
-               HI(newEvt->d.evtf404.x) = HI(EVT.x);
-               HI(newEvt->d.evtf404.z) = HI(EVT.z);
+               newEvt->x1.s.hi = evt->x1.s.hi;
+               newEvt->z1.s.hi = evt->z1.s.hi;
                newEvt->functionIndex = EVTF_AI_TBD_404;
                evt->state2++;
             } else {
@@ -236,8 +236,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       case 0:
          D_80123480 = 0;
          newEvt = Evt_GetUnused();
-         HI(newEvt->d.evtf404.x) = HI(EVT.x);
-         HI(newEvt->d.evtf404.z) = HI(EVT.z);
+         newEvt->x1.s.hi = evt->x1.s.hi;
+         newEvt->z1.s.hi = evt->z1.s.hi;
          newEvt->functionIndex = EVTF_AI_TBD_404;
          evt->state2++;
          break;
@@ -257,8 +257,8 @@ void Evtf570_AI_TBD(EvtData *evt) {
       case 0:
          D_80123480 = 0;
          newEvt = Evt_GetUnused();
-         HI(newEvt->d.evtf589.x) = HI(EVT.x);
-         HI(newEvt->d.evtf589.z) = HI(EVT.z);
+         newEvt->x1.s.hi = evt->x1.s.hi;
+         newEvt->z1.s.hi = evt->z1.s.hi;
          newEvt->functionIndex = EVTF_AI_TBD_589;
          evt->state2++;
          break;
@@ -337,8 +337,7 @@ void Evtf400_AI_TBD(EvtData *evt) {
                   continue;
                }
 
-               func_8002ADCC(HI(targetUnit->evtSprite->d.sprite.z1),
-                             HI(targetUnit->evtSprite->d.sprite.x1),
+               func_8002ADCC(targetUnit->sprite->z1.s.hi, targetUnit->sprite->x1.s.hi,
                              gSpells[gCurrentSpell].fieldSize, 6);
             }
          }
@@ -427,26 +426,26 @@ void func_80056760(UnitStatus *unit) {
 
    for (i = 1; i < UNIT_CT; i++) {
       otherUnit = &gUnits[i];
-      sprite = otherUnit->evtSprite;
+      sprite = otherUnit->sprite;
 
       if (otherUnit->idx != 0 && unit->team != otherUnit->team) {
-         xDist = (gX_801233d8 - HI(sprite->d.sprite.x1));
+         xDist = (gX_801233d8 - sprite->x1.s.hi);
          if (xDist < 0) {
             xDist = -xDist;
          }
-         zDist = gZ_801233dc - HI(sprite->d.sprite.z1);
+         zDist = gZ_801233dc - sprite->z1.s.hi;
          if (zDist < 0) {
             zDist = -zDist;
          }
          if (xDist >= zDist) {
-            if (HI(sprite->d.sprite.x1) < gX_801233d8) {
+            if (sprite->x1.s.hi < gX_801233d8) {
                d += ((0x40 - xDist) * 2) + (0x40 - zDist);
             } else {
                b += ((0x40 - xDist) * 2) + (0x40 - zDist);
             }
          }
          if (zDist >= xDist) {
-            if (HI(sprite->d.sprite.z1) < gZ_801233dc) {
+            if (sprite->z1.s.hi < gZ_801233dc) {
                c += ((0x40 - zDist) * 2) - (xDist - 0x40);
             } else {
                a += ((0x40 - zDist) * 2) - (xDist - 0x40);
@@ -483,7 +482,7 @@ void func_800569A0(UnitStatus *unit) {
 
    for (i = 1; i < UNIT_CT; i++) {
       otherUnit = &gUnits[i];
-      sprite = otherUnit->evtSprite;
+      sprite = otherUnit->sprite;
       sVar4 = 0;
       if (otherUnit->idx != 0) {
 
@@ -496,7 +495,7 @@ void func_800569A0(UnitStatus *unit) {
                sVar4 += 280;
                sVar4 -= (otherUnit->hpFrac / 125);
                sVar4 -= gAdvantage[unit->advantage][otherUnit->advantage];
-               sVar4 -= gTerrainPreference[SPR_TERRAIN(sprite).s.terrain] / 100;
+               sVar4 -= gTerrainPreference[OBJ_TERRAIN(sprite).s.terrain] / 100;
             }
             break;
 
@@ -609,18 +608,18 @@ void Evtf401_AI_TBD(EvtData *evt) {
    s16 i;
 
    unit1 = &gUnits[EVT.unitIdx];
-   sprite1 = unit1->evtSprite;
+   sprite1 = unit1->sprite;
 
    switch (evt->state) {
    case 0:
-      unit1 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
-      sprite1 = unit1->evtSprite;
+      unit1 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+      sprite1 = unit1->sprite;
       ClearGrid(0);
       ClearGrid(6);
 
-      EVT.team = SPR_MAP_UNIT(sprite1).s.team;
-      EVT.unitIdx = SPR_MAP_UNIT(sprite1).s.unitIdx;
-      SPR_MAP_UNIT(sprite1).raw = 0;
+      EVT.team = OBJ_MAP_UNIT(sprite1).s.team;
+      EVT.unitIdx = OBJ_MAP_UNIT(sprite1).s.unitIdx;
+      OBJ_MAP_UNIT(sprite1).raw = 0;
       EVT.unitIter = 0;
       evt->state++;
       break;
@@ -630,10 +629,10 @@ void Evtf401_AI_TBD(EvtData *evt) {
 
       while (++i != UNIT_CT) {
          unit2 = &gUnits[i];
-         sprite2 = unit2->evtSprite;
+         sprite2 = unit2->sprite;
 
          if (unit2->idx != 0 && unit1->team != unit2->team) {
-            func_8002CF88(HI(sprite2->d.sprite.z1), HI(sprite2->d.sprite.x1), 0xff, 0, 6);
+            func_8002CF88(sprite2->z1.s.hi, sprite2->x1.s.hi, 0xff, 0, 6);
             ClearGrid(0);
             if (GetRCnt(RCntCNT1) > 450) {
                EVT.unitIter = i;
@@ -642,8 +641,8 @@ void Evtf401_AI_TBD(EvtData *evt) {
          }
       }
 
-      SPR_MAP_UNIT(sprite1).s.team = EVT.team;
-      SPR_MAP_UNIT(sprite1).s.unitIdx = EVT.unitIdx;
+      OBJ_MAP_UNIT(sprite1).s.team = EVT.team;
+      OBJ_MAP_UNIT(sprite1).s.unitIdx = EVT.unitIdx;
       ClearGrid(0);
       D_80123484++;
       evt->functionIndex = EVTF_NULL;
@@ -671,8 +670,8 @@ void Evtf402_AI_TBD(EvtData *evt) {
    s32 ix2, iz2;
    s32 tmp;
 
-   unit = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
-   sprite = unit->evtSprite;
+   unit = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+   sprite = unit->sprite;
 
    switch (evt->state) {
    case 0:
@@ -702,7 +701,7 @@ void Evtf402_AI_TBD(EvtData *evt) {
          return;
       }
 
-      PopulateMovementGrid(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 0xff, 2);
+      PopulateMovementGrid(sprite->z1.s.hi, sprite->x1.s.hi, 0xff, 2);
       evt->state++;
 
    // fallthrough
@@ -722,7 +721,7 @@ void Evtf402_AI_TBD(EvtData *evt) {
          i = 0xff;
       }
 
-      func_8002B3A8(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), i, 3);
+      func_8002B3A8(sprite->z1.s.hi, sprite->x1.s.hi, i, 3);
       evt->state++;
 
    // fallthrough
@@ -731,7 +730,7 @@ void Evtf402_AI_TBD(EvtData *evt) {
          return;
       }
 
-      func_8002B3A8(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), unit->travelRange, 4);
+      func_8002B3A8(sprite->z1.s.hi, sprite->x1.s.hi, unit->travelRange, 4);
       evt->state++;
 
    // fallthrough
@@ -751,8 +750,8 @@ void Evtf402_AI_TBD(EvtData *evt) {
       if (D_80123484 != 0) {
          newEvt = Evt_GetLastUnused();
          newEvt->functionIndex = EVTF_AI_TBD_401;
-         HI(newEvt->d.evtf401.x) = HI(EVT.x);
-         HI(newEvt->d.evtf401.z) = HI(EVT.z);
+         newEvt->x1.s.hi = evt->x1.s.hi;
+         newEvt->z1.s.hi = evt->z1.s.hi;
          D_80123484 = 0;
          evt->state++;
       }
@@ -778,8 +777,8 @@ void Evtf402_AI_TBD(EvtData *evt) {
       while (s_z1_801232e0 <= gMapMaxZ) {
          while (s_x1_801232dc <= gMapMaxX) {
 
-            if ((s_x1_801232dc == HI(sprite->d.sprite.x1) &&
-                 s_z1_801232e0 == HI(sprite->d.sprite.z1)) ||
+            if ((s_x1_801232dc == sprite->x1.s.hi &&
+                 s_z1_801232e0 == sprite->z1.s.hi) ||
                 (gPathGrid3_Ptr[s_z1_801232e0][s_x1_801232dc] != PATH_STEP_UNSET &&
                  gMapUnitsPtr[s_z1_801232e0][s_x1_801232dc].s.unitIdx == 0)) {
 
@@ -826,8 +825,8 @@ void Evtf402_AI_TBD(EvtData *evt) {
          }
       }
       if (s_pref_801232e4 < 1) {
-         s_x2_801232ec = HI(EVT.x);
-         s_z2_801232e8 = HI(EVT.z);
+         s_x2_801232ec = evt->x1.s.hi;
+         s_z2_801232e8 = evt->z1.s.hi;
       }
       evt->state++;
       return;
@@ -840,7 +839,7 @@ void Evtf402_AI_TBD(EvtData *evt) {
       gX_801233d8 = s_x2_801232ec;
       gZ_801233dc = s_z2_801232e8;
 
-      if (HI(EVT.x) == s_x2_801232ec && HI(EVT.z) == s_z2_801232e8) {
+      if (evt->x1.s.hi == s_x2_801232ec && evt->z1.s.hi == s_z2_801232e8) {
          if (s_pref_801232e4 > 0) {
             D_8012337C = 2;
             gTargetX_80123414 = s_x3_801232f0;

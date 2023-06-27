@@ -49,8 +49,8 @@ void Evtf403_AI_TBD(EvtData *evt) {
    s32 i;
    s32 iz2, ix2;
 
-   unit1 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
-   sprite = unit1->evtSprite;
+   unit1 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+   sprite = unit1->sprite;
 
    switch (evt->state) {
    case 0:
@@ -71,7 +71,7 @@ void Evtf403_AI_TBD(EvtData *evt) {
          return;
       }
 
-      PopulateMovementGrid(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 0xff, 2);
+      PopulateMovementGrid(sprite->z1.s.hi, sprite->x1.s.hi, 0xff, 2);
       evt->state++;
 
    // fallthrough
@@ -91,7 +91,7 @@ void Evtf403_AI_TBD(EvtData *evt) {
          i = 0xff;
       }
 
-      func_8002B3A8(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), i, 3);
+      func_8002B3A8(sprite->z1.s.hi, sprite->x1.s.hi, i, 3);
       evt->state++;
 
    // fallthrough
@@ -100,7 +100,7 @@ void Evtf403_AI_TBD(EvtData *evt) {
          return;
       }
 
-      func_8002B3A8(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), unit1->travelRange, 4);
+      func_8002B3A8(sprite->z1.s.hi, sprite->x1.s.hi, unit1->travelRange, 4);
       evt->state++;
 
    // fallthrough
@@ -111,8 +111,8 @@ void Evtf403_AI_TBD(EvtData *evt) {
 
       newEvt = Evt_GetLastUnused();
       newEvt->functionIndex = EVTF_AI_TBD_401;
-      HI(newEvt->d.evtf401.x) = HI(EVT.x);
-      HI(newEvt->d.evtf401.z) = HI(EVT.z);
+      newEvt->x1.s.hi = evt->x1.s.hi;
+      newEvt->z1.s.hi = evt->z1.s.hi;
       D_80123484 = 0;
       evt->state++;
       break;
@@ -137,8 +137,7 @@ void Evtf403_AI_TBD(EvtData *evt) {
       while (s_z1_801232fc <= gMapMaxZ) {
          while (s_x1_801232f8 <= gMapMaxX) {
 
-            if ((s_x1_801232f8 == HI(sprite->d.sprite.x1) &&
-                 s_z1_801232fc == HI(sprite->d.sprite.z1)) ||
+            if ((s_x1_801232f8 == sprite->x1.s.hi && s_z1_801232fc == sprite->z1.s.hi) ||
                 (gPathGrid3_Ptr[s_z1_801232fc][s_x1_801232f8] != PATH_STEP_UNSET &&
                  gMapUnitsPtr[s_z1_801232fc][s_x1_801232f8].s.unitIdx == 0)) {
 
@@ -188,8 +187,8 @@ void Evtf403_AI_TBD(EvtData *evt) {
          }
       }
       if (s_pref_80123300 == 0) {
-         s_x2_80123308 = HI(EVT.x);
-         s_z2_80123304 = HI(EVT.z);
+         s_x2_80123308 = evt->x1.s.hi;
+         s_z2_80123304 = evt->z1.s.hi;
       }
       evt->state++;
       break;
@@ -202,7 +201,7 @@ void Evtf403_AI_TBD(EvtData *evt) {
       gX_801233d8 = s_x2_80123308;
       gZ_801233dc = s_z2_80123304;
 
-      if (HI(EVT.x) == s_x2_80123308 && HI(EVT.z) == s_z2_80123304) {
+      if (evt->x1.s.hi == s_x2_80123308 && evt->z1.s.hi == s_z2_80123304) {
          if (s_pref_80123300 != 0) {
             D_8012337C = 1;
             gTargetX_80123414 = s_x3_8012330c;
@@ -275,8 +274,8 @@ void Evtf404_AI_TBD(EvtData *evt) {
    s32 i;
    s32 iz, ix;
 
-   unit = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
-   sprite = unit->evtSprite;
+   unit = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+   sprite = unit->sprite;
 
    switch (evt->state) {
    case 0:
@@ -296,7 +295,7 @@ void Evtf404_AI_TBD(EvtData *evt) {
          return;
       }
 
-      func_8002B3A8(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), unit->travelRange, 4);
+      func_8002B3A8(sprite->z1.s.hi, sprite->x1.s.hi, unit->travelRange, 4);
       evt->state++;
 
    // fallthrough
@@ -307,8 +306,8 @@ void Evtf404_AI_TBD(EvtData *evt) {
 
       newEvt = Evt_GetLastUnused();
       newEvt->functionIndex = EVTF_AI_TBD_401;
-      HI(newEvt->d.evtf401.x) = HI(EVT.x);
-      HI(newEvt->d.evtf401.z) = HI(EVT.z);
+      newEvt->x1.s.hi = evt->x1.s.hi;
+      newEvt->z1.s.hi = evt->z1.s.hi;
       D_80123484 = 0;
       evt->state++;
       break;
@@ -335,7 +334,7 @@ void Evtf404_AI_TBD(EvtData *evt) {
       while (iz <= gMapMaxZ) {
          while (ix <= gMapMaxX) {
 
-            if ((ix == HI(sprite->d.sprite.x1) && iz == HI(sprite->d.sprite.z1)) ||
+            if ((ix == sprite->x1.s.hi && iz == sprite->z1.s.hi) ||
                 (gPathGrid4_Ptr[iz][ix] != PATH_STEP_UNSET &&
                  gMapUnitsPtr[iz][ix].s.unitIdx == 0)) {
 
@@ -399,8 +398,8 @@ void Evtf589_AI_TBD(EvtData *evt) {
    s32 iz, ix;
    s32 PVar4;
 
-   unit = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
-   sprite = unit->evtSprite;
+   unit = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+   sprite = unit->sprite;
 
    switch (evt->state) {
    case 0:
@@ -420,8 +419,8 @@ void Evtf589_AI_TBD(EvtData *evt) {
          return;
       }
 
-      func_8002B3A8(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), unit->travelRange, 4);
-      func_8002C1A0(HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 0xfe, 6);
+      func_8002B3A8(sprite->z1.s.hi, sprite->x1.s.hi, unit->travelRange, 4);
+      func_8002C1A0(sprite->z1.s.hi, sprite->x1.s.hi, 0xfe, 6);
       evt->state++;
 
    // fallthrough
@@ -444,8 +443,8 @@ void Evtf589_AI_TBD(EvtData *evt) {
             ix = 3;
          }
       } else {
-         iz = HI(sprite->d.sprite.z1);
-         ix = HI(sprite->d.sprite.x1);
+         iz = sprite->z1.s.hi;
+         ix = sprite->x1.s.hi;
 
          for (i = 0; i < 12; i++) {
             if (PVar4 < gPathGrid6_Ptr[i][47]) {
@@ -465,13 +464,13 @@ void Evtf589_AI_TBD(EvtData *evt) {
          }
       }
 
-      func_8002C1D8(iz, ix, 0xfe, 6, HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1));
+      func_8002C1D8(iz, ix, 0xfe, 6, sprite->z1.s.hi, sprite->x1.s.hi);
       evt->state++;
       break;
 
    case 3:
-      s_z_8012332c = HI(EVT.z);
-      s_x_80123330 = HI(EVT.x);
+      s_z_8012332c = evt->z1.s.hi;
+      s_x_80123330 = evt->x1.s.hi;
       EVT.resumeZ = gMapMinZ;
       EVT.resumeX = gMapMinX;
       s_pref_80123328 = 0;
@@ -489,7 +488,7 @@ void Evtf589_AI_TBD(EvtData *evt) {
       while (iz <= gMapMaxZ) {
          while (ix <= gMapMaxX) {
 
-            if ((ix == HI(sprite->d.sprite.x1) && iz == HI(sprite->d.sprite.z1)) ||
+            if ((ix == sprite->x1.s.hi && iz == sprite->z1.s.hi) ||
                 (gPathGrid4_Ptr[iz][ix] != PATH_STEP_UNSET &&
                  gMapUnitsPtr[iz][ix].s.unitIdx == 0)) {
 

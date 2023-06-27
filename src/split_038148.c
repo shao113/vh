@@ -158,7 +158,7 @@ void Evtf594_BattleResults(EvtData *evt) {
       break;
    } // switch (evt->state)
 
-   switch (EVT.state3) {
+   switch (evt->state3) {
    case 0:
       s_totalReward_80123294 = 0;
       s_currentReward_80123298 = 0;
@@ -166,7 +166,7 @@ void Evtf594_BattleResults(EvtData *evt) {
       EmbedIntAsSjis(s_totalReward_80123294, goldBuffer, 6);
       DrawSjisText(12, 229, 10, 2, 0, goldBuffer);
       DisplayCustomWindow(0x3f, 0, 1, 2, 0, 0);
-      EVT.state3++;
+      evt->state3++;
    // fallthrough
    case 1:
       if (s_currentReward_80123298 != 0) {
@@ -199,10 +199,10 @@ void Evtf593_BattleResultsUnit(EvtData *evt) {
       EVT.unitGfxIdx = GFX_STRIP_SPRITES_OFS + i;
 
       i = EVT.slot;
-      EVT.x1 = (i % 8) * 32 + 28;
-      EVT.y1 = (i / 8) * 30 + 57;
-      EVT.x3 = EVT.x1 + 33;
-      EVT.y3 = EVT.y1 + 33;
+      evt->x1.n = (i % 8) * 32 + 28;
+      evt->y1.n = (i / 8) * 30 + 57;
+      evt->x3.n = evt->x1.n + 33;
+      evt->y3.n = evt->y1.n + 33;
       EVT.otOfs = 2;
       evt->state++;
 

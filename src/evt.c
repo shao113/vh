@@ -53,6 +53,8 @@ void Evtf407_NoopIncState(EvtData *evt) {
    }
 }
 
+#undef EVTF
+#define EVTF 405
 void Evtf405_Panorama(EvtData *evt) {
    EvtData *spr;
    s32 i, iy;
@@ -64,21 +66,21 @@ void Evtf405_Panorama(EvtData *evt) {
    case 0:
       evt->state++;
    case 1:
-      evt->d.evtf405.pan += 0x100;
-      xOfs = (evt->d.evtf405.yRot - GetCamRotY()) >> 4;
-      xOfs += HI(evt->d.evtf405.pan);
-      if (HI(evt->d.evtf405.pan) != 0) {
-         HI(evt->d.evtf405.pan) = 0;
+      evt->x1.n += 0x100;
+      xOfs = (EVT.yRot - GetCamRotY()) >> 4;
+      xOfs += evt->x1.s.hi;
+      if (evt->x1.s.hi != 0) {
+         evt->x1.s.hi = 0;
       }
-      yOfs = (evt->d.evtf405.xRot - GetCamRotX()) >> 5;
-      evt->d.evtf405.yRot = GetCamRotY();
-      evt->d.evtf405.xRot = GetCamRotX();
+      yOfs = (EVT.xRot - GetCamRotX()) >> 5;
+      EVT.yRot = GetCamRotY();
+      EVT.xRot = GetCamRotX();
    }
 
-   evt->d.evtf405.xOffset += xOfs;
-   evt->d.evtf405.yOffset += yOfs;
-   evt->d.evtf405.xOffset &= 0x7f;
-   evt->d.evtf405.yOffset &= 0x7f;
+   EVT.xOffset += xOfs;
+   EVT.yOffset += yOfs;
+   EVT.xOffset &= 0x7f;
+   EVT.yOffset &= 0x7f;
    spr = Evt_GetUnused();
 
    switch (gState.mapNum) {
@@ -149,10 +151,10 @@ void Evtf405_Panorama(EvtData *evt) {
 
    for (i = 0; i < 4; i++) {
       for (iy = 0; iy < 3; iy++) {
-         spr->d.sprite.x1 = i * 128 - evt->d.evtf405.xOffset;
-         spr->d.sprite.y1 = iy * 128 + evt->d.evtf405.yOffset - 128;
-         spr->d.sprite.x3 = spr->d.sprite.x1 + 128;
-         spr->d.sprite.y3 = spr->d.sprite.y1 + 128;
+         spr->x1.n = i * 128 - EVT.xOffset;
+         spr->y1.n = iy * 128 + EVT.yOffset - 128;
+         spr->x3.n = spr->x1.n + 128;
+         spr->y3.n = spr->y1.n + 128;
          AddEvtPrim_Panorama(gGraphicsPtr->ot, spr);
       }
    }
@@ -334,9 +336,9 @@ void AddEvtPrim3(u32 *ot, EvtData *evt) {
 
    if (!evt->d.sprite.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      evt->vec.vx = evt->d.sprite.x1 >> 3;
-      evt->vec.vz = evt->d.sprite.z1 >> 3;
-      evt->vec.vy = -(evt->d.sprite.y1 >> 3);
+      evt->vec.vx = evt->x1.n >> 3;
+      evt->vec.vz = evt->z1.n >> 3;
+      evt->vec.vy = -(evt->y1.n >> 3);
 
       otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
       otIdx = OT_SIZE - otz + 6;
@@ -445,9 +447,9 @@ void AddEvtPrim5(u32 *ot, EvtData *evt) {
 
    if (!evt->d.sprite.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      evt->vec.vx = evt->d.sprite.x1 >> 3;
-      evt->vec.vz = evt->d.sprite.z1 >> 3;
-      evt->vec.vy = -(evt->d.sprite.y1 >> 3);
+      evt->vec.vx = evt->x1.n >> 3;
+      evt->vec.vz = evt->z1.n >> 3;
+      evt->vec.vy = -(evt->y1.n >> 3);
 
       otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
       otIdx = OT_SIZE - otz + 6 + evt->d.sprite.otOfs;
@@ -506,19 +508,17 @@ void AddEvtPrim6(u32 *ot, EvtData *evt, s32 useMapElevation) {
       matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2b24 : &gMatrix_800f2b04;
       PushMatrix();
 
-      evt->vec.vx = evt->d.sprite.x1 >> 3;
-      evt->vec.vz = evt->d.sprite.z1 >> 3;
+      evt->vec.vx = evt->x1.n >> 3;
+      evt->vec.vz = evt->z1.n >> 3;
 
       if (useMapElevation) {
-         if ((HI(evt->d.sprite.x1) >= D_80122E28) &&
-             (HI(evt->d.sprite.x1) <= gMapSizeX + D_80122E28 - 1) &&
-             (HI(evt->d.sprite.z1) >= D_80122E2C) &&
-             (HI(evt->d.sprite.z1) <= gMapSizeZ + D_80122E2C - 1)) {
-            evt->vec.vy = SPR_TILE_MODEL(evt).vertices[0].vy;
-            evt->d.sprite.y1 = -(evt->vec.vy << 3);
+         if ((evt->x1.s.hi >= D_80122E28) && (evt->x1.s.hi <= gMapSizeX + D_80122E28 - 1) &&
+             (evt->z1.s.hi >= D_80122E2C) && (evt->z1.s.hi <= gMapSizeZ + D_80122E2C - 1)) {
+            evt->vec.vy = OBJ_TILE_MODEL(evt).vertices[0].vy;
+            evt->y1.n = -(evt->vec.vy << 3);
          }
       } else {
-         evt->vec.vy = -(evt->d.sprite.y1 >> 3) - evt->d.sprite.animYOfs;
+         evt->vec.vy = -(evt->y1.n >> 3) - evt->d.sprite.animYOfs;
       }
 
       RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
@@ -574,14 +574,14 @@ void AddEvtPrim7(u32 *ot, EvtData *evt, s32 useMapElevation) {
       matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2b64 : &gMatrix_800f2b44;
       PushMatrix();
 
-      evt->vec.vx = evt->d.sprite.x1 >> 3;
-      evt->vec.vz = evt->d.sprite.z1 >> 3;
+      evt->vec.vx = evt->x1.n >> 3;
+      evt->vec.vz = evt->z1.n >> 3;
 
       if (useMapElevation) {
-         evt->vec.vy = SPR_TILE_MODEL(evt).vertices[0].vy;
-         evt->d.sprite.y1 = -(evt->vec.vy << 3);
+         evt->vec.vy = OBJ_TILE_MODEL(evt).vertices[0].vy;
+         evt->y1.n = -(evt->vec.vy << 3);
       } else {
-         evt->vec.vy = -(evt->d.sprite.y1 >> 3);
+         evt->vec.vy = -(evt->y1.n >> 3);
       }
 
       RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
@@ -643,14 +643,14 @@ void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
       matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2ba4 : &gMatrix_800f2b84;
       PushMatrix();
 
-      evt->vec.vx = evt->d.sprite.x1 >> 3;
-      evt->vec.vz = evt->d.sprite.z1 >> 3;
+      evt->vec.vx = evt->x1.n >> 3;
+      evt->vec.vz = evt->z1.n >> 3;
 
       if (useMapElevation) {
-         evt->vec.vy = SPR_TILE_MODEL(evt).vertices[0].vy;
-         evt->d.sprite.y1 = -(evt->vec.vy << 3);
+         evt->vec.vy = OBJ_TILE_MODEL(evt).vertices[0].vy;
+         evt->y1.n = -(evt->vec.vy << 3);
       } else {
-         evt->vec.vy = -(evt->d.sprite.y1 >> 3);
+         evt->vec.vy = -(evt->y1.n >> 3);
       }
 
       RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
@@ -799,23 +799,23 @@ void RenderUnitSprite(u32 *ot, EvtData *sprite, s32 useMapElevation) {
       }
    }
 
-   sprite->vec.vx = (sprite->d.sprite.x1 >> 3) + xOfs;
-   sprite->vec.vz = (sprite->d.sprite.z1 >> 3) + zOfs;
+   sprite->vec.vx = (sprite->x1.n >> 3) + xOfs;
+   sprite->vec.vz = (sprite->z1.n >> 3) + zOfs;
 
    if (useMapElevation != 0) {
       if (useMapElevation == 1) {
-         sprite->vec.vy = SPR_TILE_MODEL(sprite).vertices[0].vy -
-                          gCrateGrid_Ptr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)] * 32 -
+         sprite->vec.vy = OBJ_TILE_MODEL(sprite).vertices[0].vy -
+                          gCrateGrid_Ptr[sprite->z1.s.hi][sprite->x1.s.hi] * 32 -
                           sprite->d.sprite.animYOfs;
-         sprite->d.sprite.y1 = -(sprite->vec.vy << 3);
+         sprite->y1.n = -(sprite->vec.vy << 3);
       } else {
          sprite->vec.vy +=
-             (SPR_TILE_MODEL(sprite).vertices[0].vy - sprite->d.sprite.animYOfs - sprite->vec.vy) >>
+             (OBJ_TILE_MODEL(sprite).vertices[0].vy - sprite->d.sprite.animYOfs - sprite->vec.vy) >>
              2;
-         sprite->d.sprite.y1 = -(sprite->vec.vy << 3);
+         sprite->y1.n = -(sprite->vec.vy << 3);
       }
    } else {
-      sprite->vec.vy = -(sprite->d.sprite.y1 >> 3) - sprite->d.sprite.animYOfs;
+      sprite->vec.vy = -(sprite->y1.n >> 3) - sprite->d.sprite.animYOfs;
    }
 
    RotTrans(&sprite->vec, (VECTOR *)&matrix->t, &flag);
@@ -1015,14 +1015,14 @@ void AddEvtPrim_Gui(u32 *ot, EvtData *evt) {
       setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
               gGfxSubTextures[gfx].h);
 
-      poly->x0 = evt->d.sprite.x1;
-      poly->x1 = evt->d.sprite.x3;
-      poly->x2 = evt->d.sprite.x1;
-      poly->x3 = evt->d.sprite.x3;
-      poly->y0 = evt->d.sprite.y1;
-      poly->y1 = evt->d.sprite.y1;
-      poly->y2 = evt->d.sprite.y3;
-      poly->y3 = evt->d.sprite.y3;
+      poly->x0 = evt->x1.n;
+      poly->x1 = evt->x3.n;
+      poly->x2 = evt->x1.n;
+      poly->x3 = evt->x3.n;
+      poly->y0 = evt->y1.n;
+      poly->y1 = evt->y1.n;
+      poly->y2 = evt->y3.n;
+      poly->y3 = evt->y3.n;
 
       if (evt->d.sprite.otOfs != 0) {
          otIdx = OT_SIZE - 1 - evt->d.sprite.otOfs;
@@ -1109,14 +1109,14 @@ void AddEvtPrim_Panorama(u32 *ot, EvtData *evt) {
    setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
            gGfxSubTextures[gfx].h);
 
-   poly->x0 = evt->d.sprite.x1;
-   poly->x1 = evt->d.sprite.x3;
-   poly->x2 = evt->d.sprite.x1;
-   poly->x3 = evt->d.sprite.x3;
-   poly->y0 = evt->d.sprite.y1;
-   poly->y1 = evt->d.sprite.y1;
-   poly->y2 = evt->d.sprite.y3;
-   poly->y3 = evt->d.sprite.y3;
+   poly->x0 = evt->x1.n;
+   poly->x1 = evt->x3.n;
+   poly->x2 = evt->x1.n;
+   poly->x3 = evt->x3.n;
+   poly->y0 = evt->y1.n;
+   poly->y1 = evt->y1.n;
+   poly->y2 = evt->y3.n;
+   poly->y3 = evt->y3.n;
 
    setRGB0(poly, 0x80, 0x80, 0x80);
    poly->tpage = gGfxTPageIds[gfx];
@@ -1133,27 +1133,27 @@ void RenderOverheadMapUnitMarker(u32 *ot_unused, EvtData *unitSprite, s32 showEl
 
    marker = Evt_GetUnused();
    if (showElevation) {
-      unitSprite->d.sprite.y1 = SPR_TERRAIN(unitSprite).s.elevation * 0x80 + 0x100;
+      unitSprite->y1.n = OBJ_TERRAIN(unitSprite).s.elevation * 0x80 + 0x100;
    }
 
    marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_BLUE_GEM : GFX_RED_GEM;
-   HI(marker->d.sprite.x1) = HI(unitSprite->d.sprite.x1);
-   LO(marker->d.sprite.x1) = 0x80;
-   HI(marker->d.sprite.z1) = HI(unitSprite->d.sprite.z1);
-   LO(marker->d.sprite.z1) = 0x80;
-   marker->d.sprite.y1 = unitSprite->d.sprite.y1;
+   marker->x1.s.hi = unitSprite->x1.s.hi;
+   marker->x1.s.lo = 0x80;
+   marker->z1.s.hi = unitSprite->z1.s.hi;
+   marker->z1.s.lo = 0x80;
+   marker->y1.n = unitSprite->y1.n;
 
    osc = ((rcos(((gOscillation * 2) & 0xfff)) << 6) >> 12) + 0x80;
 
-   e = marker->d.sprite.x1 - osc;
-   w = marker->d.sprite.x1 + osc;
-   n = marker->d.sprite.z1 - osc;
-   s = marker->d.sprite.z1 + osc;
+   e = marker->x1.n - osc;
+   w = marker->x1.n + osc;
+   n = marker->z1.n - osc;
+   s = marker->z1.n + osc;
 
-   marker->d.sprite.coords[0].y = marker->d.sprite.y1;
-   marker->d.sprite.coords[1].y = marker->d.sprite.y1;
-   marker->d.sprite.coords[2].y = marker->d.sprite.y1;
-   marker->d.sprite.coords[3].y = marker->d.sprite.y1;
+   marker->d.sprite.coords[0].y = marker->y1.n;
+   marker->d.sprite.coords[1].y = marker->y1.n;
+   marker->d.sprite.coords[2].y = marker->y1.n;
+   marker->d.sprite.coords[3].y = marker->y1.n;
 
    marker->d.sprite.coords[0].x = e;
    marker->d.sprite.coords[1].x = w;
@@ -1176,10 +1176,8 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
    s16 spin;
    s16 slot = 0;
 
-   if ((HI(unitSprite->d.sprite.x1) >= D_80122E28) &&
-       (HI(unitSprite->d.sprite.x1) <= gMapSizeX + D_80122E28 - 1) &&
-       (HI(unitSprite->d.sprite.z1) >= D_80122E2C) &&
-       (HI(unitSprite->d.sprite.z1) <= gMapSizeZ + D_80122E2C - 1)) {
+   if ((unitSprite->x1.s.hi >= D_80122E28) && (unitSprite->x1.s.hi <= gMapSizeX + D_80122E28 - 1) &&
+       (unitSprite->z1.s.hi >= D_80122E2C) && (unitSprite->z1.s.hi <= gMapSizeZ + D_80122E2C - 1)) {
 
       if (poisoned) {
          RenderStatusEffectText(gGraphicsPtr->ot, unitSprite, 0, slot++);
@@ -1189,14 +1187,14 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
       }
       if (!hideMarker && !gIsEnemyTurn && !gPlayerControlSuppressed) {
          marker = Evt_GetUnused();
-         marker->d.sprite.y1 = SPR_TERRAIN(unitSprite).s.elevation * 128;
+         marker->y1.n = OBJ_TERRAIN(unitSprite).s.elevation * 128;
          marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_PLAYER_CIRCLE : GFX_ENEMY_CIRCLE;
-         marker->d.sprite.x1 = unitSprite->d.sprite.x1;
-         marker->d.sprite.z1 = unitSprite->d.sprite.z1;
-         marker->d.sprite.coords[0].y = marker->d.sprite.y1;
-         marker->d.sprite.coords[1].y = marker->d.sprite.y1;
-         marker->d.sprite.coords[2].y = marker->d.sprite.y1;
-         marker->d.sprite.coords[3].y = marker->d.sprite.y1;
+         marker->x1.n = unitSprite->x1.n;
+         marker->z1.n = unitSprite->z1.n;
+         marker->d.sprite.coords[0].y = marker->y1.n;
+         marker->d.sprite.coords[1].y = marker->y1.n;
+         marker->d.sprite.coords[2].y = marker->y1.n;
+         marker->d.sprite.coords[3].y = marker->y1.n;
 
          if (!done) {
             spin = gState.unitMarkerSpin;
@@ -1208,21 +1206,21 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
             }
          }
 
-         marker->d.sprite.coords[0].x = unitSprite->d.sprite.x1 + (rcos(spin & 0xfff) * 0xaa >> 12);
+         marker->d.sprite.coords[0].x = unitSprite->x1.n + (rcos(spin & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[1].x =
-             unitSprite->d.sprite.x1 + (rcos((spin + ANGLE_90_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->x1.n + (rcos((spin + ANGLE_90_DEGREES) & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[2].x =
-             unitSprite->d.sprite.x1 + (rcos((spin + ANGLE_270_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->x1.n + (rcos((spin + ANGLE_270_DEGREES) & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[3].x =
-             unitSprite->d.sprite.x1 + (rcos((spin + ANGLE_180_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->x1.n + (rcos((spin + ANGLE_180_DEGREES) & 0xfff) * 0xaa >> 12);
 
          marker->d.sprite.coords[0].z =
-             unitSprite->d.sprite.z1 + (rcos((spin + ANGLE_90_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->z1.n + (rcos((spin + ANGLE_90_DEGREES) & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[1].z =
-             unitSprite->d.sprite.z1 + (rcos((spin + ANGLE_180_DEGREES) & 0xfff) * 0xaa >> 12);
-         marker->d.sprite.coords[2].z = unitSprite->d.sprite.z1 + (rcos(spin & 0xfff) * 0xaa >> 12);
+             unitSprite->z1.n + (rcos((spin + ANGLE_180_DEGREES) & 0xfff) * 0xaa >> 12);
+         marker->d.sprite.coords[2].z = unitSprite->z1.n + (rcos(spin & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[3].z =
-             unitSprite->d.sprite.z1 + (rcos((spin + ANGLE_270_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->z1.n + (rcos((spin + ANGLE_270_DEGREES) & 0xfff) * 0xaa >> 12);
 
          marker->d.sprite.otOfs = -2;
          AddEvtPrim5(gGraphicsPtr->ot, marker);
@@ -1261,19 +1259,19 @@ void RenderStatusEffectText(u32 *ot_unused, EvtData *unitSprite, u8 paralyzed, u
       text->d.sprite.gfxIdx = GFX_POISONED;
    }
 
-   text->d.sprite.y1 = unitSprite->d.sprite.y1 + 0x160 + (slot * 0xa0);
-   text->d.sprite.x1 = unitSprite->d.sprite.x1;
-   text->d.sprite.z1 = unitSprite->d.sprite.z1;
+   text->y1.n = unitSprite->y1.n + 0x160 + (slot * 0xa0);
+   text->x1.n = unitSprite->x1.n;
+   text->z1.n = unitSprite->z1.n;
 
    AddEvtPrim6(gGraphicsPtr->ot, text, 0);
 }
 
 void SetElevationFromTerrain(EvtData *evt) {
-   if (HI(evt->d.sprite.x1) < gMapMinX || HI(evt->d.sprite.x1) > gMapMaxX ||
-       HI(evt->d.sprite.z1) < gMapMinZ || HI(evt->d.sprite.z1) > gMapMaxZ) {
-      evt->d.sprite.y1 = 0;
+   if (evt->x1.s.hi < gMapMinX || evt->x1.s.hi > gMapMaxX || evt->z1.s.hi < gMapMinZ ||
+       evt->z1.s.hi > gMapMaxZ) {
+      evt->y1.n = 0;
    } else {
-      evt->d.sprite.y1 = SPR_TERRAIN(evt).s.elevation * 128;
+      evt->y1.n = OBJ_TERRAIN(evt).s.elevation * 128;
    }
 }
 
@@ -1303,10 +1301,10 @@ void UpdateEvtAnimation(EvtData *evt) {
    animData = (s16 *)evt->d.sprite.animData;
 
    if (!evt->d.sprite.animInitialized) {
-      evt->d.sprite.animState = 1;
+      evt->state3 = 1;
    }
 
-   switch (evt->d.sprite.animState) {
+   switch (evt->state3) {
    case 0:
       break;
    case 1:
@@ -1315,7 +1313,7 @@ void UpdateEvtAnimation(EvtData *evt) {
       evt->d.sprite.animInitialized = 1;
       evt->d.sprite.boxIdx = animData[0];
       evt->d.sprite.currentFrameDelay = animData[2];
-      evt->d.sprite.animState++;
+      evt->state3++;
       break;
    case 2:
       if (--evt->d.sprite.currentFrameDelay == 0) {
@@ -1329,7 +1327,7 @@ void UpdateEvtAnimation(EvtData *evt) {
                // gfxIdx and frameDelay are both zero; rewind to final frame
                evt->d.sprite.animFinished++;
                evt->d.sprite.animDataIdx -= 2;
-               evt->d.sprite.animState++;
+               evt->state3++;
             }
          } else {
             // gfxIdx is non-zero; assign associated delay, then break to set frame
@@ -1351,10 +1349,10 @@ void UpdateMultisizeEvtAnimation(EvtData *evt) {
    animData = (s16 *)evt->d.sprite.animData;
 
    if (!evt->d.sprite.animInitialized) {
-      evt->d.sprite.animState = 1;
+      evt->state3 = 1;
    }
 
-   switch (evt->d.sprite.animState) {
+   switch (evt->state3) {
    case 0:
       break;
    case 1:
@@ -1363,7 +1361,7 @@ void UpdateMultisizeEvtAnimation(EvtData *evt) {
       evt->d.sprite.animInitialized = 1;
       evt->d.sprite.currentFrameDelay = animData[1];
       evt->d.sprite.boxIdx = animData[2];
-      evt->d.sprite.animState++;
+      evt->state3++;
       break;
    case 2:
       if (--evt->d.sprite.currentFrameDelay == 0) {
@@ -1378,7 +1376,7 @@ void UpdateMultisizeEvtAnimation(EvtData *evt) {
                // gfxIdx and frameDelay are both zero; rewind to final frame
                evt->d.sprite.animFinished++;
                evt->d.sprite.animDataIdx -= 3;
-               evt->d.sprite.animState++;
+               evt->state3++;
             }
          } else {
             // gfxIdx is non-zero; assign associated delay/box, then break to set frame
@@ -1397,10 +1395,10 @@ void UpdateUnitSpriteAnimation(EvtData *evt) {
    s8 *animData = (s8 *)evt->d.sprite.animData;
 
    if (!evt->d.sprite.animInitialized) {
-      evt->d.sprite.animState = 1;
+      evt->state3 = 1;
    }
 
-   switch (evt->d.sprite.animState) {
+   switch (evt->state3) {
    case 0:
       break;
 
@@ -1427,12 +1425,12 @@ void UpdateUnitSpriteAnimation(EvtData *evt) {
          evt->d.sprite.animSingleAxis = 0;
       }
 
-      evt->d.sprite.animState++;
+      evt->state3++;
 
       if (evt->d.sprite.currentFrameDelay == 1 && animData[evt->d.sprite.animDataIdx + 2] == 0 &&
           animData[evt->d.sprite.animDataIdx + 3] == 0) {
          evt->d.sprite.animFinished++;
-         evt->d.sprite.animState = 3;
+         evt->state3 = 3;
       }
 
       break;
@@ -1481,7 +1479,7 @@ void UpdateUnitSpriteAnimation(EvtData *evt) {
       if (evt->d.sprite.currentFrameDelay == 1 && animData[evt->d.sprite.animDataIdx + 2] == 0 &&
           animData[evt->d.sprite.animDataIdx + 3] == 0) {
          evt->d.sprite.animFinished++;
-         evt->d.sprite.animState++;
+         evt->state3++;
       }
 
       break;

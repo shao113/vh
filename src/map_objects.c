@@ -14,7 +14,7 @@ void Evtf415_MapObject_Torch(EvtData *);
 void Evtf037_MapObject_Fountain(EvtData *);
 void Evtf038_MapObject_LampPost(EvtData *);
 void Evtf039_MapObject_Flag(EvtData *);
-void Evtf045_BloodSpurtOffset(EvtData *);
+void Evtf045_BloodSpurtParticleOffset(EvtData *);
 void Evtf591_MapObject_Boulder(EvtData *);
 void Evtf046_MapObject_Crate(EvtData *);
 s32 ScanForCrateDestination(EvtData *);
@@ -33,11 +33,10 @@ void Evtf035_MapObject_Tree(EvtData *evt) {
       EVT.boxIdx = 10;
       EVT.gfxIdx = EVT.param;
       EVT.param = 0;
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
-      gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
-          (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 4;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
+      OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
+      OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 4;
       SetElevationFromTerrain(evt);
       evt->state++;
       break;
@@ -56,11 +55,10 @@ void Evtf036_MapObject_GraveMarker(EvtData *evt) {
       EVT.boxIdx = 18;
       EVT.gfxIdx = GFX_GRAVE_MARKER;
       EVT.param = 0;
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
-      gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
-          (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 3;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
+      OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
+      OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 3;
       SetElevationFromTerrain(evt);
       evt->state++;
       break;
@@ -79,12 +77,11 @@ void Evtf415_MapObject_Torch(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
       EVT.animData = torchAnimData;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
-      gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
-          (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 3;
+      OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
+      OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 3;
       SetElevationFromTerrain(evt);
       evt->state++;
       break;
@@ -106,9 +103,9 @@ void Evtf037_MapObject_Fountain(EvtData *evt) {
    switch (evt->state) {
    case 0:
       EVT.animData = fountainAnimData;
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
+      OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
       SetElevationFromTerrain(evt);
       evt->state++;
       break;
@@ -128,11 +125,10 @@ void Evtf038_MapObject_LampPost(EvtData *evt) {
    case 0:
       EVT.boxIdx = 13;
       EVT.gfxIdx = GFX_LAMP_POST;
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
-      gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
-          (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 5;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
+      OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
+      OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 5;
       SetElevationFromTerrain(evt);
       evt->state++;
       break;
@@ -152,11 +148,10 @@ void Evtf039_MapObject_Flag(EvtData *evt) {
    switch (evt->state) {
    case 0:
       EVT.animData = flagAnimData;
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_NO_ENTRY;
-      gMapRowPointers[HI(EVT.z)][HI(EVT.x)].height =
-          (-gMapRowPointers[HI(EVT.z)][HI(EVT.x)].vertices[0].vy >> 4) + 6;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
+      OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
+      OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 6;
       SetElevationFromTerrain(evt);
       evt->state++;
       break;
@@ -169,10 +164,9 @@ void Evtf039_MapObject_Flag(EvtData *evt) {
    }
 }
 
-void Evtf045_BloodSpurtOffset(EvtData *evt) {
+void Evtf045_BloodSpurtParticleOffset(EvtData *evt) {
    // Used during battle 32 to simulate train movement
-   // todo replace
-   evt->d.sprite.x1 -= 0x30;
+   evt->x1.n -= 0x30;
    Evtf206_686_BloodSpurtParticle(evt);
 }
 
@@ -180,6 +174,8 @@ void Evtf045_BloodSpurtOffset(EvtData *evt) {
 #define EVTF 591
 void Evtf591_MapObject_Boulder(EvtData *evt) {
    // TBD: Are the static inlines necessary? GetCamRotY_U etc.
+   // evt->x2: dx;    evt->y2: dy;    evt->z2: dz;
+   // evt->x3: dstX;  evt->y3: dstY;  evt->z3: dstZ;
    s32 shouldDraw;
    s16 diff;
    EvtData *newEvt;
@@ -194,19 +190,19 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
    case 0:
       EVT.boxIdx = 15;
       EVT.gfxIdx = GFX_BOULDER_1;
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
-      EVT.dstX = EVT.x;
-      EVT.dstZ = EVT.z;
-      EVT.gridZ = HI(EVT.z);
-      EVT.gridX = HI(EVT.x);
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
+      evt->x3.n = evt->x1.n;
+      evt->z3.n = evt->z1.n;
+      EVT.gridZ = evt->z1.s.hi;
+      EVT.gridX = evt->x1.s.hi;
       SetElevationFromTerrain(evt);
-      gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team = TEAM_BOULDER;
+      OBJ_MAP_UNIT(evt).s.team = TEAM_BOULDER;
       evt->state++;
 
    // fallthrough
    case 1:
-      if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_BOULDER_PUSHED) {
+      if (OBJ_TILE_STATE(evt).action == TA_BOULDER_PUSHED) {
          if (gState.mapNum == 40 && gState.mapState.s.field_0x0 == 0) {
             PerformAudioCommand(0x1370);
             newEvt = Evt_GetUnused();
@@ -226,8 +222,8 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          EVT.savedCamRotY = gCameraRotation.vy = GetCamRotY_U() & 0xfff;
-         gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team = TEAM_NULL;
-         EVT.dstCamRotY = GetBestViewOfTarget(HI(EVT.dstZ), HI(EVT.dstX), 1);
+         OBJ_MAP_UNIT(evt).s.team = TEAM_NULL;
+         EVT.dstCamRotY = GetBestViewOfTarget(evt->z3.s.hi, evt->x3.s.hi, 1);
          diff = EVT.dstCamRotY - GetCamRotY_U();
          if (diff > 0) {
             if (diff > ANGLE_180_DEGREES) {
@@ -237,22 +233,22 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
             EVT.dstCamRotY += ANGLE_360_DEGREES;
          }
 
-         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+         OBJ_TILE_STATE(evt).action = TA_NONE;
          ScanForBoulderDestination(evt);
 
-         EVT.dx = 0;
-         EVT.dz = 0;
-         if (HI(EVT.dstX) > HI(EVT.x)) {
-            EVT.dx = 0x40;
+         evt->x2.n = 0;
+         evt->z2.n = 0;
+         if (evt->x3.s.hi > evt->x1.s.hi) {
+            evt->x2.n = 0x40;
          }
-         if (HI(EVT.dstX) < HI(EVT.x)) {
-            EVT.dx = -0x40;
+         if (evt->x3.s.hi < evt->x1.s.hi) {
+            evt->x2.n = -0x40;
          }
-         if (HI(EVT.dstZ) > HI(EVT.z)) {
-            EVT.dz = 0x40;
+         if (evt->z3.s.hi > evt->z1.s.hi) {
+            evt->z2.n = 0x40;
          }
-         if (HI(EVT.dstZ) < HI(EVT.z)) {
-            EVT.dz = -0x40;
+         if (evt->z3.s.hi < evt->z1.s.hi) {
+            evt->z2.n = -0x40;
          }
          evt->state2++;
 
@@ -260,34 +256,34 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
       case 1:
          newEvt = Evt_GetUnused();
          newEvt->functionIndex = EVTF_CLOUD;
-         newEvt->d.evtf215.x = EVT.x;
-         newEvt->d.evtf215.z = EVT.z;
-         newEvt->d.evtf215.y = EVT.y;
-         EVT.x += EVT.dx;
-         EVT.z += EVT.dz;
-         if (EVT.gridZ != HI(EVT.z) || EVT.gridX != HI(EVT.x)) {
-            EVT.gridZ = HI(EVT.z);
-            EVT.gridX = HI(EVT.x);
-            if (gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx != 0) {
-               gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_BOULDER_HIT;
+         newEvt->x1.n = evt->x1.n;
+         newEvt->z1.n = evt->z1.n;
+         newEvt->y1.n = evt->y1.n;
+         evt->x1.n += evt->x2.n;
+         evt->z1.n += evt->z2.n;
+         if (EVT.gridZ != evt->z1.s.hi || EVT.gridX != evt->x1.s.hi) {
+            EVT.gridZ = evt->z1.s.hi;
+            EVT.gridX = evt->x1.s.hi;
+            if (OBJ_MAP_UNIT(evt).s.unitIdx != 0) {
+               OBJ_TILE_STATE(evt).action = TA_BOULDER_HIT;
             }
          }
-         if (EVT.x == EVT.dstX && EVT.z == EVT.dstZ) {
+         if (evt->x1.n == evt->x3.n && evt->z1.n == evt->z3.n) {
             evt->state++;
          }
          break;
       } // switch (evt->state2) (via state:2)
 
-      OffsetCamPosX((-(EVT.x >> 3) - GetCamPosX()) >> 2);
-      OffsetCamPosZ((-(EVT.z >> 3) - GetCamPosZ()) >> 2);
-      OffsetCamPosY(((EVT.y >> 3) - GetCamPosY()) >> 2);
+      OffsetCamPosX((-(evt->x1.n >> 3) - GetCamPosX()) >> 2);
+      OffsetCamPosZ((-(evt->z1.n >> 3) - GetCamPosZ()) >> 2);
+      OffsetCamPosY(((evt->y1.n >> 3) - GetCamPosY()) >> 2);
       OffsetCamRotY((EVT.dstCamRotY - GetCamRotY()) >> 3);
       break;
 
    case 3:
       newEvt = Evt_GetUnused();
-      if (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain == TERRAIN_WATER ||
-          gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain == TERRAIN_LAVA) {
+      if (OBJ_TERRAIN(evt).s.terrain == TERRAIN_WATER ||
+          OBJ_TERRAIN(evt).s.terrain == TERRAIN_LAVA) {
          newEvt->functionIndex = EVTF_PUSHED_OBJECT_SPLASH;
          PerformAudioCommand(0x5ea);
       } else {
@@ -296,9 +292,9 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
             PerformAudioCommand(0x36f);
          }
       }
-      newEvt->d.sprite.x1 = EVT.x;
-      newEvt->d.sprite.z1 = EVT.z;
-      newEvt->d.sprite.y1 = EVT.y;
+      newEvt->x1.n = evt->x1.n;
+      newEvt->z1.n = evt->z1.n;
+      newEvt->y1.n = evt->y1.n;
       EVT.hidden = 1;
       EVT.timer = 70;
       evt->state++;
@@ -340,7 +336,7 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
    }
 
    if (evt->state != 1) {
-      EVT.y += (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.elevation * 0x80 - EVT.y) >> 2;
+      evt->y1.n += (OBJ_TERRAIN(evt).s.elevation * 0x80 - evt->y1.n) >> 2;
    }
 
    if (shouldDraw) {
@@ -361,6 +357,8 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
    static CubeSideOrdering sideOrdering[4] = {
        {-1, 0, 2, 0}, {2, 0, 0, -1}, {0, -1, 0, 2}, {0, 2, -1, 0}};
 
+   // evt->x2: dx;    evt->y2: dy;    evt->z2: dz;
+   // evt->x3: dstX;  evt->y3: dstY;  evt->z3: dstZ;
    EvtData *face;
    EvtData *evt1;
    s32 dir;
@@ -377,10 +375,10 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
    face->d.sprite.clut = 0;
    face->d.sprite.otOfs = -6;
 
-   x1 = EVT.x + 0x80;
-   x2 = EVT.x - 0x80;
-   z1 = EVT.z + 0x80;
-   z2 = EVT.z - 0x80;
+   x1 = evt->x1.n + 0x80;
+   x2 = evt->x1.n - 0x80;
+   z1 = evt->z1.n + 0x80;
+   z2 = evt->z1.n - 0x80;
 
    // Top face:
    face->d.sprite.coords[0].x = x2;
@@ -391,13 +389,13 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
    face->d.sprite.coords[2].z = z1 - 1;
    face->d.sprite.coords[1].z = z2;
    face->d.sprite.coords[3].z = z1 - 1;
-   face->d.sprite.coords[0].y = EVT.y + 0x100;
-   face->d.sprite.coords[1].y = EVT.y + 0x100;
-   face->d.sprite.coords[2].y = EVT.y + 0x100;
-   face->d.sprite.coords[3].y = EVT.y + 0x100;
-   face->d.sprite.y1 = EVT.y + 0x100;
-   face->d.sprite.x1 = EVT.x;
-   face->d.sprite.z1 = EVT.z;
+   face->d.sprite.coords[0].y = evt->y1.n + 0x100;
+   face->d.sprite.coords[1].y = evt->y1.n + 0x100;
+   face->d.sprite.coords[2].y = evt->y1.n + 0x100;
+   face->d.sprite.coords[3].y = evt->y1.n + 0x100;
+   face->y1.n = evt->y1.n + 0x100;
+   face->x1.n = evt->x1.n;
+   face->z1.n = evt->z1.n;
 
    shouldDraw = !IsSpriteOutsideVisibleRange(evt);
    if (gOverheadMapState != 0) {
@@ -407,16 +405,17 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
    if (shouldDraw) {
       AddEvtPrim5(gGraphicsPtr->ot, face);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      if (gShowBlueMovementGrid && gBlueMovementGridPtr[HI(EVT.z)][HI(EVT.x)] != PATH_STEP_UNSET &&
-          gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)] == EVT.stack) {
+      if (gShowBlueMovementGrid &&
+          gBlueMovementGridPtr[evt->z1.s.hi][evt->x1.s.hi] != PATH_STEP_UNSET &&
+          gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi] == EVT.stack) {
          poly->r0 = 40;
          poly->g0 = 40;
          poly->b0 = gGridColorOscillation;
-      } else if (gYellowTargetGridPtr[HI(EVT.z)][HI(EVT.x)] != PATH_STEP_UNSET) {
+      } else if (gYellowTargetGridPtr[evt->z1.s.hi][evt->x1.s.hi] != PATH_STEP_UNSET) {
          poly->r0 = gGridColorOscillation;
          poly->g0 = gGridColorOscillation;
          poly->b0 = 0;
-      } else if (gRedAttackGridPtr[HI(EVT.z)][HI(EVT.x)] != PATH_STEP_UNSET) {
+      } else if (gRedAttackGridPtr[evt->z1.s.hi][evt->x1.s.hi] != PATH_STEP_UNSET) {
          poly->r0 = gGridColorOscillation;
          poly->g0 = 40;
          poly->b0 = 40;
@@ -425,8 +424,8 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       // West face:
       face->d.sprite.coords[0].x = x2 + 0xff;
       face->d.sprite.coords[2].x = x2 + 0xff;
-      face->d.sprite.coords[1].y = EVT.y;
-      face->d.sprite.coords[3].y = EVT.y;
+      face->d.sprite.coords[1].y = evt->y1.n;
+      face->d.sprite.coords[3].y = evt->y1.n;
       if (sideOrdering[dir].west != 0) {
          face->d.sprite.otOfs = sideOrdering[dir].west - 7;
          AddEvtPrim5(gGraphicsPtr->ot, face);
@@ -447,10 +446,10 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       face->d.sprite.coords[3].x = x2 + 0xff;
       face->d.sprite.coords[2].z = z2;
       face->d.sprite.coords[3].z = z2;
-      face->d.sprite.coords[0].y = EVT.y;
-      face->d.sprite.coords[1].y = EVT.y;
-      face->d.sprite.coords[2].y = EVT.y + 0x100;
-      face->d.sprite.coords[3].y = EVT.y + 0x100;
+      face->d.sprite.coords[0].y = evt->y1.n;
+      face->d.sprite.coords[1].y = evt->y1.n;
+      face->d.sprite.coords[2].y = evt->y1.n + 0x100;
+      face->d.sprite.coords[3].y = evt->y1.n + 0x100;
       if (sideOrdering[dir].north != 0) {
          face->d.sprite.otOfs = sideOrdering[dir].north - 7;
          AddEvtPrim5(gGraphicsPtr->ot, face);
@@ -469,29 +468,29 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
       UpdateCrateElevation(evt);
-      EVT.y += gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)] * 0x100;
-      EVT.stack = ++gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)];
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.elevation += 2;
-      EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_PLAINS;
+      evt->y1.n += gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi] * 0x100;
+      EVT.stack = ++gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi];
+      OBJ_TERRAIN(evt).s.elevation += 2;
+      EVT.terrain = OBJ_TERRAIN(evt).s.terrain;
+      OBJ_TERRAIN(evt).s.terrain = TERRAIN_PLAINS;
       evt->state++;
 
    // fallthrough
    case 1:
-      if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action != TA_CRATE_PUSHED ||
-          gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].cachedByte >= EVT.stack) {
-         if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_CRATE_PUSHED_PRE &&
-             gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].cachedByte == EVT.stack) {
+      if (OBJ_TILE_STATE(evt).action != TA_CRATE_PUSHED ||
+          OBJ_TILE_STATE(evt).cachedByte >= EVT.stack) {
+         if (OBJ_TILE_STATE(evt).action == TA_CRATE_PUSHED_PRE &&
+             OBJ_TILE_STATE(evt).cachedByte == EVT.stack) {
             if (ScanForCrateDestination(evt) == 0) {
                // Can't be pushed
-               gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+               OBJ_TILE_STATE(evt).action = TA_NONE;
             } else {
-               gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_CRATE_PUSHED;
-               gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)]--;
-               gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.elevation -= 2;
+               OBJ_TILE_STATE(evt).action = TA_CRATE_PUSHED;
+               gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi]--;
+               OBJ_TERRAIN(evt).s.elevation -= 2;
                evt->state += 2;
                evt->state2 = 0;
             }
@@ -506,25 +505,25 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         EVT.elevation = EVT.y - 0x100;
-         EVT.dy = 0;
+         EVT.elevation = evt->y1.n - 0x100;
+         evt->y2.n = 0;
          evt->state2++;
          break;
 
       case 1:
-         EVT.y -= EVT.dy;
-         EVT.dy += 0x20;
-         if (EVT.y <= EVT.elevation) {
-            EVT.y = EVT.elevation;
+         evt->y1.n -= evt->y2.n;
+         evt->y2.n += 0x20;
+         if (evt->y1.n <= EVT.elevation) {
+            evt->y1.n = EVT.elevation;
             EVT.stack--;
             evt->state = 1;
             PerformAudioCommand(0x5eb);
             if (EVT.stack == 1) {
                evt1 = Evt_GetUnused();
                evt1->functionIndex = EVTF_DUST_CLOUD_SPAWNER;
-               evt1->d.evtf213.x = EVT.x;
-               evt1->d.evtf213.z = EVT.z;
-               evt1->d.evtf213.y = EVT.y;
+               evt1->x1.n = evt->x1.n;
+               evt1->z1.n = evt->z1.n;
+               evt1->y1.n = evt->y1.n;
             }
          }
          break;
@@ -537,8 +536,8 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          if (EVT.terrain != TERRAIN_PLAINS) {
-            if (gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)] == 0) {
-               gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = EVT.terrain;
+            if (gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi] == 0) {
+               OBJ_TERRAIN(evt).s.terrain = EVT.terrain;
             } else {
                evt1 = gEvtDataArray;
                for (i = 0; i < EVT_DATA_CT; i++) {
@@ -551,22 +550,22 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
             }
          }
 
-         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+         OBJ_TILE_STATE(evt).action = TA_NONE;
          ScanForCrateDestination(evt);
 
-         EVT.dx = 0;
-         EVT.dz = 0;
-         if (HI(EVT.dstX) > HI(EVT.x)) {
-            EVT.dx = 0x40;
+         evt->x2.n = 0;
+         evt->z2.n = 0;
+         if (evt->x3.s.hi > evt->x1.s.hi) {
+            evt->x2.n = 0x40;
          }
-         if (HI(EVT.dstX) < HI(EVT.x)) {
-            EVT.dx = -0x40;
+         if (evt->x3.s.hi < evt->x1.s.hi) {
+            evt->x2.n = -0x40;
          }
-         if (HI(EVT.dstZ) > HI(EVT.z)) {
-            EVT.dz = 0x40;
+         if (evt->z3.s.hi > evt->z1.s.hi) {
+            evt->z2.n = 0x40;
          }
-         if (HI(EVT.dstZ) < HI(EVT.z)) {
-            EVT.dz = -0x40;
+         if (evt->z3.s.hi < evt->z1.s.hi) {
+            evt->z2.n = -0x40;
          }
          evt->state2++;
 
@@ -574,15 +573,15 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       case 1:
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_CLOUD;
-         evt1->d.evtf215.x = EVT.x;
-         evt1->d.evtf215.z = EVT.z;
-         evt1->d.evtf215.y = EVT.y;
+         evt1->x1.n = evt->x1.n;
+         evt1->z1.n = evt->z1.n;
+         evt1->y1.n = evt->y1.n;
 
-         EVT.x += EVT.dx;
-         EVT.z += EVT.dz;
+         evt->x1.n += evt->x2.n;
+         evt->z1.n += evt->z2.n;
 
-         if (EVT.x == EVT.dstX && EVT.z == EVT.dstZ) {
-            if (EVT.dstY == EVT.y) {
+         if (evt->x1.n == evt->x3.n && evt->z1.n == evt->z3.n) {
+            if (evt->y3.n == evt->y1.n) {
                evt->state += 2;
             } else {
                evt->state++;
@@ -598,23 +597,23 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         EVT.elevation = EVT.dstY;
-         EVT.dy = 0x20;
+         EVT.elevation = evt->y3.n;
+         evt->y2.n = 0x20;
          evt->state2++;
 
       // fallthrough
       case 1:
-         EVT.y -= EVT.dy;
-         EVT.dy += 0x20;
-         if (EVT.y <= EVT.elevation) {
-            EVT.y = EVT.elevation;
+         evt->y1.n -= evt->y2.n;
+         evt->y2.n += 0x20;
+         if (evt->y1.n <= EVT.elevation) {
+            evt->y1.n = EVT.elevation;
             evt->state++;
             PerformAudioCommand(0x5eb);
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_DUST_CLOUD_SPAWNER;
-            evt1->d.evtf213.x = EVT.x;
-            evt1->d.evtf213.z = EVT.z;
-            evt1->d.evtf213.y = EVT.y;
+            evt1->x1.n = evt->x1.n;
+            evt1->z1.n = evt->z1.n;
+            evt1->y1.n = evt->y1.n;
          }
          break;
       }
@@ -622,22 +621,21 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       break;
 
    case 5:
-      if (gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain == TERRAIN_WATER ||
-          gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain == TERRAIN_LAVA) {
+      if (OBJ_TERRAIN(evt).s.terrain == TERRAIN_WATER ||
+          OBJ_TERRAIN(evt).s.terrain == TERRAIN_LAVA) {
          PerformAudioCommand(0x5ea);
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_PUSHED_OBJECT_SPLASH;
-         // todo replace
-         evt1->d.sprite.x1 = EVT.x;
-         evt1->d.sprite.z1 = EVT.z;
-         evt1->d.sprite.y1 = EVT.y;
-         evt1->d.sprite.y2 = 0x100;
+         evt1->x1.n = evt->x1.n;
+         evt1->z1.n = evt->z1.n;
+         evt1->y1.n = evt->y1.n;
+         evt1->y2.n = 0x100;
          evt->functionIndex = EVTF_NULL;
       } else {
-         EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain;
-         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_PLAINS;
-         EVT.stack = ++gCrateGrid_Ptr[HI(EVT.z)][HI(EVT.x)];
-         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.elevation += 2;
+         EVT.terrain = OBJ_TERRAIN(evt).s.terrain;
+         OBJ_TERRAIN(evt).s.terrain = TERRAIN_PLAINS;
+         EVT.stack = ++gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi];
+         OBJ_TERRAIN(evt).s.elevation += 2;
          evt->state = 1;
       }
       break;
@@ -651,7 +649,7 @@ s32 ScanForCrateDestination(EvtData *evt) {
    dx = 0;
    dz = 0;
 
-   switch (gTileStateGridPtr[HI(evt->d.evtf046.z)][HI(evt->d.evtf046.x)].cachedShort >> 10) {
+   switch (OBJ_TILE_STATE(evt).cachedShort >> 10) {
    case DIR_SOUTH:
       dz = 1;
       dx = 0;
@@ -670,54 +668,40 @@ s32 ScanForCrateDestination(EvtData *evt) {
       break;
    }
 
-   evt->d.evtf046.dstX = evt->d.evtf046.x;
-   evt->d.evtf046.dstZ = evt->d.evtf046.z;
-   HI(evt->d.evtf046.dstX) = dx + HI(evt->d.evtf046.dstX);
-   HI(evt->d.evtf046.dstZ) = dz + HI(evt->d.evtf046.dstZ);
+   evt->x3.n = evt->x1.n;
+   evt->z3.n = evt->z1.n;
+   evt->x3.s.hi = dx + evt->x3.s.hi;
+   evt->z3.s.hi = dz + evt->z3.s.hi;
 
-   if (gMapUnitsPtr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].raw != 0) {
+   if (OBJ_TARGET_MAP_UNIT(evt).raw != 0) {
       unitHeight = 0x100;
    } else {
       unitHeight = 0;
    }
 
-   if (gTerrainPtr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].s.terrain ==
-       TERRAIN_NO_ENTRY) {
-      HI(evt->d.evtf046.dstX) -= dx;
-      HI(evt->d.evtf046.dstZ) -= dz;
-      evt->d.evtf046.dstY = evt->d.evtf046.y;
+   if (OBJ_TARGET_TERRAIN(evt).s.terrain == TERRAIN_NO_ENTRY) {
+      evt->x3.s.hi -= dx;
+      evt->z3.s.hi -= dz;
+      evt->y3.n = evt->y1.n;
       return 0;
    } else {
-      if (evt->d.evtf046.y >
-          -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy << 3) +
-              (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8) +
-              unitHeight) {
-         evt->d.evtf046.dstY =
-             -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
-               << 3) +
-             (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8);
-      } else if (evt->d.evtf046.y <
-                 -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
-                   << 3) +
-                     (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8) +
-                     unitHeight) {
-         HI(evt->d.evtf046.dstX) -= dx;
-         HI(evt->d.evtf046.dstZ) -= dz;
-         evt->d.evtf046.dstY = evt->d.evtf046.y;
+      if (evt->y1.n > -(gMapRowPointers[evt->z3.s.hi][evt->x3.s.hi].vertices[0].vy << 3) +
+                          (gCrateGrid_Ptr[evt->z3.s.hi][evt->x3.s.hi] << 8) + unitHeight) {
+         evt->y3.n = -(gMapRowPointers[evt->z3.s.hi][evt->x3.s.hi].vertices[0].vy << 3) +
+                     (gCrateGrid_Ptr[evt->z3.s.hi][evt->x3.s.hi] << 8);
+      } else if (evt->y1.n < -(gMapRowPointers[evt->z3.s.hi][evt->x3.s.hi].vertices[0].vy << 3) +
+                                 (gCrateGrid_Ptr[evt->z3.s.hi][evt->x3.s.hi] << 8) + unitHeight) {
+         evt->x3.s.hi -= dx;
+         evt->z3.s.hi -= dz;
+         evt->y3.n = evt->y1.n;
          return 0;
-      } else if (evt->d.evtf046.y <=
-                 (-(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
-                    << 3) +
-                  (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8))) {
-         evt->d.evtf046.dstY =
-             -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
-               << 3) +
-             (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8);
+      } else if (evt->y1.n <= (-(gMapRowPointers[evt->z3.s.hi][evt->x3.s.hi].vertices[0].vy << 3) +
+                               (gCrateGrid_Ptr[evt->z3.s.hi][evt->x3.s.hi] << 8))) {
+         evt->y3.n = -(gMapRowPointers[evt->z3.s.hi][evt->x3.s.hi].vertices[0].vy << 3) +
+                     (gCrateGrid_Ptr[evt->z3.s.hi][evt->x3.s.hi] << 8);
       } else {
-         evt->d.evtf046.dstY =
-             -(gMapRowPointers[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)].vertices[0].vy
-               << 3) +
-             (gCrateGrid_Ptr[HI(evt->d.evtf046.dstZ)][HI(evt->d.evtf046.dstX)] << 8);
+         evt->y3.n = -(gMapRowPointers[evt->z3.s.hi][evt->x3.s.hi].vertices[0].vy << 3) +
+                     (gCrateGrid_Ptr[evt->z3.s.hi][evt->x3.s.hi] << 8);
       }
       return 1;
    }
@@ -732,7 +716,7 @@ s32 ScanForBoulderDestination(EvtData *evt) {
    dx = 0;
    dz = 0;
 
-   switch (gTileStateGridPtr[HI(evt->d.evtf591.z)][HI(evt->d.evtf591.x)].cachedShort >> 10) {
+   switch (OBJ_TILE_STATE(evt).cachedShort >> 10) {
    case DIR_SOUTH:
       dz = 1;
       dx = 0;
@@ -751,52 +735,45 @@ s32 ScanForBoulderDestination(EvtData *evt) {
       break;
    }
 
-   evt->d.evtf591.dstX = evt->d.evtf591.x;
-   evt->d.evtf591.dstZ = evt->d.evtf591.z;
-   elevation = evt->d.evtf591.y;
+   evt->x3.n = evt->x1.n;
+   evt->z3.n = evt->z1.n;
+   elevation = evt->y1.n;
    hasRoom = 0;
 
    while (1) {
-      HI(evt->d.evtf591.dstX) = dx + HI(evt->d.evtf591.dstX);
-      HI(evt->d.evtf591.dstZ) = dz + HI(evt->d.evtf591.dstZ);
+      evt->x3.s.hi = dx + evt->x3.s.hi;
+      evt->z3.s.hi = dz + evt->z3.s.hi;
 
-      if (gMapUnitsPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.team == TEAM_BOULDER) {
+      if (OBJ_TARGET_MAP_UNIT(evt).s.team == TEAM_BOULDER) {
          boulderHeight = 0x100;
       } else {
          boulderHeight = 0;
       }
 
-      if (elevation <
-          ((gMapRowPointers[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].height * 0x80) +
-           (gCrateGrid_Ptr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)] * 0x100) +
-           boulderHeight)) {
-         HI(evt->d.evtf591.dstX) -= dx;
-         HI(evt->d.evtf591.dstZ) -= dz;
+      if (elevation < ((gMapRowPointers[evt->z3.s.hi][evt->x3.s.hi].height * 0x80) +
+                       (gCrateGrid_Ptr[evt->z3.s.hi][evt->x3.s.hi] * 0x100) + boulderHeight)) {
+         evt->x3.s.hi -= dx;
+         evt->z3.s.hi -= dz;
          return hasRoom;
       }
 
-      if (gMapUnitsPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.team != TEAM_NULL &&
-          gMapUnitsPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.unitIdx == 0) {
-         HI(evt->d.evtf591.dstX) -= dx;
-         HI(evt->d.evtf591.dstZ) -= dz;
+      if (OBJ_TARGET_MAP_UNIT(evt).s.team != TEAM_NULL && OBJ_TARGET_MAP_UNIT(evt).s.unitIdx == 0) {
+         evt->x3.s.hi -= dx;
+         evt->z3.s.hi -= dz;
          return hasRoom;
       }
 
-      if (gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.terrain ==
-              TERRAIN_WATER ||
-          gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.terrain == TERRAIN_LAVA) {
+      if (OBJ_TARGET_TERRAIN(evt).s.terrain == TERRAIN_WATER ||
+          OBJ_TARGET_TERRAIN(evt).s.terrain == TERRAIN_LAVA) {
          return 1;
       }
 
-      elevation = gTerrainPtr[HI(evt->d.evtf591.dstZ)][HI(evt->d.evtf591.dstX)].s.elevation * 128;
+      elevation = OBJ_TARGET_TERRAIN(evt).s.elevation * 128;
       hasRoom = 1;
    }
 }
 
-void UpdateCrateElevation(EvtData *evt) {
-   evt->d.evtf046.y =
-       (-gMapRowPointers[HI(evt->d.evtf046.z)][HI(evt->d.evtf046.x)].vertices[0].vy << 3);
-}
+void UpdateCrateElevation(EvtData *evt) { evt->y1.n = (-OBJ_TILE_MODEL(evt).vertices[0].vy << 3); }
 
 #undef EVTF
 #define EVTF 020
@@ -825,9 +802,9 @@ void Evtf020_PushedBoulder(EvtData *evt) {
    // fallthrough
    case 1:
       if (--EVT.timer != 0) {
-         gCameraPos.vx += (-(unitSprite->d.sprite.x1 >> 3) - gCameraPos.vx) >> 2;
-         gCameraPos.vz += (-(unitSprite->d.sprite.z1 >> 3) - gCameraPos.vz) >> 2;
-         gCameraPos.vy += ((unitSprite->d.sprite.y1 >> 3) - gCameraPos.vy) >> 2;
+         gCameraPos.vx += (-(unitSprite->x1.n >> 3) - gCameraPos.vx) >> 2;
+         gCameraPos.vz += (-(unitSprite->z1.n >> 3) - gCameraPos.vz) >> 2;
+         gCameraPos.vy += ((unitSprite->y1.n >> 3) - gCameraPos.vy) >> 2;
          gCameraRotation.vx += (0x180 - gCameraRotation.vx) >> 2;
          gCameraZoom.vz += (250 - gCameraZoom.vz) >> 2;
       } else {
@@ -883,15 +860,15 @@ void Evtf048_Push(EvtData *evt) {
    // s16 srcElevation;
    s32 targetElevation;
 
-   sprite = EVT.unit->evtBattler;
+   sprite = EVT.unit->battler;
    sprite = sprite->d.evtf014.sprite;
    dir = 0;
 
    switch (evt->state) {
    case 0:
-      EVT.x = sprite->d.sprite.x1;
-      EVT.z = sprite->d.sprite.z1;
-      EVT.y = sprite->d.sprite.y1 + 0x80;
+      evt->x1.n = sprite->x1.n;
+      evt->z1.n = sprite->z1.n;
+      evt->y1.n = sprite->y1.n + 0x80;
       gSignal4 = sprite->d.sprite.direction;
       evt->state++;
 
@@ -946,8 +923,8 @@ void Evtf048_Push(EvtData *evt) {
       RenderDirectionArrow(evt, evt1, 0x800, gSignal4 == 0x800, fInner, fOuter, nfInner, nfOuter);
       RenderDirectionArrow(evt, evt1, 0xc00, gSignal4 == 0xc00, fInner, fOuter, nfInner, nfOuter);
 
-      targetX = HI(sprite->d.sprite.x1);
-      targetZ = HI(sprite->d.sprite.z1);
+      targetX = sprite->x1.s.hi;
+      targetZ = sprite->z1.s.hi;
 
       switch (gSignal4 >> 10) {
       case DIR_SOUTH:
@@ -971,16 +948,15 @@ void Evtf048_Push(EvtData *evt) {
       if ((gPadStateNewPresses & PAD_CIRCLE) &&
           gMapUnitsPtr[targetZ][targetX].s.team == TEAM_BOULDER) {
 
-         i = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].s.elevation -
-             gTerrainPtr[targetZ][targetX].s.elevation;
+         i = OBJ_TERRAIN(sprite).s.elevation - gTerrainPtr[targetZ][targetX].s.elevation;
          //?
          if (i + 1U < 3) {
             gTileStateGridPtr[targetZ][targetX].cachedShort = gSignal4;
 
             evt1 = gEvtDataArray;
             for (i = 0; i < EVT_DATA_CT; i++) {
-               if (evt1->functionIndex == EVTF_MAP_OBJECT_BOULDER &&
-                   HI(evt1->d.evtf591.x) == targetX && HI(evt1->d.evtf591.z) == targetZ) {
+               if (evt1->functionIndex == EVTF_MAP_OBJECT_BOULDER && evt1->x1.s.hi == targetX &&
+                   evt1->z1.s.hi == targetZ) {
                   if (ScanForBoulderDestination(evt1)) {
                      gSignal2 = 1;
                      evt->state = 5;
@@ -997,10 +973,10 @@ void Evtf048_Push(EvtData *evt) {
           gCrateGrid_Ptr[targetZ][targetX] != 0x7f) {
          // TODO: Clean-up.
          //@2a68
-         tmp2 = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].s.elevation + 2;
+         tmp2 = OBJ_TERRAIN(sprite).s.elevation + 2;
          targetElevation = gTerrainPtr[targetZ][targetX].s.elevation;
 
-         if (gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].s.elevation >=
+         if (OBJ_TERRAIN(sprite).s.elevation >=
              targetElevation - gCrateGrid_Ptr[targetZ][targetX] * 2 - 1) {
 
             if (tmp2 - 1 <= targetElevation) {
@@ -1022,7 +998,7 @@ void Evtf048_Push(EvtData *evt) {
                for (i = 0; i < EVT_DATA_CT; i++) {
                   if (evt1->functionIndex == EVTF_MAP_OBJECT_CRATE &&
                       stack == evt1->d.evtf046.stack &&
-                      (HI(evt1->d.evtf046.x) == targetX && HI(evt1->d.evtf046.z) == targetZ)) {
+                      (evt1->x1.s.hi == targetX && evt1->z1.s.hi == targetZ)) {
 
                      if (!ScanForCrateDestination(evt1)) {
                         return;
@@ -1041,7 +1017,7 @@ void Evtf048_Push(EvtData *evt) {
       break;
 
    case 2:
-      gTileStateGridPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].action = TA_PUSHING_CRATE;
+      OBJ_TILE_STATE(sprite).action = TA_PUSHING_CRATE;
       gSignal3 = 0;
       evt->state++;
 
@@ -1064,8 +1040,7 @@ void Evtf048_Push(EvtData *evt) {
       break;
 
    case 5:
-      gTileStateGridPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].action =
-          TA_PUSHING_BOULDER;
+      OBJ_TILE_STATE(sprite).action = TA_PUSHING_BOULDER;
       gSignal3 = 0;
       evt->state++;
 
@@ -1135,7 +1110,7 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
    //?: Maybe a remnant of mapObj.param = 0?
    *(s16 *)(&face->d.sprite.hidden) = 0;
    idx = 0;
-   if (gRedAttackGridPtr[HI(EVT.z)][HI(EVT.x)] == PATH_STEP_UNSET) {
+   if (gRedAttackGridPtr[evt->z1.s.hi][evt->x1.s.hi] == PATH_STEP_UNSET) {
       face->d.sprite.clut = 0;
    } else {
       face->d.sprite.clut = 3;
@@ -1145,34 +1120,34 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
    switch (evt->state) {
    case 0:
       EVT.item = EVT.item;
-      gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team = TEAM_CHEST;
-      EVT.terrain = gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain;
-      gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = TERRAIN_OBSTACLE;
-      LO(EVT.x) = 0x80;
-      LO(EVT.z) = 0x80;
-      EVT.y = GetTerrainElevation(HI(EVT.z), HI(EVT.x));
-      EVT.lid_todo_x50 = EVT.z - 0x40;
-      EVT.lid_todo_x54 = EVT.z + 0x40;
-      EVT.lid_todo_x58 = EVT.z - 0x70;
-      EVT.lid_todo_x5c = EVT.z + 0x70;
-      EVT.lid_todo_x52 = EVT.y + 0xd0;
-      EVT.lid_todo_x56 = EVT.y + 0xd0;
-      EVT.lid_todo_x5a = EVT.y + 0x80;
-      EVT.lid_todo_x5e = EVT.y + 0x80;
+      OBJ_MAP_UNIT(evt).s.team = TEAM_CHEST;
+      EVT.terrain = OBJ_TERRAIN(evt).s.terrain;
+      OBJ_TERRAIN(evt).s.terrain = TERRAIN_OBSTACLE;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
+      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
+      EVT.lid_todo_x50 = evt->z1.n - 0x40;
+      EVT.lid_todo_x54 = evt->z1.n + 0x40;
+      EVT.lid_todo_x58 = evt->z1.n - 0x70;
+      EVT.lid_todo_x5c = evt->z1.n + 0x70;
+      EVT.lid_todo_x52 = evt->y1.n + 0xd0;
+      EVT.lid_todo_x56 = evt->y1.n + 0xd0;
+      EVT.lid_todo_x5a = evt->y1.n + 0x80;
+      EVT.lid_todo_x5e = evt->y1.n + 0x80;
       evt->state++;
       break;
 
    case 1:
-      if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_CHEST_1) {
-         gTerrainPtr[HI(EVT.z)][HI(EVT.x)].s.terrain = EVT.terrain;
-         gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team = TEAM_NULL;
+      if (OBJ_TILE_STATE(evt).action == TA_CHEST_1) {
+         OBJ_TERRAIN(evt).s.terrain = EVT.terrain;
+         OBJ_MAP_UNIT(evt).s.team = TEAM_NULL;
          EVT.lidAngleVel = -0xc0;
          evt->mem = 3;
          gSignal3 = 0;
          newEvt = Evt_GetUnused();
-         newEvt->d.sprite.x1 = EVT.x;
-         newEvt->d.sprite.z1 = EVT.z;
-         newEvt->d.sprite.y1 = EVT.y;
+         newEvt->x1.n = evt->x1.n;
+         newEvt->z1.n = evt->z1.n;
+         newEvt->y1.n = evt->y1.n;
          if (EVT.item != 0) {
             newEvt->functionIndex = EVTF_REVEAL_CHEST_ITEM;
             newEvt->d.evtf290.gfxIdx = GFX_ITEM_ICONS_OFS + EVT.item;
@@ -1184,13 +1159,13 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
          }
          evt->state++;
       }
-      if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_CHEST_2) {
-         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
-         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].cachedByte = EVT.item;
+      if (OBJ_TILE_STATE(evt).action == TA_CHEST_2) {
+         OBJ_TILE_STATE(evt).action = TA_NONE;
+         OBJ_TILE_STATE(evt).cachedByte = EVT.item;
       }
-      if (gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action == TA_CHEST_3) {
-         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
-         EVT.facing = gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].cachedByte;
+      if (OBJ_TILE_STATE(evt).action == TA_CHEST_3) {
+         OBJ_TILE_STATE(evt).action = TA_NONE;
+         EVT.facing = OBJ_TILE_STATE(evt).cachedByte;
          if (EVT.facing == 2 && gMapUnitsPtr[gTargetZ - 1][gTargetX].s.team == TEAM_NULL) {
             EVT.facing = 0;
          }
@@ -1238,7 +1213,7 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
 
    case 5:
       gSignal3 = 1;
-      gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+      OBJ_TILE_STATE(evt).action = TA_NONE;
       evt->functionIndex = EVTF_NULL;
       break;
 
@@ -1249,14 +1224,14 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
          i++;
       }
       pMimicExpMulti = &mimicData[40 + gState.mapNum];
-      SetupBattleUnit(i, HI(EVT.z), HI(EVT.x), mimicData[gState.mapNum], TEAM_ENEMY,
-                      gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].cachedShort, 99, *pMimicExpMulti, 99);
+      SetupBattleUnit(i, evt->z1.s.hi, evt->x1.s.hi, mimicData[gState.mapNum], TEAM_ENEMY,
+                      OBJ_TILE_STATE(evt).cachedShort, 99, *pMimicExpMulti, 99);
       evt->state++;
       break;
 
    case 7:
       if (--evt->mem == 0) {
-         gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_NONE;
+         OBJ_TILE_STATE(evt).action = TA_NONE;
          gState.D_8014053E = 1;
          gSignal3 = 1;
          evt->functionIndex = EVTF_NULL;
@@ -1265,53 +1240,53 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
    }
 
    if (!IsSpriteOutsideVisibleRange(evt)) {
-      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[1].x = EVT.x + 0x70;
+      face->d.sprite.coords[1].x = evt->x1.n + 0x70;
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
-      face->d.sprite.coords[0].z = EVT.z - 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n - 0x70;
       face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
       face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
       face->d.sprite.coords[3].z = face->d.sprite.coords[0].z;
-      face->d.sprite.coords[0].y = EVT.y + 0x80;
+      face->d.sprite.coords[0].y = evt->y1.n + 0x80;
       face->d.sprite.coords[1].y = face->d.sprite.coords[0].y;
-      face->d.sprite.coords[2].y = EVT.y;
+      face->d.sprite.coords[2].y = evt->y1.n;
       face->d.sprite.coords[3].y = face->d.sprite.coords[2].y;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[0]
 
-      face->d.sprite.coords[0].z = EVT.z + 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n + 0x70;
       face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
       face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
       face->d.sprite.coords[3].z = face->d.sprite.coords[0].z;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[1]
 
-      face->d.sprite.coords[0].x = EVT.x + 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n + 0x70;
       face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[0].z = EVT.z - 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n - 0x70;
       face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
-      face->d.sprite.coords[1].z = EVT.z + 0x70;
+      face->d.sprite.coords[1].z = evt->z1.n + 0x70;
       face->d.sprite.coords[3].z = face->d.sprite.coords[1].z;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[2]
 
-      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
       face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[0].z = EVT.z - 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n - 0x70;
       face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
-      face->d.sprite.coords[1].z = EVT.z + 0x70;
+      face->d.sprite.coords[1].z = evt->z1.n + 0x70;
       face->d.sprite.coords[3].z = face->d.sprite.coords[1].z;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[3]
 
-      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[1].x = EVT.x + 0x70;
+      face->d.sprite.coords[1].x = evt->x1.n + 0x70;
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
       face->d.sprite.coords[0].z = EVT.lid_todo_x50;
       face->d.sprite.coords[1].z = EVT.lid_todo_x50;
@@ -1335,7 +1310,7 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[5]
 
-      face->d.sprite.coords[0].x = EVT.x + 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n + 0x70;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
@@ -1350,16 +1325,16 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[6]
 
-      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[7]
 
-      face->d.sprite.coords[0].x = EVT.x + 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n + 0x70;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[1].x = EVT.x - 0x70;
+      face->d.sprite.coords[1].x = evt->x1.n - 0x70;
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
       face->d.sprite.coords[0].z = EVT.lid_todo_x54;
       face->d.sprite.coords[1].z = EVT.lid_todo_x54;
@@ -1372,15 +1347,15 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[8]
 
-      face->d.sprite.coords[0].x = EVT.x - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[1].x = EVT.x + 0x70;
+      face->d.sprite.coords[1].x = evt->x1.n + 0x70;
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
-      face->d.sprite.coords[0].z = EVT.z - 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n - 0x70;
       face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
-      face->d.sprite.coords[2].z = EVT.z + 0x70;
+      face->d.sprite.coords[2].z = evt->z1.n + 0x70;
       face->d.sprite.coords[3].z = face->d.sprite.coords[2].z;
-      face->d.sprite.coords[0].y = EVT.y;
+      face->d.sprite.coords[0].y = evt->y1.n;
       face->d.sprite.coords[1].y = face->d.sprite.coords[0].y;
       face->d.sprite.coords[2].y = face->d.sprite.coords[0].y;
       face->d.sprite.coords[3].y = face->d.sprite.coords[0].y;

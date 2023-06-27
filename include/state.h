@@ -107,7 +107,7 @@ typedef struct State {
          u8 field_0x12;
          u8 field_0x13;
       } s;
-      u8 bytes[20];
+      s8 bytes[20];
    } mapState;
 
    u8 signal;
@@ -141,7 +141,7 @@ typedef struct State {
    SVectorXYZ eventCameraPan;
    s16 eventCameraRot;
    s16 eventCameraHeight;
-   struct EvtData *evtFocus;
+   struct EvtData *focus;
    u8 msgBoxFinished;
    u8 field_0x31d;
    u8 field_0x31e;
@@ -165,7 +165,7 @@ typedef struct State {
    u8 field_0x339;
    u8 field_0x33a;
    u8 field_0x33b;
-   struct EvtData *evtScreenEffect;
+   struct EvtData *screenEffect;
    u8 field_0x340;
    u8 field_0x341;
    u8 field_0x342;

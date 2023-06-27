@@ -5,6 +5,8 @@
 // Identifying these as MapObjects since they're in the MapObject arrays.
 // (See: Predefined MapObject arrays @800f6378; Evtf043_SetupMapObjects @800515c8)
 
+#undef EVTF
+#define EVTF 564
 void Evtf564_565_566_MapObject_Water(EvtData *evt) {
    extern u32 s_distortedTex_80123490[32][4];
    extern u32 s_originalTex_80123690[32][4];
@@ -30,8 +32,8 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
             ((u32 *)s_distortedTex_80123490)[i] = ((u32 *)s_originalTex_80123690)[i];
          }
 
-         evt->d.evtf564.phase += 130;
-         phase = evt->d.evtf564.phase;
+         EVT.phase += 130;
+         phase = EVT.phase;
 
          for (i = 0; i < 32; i++) {
             shift = ((rcos(phase & 0xfff) * 2 >> 12) + 4) * 4;
@@ -76,8 +78,8 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
             ((u32 *)s_distortedTex_80123490)[i] = ((u32 *)s_originalTex_80123690)[i];
          }
 
-         evt->d.evtf564.phase += 130;
-         phase = evt->d.evtf564.phase;
+         EVT.phase += 130;
+         phase = EVT.phase;
 
          for (i = 0; i < 32; i++) {
             shift = ((rcos(phase & 0xfff) * 2 >> 12) + 4) * 4;
@@ -116,8 +118,8 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
             ((u32 *)s_distortedTex_80123490)[i] = ((u32 *)s_originalTex_80123690)[i];
          }
 
-         evt->d.evtf564.phase += 130;
-         phase = evt->d.evtf564.phase;
+         EVT.phase += 130;
+         phase = EVT.phase;
 
          for (i = 0; i < 32; i++) {
             shift = ((rcos(phase & 0xfff) * 2 >> 12) + 4) * 4;

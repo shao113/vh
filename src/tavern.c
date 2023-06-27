@@ -142,7 +142,7 @@ void SetupTownMsgBox(s16 portraitId, u8 lower) {
    evt1->functionIndex = EVTF_MSGBOX_PORTRAIT;
    evt1->state = 0;
    evt1->state2 = 0;
-   evt1->d.evtf413.blinkState = 0;
+   evt1->state3 = 0;
    evt1->d.evtf413.flipped = lower;
    evt1->d.evtf413.portrait.id = portraitId;
 
@@ -210,7 +210,7 @@ void func_800444AC(EvtData *tavernEvt) {
 void func_8004450C(EvtData *tavernEvt) {
    if (--tavernEvt->d.evtf576.timer == 0) {
       func_80044364(tavernEvt->d.evtf576.textPtrIdx, 2);
-      tavernEvt->d.evtf576.state3++;
+      tavernEvt->state3++;
    }
 }
 
@@ -278,16 +278,16 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
-               EVT.state3 = 0;
+               evt->state3 = 0;
                EVT.timer = 30;
 
                if (!EVT.needSpeak[0] && !EVT.needSpeak[1] && !EVT.needSpeak[2] &&
                    !EVT.needSpeak[3]) {
                   evt->state2 = 4;
-                  EVT.state3 = 0;
+                  evt->state3 = 0;
                } else {
                   func_80044474();
                   func_800440DC(0);
@@ -342,7 +342,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -355,12 +355,12 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 4:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_80044474();
                func_800440DC(0);
                SetupTownMsgBox(PORTRAIT_595, 0);
-               EVT.state3++;
+               evt->state3++;
                break;
 
             case 1:
@@ -370,7 +370,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                   FinishLoadingSeq();
                   PerformAudioCommand(0x21d);
                   func_80044364(5, 2);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -380,7 +380,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                   func_8004404C(1);
                   SetupTownMsgBox(PORTRAIT_ASH_ANGRY, 1);
                   func_80044364(6, 1);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -388,14 +388,14 @@ s32 Evtf576_Tavern(EvtData *evt) {
                if (gState.msgBoxFinished) {
                   SetupTownMsgBox(PORTRAIT_CLINT, 1);
                   func_80044364(7, 1);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
             case 4:
                if (gState.msgBoxFinished) {
                   func_80044364(8, 3);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -403,14 +403,14 @@ s32 Evtf576_Tavern(EvtData *evt) {
                if (gState.msgBoxFinished) {
                   SetupTownMsgBox(PORTRAIT_DIEGO, 1);
                   func_80044364(9, 1);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
             case 6:
                if (gState.msgBoxFinished) {
                   func_80044364(10, 0);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -418,7 +418,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                if (gState.msgBoxFinished) {
                   SetupTownMsgBox(PORTRAIT_CLINT_UPSET, 1);
                   func_80044364(0xb, 1);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -426,7 +426,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                if (gState.msgBoxFinished) {
                   SetupTownMsgBox(PORTRAIT_ASH, 1);
                   func_80044364(0xc, 1);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -460,7 +460,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -507,7 +507,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -543,16 +543,16 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 75);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
-               EVT.state3 = 0;
+               evt->state3 = 0;
                EVT.timer = 30;
 
                if (!EVT.needSpeak[0] && !EVT.needSpeak[1] && !EVT.needSpeak[2] &&
                    !EVT.needSpeak[3]) {
                   evt->state2 = 4;
-                  EVT.state3 = 0;
+                  evt->state3 = 0;
                } else {
                   func_80044474();
                   func_800440DC(0);
@@ -599,7 +599,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -612,18 +612,18 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 4:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_80044474();
                func_800440DC(0);
                SetupTownMsgBox(PORTRAIT_599, 0);
-               EVT.state3++;
+               evt->state3++;
                break;
 
             case 1:
                if (--EVT.timer == 0) {
                   func_80044364(0x15, 2);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -633,21 +633,21 @@ s32 Evtf576_Tavern(EvtData *evt) {
                   func_8004404C(1);
                   SetupTownMsgBox(PORTRAIT_ASH, 1);
                   func_80044364(0x16, 1);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
             case 3:
                if (gState.msgBoxFinished) {
                   func_80044364(0x17, 0);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
             case 4:
                if (gState.msgBoxFinished) {
                   func_80044364(0x18, 1);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -681,7 +681,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -733,7 +733,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -746,11 +746,11 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 4:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                if (--EVT.timer == 0) {
                   func_80044364(0x3b, 2);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -760,7 +760,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                   DrawWindow(0x3c, 0, 150, 240, 36, 40, 160, WBS_CROSSED, 0);
                   DrawText(12, 160, 25, 2, 0, gState.currentTextPointers[0x3c]);
                   DisplayBasicWindow(0x3c);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -797,7 +797,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -854,7 +854,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -867,11 +867,11 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 4:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                if (--EVT.timer == 0) {
                   func_80044364(0x3f, 2);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -881,7 +881,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                   DrawWindow(0x3c, 0, 150, 240, 36, 40, 160, WBS_CROSSED, 0);
                   DrawText(12, 160, 25, 2, 0, gState.currentTextPointers[0x40]);
                   DisplayBasicWindow(0x3c);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -923,10 +923,10 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
-               EVT.state3 = 0;
+               evt->state3 = 0;
                EVT.timer = 30;
 
                if (!EVT.needSpeak[0] && !EVT.needSpeak[1] && !EVT.needSpeak[2] &&
@@ -954,7 +954,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
             if (gWindowChoice.raw == 0x3901) {
                EVT.needSpeak[0] = 0;
                evt->state2 = 4;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3902) {
                func_80044474();
@@ -984,7 +984,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -997,18 +997,18 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 4:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_80044474();
                func_800440DC(0);
                SetupTownMsgBox(PORTRAIT_609, 0);
-               EVT.state3++;
+               evt->state3++;
                break;
 
             case 1:
                if (--EVT.timer == 0) {
                   func_80044364(0x1f, 2);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -1018,14 +1018,14 @@ s32 Evtf576_Tavern(EvtData *evt) {
                   func_8004404C(1);
                   SetupTownMsgBox(PORTRAIT_ASH, 1);
                   func_80044364(0x20, 1);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
             case 3:
                if (gState.msgBoxFinished) {
                   func_80044364(0x21, 0);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -1062,7 +1062,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -1102,7 +1102,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -1133,7 +1133,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -1173,7 +1173,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -1204,7 +1204,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -1260,7 +1260,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -1273,11 +1273,11 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 4:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                if (--EVT.timer == 0) {
                   func_80044364(0x43, 2);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -1287,7 +1287,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                   DrawWindow(0x3c, 0, 150, 240, 36, 40, 160, WBS_CROSSED, 0);
                   DrawText(12, 160, 25, 2, 0, gState.currentTextPointers[0x44]);
                   DisplayBasicWindow(0x3c);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -1324,7 +1324,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -1364,7 +1364,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -1395,7 +1395,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -1435,7 +1435,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -1466,7 +1466,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -1513,7 +1513,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -1544,7 +1544,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                SlideWindowTo(0x39, 124, 66);
                gWindowActiveIdx = 0x39;
                evt->state2++;
-               EVT.state3 = 0;
+               evt->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3802 || gWindowChoice.raw == 0x38ff) {
                evt->state = 99;
@@ -1601,7 +1601,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 3:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                func_8004450C(evt);
                break;
@@ -1614,11 +1614,11 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
          case 4:
 
-            switch (EVT.state3) {
+            switch (evt->state3) {
             case 0:
                if (--EVT.timer == 0) {
                   func_80044364(0x48, 2);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 
@@ -1628,7 +1628,7 @@ s32 Evtf576_Tavern(EvtData *evt) {
                   DrawWindow(0x3c, 0, 150, 240, 36, 40, 160, WBS_CROSSED, 0);
                   DrawText(12, 160, 25, 2, 0, gState.currentTextPointers[0x49]);
                   DisplayBasicWindow(0x3c);
-                  EVT.state3++;
+                  evt->state3++;
                }
                break;
 

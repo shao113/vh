@@ -844,25 +844,25 @@ void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
       nowLoading = Evt_GetUnused();
       nowLoading->functionIndex = EVTF_NOOP;
       nowLoading->d.sprite.gfxIdx = GFX_NOW_LOADING;
-      nowLoading->d.sprite.x1 = 120;
-      nowLoading->d.sprite.y1 = 95;
-      nowLoading->d.sprite.x3 = nowLoading->d.sprite.x1 + 80;
-      nowLoading->d.sprite.y3 = nowLoading->d.sprite.y1 + 50;
+      nowLoading->x1.n = 120;
+      nowLoading->y1.n = 95;
+      nowLoading->x3.n = nowLoading->x1.n + 80;
+      nowLoading->y3.n = nowLoading->y1.n + 50;
 
       logo = Evt_GetUnused();
       logo->functionIndex = EVTF_NOOP;
       logo->d.sprite.gfxIdx = GFX_VANDAL_HEARTS;
-      logo->d.sprite.x1 = 156;
-      logo->d.sprite.y1 = 184;
-      logo->d.sprite.x3 = logo->d.sprite.x1 + 128;
-      logo->d.sprite.y3 = logo->d.sprite.y1 + 32;
+      logo->x1.n = 156;
+      logo->y1.n = 184;
+      logo->x3.n = logo->x1.n + 128;
+      logo->y3.n = logo->y1.n + 32;
 
       fairy = Evt_GetUnused();
       fairy->functionIndex = EVTF_NOOP;
-      fairy->d.sprite.x1 = 24;
-      fairy->d.sprite.y1 = 192;
-      fairy->d.sprite.x3 = fairy->d.sprite.x1 + 24;
-      fairy->d.sprite.y3 = fairy->d.sprite.y1 + 24;
+      fairy->x1.n = 24;
+      fairy->y1.n = 192;
+      fairy->x3.n = fairy->x1.n + 24;
+      fairy->y3.n = fairy->y1.n + 24;
       fairyFrameTimer = 0;
       fairyFrameToggle = 0;
       fairy->d.sprite.gfxIdx = GFX_FAIRY_1;

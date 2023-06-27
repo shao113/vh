@@ -253,195 +253,195 @@ SfxProperties gSfxProperties[269] = {
     {2, 0, 24, 104, SFX_ROLE_RELEASE, 0},
 };
 
-CdaProperties gCdaProperties[188] = {
-    {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, CDA_LOOP},
-    {0x0, 0x1963, 0x1, 0x0, 0x1c, 0x0, CDA_LOOP},
-    {0x3f78, 0x1920, 0x2, 0x0, 0x30, 0x0, CDA_LOOP},
-    {0x7e48, 0x1553, 0x3, 0x0, 0x40, 0x0, CDA_LOOP},
-    {0xb398, 0x2d0, 0x4, 0x0, 0x70, 0x0, CDA_NO_LOOP},
-    {0xbaa0, 0x129, 0x5, 0x0, 0x48, 0x0, CDA_NO_LOOP},
-    {0xbd88, 0x149, 0x6, 0x0, 0x48, 0x0, CDA_NO_LOOP},
-    {0xc0c0, 0x12c, 0x7, 0x0, 0x48, 0x0, CDA_NO_LOOP},
-    {0xc3b0, 0x5c, 0x8, 0x0, 0x18, 0x0, CDA_NO_LOOP},
-    {0xc498, 0x66, 0x9, 0x0, 0x28, 0x0, CDA_NO_LOOP},
-    {0xc598, 0x60, 0xa, 0x0, 0x1c, 0x0, CDA_NO_LOOP},
-    {0xc688, 0x80, 0xb, 0x0, 0x1c, 0x0, CDA_NO_LOOP},
-    {0xc7c8, 0x80, 0xc, 0x0, 0x1c, 0x0, CDA_NO_LOOP},
-    {0xc908, 0x60, 0xd, 0x0, 0x30, 0x0, CDA_NO_LOOP},
-    {0xc9f8, 0xbc, 0xe, 0x0, 0x60, 0x0, CDA_NO_LOOP},
-    {0xcbd0, 0x113, 0xf, 0x0, 0x48, 0x0, CDA_NO_LOOP},
-    {0xce80, 0x30, 0x10, 0x0, 0x68, 0x0, CDA_NO_LOOP},
-    {0xcef8, 0x3766, 0x11, 0x0, 0xc, 0x0, CDA_LOOP},
-    {0x15978, 0x59, 0x12, 0x0, 0x66, 0x0, CDA_NO_LOOP},
-    {0x15a58, 0x80, 0x13, 0x0, 0x5e, 0x0, CDA_NO_LOOP},
-    {0x15b98, 0x39, 0x14, 0x0, 0x70, 0x0, CDA_NO_LOOP},
-    {0x0, 0x6e6, 0x1, 0x1, 0x4d, 0x0, CDA_NO_LOOP},
-    {0x1140, 0x3a2c, 0x2, 0x1, 0x30, 0x0, CDA_LOOP},
-    {0xa2b0, 0x40, 0x3, 0x1, 0x70, 0x0, CDA_NO_LOOP},
-    {0xa350, 0x34b3, 0x4, 0x1, 0xe, 0x0, CDA_LOOP},
-    {0x12710, 0x599, 0x5, 0x1, 0x40, 0x0, CDA_NO_LOOP},
-    {0x13510, 0x349, 0x6, 0x1, 0x7f, 0x0, CDA_NO_LOOP},
-    {0x13d48, 0x2a0, 0x7, 0x1, 0x70, 0x0, CDA_NO_LOOP},
-    {0x143d8, 0x49, 0x8, 0x1, 0x4c, 0x0, CDA_NO_LOOP},
-    {0x14490, 0x11c, 0x9, 0x1, 0x68, 0x0, CDA_NO_LOOP},
-    {0x14758, 0x11c, 0xa, 0x1, 0x68, 0x0, CDA_NO_LOOP},
-    {0x14a20, 0x11c, 0xb, 0x1, 0x68, 0x0, CDA_NO_LOOP},
-    {0x14ce8, 0xa9c, 0xc, 0x1, 0x74, 0x0, CDA_NO_LOOP},
-    {0x16770, 0x53, 0xd, 0x1, 0x50, 0x0, CDA_NO_LOOP},
-    {0x16840, 0x106, 0xe, 0x1, 0x70, 0x0, CDA_NO_LOOP},
-    {0x16ad0, 0x1a9, 0xf, 0x1, 0x68, 0x0, CDA_NO_LOOP},
-    {0x16ef8, 0xbc, 0x10, 0x1, 0x68, 0x0, CDA_NO_LOOP},
-    {0x170d0, 0x1a0, 0x11, 0x1, 0x70, 0x0, CDA_NO_LOOP},
-    {0x174e0, 0x6c, 0x12, 0x1, 0x58, 0x0, CDA_NO_LOOP},
-    {0x175f0, 0xf0, 0x13, 0x1, 0x78, 0x0, CDA_NO_LOOP},
-    {0x17848, 0x99, 0x14, 0x1, 0x78, 0x0, CDA_NO_LOOP},
-    {0x179c8, 0x4b0, 0x15, 0x1, 0x78, 0x0, CDA_NO_LOOP},
-    {0x18580, 0xe3, 0x16, 0x1, 0x78, 0x0, CDA_NO_LOOP},
-    {0x187b8, 0x29, 0x17, 0x1, 0x58, 0x0, CDA_NO_LOOP},
-    {0x18820, 0x69, 0x18, 0x1, 0x68, 0x0, CDA_NO_LOOP},
-    {0x0, 0x3306, 0x1, 0x2, 0x10, 0x0, CDA_LOOP},
-    {0x7f90, 0x3426, 0x2, 0x2, 0x20, 0x0, CDA_LOOP},
-    {0x101f0, 0x3876, 0x3, 0x2, 0x74, 0x0, CDA_NO_LOOP},
-    {0x0, 0x39c3, 0x1, 0x3, 0x18, 0x0, CDA_LOOP},
-    {0x9068, 0x159, 0x2, 0x3, 0x7f, 0x0, CDA_NO_LOOP},
-    {0x93c8, 0x3633, 0x3, 0x3, 0x30, 0x0, CDA_LOOP},
-    {0x11b48, 0x130, 0x4, 0x3, 0x24, 0x0, CDA_NO_LOOP},
-    {0x11e40, 0x146, 0x5, 0x3, 0x3c, 0x0, CDA_NO_LOOP},
-    {0x12170, 0x16c, 0x6, 0x3, 0x38, 0x0, CDA_NO_LOOP},
-    {0x12500, 0x5c, 0x7, 0x3, 0x3e, 0x0, CDA_NO_LOOP},
-    {0x125e8, 0x203, 0x8, 0x3, 0x48, 0x0, CDA_NO_LOOP},
-    {0x12af0, 0x206, 0x9, 0x3, 0x63, 0x0, CDA_NO_LOOP},
-    {0x13000, 0x216, 0xa, 0x3, 0x76, 0x0, CDA_NO_LOOP},
-    {0x13538, 0xdc, 0xb, 0x3, 0x48, 0x0, CDA_NO_LOOP},
-    {0x13760, 0x26, 0xc, 0x3, 0x2e, 0x0, CDA_NO_LOOP},
-    {0x137c0, 0x140, 0xd, 0x3, 0x73, 0x0, CDA_NO_LOOP},
-    {0x13ae0, 0x100, 0xe, 0x3, 0x50, 0x0, CDA_NO_LOOP},
-    {0x13d60, 0x139, 0xf, 0x3, 0x54, 0x0, CDA_NO_LOOP},
-    {0x14070, 0x26, 0x10, 0x3, 0x38, 0x0, CDA_NO_LOOP},
-    {0x140d0, 0x2ac, 0x11, 0x3, 0x6a, 0x0, CDA_NO_LOOP},
-    {0x14780, 0x32c, 0x12, 0x3, 0x5d, 0x0, CDA_NO_LOOP},
-    {0x14f70, 0x60, 0x13, 0x3, 0x44, 0x0, CDA_NO_LOOP},
-    {0x15060, 0x239, 0x14, 0x3, 0x48, 0x0, CDA_NO_LOOP},
-    {0x155f0, 0x26, 0x15, 0x3, 0x28, 0x0, CDA_NO_LOOP},
-    {0x15650, 0x116, 0x16, 0x3, 0x34, 0x0, CDA_NO_LOOP},
-    {0x15908, 0x26, 0x17, 0x3, 0x24, 0x0, CDA_NO_LOOP},
-    {0x15968, 0x200, 0x18, 0x3, 0x28, 0x0, CDA_NO_LOOP},
-    {0x15e68, 0x1d0, 0x19, 0x3, 0x5a, 0x0, CDA_NO_LOOP},
-    {0x162f0, 0x29, 0x1a, 0x3, 0x58, 0x0, CDA_NO_LOOP},
-    {0x16358, 0x59, 0x1b, 0x3, 0x60, 0x0, CDA_NO_LOOP},
-    {0x16438, 0x10c, 0x1c, 0x3, 0x40, 0x0, CDA_NO_LOOP},
-    {0x166d8, 0x263, 0x1d, 0x3, 0x60, 0x0, CDA_NO_LOOP},
-    {0x16cd0, 0xb9, 0x1e, 0x3, 0x60, 0x0, CDA_NO_LOOP},
-    {0x16ea0, 0x229, 0x1f, 0x3, 0x60, 0x0, CDA_NO_LOOP},
-    {0x17408, 0x739, 0x20, 0x3, 0x60, 0x0, CDA_NO_LOOP},
-    {0x18618, 0xc0, 0x21, 0x3, 0x30, 0x0, CDA_NO_LOOP},
-    {0x0, 0xd3, 0x1, 0x4, 0x7f, 0x0, CDA_NO_LOOP},
-    {0x210, 0x3673, 0x2, 0x4, 0x18, 0x0, CDA_LOOP},
-    {0x8a30, 0x116, 0x3, 0x4, 0x70, 0x0, CDA_NO_LOOP},
-    {0x8ce8, 0x440, 0x4, 0x4, 0x66, 0x0, CDA_NO_LOOP},
-    {0x9788, 0x383, 0x5, 0x4, 0x64, 0x0, CDA_NO_LOOP},
-    {0xa050, 0x430, 0x6, 0x4, 0x68, 0x0, CDA_NO_LOOP},
-    {0xaac8, 0x3c, 0x7, 0x4, 0x60, 0x0, CDA_NO_LOOP},
-    {0xab60, 0x83, 0x8, 0x4, 0x18, 0x0, CDA_NO_LOOP},
-    {0xaca8, 0x3719, 0x9, 0x4, 0x30, 0x0, CDA_LOOP},
-    {0x13668, 0x3163, 0xa, 0x4, 0x40, 0x0, CDA_LOOP},
-    {0x0, 0x26, 0x1, 0x5, 0x5c, 0x0, CDA_NO_LOOP},
-    {0x60, 0x39, 0x2, 0x5, 0x40, 0x0, CDA_NO_LOOP},
-    {0xf0, 0x23, 0x3, 0x5, 0x50, 0x0, CDA_NO_LOOP},
-    {0x148, 0x20, 0x4, 0x5, 0x48, 0x0, CDA_NO_LOOP},
-    {0x198, 0x146, 0x5, 0x5, 0x60, 0x0, CDA_NO_LOOP},
-    {0x4c8, 0x3746, 0x6, 0x5, 0x38, 0x0, CDA_LOOP},
-    {0x8ef8, 0x36f3, 0x7, 0x5, 0x4c, 0x0, CDA_LOOP},
-    {0x11858, 0xbec, 0x8, 0x5, 0x28, 0x0, CDA_NO_LOOP},
-    {0x13628, 0x5dc, 0x9, 0x5, 0x28, 0x0, CDA_NO_LOOP},
-    {0x144d0, 0x24c, 0xa, 0x5, 0x7f, 0x0, CDA_NO_LOOP},
-    {0x14a90, 0xec, 0xb, 0x5, 0x30, 0x0, CDA_NO_LOOP},
-    {0x14ce0, 0x7a0, 0xc, 0x5, 0x68, 0x0, CDA_NO_LOOP},
-    {0x15ff0, 0x230, 0xd, 0x5, 0x5c, 0x0, CDA_NO_LOOP},
-    {0x16568, 0x449, 0xe, 0x5, 0x68, 0x0, CDA_NO_LOOP},
-    {0x17020, 0x823, 0xf, 0x5, 0x68, 0x0, CDA_NO_LOOP},
-    {0x18478, 0x9c, 0x10, 0x5, 0x74, 0x0, CDA_NO_LOOP},
-    {0x18600, 0x30, 0x11, 0x5, 0x3c, 0x0, CDA_NO_LOOP},
-    {0x18678, 0x33, 0x12, 0x5, 0x58, 0x0, CDA_NO_LOOP},
-    {0x186f8, 0x36, 0x13, 0x5, 0x50, 0x0, CDA_NO_LOOP},
-    {0x18780, 0x2c, 0x14, 0x5, 0x3c, 0x0, CDA_NO_LOOP},
-    {0x187f0, 0x99, 0x15, 0x5, 0x7f, 0x0, CDA_NO_LOOP},
-    {0x18970, 0x16c, 0x16, 0x5, 0x70, 0x0, CDA_NO_LOOP},
-    {0x18d00, 0x136, 0x17, 0x5, 0x70, 0x0, CDA_NO_LOOP},
-    {0x19008, 0x206, 0x18, 0x5, 0x70, 0x0, CDA_NO_LOOP},
-    {0x19518, 0x259, 0x19, 0x5, 0x50, 0x0, CDA_NO_LOOP},
-    {0x19af8, 0x90, 0x1a, 0x5, 0x68, 0x0, CDA_NO_LOOP},
-    {0x0, 0x38b6, 0x1, 0x6, 0x24, 0x0, CDA_LOOP},
-    {0x8dc8, 0x3890, 0x2, 0x6, 0x54, 0x0, CDA_LOOP},
-    {0x11b30, 0x86, 0x3, 0x6, 0x4c, 0x0, CDA_NO_LOOP},
-    {0x11c80, 0xb26, 0x4, 0x6, 0x30, 0x0, CDA_NO_LOOP},
-    {0x13860, 0x499, 0x5, 0x6, 0x78, 0x0, CDA_NO_LOOP},
-    {0x143e0, 0x40, 0x6, 0x6, 0xa, 0x0, CDA_NO_LOOP},
-    {0x14480, 0x33, 0x7, 0x6, 0x54, 0x0, CDA_NO_LOOP},
-    {0x14500, 0x2c, 0x8, 0x6, 0x10, 0x0, CDA_NO_LOOP},
-    {0x14570, 0x3c, 0x9, 0x6, 0x10, 0x0, CDA_NO_LOOP},
-    {0x14608, 0x1c, 0xa, 0x6, 0x5c, 0x0, CDA_NO_LOOP},
-    {0x14650, 0x3a0, 0xb, 0x6, 0x7f, 0x0, CDA_NO_LOOP},
-    {0x14f60, 0x43, 0xc, 0x6, 0x70, 0x0, CDA_NO_LOOP},
-    {0x15008, 0x480, 0xd, 0x6, 0x48, 0x0, CDA_NO_LOOP},
-    {0x15b48, 0x70, 0xe, 0x6, 0x30, 0x0, CDA_NO_LOOP},
-    {0x15c60, 0x156, 0xf, 0x6, 0x58, 0x0, CDA_NO_LOOP},
-    {0x15fb8, 0xc9, 0x10, 0x6, 0x5c, 0x0, CDA_NO_LOOP},
-    {0x161b0, 0xf3, 0x11, 0x6, 0x70, 0x0, CDA_NO_LOOP},
-    {0x16410, 0x610, 0x12, 0x6, 0x78, 0x0, CDA_NO_LOOP},
-    {0x17338, 0x480, 0x13, 0x6, 0x28, 0x0, CDA_NO_LOOP},
-    {0x17e78, 0x60, 0x14, 0x6, 0x68, 0x0, CDA_NO_LOOP},
-    {0x17f68, 0x80, 0x15, 0x6, 0x6c, 0x0, CDA_NO_LOOP},
-    {0x180a8, 0x2b3, 0x16, 0x6, 0x74, 0x0, CDA_NO_LOOP},
-    {0x0, 0x3293, 0x1, 0x7, 0x30, 0x0, CDA_LOOP},
-    {0x7e70, 0x33e0, 0x2, 0x7, 0x30, 0x0, CDA_LOOP},
-    {0x10020, 0x90, 0xe, 0x7, 0x28, 0x0, CDA_NO_LOOP},
-    {0x10188, 0x90, 0xf, 0x7, 0x28, 0x0, CDA_NO_LOOP},
-    {0x102f0, 0x11c, 0x10, 0x7, 0x64, 0x0, CDA_NO_LOOP},
-    {0x105b8, 0x1d6, 0x11, 0x7, 0x44, 0x0, CDA_NO_LOOP},
-    {0x10a50, 0x166, 0x12, 0x7, 0x4c, 0x0, CDA_NO_LOOP},
-    {0x10dd0, 0x26, 0x13, 0x7, 0x3c, 0x0, CDA_NO_LOOP},
-    {0x10e30, 0x1e9, 0x14, 0x7, 0x6b, 0x0, CDA_NO_LOOP},
-    {0x112f8, 0xb9, 0x15, 0x7, 0x6b, 0x0, CDA_NO_LOOP},
-    {0x114c8, 0x17c, 0x16, 0x7, 0x2c, 0x0, CDA_NO_LOOP},
-    {0x11880, 0x90, 0x17, 0x7, 0x38, 0x0, CDA_NO_LOOP},
-    {0x119e8, 0x1e9, 0x18, 0x7, 0x40, 0x0, CDA_NO_LOOP},
-    {0x11eb0, 0x90, 0x19, 0x7, 0x50, 0x0, CDA_NO_LOOP},
-    {0x12018, 0x123, 0x1a, 0x7, 0x60, 0x0, CDA_NO_LOOP},
-    {0x122f0, 0xa6, 0x1b, 0x7, 0x44, 0x0, CDA_NO_LOOP},
-    {0x12490, 0x26, 0x1c, 0x7, 0x38, 0x0, CDA_NO_LOOP},
-    {0x124f0, 0x83, 0x1d, 0x7, 0x64, 0x0, CDA_NO_LOOP},
-    {0x12638, 0x26, 0x1e, 0x7, 0x32, 0x0, CDA_NO_LOOP},
-    {0x12698, 0x113, 0x1f, 0x7, 0x5c, 0x0, CDA_NO_LOOP},
-    {0x12948, 0x6c, 0x20, 0x7, 0x40, 0x0, CDA_NO_LOOP},
-    {0x12a58, 0x260, 0x21, 0x7, 0x54, 0x0, CDA_NO_LOOP},
-    {0x13048, 0x39, 0x22, 0x7, 0x41, 0x0, CDA_NO_LOOP},
-    {0x130d8, 0xa9, 0x23, 0x7, 0x64, 0x0, CDA_NO_LOOP},
-    {0x13280, 0x89, 0x24, 0x7, 0x77, 0x0, CDA_NO_LOOP},
-    {0x133d8, 0x149, 0x25, 0x7, 0x60, 0x0, CDA_NO_LOOP},
-    {0x13710, 0x60, 0x26, 0x7, 0x53, 0x0, CDA_NO_LOOP},
-    {0x13800, 0x190, 0x27, 0x7, 0x5c, 0x0, CDA_NO_LOOP},
-    {0x13be8, 0x1ec, 0x28, 0x7, 0x44, 0x0, CDA_NO_LOOP},
-    {0x140b8, 0x46, 0x29, 0x7, 0x38, 0x0, CDA_NO_LOOP},
-    {0x14168, 0x180, 0x2a, 0x7, 0x53, 0x0, CDA_NO_LOOP},
-    {0x14528, 0x1bc, 0x2b, 0x7, 0x60, 0x0, CDA_NO_LOOP},
-    {0x14980, 0x180, 0x2c, 0x7, 0x4d, 0x0, CDA_NO_LOOP},
-    {0x14d40, 0x160, 0x2d, 0x7, 0x4e, 0x0, CDA_NO_LOOP},
-    {0x150b0, 0x60, 0x2e, 0x7, 0x51, 0x0, CDA_NO_LOOP},
-    {0x151a0, 0xe6, 0x2f, 0x7, 0x60, 0x0, CDA_NO_LOOP},
-    {0x153e0, 0x3c, 0x30, 0x7, 0x54, 0x0, CDA_NO_LOOP},
-    {0x15478, 0x14c, 0x31, 0x7, 0x54, 0x0, CDA_NO_LOOP},
-    {0x157b8, 0x73, 0x32, 0x7, 0x54, 0x0, CDA_NO_LOOP},
-    {0x158d8, 0x1dc, 0x33, 0x7, 0x4a, 0x0, CDA_NO_LOOP},
-    {0x15d80, 0x60, 0x34, 0x7, 0x38, 0x0, CDA_NO_LOOP},
-    {0x15e70, 0x253, 0x35, 0x7, 0x4c, 0x0, CDA_NO_LOOP},
-    {0x16440, 0x169, 0x36, 0x7, 0x3d, 0x0, CDA_NO_LOOP},
-    {0x167c8, 0x1d9, 0x37, 0x7, 0x7f, 0x0, CDA_NO_LOOP},
-    {0x16c68, 0x5d3, 0x38, 0x7, 0x4e, 0x0, CDA_NO_LOOP},
-    {0x17af8, 0xf0, 0x39, 0x7, 0x3c, 0x0, CDA_NO_LOOP},
-    {0x17d50, 0x83, 0x3a, 0x7, 0x5c, 0x0, CDA_NO_LOOP},
-    {0x17e98, 0x609, 0x3b, 0x7, 0x20, 0x0, CDA_NO_LOOP},
-    {0x13498, 0x63c, 0x9, 0x5, 0x28, 0x0, CDA_NO_LOOP},
+XaProperties gXaProperties[188] = {
+    {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, XA_LOOP},
+    {0x0, 0x1963, 0x1, 0x0, 0x1c, 0x0, XA_LOOP},
+    {0x3f78, 0x1920, 0x2, 0x0, 0x30, 0x0, XA_LOOP},
+    {0x7e48, 0x1553, 0x3, 0x0, 0x40, 0x0, XA_LOOP},
+    {0xb398, 0x2d0, 0x4, 0x0, 0x70, 0x0, XA_NO_LOOP},
+    {0xbaa0, 0x129, 0x5, 0x0, 0x48, 0x0, XA_NO_LOOP},
+    {0xbd88, 0x149, 0x6, 0x0, 0x48, 0x0, XA_NO_LOOP},
+    {0xc0c0, 0x12c, 0x7, 0x0, 0x48, 0x0, XA_NO_LOOP},
+    {0xc3b0, 0x5c, 0x8, 0x0, 0x18, 0x0, XA_NO_LOOP},
+    {0xc498, 0x66, 0x9, 0x0, 0x28, 0x0, XA_NO_LOOP},
+    {0xc598, 0x60, 0xa, 0x0, 0x1c, 0x0, XA_NO_LOOP},
+    {0xc688, 0x80, 0xb, 0x0, 0x1c, 0x0, XA_NO_LOOP},
+    {0xc7c8, 0x80, 0xc, 0x0, 0x1c, 0x0, XA_NO_LOOP},
+    {0xc908, 0x60, 0xd, 0x0, 0x30, 0x0, XA_NO_LOOP},
+    {0xc9f8, 0xbc, 0xe, 0x0, 0x60, 0x0, XA_NO_LOOP},
+    {0xcbd0, 0x113, 0xf, 0x0, 0x48, 0x0, XA_NO_LOOP},
+    {0xce80, 0x30, 0x10, 0x0, 0x68, 0x0, XA_NO_LOOP},
+    {0xcef8, 0x3766, 0x11, 0x0, 0xc, 0x0, XA_LOOP},
+    {0x15978, 0x59, 0x12, 0x0, 0x66, 0x0, XA_NO_LOOP},
+    {0x15a58, 0x80, 0x13, 0x0, 0x5e, 0x0, XA_NO_LOOP},
+    {0x15b98, 0x39, 0x14, 0x0, 0x70, 0x0, XA_NO_LOOP},
+    {0x0, 0x6e6, 0x1, 0x1, 0x4d, 0x0, XA_NO_LOOP},
+    {0x1140, 0x3a2c, 0x2, 0x1, 0x30, 0x0, XA_LOOP},
+    {0xa2b0, 0x40, 0x3, 0x1, 0x70, 0x0, XA_NO_LOOP},
+    {0xa350, 0x34b3, 0x4, 0x1, 0xe, 0x0, XA_LOOP},
+    {0x12710, 0x599, 0x5, 0x1, 0x40, 0x0, XA_NO_LOOP},
+    {0x13510, 0x349, 0x6, 0x1, 0x7f, 0x0, XA_NO_LOOP},
+    {0x13d48, 0x2a0, 0x7, 0x1, 0x70, 0x0, XA_NO_LOOP},
+    {0x143d8, 0x49, 0x8, 0x1, 0x4c, 0x0, XA_NO_LOOP},
+    {0x14490, 0x11c, 0x9, 0x1, 0x68, 0x0, XA_NO_LOOP},
+    {0x14758, 0x11c, 0xa, 0x1, 0x68, 0x0, XA_NO_LOOP},
+    {0x14a20, 0x11c, 0xb, 0x1, 0x68, 0x0, XA_NO_LOOP},
+    {0x14ce8, 0xa9c, 0xc, 0x1, 0x74, 0x0, XA_NO_LOOP},
+    {0x16770, 0x53, 0xd, 0x1, 0x50, 0x0, XA_NO_LOOP},
+    {0x16840, 0x106, 0xe, 0x1, 0x70, 0x0, XA_NO_LOOP},
+    {0x16ad0, 0x1a9, 0xf, 0x1, 0x68, 0x0, XA_NO_LOOP},
+    {0x16ef8, 0xbc, 0x10, 0x1, 0x68, 0x0, XA_NO_LOOP},
+    {0x170d0, 0x1a0, 0x11, 0x1, 0x70, 0x0, XA_NO_LOOP},
+    {0x174e0, 0x6c, 0x12, 0x1, 0x58, 0x0, XA_NO_LOOP},
+    {0x175f0, 0xf0, 0x13, 0x1, 0x78, 0x0, XA_NO_LOOP},
+    {0x17848, 0x99, 0x14, 0x1, 0x78, 0x0, XA_NO_LOOP},
+    {0x179c8, 0x4b0, 0x15, 0x1, 0x78, 0x0, XA_NO_LOOP},
+    {0x18580, 0xe3, 0x16, 0x1, 0x78, 0x0, XA_NO_LOOP},
+    {0x187b8, 0x29, 0x17, 0x1, 0x58, 0x0, XA_NO_LOOP},
+    {0x18820, 0x69, 0x18, 0x1, 0x68, 0x0, XA_NO_LOOP},
+    {0x0, 0x3306, 0x1, 0x2, 0x10, 0x0, XA_LOOP},
+    {0x7f90, 0x3426, 0x2, 0x2, 0x20, 0x0, XA_LOOP},
+    {0x101f0, 0x3876, 0x3, 0x2, 0x74, 0x0, XA_NO_LOOP},
+    {0x0, 0x39c3, 0x1, 0x3, 0x18, 0x0, XA_LOOP},
+    {0x9068, 0x159, 0x2, 0x3, 0x7f, 0x0, XA_NO_LOOP},
+    {0x93c8, 0x3633, 0x3, 0x3, 0x30, 0x0, XA_LOOP},
+    {0x11b48, 0x130, 0x4, 0x3, 0x24, 0x0, XA_NO_LOOP},
+    {0x11e40, 0x146, 0x5, 0x3, 0x3c, 0x0, XA_NO_LOOP},
+    {0x12170, 0x16c, 0x6, 0x3, 0x38, 0x0, XA_NO_LOOP},
+    {0x12500, 0x5c, 0x7, 0x3, 0x3e, 0x0, XA_NO_LOOP},
+    {0x125e8, 0x203, 0x8, 0x3, 0x48, 0x0, XA_NO_LOOP},
+    {0x12af0, 0x206, 0x9, 0x3, 0x63, 0x0, XA_NO_LOOP},
+    {0x13000, 0x216, 0xa, 0x3, 0x76, 0x0, XA_NO_LOOP},
+    {0x13538, 0xdc, 0xb, 0x3, 0x48, 0x0, XA_NO_LOOP},
+    {0x13760, 0x26, 0xc, 0x3, 0x2e, 0x0, XA_NO_LOOP},
+    {0x137c0, 0x140, 0xd, 0x3, 0x73, 0x0, XA_NO_LOOP},
+    {0x13ae0, 0x100, 0xe, 0x3, 0x50, 0x0, XA_NO_LOOP},
+    {0x13d60, 0x139, 0xf, 0x3, 0x54, 0x0, XA_NO_LOOP},
+    {0x14070, 0x26, 0x10, 0x3, 0x38, 0x0, XA_NO_LOOP},
+    {0x140d0, 0x2ac, 0x11, 0x3, 0x6a, 0x0, XA_NO_LOOP},
+    {0x14780, 0x32c, 0x12, 0x3, 0x5d, 0x0, XA_NO_LOOP},
+    {0x14f70, 0x60, 0x13, 0x3, 0x44, 0x0, XA_NO_LOOP},
+    {0x15060, 0x239, 0x14, 0x3, 0x48, 0x0, XA_NO_LOOP},
+    {0x155f0, 0x26, 0x15, 0x3, 0x28, 0x0, XA_NO_LOOP},
+    {0x15650, 0x116, 0x16, 0x3, 0x34, 0x0, XA_NO_LOOP},
+    {0x15908, 0x26, 0x17, 0x3, 0x24, 0x0, XA_NO_LOOP},
+    {0x15968, 0x200, 0x18, 0x3, 0x28, 0x0, XA_NO_LOOP},
+    {0x15e68, 0x1d0, 0x19, 0x3, 0x5a, 0x0, XA_NO_LOOP},
+    {0x162f0, 0x29, 0x1a, 0x3, 0x58, 0x0, XA_NO_LOOP},
+    {0x16358, 0x59, 0x1b, 0x3, 0x60, 0x0, XA_NO_LOOP},
+    {0x16438, 0x10c, 0x1c, 0x3, 0x40, 0x0, XA_NO_LOOP},
+    {0x166d8, 0x263, 0x1d, 0x3, 0x60, 0x0, XA_NO_LOOP},
+    {0x16cd0, 0xb9, 0x1e, 0x3, 0x60, 0x0, XA_NO_LOOP},
+    {0x16ea0, 0x229, 0x1f, 0x3, 0x60, 0x0, XA_NO_LOOP},
+    {0x17408, 0x739, 0x20, 0x3, 0x60, 0x0, XA_NO_LOOP},
+    {0x18618, 0xc0, 0x21, 0x3, 0x30, 0x0, XA_NO_LOOP},
+    {0x0, 0xd3, 0x1, 0x4, 0x7f, 0x0, XA_NO_LOOP},
+    {0x210, 0x3673, 0x2, 0x4, 0x18, 0x0, XA_LOOP},
+    {0x8a30, 0x116, 0x3, 0x4, 0x70, 0x0, XA_NO_LOOP},
+    {0x8ce8, 0x440, 0x4, 0x4, 0x66, 0x0, XA_NO_LOOP},
+    {0x9788, 0x383, 0x5, 0x4, 0x64, 0x0, XA_NO_LOOP},
+    {0xa050, 0x430, 0x6, 0x4, 0x68, 0x0, XA_NO_LOOP},
+    {0xaac8, 0x3c, 0x7, 0x4, 0x60, 0x0, XA_NO_LOOP},
+    {0xab60, 0x83, 0x8, 0x4, 0x18, 0x0, XA_NO_LOOP},
+    {0xaca8, 0x3719, 0x9, 0x4, 0x30, 0x0, XA_LOOP},
+    {0x13668, 0x3163, 0xa, 0x4, 0x40, 0x0, XA_LOOP},
+    {0x0, 0x26, 0x1, 0x5, 0x5c, 0x0, XA_NO_LOOP},
+    {0x60, 0x39, 0x2, 0x5, 0x40, 0x0, XA_NO_LOOP},
+    {0xf0, 0x23, 0x3, 0x5, 0x50, 0x0, XA_NO_LOOP},
+    {0x148, 0x20, 0x4, 0x5, 0x48, 0x0, XA_NO_LOOP},
+    {0x198, 0x146, 0x5, 0x5, 0x60, 0x0, XA_NO_LOOP},
+    {0x4c8, 0x3746, 0x6, 0x5, 0x38, 0x0, XA_LOOP},
+    {0x8ef8, 0x36f3, 0x7, 0x5, 0x4c, 0x0, XA_LOOP},
+    {0x11858, 0xbec, 0x8, 0x5, 0x28, 0x0, XA_NO_LOOP},
+    {0x13628, 0x5dc, 0x9, 0x5, 0x28, 0x0, XA_NO_LOOP},
+    {0x144d0, 0x24c, 0xa, 0x5, 0x7f, 0x0, XA_NO_LOOP},
+    {0x14a90, 0xec, 0xb, 0x5, 0x30, 0x0, XA_NO_LOOP},
+    {0x14ce0, 0x7a0, 0xc, 0x5, 0x68, 0x0, XA_NO_LOOP},
+    {0x15ff0, 0x230, 0xd, 0x5, 0x5c, 0x0, XA_NO_LOOP},
+    {0x16568, 0x449, 0xe, 0x5, 0x68, 0x0, XA_NO_LOOP},
+    {0x17020, 0x823, 0xf, 0x5, 0x68, 0x0, XA_NO_LOOP},
+    {0x18478, 0x9c, 0x10, 0x5, 0x74, 0x0, XA_NO_LOOP},
+    {0x18600, 0x30, 0x11, 0x5, 0x3c, 0x0, XA_NO_LOOP},
+    {0x18678, 0x33, 0x12, 0x5, 0x58, 0x0, XA_NO_LOOP},
+    {0x186f8, 0x36, 0x13, 0x5, 0x50, 0x0, XA_NO_LOOP},
+    {0x18780, 0x2c, 0x14, 0x5, 0x3c, 0x0, XA_NO_LOOP},
+    {0x187f0, 0x99, 0x15, 0x5, 0x7f, 0x0, XA_NO_LOOP},
+    {0x18970, 0x16c, 0x16, 0x5, 0x70, 0x0, XA_NO_LOOP},
+    {0x18d00, 0x136, 0x17, 0x5, 0x70, 0x0, XA_NO_LOOP},
+    {0x19008, 0x206, 0x18, 0x5, 0x70, 0x0, XA_NO_LOOP},
+    {0x19518, 0x259, 0x19, 0x5, 0x50, 0x0, XA_NO_LOOP},
+    {0x19af8, 0x90, 0x1a, 0x5, 0x68, 0x0, XA_NO_LOOP},
+    {0x0, 0x38b6, 0x1, 0x6, 0x24, 0x0, XA_LOOP},
+    {0x8dc8, 0x3890, 0x2, 0x6, 0x54, 0x0, XA_LOOP},
+    {0x11b30, 0x86, 0x3, 0x6, 0x4c, 0x0, XA_NO_LOOP},
+    {0x11c80, 0xb26, 0x4, 0x6, 0x30, 0x0, XA_NO_LOOP},
+    {0x13860, 0x499, 0x5, 0x6, 0x78, 0x0, XA_NO_LOOP},
+    {0x143e0, 0x40, 0x6, 0x6, 0xa, 0x0, XA_NO_LOOP},
+    {0x14480, 0x33, 0x7, 0x6, 0x54, 0x0, XA_NO_LOOP},
+    {0x14500, 0x2c, 0x8, 0x6, 0x10, 0x0, XA_NO_LOOP},
+    {0x14570, 0x3c, 0x9, 0x6, 0x10, 0x0, XA_NO_LOOP},
+    {0x14608, 0x1c, 0xa, 0x6, 0x5c, 0x0, XA_NO_LOOP},
+    {0x14650, 0x3a0, 0xb, 0x6, 0x7f, 0x0, XA_NO_LOOP},
+    {0x14f60, 0x43, 0xc, 0x6, 0x70, 0x0, XA_NO_LOOP},
+    {0x15008, 0x480, 0xd, 0x6, 0x48, 0x0, XA_NO_LOOP},
+    {0x15b48, 0x70, 0xe, 0x6, 0x30, 0x0, XA_NO_LOOP},
+    {0x15c60, 0x156, 0xf, 0x6, 0x58, 0x0, XA_NO_LOOP},
+    {0x15fb8, 0xc9, 0x10, 0x6, 0x5c, 0x0, XA_NO_LOOP},
+    {0x161b0, 0xf3, 0x11, 0x6, 0x70, 0x0, XA_NO_LOOP},
+    {0x16410, 0x610, 0x12, 0x6, 0x78, 0x0, XA_NO_LOOP},
+    {0x17338, 0x480, 0x13, 0x6, 0x28, 0x0, XA_NO_LOOP},
+    {0x17e78, 0x60, 0x14, 0x6, 0x68, 0x0, XA_NO_LOOP},
+    {0x17f68, 0x80, 0x15, 0x6, 0x6c, 0x0, XA_NO_LOOP},
+    {0x180a8, 0x2b3, 0x16, 0x6, 0x74, 0x0, XA_NO_LOOP},
+    {0x0, 0x3293, 0x1, 0x7, 0x30, 0x0, XA_LOOP},
+    {0x7e70, 0x33e0, 0x2, 0x7, 0x30, 0x0, XA_LOOP},
+    {0x10020, 0x90, 0xe, 0x7, 0x28, 0x0, XA_NO_LOOP},
+    {0x10188, 0x90, 0xf, 0x7, 0x28, 0x0, XA_NO_LOOP},
+    {0x102f0, 0x11c, 0x10, 0x7, 0x64, 0x0, XA_NO_LOOP},
+    {0x105b8, 0x1d6, 0x11, 0x7, 0x44, 0x0, XA_NO_LOOP},
+    {0x10a50, 0x166, 0x12, 0x7, 0x4c, 0x0, XA_NO_LOOP},
+    {0x10dd0, 0x26, 0x13, 0x7, 0x3c, 0x0, XA_NO_LOOP},
+    {0x10e30, 0x1e9, 0x14, 0x7, 0x6b, 0x0, XA_NO_LOOP},
+    {0x112f8, 0xb9, 0x15, 0x7, 0x6b, 0x0, XA_NO_LOOP},
+    {0x114c8, 0x17c, 0x16, 0x7, 0x2c, 0x0, XA_NO_LOOP},
+    {0x11880, 0x90, 0x17, 0x7, 0x38, 0x0, XA_NO_LOOP},
+    {0x119e8, 0x1e9, 0x18, 0x7, 0x40, 0x0, XA_NO_LOOP},
+    {0x11eb0, 0x90, 0x19, 0x7, 0x50, 0x0, XA_NO_LOOP},
+    {0x12018, 0x123, 0x1a, 0x7, 0x60, 0x0, XA_NO_LOOP},
+    {0x122f0, 0xa6, 0x1b, 0x7, 0x44, 0x0, XA_NO_LOOP},
+    {0x12490, 0x26, 0x1c, 0x7, 0x38, 0x0, XA_NO_LOOP},
+    {0x124f0, 0x83, 0x1d, 0x7, 0x64, 0x0, XA_NO_LOOP},
+    {0x12638, 0x26, 0x1e, 0x7, 0x32, 0x0, XA_NO_LOOP},
+    {0x12698, 0x113, 0x1f, 0x7, 0x5c, 0x0, XA_NO_LOOP},
+    {0x12948, 0x6c, 0x20, 0x7, 0x40, 0x0, XA_NO_LOOP},
+    {0x12a58, 0x260, 0x21, 0x7, 0x54, 0x0, XA_NO_LOOP},
+    {0x13048, 0x39, 0x22, 0x7, 0x41, 0x0, XA_NO_LOOP},
+    {0x130d8, 0xa9, 0x23, 0x7, 0x64, 0x0, XA_NO_LOOP},
+    {0x13280, 0x89, 0x24, 0x7, 0x77, 0x0, XA_NO_LOOP},
+    {0x133d8, 0x149, 0x25, 0x7, 0x60, 0x0, XA_NO_LOOP},
+    {0x13710, 0x60, 0x26, 0x7, 0x53, 0x0, XA_NO_LOOP},
+    {0x13800, 0x190, 0x27, 0x7, 0x5c, 0x0, XA_NO_LOOP},
+    {0x13be8, 0x1ec, 0x28, 0x7, 0x44, 0x0, XA_NO_LOOP},
+    {0x140b8, 0x46, 0x29, 0x7, 0x38, 0x0, XA_NO_LOOP},
+    {0x14168, 0x180, 0x2a, 0x7, 0x53, 0x0, XA_NO_LOOP},
+    {0x14528, 0x1bc, 0x2b, 0x7, 0x60, 0x0, XA_NO_LOOP},
+    {0x14980, 0x180, 0x2c, 0x7, 0x4d, 0x0, XA_NO_LOOP},
+    {0x14d40, 0x160, 0x2d, 0x7, 0x4e, 0x0, XA_NO_LOOP},
+    {0x150b0, 0x60, 0x2e, 0x7, 0x51, 0x0, XA_NO_LOOP},
+    {0x151a0, 0xe6, 0x2f, 0x7, 0x60, 0x0, XA_NO_LOOP},
+    {0x153e0, 0x3c, 0x30, 0x7, 0x54, 0x0, XA_NO_LOOP},
+    {0x15478, 0x14c, 0x31, 0x7, 0x54, 0x0, XA_NO_LOOP},
+    {0x157b8, 0x73, 0x32, 0x7, 0x54, 0x0, XA_NO_LOOP},
+    {0x158d8, 0x1dc, 0x33, 0x7, 0x4a, 0x0, XA_NO_LOOP},
+    {0x15d80, 0x60, 0x34, 0x7, 0x38, 0x0, XA_NO_LOOP},
+    {0x15e70, 0x253, 0x35, 0x7, 0x4c, 0x0, XA_NO_LOOP},
+    {0x16440, 0x169, 0x36, 0x7, 0x3d, 0x0, XA_NO_LOOP},
+    {0x167c8, 0x1d9, 0x37, 0x7, 0x7f, 0x0, XA_NO_LOOP},
+    {0x16c68, 0x5d3, 0x38, 0x7, 0x4e, 0x0, XA_NO_LOOP},
+    {0x17af8, 0xf0, 0x39, 0x7, 0x3c, 0x0, XA_NO_LOOP},
+    {0x17d50, 0x83, 0x3a, 0x7, 0x5c, 0x0, XA_NO_LOOP},
+    {0x17e98, 0x609, 0x3b, 0x7, 0x20, 0x0, XA_NO_LOOP},
+    {0x13498, 0x63c, 0x9, 0x5, 0x28, 0x0, XA_NO_LOOP},
 };
 
 static inline u32 EncodeDigits(u32 val) { return (val / 10) * 16 + (val % 10); }
@@ -452,7 +452,7 @@ void SetCurrentSeqSet(s32 arg0) { gSeqSetIdx = arg0; }
 
 void SetSeqAccessNum(s16 arg0) { gSeqAccessNum = arg0; }
 
-void SetCdaSectorOffset(s32 arg0) { gCdaSectorOffset = arg0; }
+void SetXaCdSectorOffset(s32 arg0) { gXaCdSectorOffset = arg0; }
 
 u32 GetCurrentSeqId(void) {
    u16 res = 0;
@@ -498,28 +498,28 @@ void ResetAudioState(void) {
       gAudioJobQueue[s_audioJobIdx] = AUDIO_JOB_NULL;
    }
    gSfxSlotSustained = 0;
-   gCdaAdjustedVolume = gCdaMaxVolume;
+   gXaAdjustedVolume = gXaMaxVolume;
    gSfxSlotToggled = 0;
    D_801801B0 = 0;
    gSeqAccessNum = 1;
    gSeqDataPtr = NULL;
    gSeqSetIdx = 0;
-   gCdaCurrentID = 0;
-   gCdaIdToPrepare = 0;
-   gCdaLoopEnabled = 0;
-   gCdaPauseInProgress = 0;
+   gXaCurrentID = 0;
+   gXaIdToPrepare = 0;
+   gXaLoopEnabled = 0;
+   gXaPauseInProgress = 0;
    D_801733B8 = 0;
    D_8012C0D0 = 0;
-   gAudioJobPlayCdaState = 0;
-   gAudioJobPlayPreparedCdaState = 0;
-   gAudioJobPrepareCdaState = 0;
-   gAudioJobPauseCdaState = AUDIO_JOB_PAUSE_CDA_STATE_FADE;
+   gAudioJobPlayXaState = 0;
+   gAudioJobPlayPreparedXaState = 0;
+   gAudioJobPrepareXaState = 0;
+   gAudioJobPauseXaState = AUDIO_JOB_PAUSE_XA_STATE_FADE;
    D_80125AAC = 0;
-   gCdaVolumeState = CDA_VOLUME_STATE_NONE;
+   gXaVolumeState = XA_VOLUME_STATE_NONE;
    gVolumeFadeOutMode = 3;
    gVolumeFadeInMode = VOLUME_FADE_IN_MODE_NONE;
    gVolumeFadePauseCounter = 0;
-   gCdaFadeInState = CDA_FADE_IN_STATE_NONE;
+   gXaFadeInState = XA_FADE_IN_STATE_NONE;
    gSfxMasterVolume = 0x7F;
    gSeqCurrentVolume = 0x70;
    gSeqMaxVolume = 0x70;
@@ -543,11 +543,11 @@ void InitAudio(void) {
    SpuClearReverbWorkArea(SPU_REV_MODE_STUDIO_C);
    SsUtReverbOn();
    ResetVolume();
-   gCdaCurrentVolume = 0x6E;
+   gXaCurrentVolume = 0x6E;
    SsSetSerialAttr(SS_SERIAL_A, SS_MIX, SS_SON);
-   SetSerialVolumeFromCurveIdx(0, gCdaCurrentVolume, gCdaCurrentVolume);
-   gCdaControlParam.file = (CdlModeSF | CdlModeRT | CdlModeSpeed);
-   ExecuteCdControl(CdlSetmode, (void *)&gCdaControlParam, NULL);
+   SetSerialVolumeFromCurveIdx(0, gXaCurrentVolume, gXaCurrentVolume);
+   gXaCdControlParam.file = (CdlModeSF | CdlModeRT | CdlModeSpeed);
+   ExecuteCdControl(CdlSetmode, (void *)&gXaCdControlParam, NULL);
    ResetAudioState();
    SetReverbDepth(0x3C);
    SpuSetTransferMode(0);
@@ -557,7 +557,7 @@ void InitAudio(void) {
 }
 
 u8 AudioIsPlaying(void) {
-   if (gCdaCurrentID != 0) {
+   if (gXaCurrentID != 0) {
       return 1;
    }
    if (gSeqCurrentID != 0) {
@@ -669,246 +669,246 @@ void PlaySoundEffect(s16 param_1) {
    }
 }
 
-void QueuePrepareCda(s8 arg0) {
-   gCdaIdToPrepare = arg0;
-   AudioJobQueue_Insert(AUDIO_JOB_PREPARE_CDA);
+void QueuePrepareXa(s8 arg0) {
+   gXaIdToPrepare = arg0;
+   AudioJobQueue_Insert(AUDIO_JOB_PREPARE_XA);
 }
 
-void AudioJob_PrepareCda(void) {
+void AudioJob_PrepareXa(void) {
    extern u8 s_cdSyncResultBuffer_80124f0c[8];
-   extern u8 s_cdaIdToPrepare;
+   extern u8 s_xaIdToPrepare;
    extern u32 s_minutes_80124f1c;
    u32 seconds;
    u32 sector;
    u32 minutes;
    u32 res;
 
-   switch (gAudioJobPrepareCdaState) {
+   switch (gAudioJobPrepareXaState) {
    case 0:
-      gCdaCurrentVolume -= 0x20;
-      if (gCdaCurrentVolume < 0) {
-         gCdaCurrentVolume = 0;
+      gXaCurrentVolume -= 0x20;
+      if (gXaCurrentVolume < 0) {
+         gXaCurrentVolume = 0;
       }
-      SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaCurrentVolume, gCdaCurrentVolume);
-      if (gCdaCurrentVolume == 0) {
-         gAudioJobPrepareCdaState = 1;
+      SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gXaCurrentVolume, gXaCurrentVolume);
+      if (gXaCurrentVolume == 0) {
+         gAudioJobPrepareXaState = 1;
       }
       break;
    case 1:
-      gCdaCurrentID = 0;
-      gCdaControlParam.file = (CdlModeSF | CdlModeRT | CdlModeSpeed);
-      s_cdaIdToPrepare = gCdaIdToPrepare;
+      gXaCurrentID = 0;
+      gXaCdControlParam.file = (CdlModeSF | CdlModeRT | CdlModeSpeed);
+      s_xaIdToPrepare = gXaIdToPrepare;
 
-      gAudioJobPrepareCdaState = 2;
+      gAudioJobPrepareXaState = 2;
       /* fallthrough */
    case 2:
-      res = ExecuteCdControl(CdlSetmode, (void *)&gCdaControlParam, NULL);
+      res = ExecuteCdControl(CdlSetmode, (void *)&gXaCdControlParam, NULL);
       if (res == 0) {
-         gAudioJobPrepareCdaState = 3;
+         gAudioJobPrepareXaState = 3;
       }
 
    CheckResult:
       if (res == 2) {
-         gAudioJobPrepareCdaState = 8;
+         gAudioJobPrepareXaState = 8;
       }
       break;
    case 3:
-      gCdaControlParam.file = gCdaProperties[s_cdaIdToPrepare].fileId;
-      gCdaControlParam.chan = gCdaProperties[s_cdaIdToPrepare].channelId & 0xf;
+      gXaCdControlParam.file = gXaProperties[s_xaIdToPrepare].fileId;
+      gXaCdControlParam.chan = gXaProperties[s_xaIdToPrepare].channelId & 0xf;
 
-      gAudioJobPrepareCdaState = 4;
+      gAudioJobPrepareXaState = 4;
       /* fallthrough */
    case 4:
-      res = ExecuteCdControl(CdlSetfilter, (void *)&gCdaControlParam, NULL);
+      res = ExecuteCdControl(CdlSetfilter, (void *)&gXaCdControlParam, NULL);
 
       if (res == 0) {
-         gAudioJobPrepareCdaState = 5;
+         gAudioJobPrepareXaState = 5;
       }
       goto CheckResult;
    case 5:
-      s_minutes_80124f1c = gCdaProperties[s_cdaIdToPrepare].channelId +
-                           gCdaProperties[s_cdaIdToPrepare].startingSector + STARTING_SECTOR;
-      s_minutes_80124f1c += gCdaSectorOffset;
+      s_minutes_80124f1c = gXaProperties[s_xaIdToPrepare].channelId +
+                           gXaProperties[s_xaIdToPrepare].startingSector + STARTING_SECTOR;
+      s_minutes_80124f1c += gXaCdSectorOffset;
 
       seconds = s_minutes_80124f1c / SECTORS_PER_SECOND;
       sector = s_minutes_80124f1c % SECTORS_PER_SECOND;
-      gCdaCdlLOC.sector = EncodeDigits(sector);
+      gXaCdlLOC.sector = EncodeDigits(sector);
 
       s_minutes_80124f1c = seconds;
       minutes = seconds / SECONDS_PER_MINUTE;
       seconds = seconds % SECONDS_PER_MINUTE;
-      gCdaCdlLOC.second = EncodeDigits(seconds);
+      gXaCdlLOC.second = EncodeDigits(seconds);
 
       s_minutes_80124f1c = minutes;
-      gCdaCdlLOC.minute = EncodeDigits(minutes);
+      gXaCdlLOC.minute = EncodeDigits(minutes);
 
-      gAudioJobPrepareCdaState = 6;
+      gAudioJobPrepareXaState = 6;
       /* fallthrough */
    case 6:
-      res = ExecuteCdControl(CdlSeekL, (void *)&gCdaCdlLOC, NULL);
+      res = ExecuteCdControl(CdlSeekL, (void *)&gXaCdlLOC, NULL);
       if (res == 0) {
-         gAudioJobPrepareCdaState = 7;
+         gAudioJobPrepareXaState = 7;
       }
       goto CheckResult;
    case 7: {
       CdSync(1, s_cdSyncResultBuffer_80124f0c);
       res = s_cdSyncResultBuffer_80124f0c[0];
       if ((res & CdlStatSeek) == 0) {
-         gAudioJobPrepareCdaState = 8;
+         gAudioJobPrepareXaState = 8;
       }
       break;
    }
    case 8:
-      gAudioJobPrepareCdaState = 0;
+      gAudioJobPrepareXaState = 0;
       AudioJobQueue_Pop();
    }
 }
 
-void QueuePlayCda(u8 id) {
-   gCdaIdToPlay = id;
+void QueuePlayXa(u8 id) {
+   gXaIdToPlay = id;
 
-   gCdaVolumeState = CDA_VOLUME_STATE_NONE;
-   gCdaAdjustedVolume = gCdaMaxVolume;
-   gCdaMaxVolume = gCdaProperties[gCdaIdToPlay].volume;
+   gXaVolumeState = XA_VOLUME_STATE_NONE;
+   gXaAdjustedVolume = gXaMaxVolume;
+   gXaMaxVolume = gXaProperties[gXaIdToPlay].volume;
 
-   if (gCdaIdToPrepare == gCdaIdToPlay) {
+   if (gXaIdToPrepare == gXaIdToPlay) {
       AudioJobQueue_Insert(AUDIO_JOB_RESET_VOLUME);
-      AudioJobQueue_Insert(AUDIO_JOB_PLAY_PREPARED_CDA);
+      AudioJobQueue_Insert(AUDIO_JOB_PLAY_PREPARED_XA);
    } else {
-      if (gCdaCurrentID != 0) {
-         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+      if (gXaCurrentID != 0) {
+         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_XA);
       }
       AudioJobQueue_Insert(AUDIO_JOB_RESET_VOLUME);
-      AudioJobQueue_Insert(AUDIO_JOB_PLAY_CDA);
+      AudioJobQueue_Insert(AUDIO_JOB_PLAY_XA);
    }
-   gCdaIdToPrepare = 0;
+   gXaIdToPrepare = 0;
 }
 
-void AudioJob_PlayPreparedCda(void) {
-   extern u8 s_cdaId_80124f24;
+void AudioJob_PlayPreparedXa(void) {
+   extern u8 s_xaId_80124f24;
    extern s32 s_delay_80124f2c;
    u8 res;
 
-   switch (gAudioJobPlayPreparedCdaState) {
+   switch (gAudioJobPlayPreparedXaState) {
    case 0:
       s_delay_80124f2c = 10;
-      s_cdaId_80124f24 = gCdaIdToPlay;
-      if (gCdaFadeInState == CDA_FADE_IN_STATE_PENDING) {
-         gCdaCurrentVolume = 0;
+      s_xaId_80124f24 = gXaIdToPlay;
+      if (gXaFadeInState == XA_FADE_IN_STATE_PENDING) {
+         gXaCurrentVolume = 0;
          SetSerialVolumeFromCurveIdx(SS_SERIAL_A, 0, 0);
-         gCdaFadeInState = CDA_FADE_IN_STATE_FADING;
+         gXaFadeInState = XA_FADE_IN_STATE_FADING;
       } else {
-         gCdaCurrentVolume = gCdaMaxVolume;
-         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaMaxVolume, gCdaMaxVolume);
+         gXaCurrentVolume = gXaMaxVolume;
+         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gXaMaxVolume, gXaMaxVolume);
       }
 
-      gCdaDuration = gCdaProperties[s_cdaId_80124f24].duration + 0x10;
-      if (gCdaProperties[s_cdaId_80124f24].loop == CDA_NO_LOOP) {
-         gCdaLoopEnabled = 0;
+      gXaDuration = gXaProperties[s_xaId_80124f24].duration + 0x10;
+      if (gXaProperties[s_xaId_80124f24].loop == XA_NO_LOOP) {
+         gXaLoopEnabled = 0;
       } else {
-         gCdaLoopEnabled = 1;
+         gXaLoopEnabled = 1;
       }
-      gAudioJobPlayPreparedCdaState = 1;
+      gAudioJobPlayPreparedXaState = 1;
       /* fallthrough */
    case 1:
       res = ExecuteCdControl(CdlReadN, NULL, NULL);
       if (res == 0) {
-         gAudioJobPlayPreparedCdaState = 2;
+         gAudioJobPlayPreparedXaState = 2;
       }
       if (res == 2) {
-         gAudioJobPlayPreparedCdaState = 3;
+         gAudioJobPlayPreparedXaState = 3;
       }
       break;
    case 2:
-      gCdaCurrentID = s_cdaId_80124f24;
+      gXaCurrentID = s_xaId_80124f24;
       SsSetSerialAttr(SS_SERIAL_A, SS_MIX, SS_SON);
-      gCdaStartTime = VSync(-1);
-      gAudioJobPlayPreparedCdaState = 3;
+      gXaStartTime = VSync(-1);
+      gAudioJobPlayPreparedXaState = 3;
       break;
    case 3:
       if (s_delay_80124f2c != 0) {
          s_delay_80124f2c--;
          return;
       }
-      gAudioJobPlayPreparedCdaState = 0;
+      gAudioJobPlayPreparedXaState = 0;
       AudioJobQueue_Pop();
       break;
    }
 }
 
-void AudioJob_PlayCda(void) {
+void AudioJob_PlayXa(void) {
    extern u8 s_cdSyncResultBuffer_80124f34[8];
    extern u32 s_minutes_80124f44;
-   extern u8 s_cdaIdToPlay_80124f3c;
+   extern u8 s_xaIdToPlay_80124f3c;
    extern s32 s_delay_80124f4c;
    u32 seconds;
    u32 sector;
    u32 minutes;
    u8 res;
 
-   switch (gAudioJobPlayCdaState) {
+   switch (gAudioJobPlayXaState) {
    case 0:
       s_delay_80124f4c = 10;
-      gCdaControlParam.file = (CdlModeSF | CdlModeRT | CdlModeSpeed);
-      gAudioJobPlayCdaState = 1;
-      s_cdaIdToPlay_80124f3c = gCdaIdToPlay;
+      gXaCdControlParam.file = (CdlModeSF | CdlModeRT | CdlModeSpeed);
+      gAudioJobPlayXaState = 1;
+      s_xaIdToPlay_80124f3c = gXaIdToPlay;
       /* fallthrough */
    case 1:
-      res = ExecuteCdControl(CdlSetmode, (void *)&gCdaControlParam, NULL);
+      res = ExecuteCdControl(CdlSetmode, (void *)&gXaCdControlParam, NULL);
       if (res == 0) {
-         gAudioJobPlayCdaState = 2;
+         gAudioJobPlayXaState = 2;
       }
       if (res == 2) {
-         gAudioJobPlayCdaState = 9;
+         gAudioJobPlayXaState = 9;
       }
       break;
    case 2:
-      gCdaControlParam.file = gCdaProperties[s_cdaIdToPlay_80124f3c].fileId;
-      gCdaControlParam.chan = gCdaProperties[s_cdaIdToPlay_80124f3c].channelId & 0xf;
-      gAudioJobPlayCdaState = 3;
+      gXaCdControlParam.file = gXaProperties[s_xaIdToPlay_80124f3c].fileId;
+      gXaCdControlParam.chan = gXaProperties[s_xaIdToPlay_80124f3c].channelId & 0xf;
+      gAudioJobPlayXaState = 3;
       /* fallthrough */
    case 3:
-      res = ExecuteCdControl(CdlSetfilter, (void *)&gCdaControlParam, NULL);
+      res = ExecuteCdControl(CdlSetfilter, (void *)&gXaCdControlParam, NULL);
       if (res == 0) {
-         gAudioJobPlayCdaState = 4;
+         gAudioJobPlayXaState = 4;
       }
       if (res == 2) {
-         gAudioJobPlayCdaState = 9;
+         gAudioJobPlayXaState = 9;
       }
       break;
    case 4:
-      s_minutes_80124f44 = gCdaProperties[s_cdaIdToPlay_80124f3c].channelId +
-                           gCdaProperties[s_cdaIdToPlay_80124f3c].startingSector + STARTING_SECTOR;
+      s_minutes_80124f44 = gXaProperties[s_xaIdToPlay_80124f3c].channelId +
+                           gXaProperties[s_xaIdToPlay_80124f3c].startingSector + STARTING_SECTOR;
 
-      gCdaDuration = gCdaProperties[s_cdaIdToPlay_80124f3c].duration + 0x10;
+      gXaDuration = gXaProperties[s_xaIdToPlay_80124f3c].duration + 0x10;
 
-      if (gCdaProperties[s_cdaIdToPlay_80124f3c].loop == CDA_NO_LOOP) {
-         gCdaLoopEnabled = 0;
+      if (gXaProperties[s_xaIdToPlay_80124f3c].loop == XA_NO_LOOP) {
+         gXaLoopEnabled = 0;
       } else {
-         gCdaLoopEnabled = 1;
+         gXaLoopEnabled = 1;
       }
-      s_minutes_80124f44 += gCdaSectorOffset;
+      s_minutes_80124f44 += gXaCdSectorOffset;
 
       seconds = s_minutes_80124f44 / SECTORS_PER_SECOND;
       sector = s_minutes_80124f44 % SECTORS_PER_SECOND;
-      gCdaCdlLOC.sector = EncodeDigits(sector);
+      gXaCdlLOC.sector = EncodeDigits(sector);
 
       s_minutes_80124f44 = seconds;
       minutes = seconds / SECONDS_PER_MINUTE;
       seconds = seconds % SECONDS_PER_MINUTE;
-      gCdaCdlLOC.second = EncodeDigits(seconds);
+      gXaCdlLOC.second = EncodeDigits(seconds);
       s_minutes_80124f44 = minutes;
-      gCdaCdlLOC.minute = EncodeDigits(minutes);
+      gXaCdlLOC.minute = EncodeDigits(minutes);
 
-      gAudioJobPlayCdaState = 5;
+      gAudioJobPlayXaState = 5;
       /* fallthrough */
    case 5:
-      res = ExecuteCdControl(CdlSeekL, (void *)&gCdaCdlLOC, NULL);
+      res = ExecuteCdControl(CdlSeekL, (void *)&gXaCdlLOC, NULL);
       if (res == 0) {
-         gAudioJobPlayCdaState = 6;
+         gAudioJobPlayXaState = 6;
       }
       if (res == 2) {
-         gAudioJobPlayCdaState = 9;
+         gAudioJobPlayXaState = 9;
       }
       break;
    case 6:
@@ -918,86 +918,86 @@ void AudioJob_PlayCda(void) {
          return;
       }
       if ((res & CdlStatShellOpen) == 0) {
-         gAudioJobPlayCdaState = 7;
+         gAudioJobPlayXaState = 7;
          return;
       }
-      gAudioJobPlayCdaState = 9;
+      gAudioJobPlayXaState = 9;
       break;
    case 7:
       res = ExecuteCdControl(CdlReadN, NULL, NULL);
       if (res == 0) {
-         gAudioJobPlayCdaState = 8;
+         gAudioJobPlayXaState = 8;
       }
       if (res == 2) {
-         gAudioJobPlayCdaState = 9;
+         gAudioJobPlayXaState = 9;
       }
       break;
    case 8:
-      if (gCdaFadeInState == CDA_FADE_IN_STATE_PENDING) {
-         gCdaCurrentVolume = 0;
+      if (gXaFadeInState == XA_FADE_IN_STATE_PENDING) {
+         gXaCurrentVolume = 0;
          SetSerialVolumeFromCurveIdx(SS_SERIAL_A, 0, 0);
-         gCdaFadeInState = CDA_FADE_IN_STATE_FADING;
+         gXaFadeInState = XA_FADE_IN_STATE_FADING;
       } else {
-         gCdaCurrentVolume = gCdaMaxVolume;
-         SetSerialVolumeFromCurveIdx(0, gCdaCurrentVolume, gCdaCurrentVolume);
+         gXaCurrentVolume = gXaMaxVolume;
+         SetSerialVolumeFromCurveIdx(0, gXaCurrentVolume, gXaCurrentVolume);
       }
-      gCdaCurrentID = s_cdaIdToPlay_80124f3c;
+      gXaCurrentID = s_xaIdToPlay_80124f3c;
       SsSetSerialAttr(SS_SERIAL_A, SS_MIX, SS_SON);
-      gCdaStartTime = VSync(-1);
-      gAudioJobPlayCdaState = 9;
+      gXaStartTime = VSync(-1);
+      gAudioJobPlayXaState = 9;
       break;
    case 9:
       if (s_delay_80124f4c != 0) {
          s_delay_80124f4c--;
          return;
       }
-      gAudioJobPlayCdaState = 0;
+      gAudioJobPlayXaState = 0;
       AudioJobQueue_Pop();
    default:
       break;
    }
 }
 
-void QueuePauseCda(void) {
-   gCdaVolumeState = CDA_VOLUME_STATE_NONE;
-   gCdaAdjustedVolume = gCdaMaxVolume;
-   AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+void QueuePauseXa(void) {
+   gXaVolumeState = XA_VOLUME_STATE_NONE;
+   gXaAdjustedVolume = gXaMaxVolume;
+   AudioJobQueue_Insert(AUDIO_JOB_PAUSE_XA);
 }
 
-void AudioJob_PauseCda(void) {
+void AudioJob_PauseXa(void) {
    s32 res;
 
-   if (gCdaCurrentID != 0) {
-      gCdaPauseInProgress = 1;
-      switch (gAudioJobPauseCdaState) {
-      case AUDIO_JOB_PAUSE_CDA_STATE_FADE:
-         gCdaCurrentVolume -= 0x20;
-         if (gCdaCurrentVolume < 0) {
-            gCdaCurrentVolume = 0;
+   if (gXaCurrentID != 0) {
+      gXaPauseInProgress = 1;
+      switch (gAudioJobPauseXaState) {
+      case AUDIO_JOB_PAUSE_XA_STATE_FADE:
+         gXaCurrentVolume -= 0x20;
+         if (gXaCurrentVolume < 0) {
+            gXaCurrentVolume = 0;
          }
-         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaCurrentVolume, gCdaCurrentVolume);
-         if (gCdaCurrentVolume == 0) {
-            gAudioJobPauseCdaState = AUDIO_JOB_PAUSE_CDA_STATE_MUTE;
+         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gXaCurrentVolume, gXaCurrentVolume);
+         if (gXaCurrentVolume == 0) {
+            gAudioJobPauseXaState = AUDIO_JOB_PAUSE_XA_STATE_MUTE;
          }
          break;
-      case AUDIO_JOB_PAUSE_CDA_STATE_MUTE:
+      case AUDIO_JOB_PAUSE_XA_STATE_MUTE:
          SsSetSerialAttr(SS_SERIAL_A, SS_MIX, SS_SOFF);
-         gAudioJobPauseCdaState = AUDIO_JOB_PAUSE_CDA_STATE_PAUSE;
+         gAudioJobPauseXaState = AUDIO_JOB_PAUSE_XA_STATE_PAUSE;
          /* fallthrough */
-      case AUDIO_JOB_PAUSE_CDA_STATE_PAUSE:
+      case AUDIO_JOB_PAUSE_XA_STATE_PAUSE:
          res = ExecuteCdControl(CdlPause, NULL, NULL);
          if (res == 0) {
-            gAudioJobPauseCdaState = AUDIO_JOB_PAUSE_CDA_STATE_DONE;
+            gAudioJobPauseXaState = AUDIO_JOB_PAUSE_XA_STATE_DONE;
          }
          if (res == 2) {
-            gAudioJobPauseCdaState = AUDIO_JOB_PAUSE_CDA_STATE_DONE;
+            gAudioJobPauseXaState = AUDIO_JOB_PAUSE_XA_STATE_DONE;
          }
          break;
-      case AUDIO_JOB_PAUSE_CDA_STATE_DONE:
-         gCdaPauseInProgress = 0;
-         gCdaCurrentID = 0;
-         gCdaFadeInState = CDA_FADE_IN_STATE_NONE;
-         gAudioJobPauseCdaState = AUDIO_JOB_PAUSE_CDA_STATE_FADE;
+      case AUDIO_JOB_PAUSE_XA_STATE_DONE:
+         gXaPauseInProgress = 0;
+         gXaCurrentID = 0;
+         gXaFadeInState = XA_FADE_IN_STATE_NONE;
+         gAudioJobPauseXaState = AUDIO_JOB_PAUSE_XA_STATE_FADE;
          AudioJobQueue_Pop();
       }
    } else {
@@ -1005,7 +1005,7 @@ void AudioJob_PauseCda(void) {
    }
 }
 
-void SetCdaReverbEnabled(s8 enabled) { SsSetSerialAttr(SS_SERIAL_A, SS_REV, enabled == 1); }
+void SetXaReverbEnabled(s8 enabled) { SsSetSerialAttr(SS_SERIAL_A, SS_REV, enabled == 1); }
 
 void AudioJobQueue_Insert(u8 job) {
    extern s32 s_iJob_80124f54, s_iJob2_80124f5c;
@@ -1119,14 +1119,14 @@ void SetupVolumeFadeOut(s16 speed, s16 mode) {
 
 void SetupVolumeFadeIn(s16 speed, u8 mode) {
    switch (mode) {
-   case VOLUME_FADE_IN_MODE_CDA:
-      if (gCdaCurrentID == 0) {
+   case VOLUME_FADE_IN_MODE_XA:
+      if (gXaCurrentID == 0) {
          gVolumeFadeCounter = 0;
          gVolumeFadeInSpeed = speed;
          gVolumeFadeInMode = mode;
-         gCdaFadeInState = CDA_FADE_IN_STATE_PENDING;
-         gCdaCurrentVolume = 0;
-         gCdaMaxVolume = 0;
+         gXaFadeInState = XA_FADE_IN_STATE_PENDING;
+         gXaCurrentVolume = 0;
+         gXaMaxVolume = 0;
          return;
       }
       return;
@@ -1139,7 +1139,7 @@ void SetupVolumeFadeIn(s16 speed, u8 mode) {
       }
       break;
    case VOLUME_FADE_IN_MODE_MAIN:
-      if ((gCdaCurrentID == 0) && (gSeqCurrentID == 0)) {
+      if ((gXaCurrentID == 0) && (gSeqCurrentID == 0)) {
          gVolumeFadeCounter = 0;
          gVolumeFadeInSpeed = speed;
          gVolumeFadeInMode = mode;
@@ -1172,11 +1172,11 @@ void PerformParamlessAudioCommand(s16 cmd) {
       StopSound();
       break;
    case 0x5:
-      QueuePauseCda();
+      QueuePauseXa();
       break;
    case 0x6:
    case 0x7:
-      QueuePauseCda();
+      QueuePauseXa();
       QueueStopSeq();
       WaitForAudio();
       StopSound();
@@ -1199,12 +1199,12 @@ void PerformParamlessAudioCommand(s16 cmd) {
       SetupVolumeFadeIn(8, 8);
       break;
    case 0x54:
-      gCdaVolumeState = CDA_VOLUME_STATE_DECREASING;
-      gCdaAdjustedVolume = gCdaMaxVolume;
-      gCdaReducedVolumeTarget = gCdaMaxVolume / 3;
+      gXaVolumeState = XA_VOLUME_STATE_DECREASING;
+      gXaAdjustedVolume = gXaMaxVolume;
+      gXaReducedVolumeTarget = gXaMaxVolume / 3;
       break;
    case 0x55:
-      gCdaVolumeState = CDA_VOLUME_STATE_INCREASING;
+      gXaVolumeState = XA_VOLUME_STATE_INCREASING;
       break;
    case 0x20:
       SetupVolumeFadeOut(32, 4);
@@ -1267,28 +1267,28 @@ void PerformParamlessAudioCommand(s16 cmd) {
       SetupVolumeFadeOut(1, 2);
       break;
    case 0x40:
-      SetupVolumeFadeIn(32, VOLUME_FADE_IN_MODE_CDA);
+      SetupVolumeFadeIn(32, VOLUME_FADE_IN_MODE_XA);
       break;
    case 0x41:
-      SetupVolumeFadeIn(8, VOLUME_FADE_IN_MODE_CDA);
+      SetupVolumeFadeIn(8, VOLUME_FADE_IN_MODE_XA);
       break;
    case 0x42:
-      SetupVolumeFadeIn(4, VOLUME_FADE_IN_MODE_CDA);
+      SetupVolumeFadeIn(4, VOLUME_FADE_IN_MODE_XA);
       break;
    case 0x43:
-      SetupVolumeFadeIn(2, VOLUME_FADE_IN_MODE_CDA);
+      SetupVolumeFadeIn(2, VOLUME_FADE_IN_MODE_XA);
       break;
    case 0x44:
-      SetupVolumeFadeIn(1, VOLUME_FADE_IN_MODE_CDA);
+      SetupVolumeFadeIn(1, VOLUME_FADE_IN_MODE_XA);
       break;
    case 0x48:
       SetupVolumeFadeIn(4, VOLUME_FADE_IN_MODE_MAIN);
       break;
    case 0xb0:
-      SetCdaReverbEnabled(1);
+      SetXaReverbEnabled(1);
       break;
    case 0xb1:
-      SetCdaReverbEnabled(0);
+      SetXaReverbEnabled(0);
       break;
    case 0xc0:
       SetReverbDepth(8);
@@ -1353,7 +1353,7 @@ void PerformAudioCommand(s16 cmd) {
          QueuePlaySeq(cmd);
          return;
       case 3:
-         QueuePlayCda(cmd);
+         QueuePlayXa(cmd);
          return;
       case 5:
       case 6:
@@ -1361,7 +1361,7 @@ void PerformAudioCommand(s16 cmd) {
          PlaySoundEffect(cmd);
          return;
       case 0x13:
-         QueuePrepareCda(cmd);
+         QueuePrepareXa(cmd);
          break;
       }
    }
@@ -1374,20 +1374,20 @@ void AudioJobQueue_ProcessNext(void) {
    case AUDIO_JOB_PLAY_SEQ:
       AudioJob_PlaySeq();
       break;
-   case AUDIO_JOB_PLAY_CDA:
-      AudioJob_PlayCda();
+   case AUDIO_JOB_PLAY_XA:
+      AudioJob_PlayXa();
       break;
-   case AUDIO_JOB_PLAY_PREPARED_CDA:
-      AudioJob_PlayPreparedCda();
+   case AUDIO_JOB_PLAY_PREPARED_XA:
+      AudioJob_PlayPreparedXa();
       break;
-   case AUDIO_JOB_PREPARE_CDA:
-      AudioJob_PrepareCda();
+   case AUDIO_JOB_PREPARE_XA:
+      AudioJob_PrepareXa();
       break;
    case AUDIO_JOB_STOP_SEQ:
       AudioJob_StopSeq();
       break;
-   case AUDIO_JOB_PAUSE_CDA:
-      AudioJob_PauseCda();
+   case AUDIO_JOB_PAUSE_XA:
+      AudioJob_PauseXa();
       break;
    case AUDIO_JOB_UNUSED_0x8:
       AudioJob_Unused_0x8();
@@ -1414,19 +1414,19 @@ void HandleVolumeFadeIn(void) {
    gVolumeFadePauseCounter = 0;
 
    switch (gVolumeFadeInMode) {
-   case VOLUME_FADE_IN_MODE_CDA:
-      if (gCdaFadeInState == CDA_FADE_IN_STATE_PENDING) {
+   case VOLUME_FADE_IN_MODE_XA:
+      if (gXaFadeInState == XA_FADE_IN_STATE_PENDING) {
          return;
       }
-      if (gCdaFadeInState == CDA_FADE_IN_STATE_FADING) {
+      if (gXaFadeInState == XA_FADE_IN_STATE_FADING) {
          gVolumeFadeCounter++;
-         if (gCdaCurrentVolume <= gCdaMaxVolume) {
-            gCdaCurrentVolume = (gCdaMaxVolume * gVolumeFadeInSpeed * gVolumeFadeCounter) / 512;
-            SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaCurrentVolume, gCdaCurrentVolume);
+         if (gXaCurrentVolume <= gXaMaxVolume) {
+            gXaCurrentVolume = (gXaMaxVolume * gVolumeFadeInSpeed * gVolumeFadeCounter) / 512;
+            SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gXaCurrentVolume, gXaCurrentVolume);
          } else {
-            gCdaCurrentVolume = gCdaMaxVolume;
-            SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaCurrentVolume, gCdaCurrentVolume);
-            gCdaFadeInState = CDA_FADE_IN_STATE_NONE;
+            gXaCurrentVolume = gXaMaxVolume;
+            SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gXaCurrentVolume, gXaCurrentVolume);
+            gXaFadeInState = XA_FADE_IN_STATE_NONE;
             gVolumeFadeInSpeed = 0;
          }
       }
@@ -1464,21 +1464,21 @@ void HandleVolumeFadeOut(void) {
 
    switch (gVolumeFadeOutMode) {
    case 1:
-      if (gCdaCurrentVolume < 1) {
-         gCdaCurrentVolume = 0;
+      if (gXaCurrentVolume < 1) {
+         gXaCurrentVolume = 0;
       } else {
-         gCdaCurrentVolume =
-             gCdaMaxVolume - (gCdaMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
-         if (gCdaCurrentVolume < 1) {
-            gCdaCurrentVolume = 0;
+         gXaCurrentVolume =
+             gXaMaxVolume - (gXaMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
+         if (gXaCurrentVolume < 1) {
+            gXaCurrentVolume = 0;
          }
       }
 
-      SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaCurrentVolume, gCdaCurrentVolume);
+      SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gXaCurrentVolume, gXaCurrentVolume);
 
-      if (gCdaCurrentVolume == 0) {
+      if (gXaCurrentVolume == 0) {
          gVolumeFadeOutSpeed = 0;
-         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_XA);
       }
       break;
    case 2:
@@ -1500,17 +1500,17 @@ void HandleVolumeFadeOut(void) {
       }
       break;
    case 3:
-      if (gCdaCurrentVolume < 1) {
-         gCdaCurrentVolume = 0;
+      if (gXaCurrentVolume < 1) {
+         gXaCurrentVolume = 0;
       } else {
-         gCdaCurrentVolume =
-             gCdaMaxVolume - (gCdaMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
-         if (gCdaCurrentVolume < 1) {
-            gCdaCurrentVolume = 0;
+         gXaCurrentVolume =
+             gXaMaxVolume - (gXaMaxVolume * gVolumeFadeOutSpeed * gVolumeFadeCounter) / 512;
+         if (gXaCurrentVolume < 1) {
+            gXaCurrentVolume = 0;
          }
       }
 
-      SetSerialVolumeFromCurveIdx(0, gCdaCurrentVolume, gCdaCurrentVolume);
+      SetSerialVolumeFromCurveIdx(0, gXaCurrentVolume, gXaCurrentVolume);
 
       if (gSeqCurrentVolume < 1) {
          gSeqCurrentVolume = 0;
@@ -1524,10 +1524,10 @@ void HandleVolumeFadeOut(void) {
 
       SsSeqSetVol(gSeqAccessNum, gSeqCurrentVolume, gSeqCurrentVolume);
 
-      if (gCdaCurrentVolume == 0 && gSeqCurrentVolume == 0) {
+      if (gXaCurrentVolume == 0 && gSeqCurrentVolume == 0) {
          gVolumeFadeOutSpeed = 0;
          AudioJobQueue_Insert(AUDIO_JOB_STOP_SEQ);
-         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_XA);
       }
       break;
    case 4:
@@ -1546,7 +1546,7 @@ void HandleVolumeFadeOut(void) {
       if (gCurrentVolume == 0) {
          StopSound();
          AudioJobQueue_Insert(AUDIO_JOB_STOP_SEQ);
-         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+         AudioJobQueue_Insert(AUDIO_JOB_PAUSE_XA);
          gVolumeFadeOutSpeed = 0;
       }
       break;
@@ -1571,71 +1571,71 @@ void HandleVolumeFadeOut(void) {
    }
 }
 
-void HandleCdaCompletion(void) {
-   extern u32 s_cdaElapsedTime;
-   s32 queueContainsPlayCda, currentTime, i;
+void HandleXaCompletion(void) {
+   extern u32 s_xaElapsedTime;
+   s32 queueContainsPlayXa, currentTime, i;
 
-   if (gCdaCurrentID == 0 || gCdaDuration == 0) {
+   if (gXaCurrentID == 0 || gXaDuration == 0) {
       return;
    }
 
    currentTime = VSync(-1);
-   s_cdaElapsedTime = currentTime - gCdaStartTime;
-   if (s_cdaElapsedTime > gCdaDuration) {
-      if (!gCdaLoopEnabled) {
+   s_xaElapsedTime = currentTime - gXaStartTime;
+   if (s_xaElapsedTime > gXaDuration) {
+      if (!gXaLoopEnabled) {
          // Only queue a pause if no plays are currently queued
          i = 0;
-         queueContainsPlayCda = 0;
+         queueContainsPlayXa = 0;
          for (; i < 62; i++) {
-            if (gAudioJobQueue[i] == AUDIO_JOB_PLAY_CDA) {
-               queueContainsPlayCda = 1;
+            if (gAudioJobQueue[i] == AUDIO_JOB_PLAY_XA) {
+               queueContainsPlayXa = 1;
             }
          }
-         if (!queueContainsPlayCda) {
-            AudioJobQueue_Insert(AUDIO_JOB_PAUSE_CDA);
+         if (!queueContainsPlayXa) {
+            AudioJobQueue_Insert(AUDIO_JOB_PAUSE_XA);
          }
       } else {
-         // Looping enabled, so re-queue same cda
-         if (!gCdaPauseInProgress) {
-            gCdaIdToPlay = gCdaCurrentID;
-            AudioJobQueue_Insert(AUDIO_JOB_PLAY_CDA);
-            gCdaStartTime = VSync(-1);
+         // Looping enabled, so re-queue same xa
+         if (!gXaPauseInProgress) {
+            gXaIdToPlay = gXaCurrentID;
+            AudioJobQueue_Insert(AUDIO_JOB_PLAY_XA);
+            gXaStartTime = VSync(-1);
          }
       }
    }
 }
 
-void AdjustCdaVolume(void) {
+void AdjustXaVolume(void) {
    // TBD: Better solution?
-   extern volatile s16 gCdaReducedVolumeTarget;
-   extern volatile s16 gCdaVolumeState;
+   extern volatile s16 gXaReducedVolumeTarget;
+   extern volatile s16 gXaVolumeState;
 
-   if (gCdaVolumeState == 0)
+   if (gXaVolumeState == 0)
       return;
 
-   switch (gCdaVolumeState) {
-   case CDA_VOLUME_STATE_DECREASING:
-      if (gCdaAdjustedVolume > gCdaReducedVolumeTarget) {
-         gCdaAdjustedVolume -= 2;
-         if (gCdaAdjustedVolume <= gCdaReducedVolumeTarget) {
-            gCdaAdjustedVolume = gCdaReducedVolumeTarget;
-            gCdaVolumeState = CDA_VOLUME_STATE_DECREASED;
+   switch (gXaVolumeState) {
+   case XA_VOLUME_STATE_DECREASING:
+      if (gXaAdjustedVolume > gXaReducedVolumeTarget) {
+         gXaAdjustedVolume -= 2;
+         if (gXaAdjustedVolume <= gXaReducedVolumeTarget) {
+            gXaAdjustedVolume = gXaReducedVolumeTarget;
+            gXaVolumeState = XA_VOLUME_STATE_DECREASED;
          }
-         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaAdjustedVolume, gCdaAdjustedVolume);
+         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gXaAdjustedVolume, gXaAdjustedVolume);
       }
       break;
-   case CDA_VOLUME_STATE_INCREASING:
-      if (gCdaAdjustedVolume < gCdaMaxVolume) {
-         gCdaAdjustedVolume += 2;
-         if (gCdaAdjustedVolume >= gCdaMaxVolume) {
-            gCdaAdjustedVolume = gCdaMaxVolume;
-            gCdaVolumeState = CDA_VOLUME_STATE_NONE;
+   case XA_VOLUME_STATE_INCREASING:
+      if (gXaAdjustedVolume < gXaMaxVolume) {
+         gXaAdjustedVolume += 2;
+         if (gXaAdjustedVolume >= gXaMaxVolume) {
+            gXaAdjustedVolume = gXaMaxVolume;
+            gXaVolumeState = XA_VOLUME_STATE_NONE;
          }
-         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gCdaAdjustedVolume, gCdaAdjustedVolume);
+         SetSerialVolumeFromCurveIdx(SS_SERIAL_A, gXaAdjustedVolume, gXaAdjustedVolume);
       }
       break;
-   case CDA_VOLUME_STATE_NONE:
-   case CDA_VOLUME_STATE_DECREASED:
+   case XA_VOLUME_STATE_NONE:
+   case XA_VOLUME_STATE_DECREASED:
    default:
       return;
    }
@@ -1646,8 +1646,8 @@ void UpdateAudio(void) {
       AudioJobQueue_ProcessNext();
       HandleVolumeFadeIn();
       HandleVolumeFadeOut();
-      AdjustCdaVolume();
-      HandleCdaCompletion();
+      AdjustXaVolume();
+      HandleXaCompletion();
    }
 }
 

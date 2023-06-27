@@ -52,16 +52,16 @@ void SetMsgBoxPortrait(short portraitId, u8 lower) {
    evt1->functionIndex = EVTF_MSGBOX_PORTRAIT;
    evt1->state = 0;
    evt1->state2 = 0;
-   evt1->d.evtf413.blinkState = 0;
+   evt1->state3 = 0;
    evt1->d.evtf413.flipped = lower;
    evt1->d.evtf413.portrait.id = portraitId;
 
    if (!lower) {
-      evt1->d.evtf413.x = 26;
-      evt1->d.evtf413.y = 25;
+      evt1->x1.n = 26;
+      evt1->y1.n = 25;
    } else {
-      evt1->d.evtf413.x = 246;
-      evt1->d.evtf413.y = 170;
+      evt1->x1.n = 246;
+      evt1->y1.n = 170;
    }
 }
 
@@ -134,19 +134,19 @@ void Evtf014_BattleUnit(EvtData *evt) {
          sprite->d.sprite.coords[0].z = rand() % 64 - 32;
          sprite->d.sprite.coords[0].x = rand();
          sprite->d.sprite.stripIdx = unit->stripIdx;
-         unit->evtSprite = sprite;
+         unit->sprite = sprite;
          sprite->d.sprite.direction = unit->direction;
          EVT.animSet = gSpriteStripAnimSets[sprite->d.sprite.stripIdx];
-         sprite->d.sprite.x1 = EVT.x;
-         sprite->d.sprite.z1 = EVT.z;
-         sprite->d.sprite.x3 = EVT.x;
-         sprite->d.sprite.z3 = EVT.z;
+         sprite->x1.n = evt->x1.n;
+         sprite->z1.n = evt->z1.n;
+         sprite->x3.n = evt->x1.n;
+         sprite->z3.n = evt->z1.n;
          EVT.sprite = sprite;
-         SPR_MAP_UNIT(sprite).s.unitIdx = EVT.unitIdx;
-         SPR_MAP_UNIT(sprite).s.team = EVT.team;
+         OBJ_MAP_UNIT(sprite).s.unitIdx = EVT.unitIdx;
+         OBJ_MAP_UNIT(sprite).s.team = EVT.team;
          EVT.timer = rand() % 12 + 1;
-         if (SPR_TILE_STATE(sprite).action == TA_X19) {
-            SPR_TILE_STATE(sprite).action = TA_NONE;
+         if (OBJ_TILE_STATE(sprite).action == TA_X19) {
+            OBJ_TILE_STATE(sprite).action = TA_NONE;
             SetElevationFromTerrain(sprite);
             sprite->d.sprite.hidden = 1;
          }
@@ -166,83 +166,83 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
    case 1:
       EVT.animIdx = ANIM_IDLE_B;
-      if (SPR_TILE_STATE(sprite).action == TA_NONE) {
+      if (OBJ_TILE_STATE(sprite).action == TA_NONE) {
          break;
       }
-      if (SPR_TILE_STATE(sprite).action == TA_X6) {
+      if (OBJ_TILE_STATE(sprite).action == TA_X6) {
          EVT.pathIdx = 4;
          while (gPathBackToUnit[EVT.pathIdx] != PATH_STEP_INVALID) {
             EVT.pathIdx += 2;
          }
-         LO(sprite->d.sprite.z3) = 0x80;
-         LO(sprite->d.sprite.x3) = 0x80;
+         sprite->z3.s.lo = 0x80;
+         sprite->x3.s.lo = 0x80;
          evt->state2 = 0;
          evt->state++;
       }
-      if (SPR_TILE_STATE(sprite).action == TA_MELEE_ATK) {
+      if (OBJ_TILE_STATE(sprite).action == TA_MELEE_ATK) {
          evt->state = 8;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_PUSHING_CRATE) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_PUSHING_CRATE) {
          evt->state = 15;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_PUSHING_BOULDER) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_PUSHING_BOULDER) {
          evt->state = 21;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_RANGED_ATK) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_RANGED_ATK) {
          evt->state = 12;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_BLOCK) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_BLOCK) {
          evt->state = 9;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_PHYS_HIT) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_PHYS_HIT) {
          evt->state = 10;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_MAG_HIT) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_MAG_HIT) {
          evt->state = 5;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_BOULDER_HIT) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_BOULDER_HIT) {
          evt->state = 22;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_PHYS_DEFEAT) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_PHYS_DEFEAT) {
          evt->state = 7;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_PHYS_DEFEAT_MSG) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_PHYS_DEFEAT_MSG) {
          evt->state = 18;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_MAG_DEFEAT_MSG) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_MAG_DEFEAT_MSG) {
          evt->state = 19;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_MAG_DEFEAT) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_MAG_DEFEAT) {
          evt->state = 13;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_XB) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_XB) {
          evt->state = 3;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_CHOOSING_DIRECTION) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_CHOOSING_DIRECTION) {
          gSignal4 = sprite->d.sprite.direction;
          EVT.direction = sprite->d.sprite.direction;
          evt->state = 4;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_CAST) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_CAST) {
          evt->state = 6;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_LEVEL_UP) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_LEVEL_UP) {
          evt->state = 16;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_X16) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_X16) {
          evt->state = 17;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_X1D) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_X1D) {
          evt->state = 23;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_X1E) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_X1E) {
          evt->state = 24;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_X1F) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_X1F) {
          evt->state = 25;
          evt->state2 = 0;
-      } else if (SPR_TILE_STATE(sprite).action == TA_X20) {
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+      } else if (OBJ_TILE_STATE(sprite).action == TA_X20) {
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          gState.msgFinished = 0;
          if (unit->name == UNIT_KURTZ) {
             SetupBattleMsgBox(UNIT_KURTZ, PORTRAIT_KURTZ_511, 0x22);
@@ -265,15 +265,15 @@ void Evtf014_BattleUnit(EvtData *evt) {
                SetupBattleMsgBox(unit->name, (unit->name - 1) * 7 + 1, unit->name + 21);
             }
          }
-      } else if (SPR_TILE_STATE(sprite).action == TA_X9) {
-         SPR_TILE_STATE(sprite).action = TA_NONE;
-         gMapUnitsPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].raw = 0;
-         HI(sprite->d.sprite.z1) = gPathBackToUnit[0];
-         HI(sprite->d.sprite.x1) = gPathBackToUnit[1];
-         sprite->d.sprite.z3 = sprite->d.sprite.z1;
-         sprite->d.sprite.x3 = sprite->d.sprite.x1;
-         SPR_MAP_UNIT(sprite).s.unitIdx = EVT.unitIdx;
-         SPR_MAP_UNIT(sprite).s.team = EVT.team;
+      } else if (OBJ_TILE_STATE(sprite).action == TA_X9) {
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TARGET_MAP_UNIT(sprite).raw = 0;
+         sprite->z1.s.hi = gPathBackToUnit[0];
+         sprite->x1.s.hi = gPathBackToUnit[1];
+         sprite->z3.n = sprite->z1.n;
+         sprite->x3.n = sprite->x1.n;
+         OBJ_MAP_UNIT(sprite).s.unitIdx = EVT.unitIdx;
+         OBJ_MAP_UNIT(sprite).s.team = EVT.team;
          evt->state = 3;
          evt->state2 = 0;
       }
@@ -284,10 +284,10 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         sprite->d.sprite.x2 = 0x20;
-         sprite->d.sprite.z2 = 0x20;
+         sprite->x2.n = 0x20;
+         sprite->z2.n = 0x20;
          if (unit->class == CLASS_AIRMAN) {
-            elevation = SPR_TERRAIN(sprite).s.elevation;
+            elevation = OBJ_TERRAIN(sprite).s.elevation;
             i_s0 = EVT.pathIdx;
             while (gPathBackToUnit[i_s0 - 1] != PATH_STEP_INVALID) {
                tmpz = gPathBackToUnit[i_s0 - 2];
@@ -297,17 +297,17 @@ void Evtf014_BattleUnit(EvtData *evt) {
                }
                i_s0 -= 2;
             }
-            sprite->d.sprite.y3 = elevation * 128;
+            sprite->y3.n = elevation * 128;
          }
-         SPR_MAP_UNIT(sprite).raw = 0;
+         OBJ_MAP_UNIT(sprite).raw = 0;
 
       LAB_8004cfb8: //<- from state2:1 after decrement
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          tmpx = gPathBackToUnit[--EVT.pathIdx];
          tmpz = gPathBackToUnit[--EVT.pathIdx];
          if (tmpz != PATH_STEP_INVALID) {
             if (unit->class == CLASS_AIRMAN) {
-               if (tmpx == HI(sprite->d.sprite.x1)) {
+               if (tmpx == sprite->x1.s.hi) {
                   i_s0 = 1;
                } else {
                   i_s0 = 0;
@@ -329,15 +329,15 @@ void Evtf014_BattleUnit(EvtData *evt) {
                   tmpz = nextz;
                }
             }
-            HI(sprite->d.sprite.z3) = tmpz;
-            HI(sprite->d.sprite.x3) = tmpx;
+            sprite->z3.s.hi = tmpz;
+            sprite->x3.s.hi = tmpx;
             sprite->d.sprite.finishedMoving = 0;
             evt->state2++;
          } else {
             evt->state = 1;
             gSignal3 = 1;
-            gMapUnitsPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].s.unitIdx = EVT.unitIdx;
-            gMapUnitsPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].s.team = EVT.team;
+            OBJ_TARGET_MAP_UNIT(sprite).s.unitIdx = EVT.unitIdx;
+            OBJ_TARGET_MAP_UNIT(sprite).s.team = EVT.team;
          }
 
          break;
@@ -354,13 +354,13 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
    case 3:
       sprite->d.sprite.direction = unit->direction;
-      SPR_TILE_STATE(sprite).action = TA_NONE;
+      OBJ_TILE_STATE(sprite).action = TA_NONE;
       evt->state = 1;
       evt->state2 = 0;
       break;
 
    case 4:
-      SPR_TILE_STATE(sprite).action = TA_NONE;
+      OBJ_TILE_STATE(sprite).action = TA_NONE;
       EVT.animIdx = ANIM_IDLE_B;
       sprite->d.sprite.direction = gSignal4;
       if (gSignal2 == 1) {
@@ -379,7 +379,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_STRUCK_END_B;
          gSignal3 = 0;
          evt->state2++;
@@ -400,10 +400,9 @@ void Evtf014_BattleUnit(EvtData *evt) {
       case 0:
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_CASTING_FX;
-         // TODO replace
-         evt1->d.sprite.x1 = sprite->d.sprite.x1;
-         evt1->d.sprite.z1 = sprite->d.sprite.z1;
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         evt1->x1.n = sprite->x1.n;
+         evt1->z1.n = sprite->z1.n;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_CASTING_B;
          evt->state2++;
          break;
@@ -445,9 +444,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
          } else {
             evt1->functionIndex = EVTF_BLOOD_SPURT;
          }
-         // TODO replace
-         evt1->d.sprite.x1 = sprite->d.sprite.x1;
-         evt1->d.sprite.z1 = sprite->d.sprite.z1;
+         evt1->x1.n = sprite->x1.n;
+         evt1->z1.n = sprite->z1.n;
          evt->state2++;
 
       // fallthrough
@@ -455,9 +453,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
          if (--EVT.timer == 0) {
             evt2 = Evt_GetUnused();
             evt2->functionIndex = EVTF_SLAY_UNIT;
-            // TODO replace
-            HI(evt2->d.sprite.x1) = HI(sprite->d.sprite.x1);
-            HI(evt2->d.sprite.z1) = HI(sprite->d.sprite.z1);
+            evt2->x1.s.hi = sprite->x1.s.hi;
+            evt2->z1.s.hi = sprite->z1.s.hi;
             gSignal3 = 0;
             evt->state2++;
          }
@@ -465,8 +462,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 2:
          if (gSignal3 != 0) {
-            gTileStateGridPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].action = TA_NONE;
-            SPR_MAP_UNIT(sprite).raw = 0;
+            OBJ_TARGET_TILE_STATE(sprite).action = TA_NONE;
+            OBJ_MAP_UNIT(sprite).raw = 0;
             sprite->functionIndex = EVTF_NULL;
             evt->functionIndex = EVTF_NULL;
             unit->idx = 0;
@@ -506,21 +503,19 @@ void Evtf014_BattleUnit(EvtData *evt) {
                                        gUnitSoundDelays_Attacking2[unit->unitId][0];
             }
          }
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_ATTACKING_B;
          if (unit->unitId == UNIT_ID_BAHAMUT || unit->unitId == UNIT_ID_SALAMANDER) {
             evt2 = Evt_GetUnused();
             evt2->functionIndex = EVTF_FLAME_BREATH;
-            // TODO replace
-            evt2->d.sprite.x1 = sprite->d.sprite.x1;
-            evt2->d.sprite.z1 = sprite->d.sprite.z1;
+            evt2->x1.n = sprite->x1.n;
+            evt2->z1.n = sprite->z1.n;
          }
          if (unit->unitId == UNIT_ID_ASH_VANDALIER || unit->unitId == UNIT_ID_DOLF_DARK_ANGEL) {
             evt2 = Evt_GetUnused();
             evt2->functionIndex = EVTF_ELITE_MELEE_SPARKLES;
-            // TODO replace
-            evt2->d.sprite.x1 = sprite->d.sprite.x1;
-            evt2->d.sprite.z1 = sprite->d.sprite.z1;
+            evt2->x1.n = sprite->x1.n;
+            evt2->z1.n = sprite->z1.n;
          }
          evt->state2++;
          break;
@@ -550,12 +545,11 @@ void Evtf014_BattleUnit(EvtData *evt) {
       case 0:
          PerformAudioCommand(gUnitSounds_Blocking[unit->unitId]);
          EVT.animIdx = ANIM_BLOCKING_B;
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_UNIT_BLOCKING;
-         // TODO replace
-         evt1->d.sprite.x1 = sprite->d.sprite.x1;
-         evt1->d.sprite.z1 = sprite->d.sprite.z1;
+         evt1->x1.n = sprite->x1.n;
+         evt1->z1.n = sprite->z1.n;
          evt->state2++;
          break;
 
@@ -575,13 +569,12 @@ void Evtf014_BattleUnit(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          PerformAudioCommand(gUnitSounds_Struck[unit->unitId]);
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_STRUCK_B;
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_UNIT_STRUCK;
-         // TODO replace
-         evt1->d.sprite.x1 = sprite->d.sprite.x1;
-         evt1->d.sprite.z1 = sprite->d.sprite.z1;
+         evt1->x1.n = sprite->x1.n;
+         evt1->z1.n = sprite->z1.n;
          evt->state2++;
          break;
 
@@ -597,11 +590,11 @@ void Evtf014_BattleUnit(EvtData *evt) {
       break;
 
    case 11:
-      if (SPR_TILE_STATE(sprite).action != TA_X4) {
+      if (OBJ_TILE_STATE(sprite).action != TA_X4) {
          evt->state = 3;
          evt->state2 = 0;
       } else {
-         sprite->d.sprite.direction = SPR_TILE_STATE(sprite).cachedShort;
+         sprite->d.sprite.direction = OBJ_TILE_STATE(sprite).cachedShort;
       }
       break;
 
@@ -622,9 +615,9 @@ void Evtf014_BattleUnit(EvtData *evt) {
                                        gUnitSoundDelays_Attacking1[unit->unitId][0];
             }
          }
-         SPR_TILE_STATE(sprite).action = TA_NONE;
-         if (CalculateProjectileHeight(HI(sprite->d.sprite.x1), HI(sprite->d.sprite.z1), gTargetX,
-                                       gTargetZ) > 0x20000) {
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
+         if (CalculateProjectileHeight(sprite->x1.s.hi, sprite->z1.s.hi, gTargetX, gTargetZ) >
+             0x20000) {
             EVT.animIdx = ANIM_ATTACKING_FAR_B;
          } else {
             EVT.animIdx = ANIM_ATTACKING_B;
@@ -675,9 +668,9 @@ void Evtf014_BattleUnit(EvtData *evt) {
             if (gMapUnitsPtr[gTargetZ][gTargetX].s.team == TEAM_CHEST) {
                evt1->functionIndex = EVTF_PROJECTILE_INDIRECT;
             }
-            evt1->d.evtf022.x = sprite->d.sprite.x1;
-            evt1->d.evtf022.z = sprite->d.sprite.z1;
-            evt1->d.evtf022.y = sprite->d.sprite.y1 + 0x80;
+            evt1->x1.n = sprite->x1.n;
+            evt1->z1.n = sprite->z1.n;
+            evt1->y1.n = sprite->y1.n + 0x80;
 
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_RANGED_TARGET_CAMERA;
@@ -720,8 +713,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 2:
          if (--EVT.timer == 0) {
-            SPR_TILE_STATE(sprite).action = TA_NONE;
-            SPR_MAP_UNIT(sprite).raw = 0;
+            OBJ_TILE_STATE(sprite).action = TA_NONE;
+            OBJ_MAP_UNIT(sprite).raw = 0;
             sprite->functionIndex = EVTF_NULL;
             evt->functionIndex = EVTF_NULL;
             unit->idx = 0;
@@ -735,7 +728,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_HIGH_STEP_B;
          if (unit->class == CLASS_AIRMAN) {
             EVT.timer = 11;
@@ -768,12 +761,11 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_LEVEL_UP_FX;
-         // TODO replace
-         evt1->d.sprite.x1 = sprite->d.sprite.x1;
-         evt1->d.sprite.z1 = sprite->d.sprite.z1;
+         evt1->x1.n = sprite->x1.n;
+         evt1->z1.n = sprite->z1.n;
          EVT.animIdx = ANIM_HOP_B;
          if (unit->class == CLASS_AIRMAN) {
             EVT.animIdx = ANIM_IDLE_B;
@@ -815,8 +807,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
       if (gState.mapNum != 29) {
          gState.droppedItem = unit->droppedItem;
       }
-      SPR_TILE_STATE(sprite).action = TA_NONE;
-      SPR_MAP_UNIT(sprite).raw = 0;
+      OBJ_TILE_STATE(sprite).action = TA_NONE;
+      OBJ_MAP_UNIT(sprite).raw = 0;
       sprite->functionIndex = EVTF_NULL;
       evt->functionIndex = EVTF_NULL;
       unit->idx = 0;
@@ -831,22 +823,20 @@ void Evtf014_BattleUnit(EvtData *evt) {
          if (gState.mapNum != 29) {
             gState.droppedItem = unit->droppedItem;
          }
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_STRUCK_B;
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_UNIT_STRUCK;
-         // TODO replace
-         evt1->d.sprite.x1 = sprite->d.sprite.x1;
-         evt1->d.sprite.z1 = sprite->d.sprite.z1;
+         evt1->x1.n = sprite->x1.n;
+         evt1->z1.n = sprite->z1.n;
          evt1 = Evt_GetUnused();
          if (UnitIsRocky(unit)) {
             evt1->functionIndex = EVTF_ROCK_SPURT;
          } else {
             evt1->functionIndex = EVTF_BLOOD_SPURT;
          }
-         // TODO replace
-         evt1->d.sprite.x1 = sprite->d.sprite.x1;
-         evt1->d.sprite.z1 = sprite->d.sprite.z1;
+         evt1->x1.n = sprite->x1.n;
+         evt1->z1.n = sprite->z1.n;
          evt->state2++;
          break;
 
@@ -869,7 +859,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
          if (gState.mapNum != 29) {
             gState.droppedItem = unit->droppedItem;
          }
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_STRUCK_END_B;
          gSignal3 = 0;
          evt->state2++;
@@ -1107,9 +1097,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
             EVT.timer = 90;
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_TBD_732;
-            // TODO replace
-            HI(evt1->d.sprite.x1) = HI(sprite->d.sprite.x1);
-            HI(evt1->d.sprite.z1) = HI(sprite->d.sprite.z1);
+            evt1->x1.s.hi = sprite->x1.s.hi;
+            evt1->z1.s.hi = sprite->z1.s.hi;
             gState.D_801405A4 = 0;
             evt->state2++;
          }
@@ -1117,9 +1106,9 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 8:
          if (--EVT.timer == 0) {
-            SetupBattleUnit(13, HI(sprite->d.sprite.z1), HI(sprite->d.sprite.x1), 32, TEAM_ENEMY,
-                            DIR_WEST, 100, 60, 99);
-            SPR_MAP_UNIT(sprite).raw = 0;
+            SetupBattleUnit(13, sprite->z1.s.hi, sprite->x1.s.hi, 32, TEAM_ENEMY, DIR_WEST, 100, 60,
+                            99);
+            OBJ_MAP_UNIT(sprite).raw = 0;
             sprite->d.sprite.hidden = 1;
             EVT.timer = 90;
             evt->state2++;
@@ -1143,7 +1132,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
       case 96:
          if (gState.msgBoxFinished) {
             CloseMsgBox(0);
-            gTileStateGridPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].action = TA_NONE;
+            OBJ_TARGET_TILE_STATE(sprite).action = TA_NONE;
             unit->name = UNIT_NULL;
             gSignal3 = 1;
             gSignal4 = 1;
@@ -1158,8 +1147,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
             CloseMsgBox(1);
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_STRETCH_WARP_SPRITE;
-            evt1->d.evtf062.x = sprite->d.sprite.x1;
-            evt1->d.evtf062.z = sprite->d.sprite.z1;
+            evt1->x1.n = sprite->x1.n;
+            evt1->z1.n = sprite->z1.n;
             EVT.timer = 20;
             evt->state2 = 99;
          }
@@ -1167,8 +1156,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 99:
          if (--EVT.timer == 0) {
-            gTileStateGridPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].action = TA_NONE;
-            SPR_MAP_UNIT(sprite).raw = 0;
+            OBJ_TARGET_TILE_STATE(sprite).action = TA_NONE;
+            OBJ_MAP_UNIT(sprite).raw = 0;
          //?
          LAB_8004ec50:
             gSignal3 = 1;
@@ -1186,7 +1175,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_PUSHED_BOULDER;
          evt1->d.evtf020.unitSprite = sprite;
@@ -1230,13 +1219,12 @@ void Evtf014_BattleUnit(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          PerformAudioCommand(0x5e4);
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_STRUCK_B;
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_UNIT_STRUCK;
-         // TODO replace
-         evt1->d.sprite.x1 = sprite->d.sprite.x1;
-         evt1->d.sprite.z1 = sprite->d.sprite.z1;
+         evt1->x1.n = sprite->x1.n;
+         evt1->z1.n = sprite->z1.n;
          unit->hpFrac /= 2;
          CalculateUnitStats(unit);
          evt->state2++;
@@ -1257,8 +1245,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         SPR_TILE_STATE(sprite).action = TA_NONE;
-         EVT.animIdx = SPR_TILE_STATE(sprite).cachedByte;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
+         EVT.animIdx = OBJ_TILE_STATE(sprite).cachedByte;
          evt->state2++;
          break;
 
@@ -1270,7 +1258,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
          break;
 
       case 2:
-         if (SPR_TILE_STATE(sprite).cachedByte == 0 || evt->state == 24) {
+         if (OBJ_TILE_STATE(sprite).cachedByte == 0 || evt->state == 24) {
             evt->state = 1;
             evt->state2 = 0;
          }
@@ -1283,7 +1271,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         SPR_TILE_STATE(sprite).action = TA_NONE;
+         OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_BLOCKING_END_B;
          evt->state2++;
       // fallthrough
@@ -1300,7 +1288,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
    } // switch (evt->state)
 
    if (unit->class == CLASS_AIRMAN) {
-      sprite->d.sprite.y1 -= (120 + (rcos(sprite->d.sprite.coords[0].x & 0xfff) * 50 >> 12));
+      sprite->y1.n -= (120 + (rcos(sprite->d.sprite.coords[0].x & 0xfff) * 50 >> 12));
       UpdateAirmanUnitSpriteMovement(sprite, evt);
    } else {
       UpdateUnitSpriteMovement(sprite, evt);
@@ -1360,8 +1348,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
       evt1 = gTempGfxEvt;
       evt1->d.sprite.hidden = 0;
       evt1->d.sprite.semiTrans = 0;
-      evt1->d.sprite.x1 = sprite->d.sprite.x1;
-      evt1->d.sprite.z1 = sprite->d.sprite.z1;
+      evt1->x1.n = sprite->x1.n;
+      evt1->z1.n = sprite->z1.n;
       evt1->d.sprite.gfxIdx = sprite->d.sprite.gfxIdx;
       evt1->d.sprite.stripIdx = sprite->d.sprite.stripIdx;
       evt1->d.sprite.facingLeft = sprite->d.sprite.facingLeft;
@@ -1387,7 +1375,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
          SetElevationFromTerrain(sprite);
       }
       sprite->d.sprite.coords[0].x += 150;
-      sprite->d.sprite.y1 += (120 + (rcos(sprite->d.sprite.coords[0].x & 0xfff) * 50 >> 12));
+      sprite->y1.n += (120 + (rcos(sprite->d.sprite.coords[0].x & 0xfff) * 50 >> 12));
       if (gOverheadMapState != 0) {
          RenderOverheadMapUnitMarker(gGraphicsPtr->ot, sprite, 0, unit->team);
       } else {
@@ -1416,28 +1404,27 @@ void UpdateUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
    case 0:
       sprite->d.sprite.finishedMoving = 0;
       // Do nothing if already at destination
-      if (sprite->d.sprite.x1 == sprite->d.sprite.x3 &&
-          sprite->d.sprite.z1 == sprite->d.sprite.z3) {
+      if (sprite->x1.n == sprite->x3.n && sprite->z1.n == sprite->z3.n) {
          return;
       }
       // Face destination
-      if (sprite->d.sprite.x1 < sprite->d.sprite.x3) {
+      if (sprite->x1.n < sprite->x3.n) {
          sprite->d.sprite.direction = ANGLE_WEST;
       }
-      if (sprite->d.sprite.x1 > sprite->d.sprite.x3) {
+      if (sprite->x1.n > sprite->x3.n) {
          sprite->d.sprite.direction = ANGLE_EAST;
       }
-      if (sprite->d.sprite.z1 < sprite->d.sprite.z3) {
+      if (sprite->z1.n < sprite->z3.n) {
          sprite->d.sprite.direction = ANGLE_SOUTH;
       }
-      if (sprite->d.sprite.z1 > sprite->d.sprite.z3) {
+      if (sprite->z1.n > sprite->z3.n) {
          sprite->d.sprite.direction = ANGLE_NORTH;
       }
       sprite->state++;
       break;
 
    case 1:
-      if (SmoothStepTo(sprite, sprite->d.sprite.z3, sprite->d.sprite.x3, 0) == 0) {
+      if (SmoothStepTo(sprite, sprite->z3.n, sprite->x3.n, 0) == 0) {
          // Terrain is not level, so initiate a jump
          battler->d.evtf014.animIdx = ANIM_JUMPING_B;
          sprite->state += 2;
@@ -1448,7 +1435,7 @@ void UpdateUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
       break;
 
    case 2:
-      if (SmoothStepTo(sprite, sprite->d.sprite.z3, sprite->d.sprite.x3, 1) != 0) {
+      if (SmoothStepTo(sprite, sprite->z3.n, sprite->x3.n, 1) != 0) {
          sprite->d.sprite.finishedMoving = 1;
          sprite->state = 0;
       }
@@ -1462,7 +1449,7 @@ void UpdateUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
 
    // fallthrough
    case 4:
-      if (SmoothStepTo(sprite, sprite->d.sprite.z3, sprite->d.sprite.x3, 1) != 0) {
+      if (SmoothStepTo(sprite, sprite->z3.n, sprite->x3.n, 1) != 0) {
          // Finish landing jump with a crouch
          battler->d.evtf014.animIdx = ANIM_CROUCHING_B;
          sprite->state++;
@@ -1486,29 +1473,27 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
 
    // fallthrough
    case 1:
-      if (sprite->d.sprite.x1 == sprite->d.sprite.x3 &&
-          sprite->d.sprite.z1 == sprite->d.sprite.z3) {
+      if (sprite->x1.n == sprite->x3.n && sprite->z1.n == sprite->z3.n) {
          return;
       }
       battler->d.evtf014.animIdx = ANIM_WALKING_B;
-      sprite->d.sprite.y2 = 32;
-      if (sprite->d.sprite.x1 < sprite->d.sprite.x3) {
+      sprite->y2.n = 32;
+      if (sprite->x1.n < sprite->x3.n) {
          sprite->d.sprite.direction = ANGLE_WEST;
       }
-      if (sprite->d.sprite.x1 > sprite->d.sprite.x3) {
+      if (sprite->x1.n > sprite->x3.n) {
          sprite->d.sprite.direction = ANGLE_EAST;
       }
-      if (sprite->d.sprite.z1 < sprite->d.sprite.z3) {
+      if (sprite->z1.n < sprite->z3.n) {
          sprite->d.sprite.direction = ANGLE_SOUTH;
       }
-      if (sprite->d.sprite.z1 > sprite->d.sprite.z3) {
+      if (sprite->z1.n > sprite->z3.n) {
          sprite->d.sprite.direction = ANGLE_NORTH;
       }
-      if (sprite->d.sprite.y1 < sprite->d.sprite.y3) {
+      if (sprite->y1.n < sprite->y3.n) {
          sprite->state++;
       } else {
-         if ((gTerrainPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].s.elevation * 128 <
-              sprite->d.sprite.y1) &&
+         if ((OBJ_TARGET_TERRAIN(sprite).s.elevation * 128 < sprite->y1.n) &&
              (gPathBackToUnit[battler->d.evtf014.pathIdx - 1] == PATH_STEP_INVALID)) {
             sprite->state += (sprite->d.sprite.direction >> 9) + 3;
          } else {
@@ -1518,10 +1503,10 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
       break;
 
    case 2:
-      sprite->d.sprite.y1 += sprite->d.sprite.y2;
-      sprite->d.sprite.y2 += 8;
-      if (sprite->d.sprite.y1 >= sprite->d.sprite.y3) {
-         sprite->d.sprite.y1 = sprite->d.sprite.y3;
+      sprite->y1.n += sprite->y2.n;
+      sprite->y2.n += 8;
+      if (sprite->y1.n >= sprite->y3.n) {
+         sprite->y1.n = sprite->y3.n;
          sprite->state += (sprite->d.sprite.direction >> 9) + 1;
          if (gPathBackToUnit[battler->d.evtf014.pathIdx - 1] == PATH_STEP_INVALID) {
             sprite->state++;
@@ -1531,10 +1516,10 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
 
    case 3:
    case 4:
-      sprite->d.sprite.z2 += 4;
-      sprite->d.sprite.z1 += sprite->d.sprite.z2;
-      if (sprite->d.sprite.z1 >= sprite->d.sprite.z3) {
-         sprite->d.sprite.z1 = sprite->d.sprite.z3;
+      sprite->z2.n += 4;
+      sprite->z1.n += sprite->z2.n;
+      if (sprite->z1.n >= sprite->z3.n) {
+         sprite->z1.n = sprite->z3.n;
          if (sprite->state == 3) {
             sprite->d.sprite.finishedMoving = 1;
             sprite->state = 1;
@@ -1547,10 +1532,10 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
 
    case 5:
    case 6:
-      sprite->d.sprite.x2 += 4;
-      sprite->d.sprite.x1 += sprite->d.sprite.x2;
-      if (sprite->d.sprite.x1 >= sprite->d.sprite.x3) {
-         sprite->d.sprite.x1 = sprite->d.sprite.x3;
+      sprite->x2.n += 4;
+      sprite->x1.n += sprite->x2.n;
+      if (sprite->x1.n >= sprite->x3.n) {
+         sprite->x1.n = sprite->x3.n;
          if (sprite->state == 5) {
             sprite->d.sprite.finishedMoving = 1;
             sprite->state = 1;
@@ -1563,10 +1548,10 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
 
    case 7:
    case 8:
-      sprite->d.sprite.z2 += 4;
-      sprite->d.sprite.z1 -= sprite->d.sprite.z2;
-      if (sprite->d.sprite.z1 <= sprite->d.sprite.z3) {
-         sprite->d.sprite.z1 = sprite->d.sprite.z3;
+      sprite->z2.n += 4;
+      sprite->z1.n -= sprite->z2.n;
+      if (sprite->z1.n <= sprite->z3.n) {
+         sprite->z1.n = sprite->z3.n;
          if (sprite->state == 7) {
             sprite->d.sprite.finishedMoving = 1;
             sprite->state = 1;
@@ -1579,10 +1564,10 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
 
    case 9:
    case 10:
-      sprite->d.sprite.x2 += 4;
-      sprite->d.sprite.x1 -= sprite->d.sprite.x2;
-      if (sprite->d.sprite.x1 <= sprite->d.sprite.x3) {
-         sprite->d.sprite.x1 = sprite->d.sprite.x3;
+      sprite->x2.n += 4;
+      sprite->x1.n -= sprite->x2.n;
+      if (sprite->x1.n <= sprite->x3.n) {
+         sprite->x1.n = sprite->x3.n;
          if (sprite->state == 9) {
             sprite->d.sprite.finishedMoving = 1;
             sprite->state = 1;
@@ -1595,16 +1580,15 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
 
    case 11:
    HandleState11:
-      sprite->d.sprite.y3 =
-          gTerrainPtr[HI(sprite->d.sprite.z3)][HI(sprite->d.sprite.x3)].s.elevation * 128;
+      sprite->y3.n = OBJ_TARGET_TERRAIN(sprite).s.elevation * 128;
       sprite->state++;
       break;
 
    case 12:
-      sprite->d.sprite.y2 += 8;
-      sprite->d.sprite.y1 -= sprite->d.sprite.y2;
-      if (sprite->d.sprite.y1 <= sprite->d.sprite.y3) {
-         sprite->d.sprite.y1 = sprite->d.sprite.y3;
+      sprite->y2.n += 8;
+      sprite->y1.n -= sprite->y2.n;
+      if (sprite->y1.n <= sprite->y3.n) {
+         sprite->y1.n = sprite->y3.n;
          sprite->d.sprite.finishedMoving = 1;
          sprite->state = 1;
       }
@@ -1645,12 +1629,12 @@ void Evtf412_EventCamera(EvtData *evt) {
       }
    }
 
-   focus = gState.evtFocus;
+   focus = gState.focus;
    if (focus != NULL) {
-      gCameraPos.vx += (-(focus->d.sprite.x1 >> 3) - gCameraPos.vx) >> 3;
-      gCameraPos.vz += (-(focus->d.sprite.z1 >> 3) - gCameraPos.vz) >> 3;
+      gCameraPos.vx += (-(focus->x1.n >> 3) - gCameraPos.vx) >> 3;
+      gCameraPos.vz += (-(focus->z1.n >> 3) - gCameraPos.vz) >> 3;
       gCameraPos.vy +=
-          (((focus->d.sprite.y1 + 0x100 + gState.eventCameraHeight) >> 3) - gCameraPos.vy) >> 3;
+          (((focus->y1.n + 0x100 + gState.eventCameraHeight) >> 3) - gCameraPos.vy) >> 3;
    } else {
       // x
       diff = -(gState.eventCameraPan.x >> 3) - gCameraPos.vx;
@@ -1695,74 +1679,73 @@ void func_8004FDB0(EvtData *sprite, EvtData *entity) {
    // TBD: Is this y coord used as state anywhere else?
    switch (HI(sprite->d.sprite.coords[0].y)) {
    case 0:
-      if (sprite->d.sprite.x1 == sprite->d.sprite.x3 &&
-          sprite->d.sprite.z1 == sprite->d.sprite.z3) {
+      if (sprite->x1.n == sprite->x3.n && sprite->z1.n == sprite->z3.n) {
          return;
       }
       sprite->d.sprite.finishedMoving = 0;
-      if (sprite->d.sprite.x1 < sprite->d.sprite.x3) {
+      if (sprite->x1.n < sprite->x3.n) {
          HI(sprite->d.sprite.coords[0].y) += 1;
       }
-      if (sprite->d.sprite.x1 > sprite->d.sprite.x3) {
+      if (sprite->x1.n > sprite->x3.n) {
          HI(sprite->d.sprite.coords[0].y) += 2;
       }
-      if (sprite->d.sprite.z1 < sprite->d.sprite.z3) {
+      if (sprite->z1.n < sprite->z3.n) {
          HI(sprite->d.sprite.coords[0].y) += 3;
       }
-      if (sprite->d.sprite.z1 > sprite->d.sprite.z3) {
+      if (sprite->z1.n > sprite->z3.n) {
          HI(sprite->d.sprite.coords[0].y) += 4;
       }
       if (entity->d.evtf409.maintainDirection == 0) {
-         if (sprite->d.sprite.x1 < sprite->d.sprite.x3) {
+         if (sprite->x1.n < sprite->x3.n) {
             sprite->d.sprite.direction = ANGLE_WEST;
          }
-         if (sprite->d.sprite.x1 > sprite->d.sprite.x3) {
+         if (sprite->x1.n > sprite->x3.n) {
             sprite->d.sprite.direction = ANGLE_EAST;
          }
-         if (sprite->d.sprite.z1 < sprite->d.sprite.z3) {
+         if (sprite->z1.n < sprite->z3.n) {
             sprite->d.sprite.direction = ANGLE_SOUTH;
          }
-         if (sprite->d.sprite.z1 > sprite->d.sprite.z3) {
+         if (sprite->z1.n > sprite->z3.n) {
             sprite->d.sprite.direction = ANGLE_NORTH;
          }
       }
       break;
 
    case 1:
-      sprite->d.sprite.z1 = sprite->d.sprite.z3;
-      sprite->d.sprite.x1 += sprite->d.sprite.x2;
-      if (sprite->d.sprite.x1 >= sprite->d.sprite.x3) {
-         sprite->d.sprite.x1 = sprite->d.sprite.x3;
+      sprite->z1.n = sprite->z3.n;
+      sprite->x1.n += sprite->x2.n;
+      if (sprite->x1.n >= sprite->x3.n) {
+         sprite->x1.n = sprite->x3.n;
          sprite->d.sprite.finishedMoving = 1;
          HI(sprite->d.sprite.coords[0].y) = 0;
       }
       break;
 
    case 2:
-      sprite->d.sprite.z1 = sprite->d.sprite.z3;
-      sprite->d.sprite.x1 -= sprite->d.sprite.x2;
-      if (sprite->d.sprite.x1 <= sprite->d.sprite.x3) {
-         sprite->d.sprite.x1 = sprite->d.sprite.x3;
+      sprite->z1.n = sprite->z3.n;
+      sprite->x1.n -= sprite->x2.n;
+      if (sprite->x1.n <= sprite->x3.n) {
+         sprite->x1.n = sprite->x3.n;
          sprite->d.sprite.finishedMoving = 1;
          HI(sprite->d.sprite.coords[0].y) = 0;
       }
       break;
 
    case 3:
-      sprite->d.sprite.x1 = sprite->d.sprite.x3;
-      sprite->d.sprite.z1 += sprite->d.sprite.z2;
-      if (sprite->d.sprite.z1 >= sprite->d.sprite.z3) {
-         sprite->d.sprite.z1 = sprite->d.sprite.z3;
+      sprite->x1.n = sprite->x3.n;
+      sprite->z1.n += sprite->z2.n;
+      if (sprite->z1.n >= sprite->z3.n) {
+         sprite->z1.n = sprite->z3.n;
          sprite->d.sprite.finishedMoving = 1;
          HI(sprite->d.sprite.coords[0].y) = 0;
       }
       break;
 
    case 4:
-      sprite->d.sprite.x1 = sprite->d.sprite.x3;
-      sprite->d.sprite.z1 -= sprite->d.sprite.z2;
-      if (sprite->d.sprite.z1 <= sprite->d.sprite.z3) {
-         sprite->d.sprite.z1 = sprite->d.sprite.z3;
+      sprite->x1.n = sprite->x3.n;
+      sprite->z1.n -= sprite->z2.n;
+      if (sprite->z1.n <= sprite->z3.n) {
+         sprite->z1.n = sprite->z3.n;
          sprite->d.sprite.finishedMoving = 1;
          HI(sprite->d.sprite.coords[0].y) = 0;
       }
@@ -1837,6 +1820,7 @@ void ReserveSprite(u8 srcIdxWithinSheet, u8 dstStripIdx, u8 dstSubIdx) {
 #undef EVTF
 #define EVTF 409
 void Evtf409_EventEntity(EvtData *evt) {
+   // evt->state3: runState
    EvtData *sprite;
    EvtData *evt1;
    EvtData *evt2;
@@ -1849,18 +1833,19 @@ void Evtf409_EventEntity(EvtData *evt) {
 
    sprite = EVT.sprite;
 
-   switch (EVT.runState) {
+   // Handle run state:
+   switch (evt->state3) {
    case 0:
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
       sprite->d.sprite.coords[0].z = rand() % 256 - 128;
       sprite->d.sprite.stripIdx = EVT.stripIdxA;
-      sprite->d.sprite.x1 = EVT.x;
-      sprite->d.sprite.z1 = EVT.z;
-      sprite->d.sprite.x3 = EVT.x;
-      sprite->d.sprite.z3 = EVT.z;
+      sprite->x1.n = evt->x1.n;
+      sprite->z1.n = evt->z1.n;
+      sprite->x3.n = evt->x1.n;
+      sprite->z3.n = evt->z1.n;
       EVT.sprite = sprite;
-      EVT.runState++;
+      evt->state3++;
 
    // fallthrough
    HandleRunState1:
@@ -1868,7 +1853,7 @@ void Evtf409_EventEntity(EvtData *evt) {
       pNextCommand = EVT.pNextCommand;
       evt->mem = *pNextCommand;
       EVT.pNextCommand = pNextCommand + 2;
-      EVT.runState++;
+      evt->state3++;
       EVT.commandState = 0;
 
    // fallthrough
@@ -1880,7 +1865,7 @@ void Evtf409_EventEntity(EvtData *evt) {
       case 1:
          // Yield until given location
          if (gState.eventResumeLocation >= argument) {
-            EVT.runState = 1;
+            evt->state3 = 1;
             goto HandleRunState1;
          }
          // Continue waiting for resume
@@ -1895,58 +1880,58 @@ void Evtf409_EventEntity(EvtData *evt) {
             sprite->d.sprite.animInitialized = 0;
             sprite->d.sprite.animFinished = 0;
          }
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 3:
-         sprite->d.sprite.x3 = argument;
+         sprite->x3.n = argument;
          sprite->d.sprite.finishedMoving = 0;
          EVT.maintainDirection = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 4:
-         sprite->d.sprite.z3 = argument;
+         sprite->z3.n = argument;
          sprite->d.sprite.finishedMoving = 0;
          EVT.maintainDirection = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 5:
-         sprite->d.sprite.x3 = argument;
+         sprite->x3.n = argument;
          sprite->d.sprite.finishedMoving = 0;
          EVT.maintainDirection = 1;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 6:
-         sprite->d.sprite.z3 = argument;
+         sprite->z3.n = argument;
          sprite->d.sprite.finishedMoving = 0;
          EVT.maintainDirection = 1;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 7:
-         sprite->d.sprite.x2 = argument;
-         sprite->d.sprite.z2 = argument;
-         EVT.runState = 1;
+         sprite->x2.n = argument;
+         sprite->z2.n = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 8:
          sprite->d.sprite.direction = argument << 10;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 9:
          if (sprite->d.sprite.finishedMoving) {
-            EVT.runState = 1;
+            evt->state3 = 1;
             goto HandleRunState1;
          }
          break;
 
       case 0xa:
          if (sprite->d.sprite.animFinished) {
-            EVT.runState = 1;
+            evt->state3 = 1;
             goto HandleRunState1;
          }
          break;
@@ -1960,7 +1945,7 @@ void Evtf409_EventEntity(EvtData *evt) {
             break;
          case 1:
             if (--EVT.timer == 0) {
-               EVT.runState = 1;
+               evt->state3 = 1;
                goto HandleRunState1;
             }
             break;
@@ -1972,17 +1957,17 @@ void Evtf409_EventEntity(EvtData *evt) {
          //? Branch (relative to current command)
          pCurrentCommand = EVT.pNextCommand - 2;
          EVT.pNextCommand = pCurrentCommand + argument * 2;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0xd:
-         gState.evtFocus = sprite;
-         EVT.runState = 1;
+         gState.focus = sprite;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0xe:
-         gState.evtFocus = NULL;
-         EVT.runState = 1;
+         gState.focus = NULL;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0xf:
@@ -1994,7 +1979,7 @@ void Evtf409_EventEntity(EvtData *evt) {
             break;
          case 1:
             if (!gDecodingSprites) {
-               EVT.runState = 1;
+               evt->state3 = 1;
                goto HandleRunState1;
             }
             break;
@@ -2006,7 +1991,7 @@ void Evtf409_EventEntity(EvtData *evt) {
          if (gState.eventResumeLocation >= argument) {
             EVT.pNextCommand += 2;
          }
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x11:
@@ -2016,70 +2001,70 @@ void Evtf409_EventEntity(EvtData *evt) {
          if (gState.eventResumeLocation < argument) {
             gState.eventResumeLocation = argument;
          }
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x13:
-         sprite->d.sprite.x1 = sprite->d.sprite.x3;
-         sprite->d.sprite.z1 = sprite->d.sprite.z3;
-         EVT.runState = 1;
+         sprite->x1.n = sprite->x3.n;
+         sprite->z1.n = sprite->z3.n;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x14:
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_EVENT_ZOOM;
          evt1->d.evtf410.zoom = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x15:
-         sprite->d.sprite.x1 = argument;
-         sprite->d.sprite.x3 = argument;
-         EVT.runState = 1;
+         sprite->x1.n = argument;
+         sprite->x3.n = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x16:
-         sprite->d.sprite.z1 = argument;
-         sprite->d.sprite.z3 = argument;
-         EVT.runState = 1;
+         sprite->z1.n = argument;
+         sprite->z3.n = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x17:
-         sprite->d.sprite.x3 = sprite->d.sprite.x1 + argument;
+         sprite->x3.n = sprite->x1.n + argument;
          sprite->d.sprite.finishedMoving = 0;
          EVT.maintainDirection = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x18:
-         sprite->d.sprite.z3 = sprite->d.sprite.z1 + argument;
+         sprite->z3.n = sprite->z1.n + argument;
          sprite->d.sprite.finishedMoving = 0;
          EVT.maintainDirection = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x19:
-         sprite->d.sprite.x3 = sprite->d.sprite.x1 + argument;
+         sprite->x3.n = sprite->x1.n + argument;
          sprite->d.sprite.finishedMoving = 0;
          EVT.maintainDirection = 1;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x1a:
-         sprite->d.sprite.z3 = sprite->d.sprite.z1 + argument;
+         sprite->z3.n = sprite->z1.n + argument;
          sprite->d.sprite.finishedMoving = 0;
          EVT.maintainDirection = 1;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x1b:
          sprite->d.sprite.hidden = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x1c:
          sprite->d.sprite.hidden = 1;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x1d:
@@ -2088,37 +2073,37 @@ void Evtf409_EventEntity(EvtData *evt) {
          evt1->functionIndex = argument;
          // todo replace?
          evt1->d.evtf017.sprite = sprite;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x1e:
          ShowMsgBoxForSprite(sprite, argument, 0);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x1f:
          CloseMsgBox(argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x20:
          SetMsgBoxText(1, argument, 0x100);
          gState.msgBoxFinished = 0;
          gState.field_0x31d = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x21:
          SetMsgBoxText(2, argument, 0x100);
          gState.msgBoxFinished = 0;
          gState.field_0x31d = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x22:
          if (gState.msgBoxFinished) {
             gState.msgBoxFinished = 0;
-            EVT.runState = 1;
+            evt->state3 = 1;
             goto HandleRunState1;
          }
          break;
@@ -2126,14 +2111,14 @@ void Evtf409_EventEntity(EvtData *evt) {
       case 0x23:
          if (gState.field_0x31d != 0) {
             gState.field_0x31d = 0;
-            EVT.runState = 1;
+            evt->state3 = 1;
             goto HandleRunState1;
          }
          break;
 
       case 0x24:
          gState.eventCameraRot = gCameraRotation.vy = (argument << 10) | ANGLE_45_DEGREES;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x25:
@@ -2148,59 +2133,59 @@ void Evtf409_EventEntity(EvtData *evt) {
             gState.eventCameraRot += ANGLE_360_DEGREES;
          }
 
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x26:
          gState.eventCameraPan.x = argument;
          gCameraPos.vx = -(argument >> 3);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x27:
          gState.eventCameraPan.y = argument;
          gCameraPos.vy = (argument + gState.eventCameraHeight) >> 3;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x28:
          gState.eventCameraPan.z = argument;
          gCameraPos.vz = -(argument >> 3);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x29:
          gState.eventCameraPan.x = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x2a:
          gState.eventCameraPan.y = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x2b:
          gState.eventCameraPan.z = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x2c:
-         evt1 = gState.evtFocus;
-         gState.eventCameraPan.x = evt1->d.sprite.x1;
-         gState.eventCameraPan.y = evt1->d.sprite.y1;
-         gState.eventCameraPan.z = evt1->d.sprite.z1;
-         EVT.runState = 1;
+         evt1 = gState.focus;
+         gState.eventCameraPan.x = evt1->x1.n;
+         gState.eventCameraPan.y = evt1->y1.n;
+         gState.eventCameraPan.z = evt1->z1.n;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x2d:
          gCameraZoom.vz = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x2e:
          EVT.stripIdxA = argument + 2;
          sprite->d.sprite.stripIdx = argument + 2;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x2f:
@@ -2209,7 +2194,7 @@ void Evtf409_EventEntity(EvtData *evt) {
          } else {
             sprite->d.sprite.stripIdx = EVT.stripIdxB;
          }
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x30:
@@ -2221,13 +2206,13 @@ void Evtf409_EventEntity(EvtData *evt) {
             sprite->d.sprite.animInitialized = 0;
             sprite->d.sprite.animFinished = 0;
          }
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x31:
       case 0x32:
          SetMsgBoxPortrait(argument, evt->mem == 0x32);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       //?
@@ -2262,19 +2247,19 @@ void Evtf409_EventEntity(EvtData *evt) {
          i = 9;
       ReserveSpriteInSubIdxI: //?: Could use something like Duff's device instead?
          ReserveSprite(argument, sprite->d.sprite.stripIdx, i);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x3d:
          PerformAudioCommand(argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x3e:
          PerformAudioCommand(3);
          LoadSeqSet(argument);
          FinishLoadingSeq();
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x3f:
@@ -2285,10 +2270,9 @@ void Evtf409_EventEntity(EvtData *evt) {
             EVT.timer = 35;
             evt2 = Evt_GetUnused();
             evt2->functionIndex = EVTF_BLOOD_SPURT;
-            // todo replace
-            evt2->d.evtf052.sprite = sprite;
+            evt2->d.evtf205.unitSprite = sprite;
             if (evt->mem == 0x55) {
-               EVT.runState = 1;
+               evt->state3 = 1;
                goto HandleRunState1;
             } else {
                EVT.commandState++;
@@ -2299,9 +2283,8 @@ void Evtf409_EventEntity(EvtData *evt) {
             if (--EVT.timer == 0) {
                evt2 = Evt_GetUnused();
                evt2->functionIndex = EVTF_SLAY_UNIT;
-               // todo replace
-               evt2->d.evtf052.sprite = sprite;
-               EVT.runState = 1;
+               evt2->d.evtf131.unitSprite = sprite;
+               evt->state3 = 1;
                goto HandleRunState1;
             }
             break;
@@ -2331,37 +2314,37 @@ void Evtf409_EventEntity(EvtData *evt) {
 
       case 0x41:
          gState.eventCameraHeight = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x42:
          ShowMsgBoxForSprite(sprite, argument, 1);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x43:
          FadeOutScreen(2, argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x44:
          FadeInScreen(2, argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x45:
          FadeOutScreen(1, argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x46:
          FadeInScreen(1, argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x47:
          EVT.elevationType = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x48:
@@ -2392,7 +2375,7 @@ void Evtf409_EventEntity(EvtData *evt) {
             break;
 
          case 2:
-            EVT.runState = 1;
+            evt->state3 = 1;
             goto HandleRunState1;
          }
 
@@ -2404,47 +2387,47 @@ void Evtf409_EventEntity(EvtData *evt) {
          DrawText(12, 180, 25, 2, 0, gState.currentTextPointers[argument]);
          DisplayBasicWindow(0x34);
          gWindowActiveIdx = 0x34;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x4a:
          if (PressedCircleOrX()) {
-            EVT.runState = 1;
+            evt->state3 = 1;
             CloseWindow(0x34);
-            EVT.runState = 1;
+            evt->state3 = 1;
             goto HandleRunState1;
          }
          break;
 
       case 0x4b:
          gMapMinX = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x4c:
          gMapMinZ = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x4d:
          gMapSizeX = argument;
          gMapMarginX = 0;
          gMapMaxX = gMapMinX + gMapSizeX - 1;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x4e:
          gMapSizeZ = argument;
          gMapMarginZ = 0;
          gMapMaxZ = gMapMinZ + gMapSizeZ - 1;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x4f:
          evt2 = Evt_GetUnused();
          evt2->functionIndex = EVTF_STRETCH_WARP_SPRITE;
          evt2->d.evtf062.sprite = sprite;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x50:
@@ -2452,156 +2435,156 @@ void Evtf409_EventEntity(EvtData *evt) {
          evt2->functionIndex = EVTF_STRETCH_WARP_SPRITE;
          evt2->d.evtf062.sprite = sprite;
          evt2->mem = 1; // Reversed (warp in)
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x51:
          CloseWindow(0x34);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x52:
          evt2 = Evt_GetUnused();
          evt2->functionIndex = EVTF_ADJUST_FACE_ELEVATION;
          evt2->state2 = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x53:
          evt2 = Evt_GetUnused();
          evt2->functionIndex = EVTF_SLIDING_FACE;
          evt2->state2 = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x54:
          Evt_ResetByFunction(argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x56:
          gState.preciseSprites = 1;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x57:
          gState.preciseSprites = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x58:
          DrawWindow(0x43, 0, 100, 296, 64, 12, 161, WBS_ROUNDED, 0);
          DisplayCustomWindow(0x43, 0, 1, 1, 0, 25);
          DisplayCustomWindow(0x44, 0, 1, 1, 0, 25);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x59:
-         gCameraPos.vy = (sprite->d.sprite.y1 + 0x100 + gState.eventCameraHeight) >> 3;
-         EVT.runState = 1;
+         gCameraPos.vy = (sprite->y1.n + 0x100 + gState.eventCameraHeight) >> 3;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x5a:
-         (gState.evtScreenEffect)->state = 5;
-         EVT.runState = 1;
+         (gState.screenEffect)->state = 5;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x5b:
-         (gState.evtScreenEffect)->state = 0;
-         EVT.runState = 1;
+         (gState.screenEffect)->state = 0;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x5c:
          SetScreenEffectOrdering(argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x5d:
-         (gState.evtScreenEffect)->state2 = argument; // semiTransRate
-         EVT.runState = 1;
+         (gState.screenEffect)->state2 = argument; // semiTransRate
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x5e:
-         (gState.evtScreenEffect)->d.evtf369.color.r = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.color.r = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x5f:
-         (gState.evtScreenEffect)->d.evtf369.color.g = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.color.g = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x60:
-         (gState.evtScreenEffect)->d.evtf369.color.b = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.color.b = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x65:
-         (gState.evtScreenEffect)->d.evtf369.rd = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.rd = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x66:
-         (gState.evtScreenEffect)->d.evtf369.gd = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.gd = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x67:
-         (gState.evtScreenEffect)->d.evtf369.bd = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.bd = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x68:
-         (gState.evtScreenEffect)->d.evtf369.rmax = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.rmax = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x69:
-         (gState.evtScreenEffect)->d.evtf369.gmax = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.gmax = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x6a:
-         (gState.evtScreenEffect)->d.evtf369.bmax = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.bmax = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x6b:
          gLightColor.r = gLightColor.g = gLightColor.b = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x6c:
          gLightColor.r += argument;
          gLightColor.g = gLightColor.b = gLightColor.r;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x6d:
-         (gState.evtScreenEffect)->d.evtf369.color.r = argument;
-         (gState.evtScreenEffect)->d.evtf369.color.g = argument;
-         (gState.evtScreenEffect)->d.evtf369.color.b = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.color.r = argument;
+         (gState.screenEffect)->d.evtf369.color.g = argument;
+         (gState.screenEffect)->d.evtf369.color.b = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x6e:
-         (gState.evtScreenEffect)->d.evtf369.rd = argument;
-         (gState.evtScreenEffect)->d.evtf369.gd = argument;
-         (gState.evtScreenEffect)->d.evtf369.bd = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.rd = argument;
+         (gState.screenEffect)->d.evtf369.gd = argument;
+         (gState.screenEffect)->d.evtf369.bd = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x6f:
-         (gState.evtScreenEffect)->d.evtf369.rmax = argument;
-         (gState.evtScreenEffect)->d.evtf369.gmax = argument;
-         (gState.evtScreenEffect)->d.evtf369.bmax = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.rmax = argument;
+         (gState.screenEffect)->d.evtf369.gmax = argument;
+         (gState.screenEffect)->d.evtf369.bmax = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x70:
       case 0x71:
-         (gState.evtScreenEffect)->d.evtf369.semiTrans = argument;
-         EVT.runState = 1;
+         (gState.screenEffect)->d.evtf369.semiTrans = argument;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x72:
@@ -2610,54 +2593,54 @@ void Evtf409_EventEntity(EvtData *evt) {
                gPathGrid0[i][j] = PATH_STEP_UNSET;
             }
          }
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x73:
          gCameraRotation.vx = argument;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x74:
          gScreenFade = Evt_GetUnused();
          gScreenFade->functionIndex = EVTF_FADE;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x75:
          // Set up fade
          func_800A93C8(1, argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x76:
          // Set up fade
          func_800A93E8(1, argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x77:
          // Set up fade
          func_800A93C8(2, argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x78:
          // Set up fade
          func_800A93E8(2, argument);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x79:
          Evt_ResetByFunction(EVTF_FADE);
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x7a:
          SetMsgBoxText2(1, argument, 0x100);
          gState.msgBoxFinished = 0;
          gState.field_0x31d = 0;
-         EVT.runState = 1;
+         evt->state3 = 1;
          goto HandleRunState1;
       } // switch (command) (via runState:2)
 

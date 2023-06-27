@@ -40,11 +40,11 @@ void Evtf015_TargetingAttack(EvtData *evt) {
    switch (evt->state) {
    case 0:
       ClearGrid(1);
-      unit2 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+      unit2 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
       if (unit2->class == CLASS_ARCHER) {
-         PopulateRangedAttackGrid(HI(EVT.z), HI(EVT.x), unit2->attackRange, 0);
+         PopulateRangedAttackGrid(evt->z1.s.hi, evt->x1.s.hi, unit2->attackRange, 0);
       } else {
-         PopulateMeleeAttackGrid(HI(EVT.z), HI(EVT.x), 0, unit2->attackRange);
+         PopulateMeleeAttackGrid(evt->z1.s.hi, evt->x1.s.hi, 0, unit2->attackRange);
       }
       evt->state++;
       break;
@@ -61,7 +61,7 @@ void Evtf015_TargetingAttack(EvtData *evt) {
             gYellowTargetGridPtr[gMapCursorZ][gMapCursorX] = 1;
             CloseWindow(0x1e);
 
-            unitIdx = gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx;
+            unitIdx = OBJ_MAP_UNIT(evt).s.unitIdx;
             unit2 = &gUnits[unitIdx];
             UpdateCompactUnitInfoWindow(unit2, unit2, 0);
             DisplayBasicWindow(0x1d);
@@ -90,7 +90,7 @@ void Evtf015_TargetingAttack(EvtData *evt) {
 
                gTargetX = gMapCursorX;
                gTargetZ = gMapCursorZ;
-               unit2 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+               unit2 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
                unit1 = &gUnits[gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx];
 
                if (gState.debug || unit2->team != unit1->team) {
@@ -105,7 +105,7 @@ void Evtf015_TargetingAttack(EvtData *evt) {
                   }
                   CloseWindow(0x1e);
 
-                  unit1 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+                  unit1 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
                   unit2 = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx];
                   UpdateCompactUnitInfoWindow(unit2, unit1, 1);
 
@@ -184,8 +184,8 @@ void Evtf015_TargetingAttack(EvtData *evt) {
 
          newEvt = Evt_GetLastUnused();
          newEvt->functionIndex = EVTF_UNIT_ATTACKING;
-         newEvt->d.evtf021.x = EVT.x;
-         newEvt->d.evtf021.z = EVT.z;
+         newEvt->x1.n = evt->x1.n;
+         newEvt->z1.n = evt->z1.n;
 
          evt->state = 99;
       }
@@ -208,9 +208,8 @@ void Evtf015_TargetingAttack(EvtData *evt) {
 
          newEvt = Evt_GetUnused();
          newEvt->functionIndex = EVTF_OPENING_CHEST;
-         /// TODO: Replace with d.evtf567 once defined:
-         newEvt->d.sprite.x1 = EVT.x;
-         newEvt->d.sprite.z1 = EVT.z;
+         newEvt->x1.n = evt->x1.n;
+         newEvt->z1.n = evt->z1.n;
 
          evt->state = 99;
       }
@@ -263,31 +262,31 @@ void Evtf021_UnitAttacking(EvtData *evt) {
       EVT.mapSizeX = gMapSizeX;
       EVT.mapSizeZ = gMapSizeZ;
 
-      EVT.attacker = attacker = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
-      EVT.attackerSprite = attacker->evtSprite;
+      EVT.attacker = attacker = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+      EVT.attackerSprite = attacker->sprite;
 
       EVT.defender = defender = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx];
-      EVT.defenderSprite = defender->evtSprite;
+      EVT.defenderSprite = defender->sprite;
       //@be8
       evt1 = Evt_GetUnused();
       evt1->functionIndex = EVTF_CAMERA_TBD_017;
-      evt1->d.evtf017.sprite = evt2 = attacker->evtSprite;
+      evt1->d.evtf017.sprite = evt2 = attacker->sprite;
 
       if (attacker->class != CLASS_ARCHER) {
          // ?: LO byte of camSavedX doubles as a caller-set arg for specifying melee/ranged
          // LO(evt1->d.evtf017.camSavedX) = 1;
-         evt1->d.bytes[0x18] = 1;
+         evt1->d.bytes[4] = 1;
       }
-      if (gTargetX > HI(evt2->d.sprite.x1)) {
+      if (gTargetX > evt2->x1.s.hi) {
          evt2->d.sprite.direction = ANGLE_WEST;
       }
-      if (gTargetX < HI(evt2->d.sprite.x1)) {
+      if (gTargetX < evt2->x1.s.hi) {
          evt2->d.sprite.direction = ANGLE_EAST;
       }
-      if (gTargetZ > HI(evt2->d.sprite.z1)) {
+      if (gTargetZ > evt2->z1.s.hi) {
          evt2->d.sprite.direction = ANGLE_SOUTH;
       }
-      if (gTargetZ < HI(evt2->d.sprite.z1)) {
+      if (gTargetZ < evt2->z1.s.hi) {
          evt2->d.sprite.direction = ANGLE_NORTH;
       }
       attacker->direction = evt2->d.sprite.direction;
@@ -313,8 +312,8 @@ void Evtf021_UnitAttacking(EvtData *evt) {
 
    case 1:
       if (--EVT.timer == 0) {
-         z = HI(evt1->d.sprite.z1);
-         x = HI(evt1->d.sprite.x1);
+         z = evt1->z1.s.hi;
+         x = evt1->x1.s.hi;
          team = attacker->team;
          DisplaySupporterBonus(gTargetZ - 1, gTargetX, z, x, team);
          DisplaySupporterBonus(gTargetZ + 1, gTargetX, z, x, team);
@@ -351,9 +350,9 @@ void Evtf021_UnitAttacking(EvtData *evt) {
    case 3:
       if (--EVT.timer == 0) {
          if (attacker->class == CLASS_ARCHER) {
-            gTileStateGridPtr[HI(evt1->d.sprite.z1)][HI(evt1->d.sprite.x1)].action = TA_RANGED_ATK;
+            OBJ_TILE_STATE(evt1).action = TA_RANGED_ATK;
          } else {
-            gTileStateGridPtr[HI(evt1->d.sprite.z1)][HI(evt1->d.sprite.x1)].action = TA_MELEE_ATK;
+            OBJ_TILE_STATE(evt1).action = TA_MELEE_ATK;
          }
          gSignal3 = 0;
          gSignal4 = 0;
@@ -402,9 +401,8 @@ void Evtf021_UnitAttacking(EvtData *evt) {
 
       newEvt = Evt_GetUnused();
       newEvt->functionIndex = EVTF_DISPLAY_DAMAGE;
-      /// TODO: Replace with d.evtf032 once defined:
-      HI(newEvt->d.sprite.x1) = gTargetX;
-      HI(newEvt->d.sprite.z1) = gTargetZ;
+      newEvt->x1.s.hi = gTargetX;
+      newEvt->z1.s.hi = gTargetZ;
 
       newEvt = Evt_GetUnused();
       newEvt->functionIndex = EVTF_BOUNCE_ZOOM;
@@ -451,18 +449,16 @@ void Evtf021_UnitAttacking(EvtData *evt) {
       case 0:
          s_countering_80123198 = 0;
          if (defender->class == CLASS_ARCHER) {
-            PopulateRangedAttackGrid(HI(evt2->d.sprite.z1), HI(evt2->d.sprite.x1),
-                                     defender->attackRange, 0);
+            PopulateRangedAttackGrid(evt2->z1.s.hi, evt2->x1.s.hi, defender->attackRange, 0);
          } else {
-            PopulateMeleeAttackGrid(HI(evt2->d.sprite.z1), HI(evt2->d.sprite.x1), 0,
-                                    defender->attackRange);
+            PopulateMeleeAttackGrid(evt2->z1.s.hi, evt2->x1.s.hi, 0, defender->attackRange);
          }
-         if (gRedAttackGridPtr[HI(evt1->d.sprite.z1)][HI(evt1->d.sprite.x1)] != PATH_STEP_UNSET &&
+         if (gRedAttackGridPtr[evt1->z1.s.hi][evt1->x1.s.hi] != PATH_STEP_UNSET &&
              !defender->paralyzed) {
 
             s_countering_80123198 = 1;
-            gTargetX = HI(evt1->d.sprite.x1);
-            gTargetZ = HI(evt1->d.sprite.z1);
+            gTargetX = evt1->x1.s.hi;
+            gTargetZ = evt1->z1.s.hi;
 
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_CAMERA_TBD_026;
@@ -484,8 +480,8 @@ void Evtf021_UnitAttacking(EvtData *evt) {
 
       case 1:
          if (EVT.timer == 15) {
-            z = HI(evt2->d.sprite.z1);
-            x = HI(evt2->d.sprite.x1);
+            z = evt2->z1.s.hi;
+            x = evt2->x1.s.hi;
             team = defender->team;
             DisplaySupporterBonus(gTargetZ - 1, gTargetX, z, x, team);
             DisplaySupporterBonus(gTargetZ + 1, gTargetX, z, x, team);
@@ -505,11 +501,9 @@ void Evtf021_UnitAttacking(EvtData *evt) {
          }
          if (!gDecodingSprites) {
             if (defender->class == CLASS_ARCHER) {
-               gTileStateGridPtr[HI(evt2->d.sprite.z1)][HI(evt2->d.sprite.x1)].action =
-                   TA_RANGED_ATK;
+               OBJ_TILE_STATE(evt2).action = TA_RANGED_ATK;
             } else {
-               gTileStateGridPtr[HI(evt2->d.sprite.z1)][HI(evt2->d.sprite.x1)].action =
-                   TA_MELEE_ATK;
+               OBJ_TILE_STATE(evt2).action = TA_MELEE_ATK;
             }
             gSignal3 = 0;
             evt->state2++;
@@ -553,9 +547,8 @@ void Evtf021_UnitAttacking(EvtData *evt) {
 
          newEvt = Evt_GetUnused();
          newEvt->functionIndex = EVTF_DISPLAY_DAMAGE;
-         /// TODO: Replace with d.evtf032 once defined:
-         HI(newEvt->d.sprite.x1) = gTargetX;
-         HI(newEvt->d.sprite.z1) = gTargetZ;
+         newEvt->x1.s.hi = gTargetX;
+         newEvt->z1.s.hi = gTargetZ;
 
          newEvt = Evt_GetUnused();
          newEvt->functionIndex = EVTF_BOUNCE_ZOOM;
@@ -613,11 +606,11 @@ void Evtf021_UnitAttacking(EvtData *evt) {
          if (gSignal3 != 1) {
             return;
          }
-         if (gMapUnitsPtr[HI(evt1->d.sprite.z1)][HI(evt1->d.sprite.x1)].s.unitIdx != 0) {
-            gTileStateGridPtr[HI(evt1->d.sprite.z1)][HI(evt1->d.sprite.x1)].action = TA_XB;
+         if (OBJ_MAP_UNIT(evt1).s.unitIdx != 0) {
+            OBJ_TILE_STATE(evt1).action = TA_XB;
          }
-         if (gMapUnitsPtr[HI(evt2->d.sprite.z1)][HI(evt2->d.sprite.x1)].s.unitIdx != 0) {
-            gTileStateGridPtr[HI(evt2->d.sprite.z1)][HI(evt2->d.sprite.x1)].action = TA_XB;
+         if (OBJ_MAP_UNIT(evt2).s.unitIdx != 0) {
+            OBJ_TILE_STATE(evt2).action = TA_XB;
          }
          gSignal5 = 99;
          gMapSizeX = EVT.mapSizeX;
@@ -650,7 +643,7 @@ void Evtf021_UnitAttacking(EvtData *evt) {
                DetermineMaxMpAndStatVariance(attacker);
                CalculateUnitStats(attacker);
                s_gainedLevel_80123194++;
-               s_unitSprite_80123190 = attacker->evtSprite;
+               s_unitSprite_80123190 = attacker->sprite;
                PopulateUnitSpellList(attacker);
                StartUnitSpritesDecoder(s_unitSprite_80123190->d.sprite.stripIdx);
             }
@@ -706,9 +699,9 @@ void Evtf567_OpeningChest(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      unitIdx = gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx;
+      unitIdx = OBJ_MAP_UNIT(evt).s.unitIdx;
       EVT.opener = opener = &gUnits[unitIdx];
-      EVT.openerSprite = opener->evtSprite;
+      EVT.openerSprite = opener->sprite;
       if (opener->items[0] != ITEM_NULL && opener->items[1] != ITEM_NULL) {
          EVT.sendToDepot = 1;
       }
@@ -733,21 +726,21 @@ void Evtf567_OpeningChest(EvtData *evt) {
 
       evt1 = Evt_GetUnused();
       evt1->functionIndex = EVTF_CAMERA_TBD_017;
-      evt1->d.evtf017.sprite = evt2 = opener->evtSprite;
+      evt1->d.evtf017.sprite = evt2 = opener->sprite;
       if (opener->class != CLASS_ARCHER) {
-         evt1->d.bytes[0x18] = 1;
+         evt1->d.bytes[4] = 1;
       }
 
-      if (gTargetX > HI(evt2->d.sprite.x1)) {
+      if (gTargetX > evt2->x1.s.hi) {
          evt2->d.sprite.direction = ANGLE_WEST;
       }
-      if (gTargetX < HI(evt2->d.sprite.x1)) {
+      if (gTargetX < evt2->x1.s.hi) {
          evt2->d.sprite.direction = ANGLE_EAST;
       }
-      if (gTargetZ > HI(evt2->d.sprite.z1)) {
+      if (gTargetZ > evt2->z1.s.hi) {
          evt2->d.sprite.direction = ANGLE_SOUTH;
       }
-      if (gTargetZ < HI(evt2->d.sprite.z1)) {
+      if (gTargetZ < evt2->z1.s.hi) {
          evt2->d.sprite.direction = ANGLE_NORTH;
       }
       opener->direction = evt2->d.sprite.direction;
@@ -775,9 +768,9 @@ void Evtf567_OpeningChest(EvtData *evt) {
 
    case 3:
       if (opener->class == CLASS_ARCHER) {
-         gTileStateGridPtr[HI(evt1->d.sprite.z1)][HI(evt1->d.sprite.x1)].action = TA_RANGED_ATK;
+         OBJ_TILE_STATE(evt1).action = TA_RANGED_ATK;
       } else {
-         gTileStateGridPtr[HI(evt1->d.sprite.z1)][HI(evt1->d.sprite.x1)].action = TA_MELEE_ATK;
+         OBJ_TILE_STATE(evt1).action = TA_MELEE_ATK;
       }
       gSignal3 = 0;
       gSignal4 = 0;
@@ -848,6 +841,8 @@ u8 s_targetCount_801231b0;
 #undef EVTF
 #define EVTF 028
 void Evtf028_UnitCasting(EvtData *evt) {
+   // evt->x3: targetX
+   // evt->z3: targetZ
    s32 iz, ix;
    EvtData *evt_s1, *evt_a2;
    s16 xdist, zdist;
@@ -865,11 +860,11 @@ void Evtf028_UnitCasting(EvtData *evt) {
       s_targetCount_801231b0 = 0;
 
       if (gSpellSounds[gCurrentSpell] != SPELL_NULL) {
-         // Prepare CDA for main sound (played by Evtf014_BattleUnit)
+         // Prepare XA for main sound (played by Evtf014_BattleUnit)
          PerformAudioCommand(gSpellSounds[gCurrentSpell] + 0x1000);
       }
 
-      s_casterUnit_801231a4 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+      s_casterUnit_801231a4 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
       s_casterUnit_801231a4->mp -= gSpells[gCurrentSpell].mpCost;
       //@23ec
       do {
@@ -910,7 +905,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gRedAttackGridPtr[iz][ix] != PATH_STEP_UNSET &&
                    gMapUnitsPtr[iz][ix].s.unitIdx != 0 &&
-                   gMapUnitsPtr[iz][ix].s.team != gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team) {
+                   gMapUnitsPtr[iz][ix].s.team != OBJ_MAP_UNIT(evt).s.team) {
 
                   *s_pTargetCoordsToSet_801231a0++ = ix;
                   *s_pTargetCoordsToSet_801231a0++ = iz;
@@ -931,7 +926,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gRedAttackGridPtr[iz][ix] != PATH_STEP_UNSET &&
                    gMapUnitsPtr[iz][ix].s.unitIdx != 0 &&
-                   gMapUnitsPtr[iz][ix].s.team == gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team) {
+                   gMapUnitsPtr[iz][ix].s.team == OBJ_MAP_UNIT(evt).s.team) {
 
                   *s_pTargetCoordsToSet_801231a0++ = ix;
                   *s_pTargetCoordsToSet_801231a0++ = iz;
@@ -968,7 +963,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gRedAttackGridPtr[iz][ix] != PATH_STEP_UNSET &&
                    gMapUnitsPtr[iz][ix].s.unitIdx != 0 &&
-                   gMapUnitsPtr[iz][ix].s.team != gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team) {
+                   gMapUnitsPtr[iz][ix].s.team != OBJ_MAP_UNIT(evt).s.team) {
 
                   *s_pTargetCoordsToSet_801231a0++ = ix;
                   *s_pTargetCoordsToSet_801231a0++ = iz;
@@ -985,7 +980,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gRedAttackGridPtr[iz][ix] != PATH_STEP_UNSET &&
                    gMapUnitsPtr[iz][ix].s.unitIdx != 0 &&
-                   gMapUnitsPtr[iz][ix].s.team == gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team) {
+                   gMapUnitsPtr[iz][ix].s.team == OBJ_MAP_UNIT(evt).s.team) {
 
                   *s_pTargetCoordsToSet_801231a0++ = ix;
                   *s_pTargetCoordsToSet_801231a0++ = iz;
@@ -1022,32 +1017,32 @@ void Evtf028_UnitCasting(EvtData *evt) {
    case 3:
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_CAMERA_TBD_017;
-      evt_s1->d.bytes[0x18] = 0;
+      evt_s1->d.bytes[4] = 0;
 
-      evt_a2 = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
+      evt_a2 = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       evt_s1->d.evtf017.sprite = evt_a2;
 
-      xdist = gTargetX - HI(evt_a2->d.sprite.x1);
+      xdist = gTargetX - evt_a2->x1.s.hi;
       if (xdist < 0) {
          xdist = -xdist;
       }
-      zdist = gTargetZ - HI(evt_a2->d.sprite.z1);
+      zdist = gTargetZ - evt_a2->z1.s.hi;
       if (zdist < 0) {
          zdist = -zdist;
       }
       if (xdist != 0 || zdist != 0) {
          if (xdist >= zdist) {
-            if (gTargetX > HI(evt_a2->d.sprite.x1)) {
+            if (gTargetX > evt_a2->x1.s.hi) {
                evt_a2->d.sprite.direction = ANGLE_WEST;
             }
-            if (gTargetX < HI(evt_a2->d.sprite.x1)) {
+            if (gTargetX < evt_a2->x1.s.hi) {
                evt_a2->d.sprite.direction = ANGLE_EAST;
             }
          } else {
-            if (gTargetZ > HI(evt_a2->d.sprite.z1)) {
+            if (gTargetZ > evt_a2->z1.s.hi) {
                evt_a2->d.sprite.direction = ANGLE_SOUTH;
             }
-            if (gTargetZ < HI(evt_a2->d.sprite.z1)) {
+            if (gTargetZ < evt_a2->z1.s.hi) {
                evt_a2->d.sprite.direction = ANGLE_NORTH;
             }
          }
@@ -1071,14 +1066,13 @@ void Evtf028_UnitCasting(EvtData *evt) {
       }
       evt_a2 = Evt_GetUnused();
       evt_a2->functionIndex = EVTF_ITEM_SPELL;
-      /// TODO: Replace with d.evtf770 once defined:
-      HI(evt_a2->d.sprite.x1) = HI(EVT.x);
-      HI(evt_a2->d.sprite.z1) = HI(EVT.z);
+      evt_a2->x1.s.hi = evt->x1.s.hi;
+      evt_a2->z1.s.hi = evt->z1.s.hi;
 
       DrawWindow(0x38, 0, 100, 144, 36, 172, 200, WBS_CROSSED, 0);
       DrawText(0x0c, 111, 20, 0, 0, gSpellNames[gCurrentSpell]);
 
-      unitIdx = gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx;
+      unitIdx = OBJ_MAP_UNIT(evt).s.unitIdx;
       s_casterUnit_801231a4 = &gUnits[unitIdx];
       if (s_casterUnit_801231a4->team == TEAM_PLAYER) {
          DisplayBasicWindow(0x38);
@@ -1103,7 +1097,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
          }
       }
 
-      gTileStateGridPtr[HI(EVT.z)][HI(EVT.x)].action = TA_CAST;
+      OBJ_TILE_STATE(evt).action = TA_CAST;
       gSignal3 = 0;
       evt->state++;
       break;
@@ -1114,8 +1108,8 @@ void Evtf028_UnitCasting(EvtData *evt) {
       }
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = gSpellsEx[gCurrentSpell][SPELL_EX_EVTF_MAIN];
-      HI(evt_s1->d.sprite.x1) = HI(EVT.x);
-      HI(evt_s1->d.sprite.z1) = HI(EVT.z);
+      evt_s1->x1.s.hi = evt->x1.s.hi;
+      evt_s1->z1.s.hi = evt->z1.s.hi;
       gSignal3 = 0;
       evt->state++;
       break;
@@ -1136,8 +1130,8 @@ void Evtf028_UnitCasting(EvtData *evt) {
       //@331c
       if (*s_pTargetCoordsToGet_8012319c != 0xff) {
          s32 bx, bz;
-         bx = EVT.targetX = *s_pTargetCoordsToGet_8012319c++;
-         bz = EVT.targetZ = *s_pTargetCoordsToGet_8012319c++;
+         bx = evt->x3.s.hi = *s_pTargetCoordsToGet_8012319c++;
+         bz = evt->z3.s.hi = *s_pTargetCoordsToGet_8012319c++;
 
          evt_s1 = GetUnitSpriteAtPosition(bz, bx);
          evt_a2 = Evt_GetUnused();
@@ -1159,14 +1153,14 @@ void Evtf028_UnitCasting(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          if (EVT.timer == 4 && s_targetCount_801231b0 != 0) {
-            // Play CDA for hit sound
+            // Play XA for hit sound
             PerformAudioCommand(gSpellSounds2[gCurrentSpell]);
          }
          if (--EVT.timer != 0) {
             return;
          }
-         s_casterUnit_801231a4 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
-         s_targetUnit_801231a8 = &gUnits[gMapUnitsPtr[EVT.targetZ][EVT.targetX].s.unitIdx];
+         s_casterUnit_801231a4 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+         s_targetUnit_801231a8 = &gUnits[OBJ_TARGET_MAP_UNIT(evt).s.unitIdx];
 
          switch (gSpellsEx[gCurrentSpell][SPELL_EX_EFFECT]) {
          case SPELL_EFFECT_DAMAGE:
@@ -1196,21 +1190,21 @@ void Evtf028_UnitCasting(EvtData *evt) {
                result = ATK_RES_HIT;
             }
             evt_s1 = Evt_GetUnused();
-            HI(evt_s1->d.sprite.x1) = EVT.targetX;
-            HI(evt_s1->d.sprite.z1) = EVT.targetZ;
+            evt_s1->x1.s.hi = evt->x3.s.hi;
+            evt_s1->z1.s.hi = evt->z3.s.hi;
             gSignal4 = 1;
 
             switch (result) {
             case ATK_RES_HIT:
-               gTileStateGridPtr[EVT.targetZ][EVT.targetX].action = TA_MAG_HIT;
+               OBJ_TARGET_TILE_STATE(evt).action = TA_MAG_HIT;
                evt_s1->functionIndex = gSpellsEx[gCurrentSpell][SPELL_EX_EVTF_TARGET];
                break;
             case ATK_RES_DEFEATED:
                if (!HasDefeatSpeech(s_targetUnit_801231a8)) {
                   evt_s1->functionIndex = gSpellsEx[gCurrentSpell][SPELL_EX_EVTF_DEFEAT];
-                  gTileStateGridPtr[EVT.targetZ][EVT.targetX].action = TA_MAG_DEFEAT;
+                  OBJ_TARGET_TILE_STATE(evt).action = TA_MAG_DEFEAT;
                } else {
-                  gTileStateGridPtr[EVT.targetZ][EVT.targetX].action = TA_MAG_DEFEAT_MSG;
+                  OBJ_TARGET_TILE_STATE(evt).action = TA_MAG_DEFEAT_MSG;
                   evt_s1->functionIndex = gSpellsEx[gCurrentSpell][SPELL_EX_EVTF_TARGET];
                   gSignal4 = 0;
                }
@@ -1225,8 +1219,8 @@ void Evtf028_UnitCasting(EvtData *evt) {
                s_targetUnit_801231a8->mp = s_targetUnit_801231a8->maxMp;
             }
             evt_s1 = Evt_GetUnused();
-            HI(evt_s1->d.sprite.x1) = EVT.targetX;
-            HI(evt_s1->d.sprite.z1) = EVT.targetZ;
+            evt_s1->x1.s.hi = evt->x3.s.hi;
+            evt_s1->z1.s.hi = evt->z3.s.hi;
             evt_s1->functionIndex = gSpellsEx[gCurrentSpell][SPELL_EX_EVTF_TARGET];
 
             value1 = s_targetUnit_801231a8->hpFrac / 100;
@@ -1277,8 +1271,8 @@ void Evtf028_UnitCasting(EvtData *evt) {
             }
             //@3a58
             evt_s1 = Evt_GetUnused();
-            HI(evt_s1->d.sprite.x1) = EVT.targetX;
-            HI(evt_s1->d.sprite.z1) = EVT.targetZ;
+            evt_s1->x1.s.hi = evt->x3.s.hi;
+            evt_s1->z1.s.hi = evt->z3.s.hi;
             evt_s1->functionIndex = gSpellsEx[gCurrentSpell][ix];
 
             gSignal4 = 1;
@@ -1346,8 +1340,8 @@ void Evtf028_UnitCasting(EvtData *evt) {
 
          if (gSpellsEx[gCurrentSpell][SPELL_EX_EFFECT] >= SPELL_EFFECT_SUPPORT_OFS) {
             evt_s1 = Evt_GetUnused();
-            HI(evt_s1->d.sprite.x1) = EVT.targetX;
-            HI(evt_s1->d.sprite.z1) = EVT.targetZ;
+            evt_s1->x1.s.hi = evt->x3.s.hi;
+            evt_s1->z1.s.hi = evt->z3.s.hi;
             evt_s1->functionIndex = gSpellsEx[gCurrentSpell][SPELL_EX_EVTF_TARGET];
             gSignal4 = 1;
          }
@@ -1365,7 +1359,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
       case 2:
          if (--EVT.timer == 0) {
             if (gSpellSounds2[gCurrentSpell] != 0) {
-               // Prepare CDA for hit sound
+               // Prepare XA for hit sound
                PerformAudioCommand(gSpellSounds2[gCurrentSpell] + 0x1000);
             }
             s_targetCount_801231b0++;
@@ -1394,7 +1388,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
          }
          EVT.timer = 1;
          s_gainedLevel_801231ac = 0;
-         s_casterUnit_801231a4 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+         s_casterUnit_801231a4 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
 
          if (s_casterUnit_801231a4->team == TEAM_PLAYER) {
             u32 prevExp;
@@ -1411,7 +1405,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
                CalculateUnitStats(s_casterUnit_801231a4);
                s_gainedLevel_801231ac++;
                PopulateUnitSpellList(s_casterUnit_801231a4);
-               StartUnitSpritesDecoder(s_casterUnit_801231a4->evtSprite->d.sprite.stripIdx);
+               StartUnitSpritesDecoder(s_casterUnit_801231a4->sprite->d.sprite.stripIdx);
             }
             SyncGainedHp(s_casterUnit_801231a4, 1);
             prevExp = s_casterUnit_801231a4->exp - prevExp;
@@ -1432,8 +1426,8 @@ void Evtf028_UnitCasting(EvtData *evt) {
             }
             evt_a2 = Evt_GetUnused();
             evt_a2->functionIndex = EVTF_LEVEL_UP;
-            s_casterUnit_801231a4 = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
-            evt_a2->d.evtf571.sprite = s_casterUnit_801231a4->evtSprite;
+            s_casterUnit_801231a4 = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+            evt_a2->d.evtf571.sprite = s_casterUnit_801231a4->sprite;
             evt->state2++;
          }
          return;
@@ -1486,12 +1480,11 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
       ct = 0;
 
       for (i = 1; i < UNIT_CT; i++, s_unit_801231c0++) {
-         evt_s1 = s_unit_801231c0->evtSprite;
+         evt_s1 = s_unit_801231c0->sprite;
          if (s_unit_801231c0->idx != 0 && s_unit_801231c0->team == EVT.team &&
-             gTerrainPtr[HI(evt_s1->d.sprite.z1)][HI(evt_s1->d.sprite.x1)].s.terrain ==
-                 TERRAIN_BOUNDARY) {
-            *s_pTargetCoordsToSet_801231bc++ = HI(evt_s1->d.sprite.z1);
-            *s_pTargetCoordsToSet_801231bc++ = HI(evt_s1->d.sprite.x1);
+             gTerrainPtr[evt_s1->z1.s.hi][evt_s1->x1.s.hi].s.terrain == TERRAIN_BOUNDARY) {
+            *s_pTargetCoordsToSet_801231bc++ = evt_s1->z1.s.hi;
+            *s_pTargetCoordsToSet_801231bc++ = evt_s1->x1.s.hi;
             ct++;
          }
       }
@@ -1520,7 +1513,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          if (EVT.targets == 0) {
             evt_v1 = Evt_GetUnused();
             evt_v1->functionIndex = EVTF_CAMERA_TBD_017;
-            evt_v1->d.bytes[0x18] = 0;
+            evt_v1->d.bytes[4] = 0;
             evt_v1->d.evtf017.sprite = evt_s1;
          } else {
             evt_v1 = Evt_GetUnused();
@@ -1574,9 +1567,8 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
 
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_SPELL_FX2_HEALING;
-         // TODO replace
-         HI(evt_v1->d.sprite.x1) = gTargetX;
-         HI(evt_v1->d.sprite.z1) = gTargetZ;
+         evt_v1->x1.s.hi = gTargetX;
+         evt_v1->z1.s.hi = gTargetZ;
 
          gSignal3 = 0;
          evt->state2++;
@@ -1607,13 +1599,13 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
 
       ct = 0;
       for (i = 1; i < UNIT_CT; i++, s_unit_801231c0++) {
-         evt_s1 = s_unit_801231c0->evtSprite;
+         evt_s1 = s_unit_801231c0->sprite;
          if (s_unit_801231c0->idx != 0 && s_unit_801231c0->team == EVT.team &&
              s_unit_801231c0->paralyzed) {
             if ((rand() & 0x7fff) < (s_unit_801231c0->paralyzed - 1) * 0x1999) {
                s_unit_801231c0->paralyzed = 0;
-               *s_pTargetCoordsToSet_801231bc++ = HI(evt_s1->d.sprite.z1);
-               *s_pTargetCoordsToSet_801231bc++ = HI(evt_s1->d.sprite.x1);
+               *s_pTargetCoordsToSet_801231bc++ = evt_s1->z1.s.hi;
+               *s_pTargetCoordsToSet_801231bc++ = evt_s1->x1.s.hi;
                ct++;
             } else {
                // Increase odds for next time
@@ -1643,7 +1635,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          if (EVT.targets == 0) {
             evt_v1 = Evt_GetUnused();
             evt_v1->functionIndex = EVTF_CAMERA_TBD_017;
-            evt_v1->d.bytes[0x18] = 0;
+            evt_v1->d.bytes[4] = 0;
             evt_v1->d.evtf017.sprite = evt_s1;
          } else {
             evt_v1 = Evt_GetUnused();
@@ -1682,9 +1674,8 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          evt_s1 = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_REMOVE_PARALYSIS;
-         // TODO replace
-         evt_v1->d.sprite.x1 = evt_s1->d.sprite.x1;
-         evt_v1->d.sprite.z1 = evt_s1->d.sprite.z1;
+         evt_v1->x1.n = evt_s1->x1.n;
+         evt_v1->z1.n = evt_s1->z1.n;
          evt_v1->state2 = 50;
          EVT.timer = 60;
          evt->state2++;
@@ -1715,10 +1706,10 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
       ct = 0;
       for (i = 1; i < UNIT_CT; i++, s_unit_801231c0++) {
          if (s_unit_801231c0->idx != 0 && s_unit_801231c0->team == EVT.team) {
-            evt_s1 = s_unit_801231c0->evtSprite;
+            evt_s1 = s_unit_801231c0->sprite;
             if (s_unit_801231c0->poisoned) {
-               *s_pTargetCoordsToSet_801231bc++ = HI(evt_s1->d.sprite.z1);
-               *s_pTargetCoordsToSet_801231bc++ = HI(evt_s1->d.sprite.x1);
+               *s_pTargetCoordsToSet_801231bc++ = evt_s1->z1.s.hi;
+               *s_pTargetCoordsToSet_801231bc++ = evt_s1->x1.s.hi;
                ct++;
             }
          }
@@ -1743,7 +1734,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          if (EVT.targets == 0) {
             evt_v1 = Evt_GetUnused();
             evt_v1->functionIndex = EVTF_CAMERA_TBD_017;
-            evt_v1->d.bytes[0x18] = 0;
+            evt_v1->d.bytes[4] = 0;
             evt_v1->d.evtf017.sprite = evt_s1;
          } else {
             evt_v1 = Evt_GetUnused();
@@ -1801,9 +1792,8 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          }
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_DISPLAY_DAMAGE;
-         // TODO replace
-         HI(evt_v1->d.sprite.x1) = gTargetX;
-         HI(evt_v1->d.sprite.z1) = gTargetZ;
+         evt_v1->x1.s.hi = gTargetX;
+         evt_v1->z1.s.hi = gTargetZ;
 
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_BOUNCE_ZOOM;
@@ -1898,7 +1888,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
       if (EVT.targets == 0) {
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_CAMERA_TBD_017;
-         evt_v1->d.bytes[0x18] = 0;
+         evt_v1->d.bytes[4] = 0;
          evt_v1->d.evtf017.sprite = evt_s1;
       } else {
          evt_v1 = Evt_GetUnused();
@@ -1924,8 +1914,8 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_STRETCH_WARP_SPRITE;
          evt_v1->mem = 1;
-         HI(evt_v1->d.evtf062.z) = gTargetZ;
-         HI(evt_v1->d.evtf062.x) = gTargetX;
+         evt_v1->z1.s.hi = gTargetZ;
+         evt_v1->x1.s.hi = gTargetX;
          EVT.timer = 20;
       }
       evt->state++;
@@ -1939,10 +1929,9 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          }
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_CLOUD;
-         // TODO replace
-         evt_v1->d.sprite.x1 = evt_s1->d.sprite.x1;
-         evt_v1->d.sprite.z1 = evt_s1->d.sprite.z1;
-         evt_v1->d.sprite.y1 = evt_s1->d.sprite.y1;
+         evt_v1->x1.n = evt_s1->x1.n;
+         evt_v1->z1.n = evt_s1->z1.n;
+         evt_v1->y1.n = evt_s1->y1.n;
       }
       if (--EVT.timer != 0) {
          return;

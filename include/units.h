@@ -2,7 +2,6 @@
 #define UNITS_H
 
 #include "common.h"
-//#include "evt.h"
 
 typedef enum SpellIdx {
    SPELL_NULL = 0,
@@ -407,8 +406,8 @@ typedef struct UnitStatus {
    s8 level;
    s8 team;
    u8 field3_0x3;
-   struct EvtData *evtBattler;
-   struct EvtData *evtSprite;
+   struct EvtData *battler;
+   struct EvtData *sprite;
    BigInt experience;
    u8 field7_0x1c;
    u8 field8_0x1d;

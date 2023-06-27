@@ -1,6 +1,9 @@
 #include "common.h"
 #include "evt.h"
 #include "graphics.h"
+#include "state.h"
+
+// TBD: When to use ANGLE_360_DEGREES vs ONE; tough to make good guesses without knowing the math
 
 #undef EVTF
 #define EVTF 119
@@ -113,9 +116,9 @@ void Evtf119_Fx_TBD(EvtData *evt) {
 
    case 2:
       sprite = EVT.sprite;
-      sprite->d.sprite.x1 = EVT.x + (EVT.radius * rcos(EVT.theta) >> 12);
-      sprite->d.sprite.z1 = EVT.z + (EVT.radius * rsin(EVT.theta) >> 12);
-      sprite->d.sprite.y1 = EVT.y + EVT.h;
+      sprite->x1.n = evt->x1.n + (EVT.radius * rcos(EVT.theta) >> 12);
+      sprite->z1.n = evt->z1.n + (EVT.radius * rsin(EVT.theta) >> 12);
+      sprite->y1.n = evt->y1.n + EVT.h;
       UpdateEvtAnimation(sprite);
       if (sprite->d.sprite.animFinished) {
          if (!EVT.once) {
@@ -143,7 +146,7 @@ void Evtf062_StretchWarpSprite(EvtData *evt) {
    case 0:
       if (EVT.sprite == NULL) {
          // If original sprite was not provided, retrieve by location
-         EVT.sprite = unitSprite = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
+         EVT.sprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       } else {
          unitSprite = EVT.sprite;
       }
@@ -215,7 +218,7 @@ void Evtf074_FadeInSprite(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      EVT.sprite = unitSprite = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
+      EVT.sprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       unitSprite->d.sprite.hidden = 1;
       if (EVT.speed == 0) {
          EVT.speed = 4;
@@ -228,9 +231,9 @@ void Evtf074_FadeInSprite(EvtData *evt) {
       fxSprite1 = Evt_GetUnused();
       CopyEvtData(unitSprite, fxSprite1);
       fxSprite1->d.sprite.hidden = 0;
-      fxSprite1->d.sprite.x1 = unitSprite->d.sprite.x1;
-      fxSprite1->d.sprite.z1 = unitSprite->d.sprite.z1;
-      fxSprite1->d.sprite.y1 = unitSprite->d.sprite.y1;
+      fxSprite1->x1.n = unitSprite->x1.n;
+      fxSprite1->z1.n = unitSprite->z1.n;
+      fxSprite1->y1.n = unitSprite->y1.n;
       fxSprite1->d.sprite.semiTrans = 2;
 
       fxSprite2 = Evt_GetUnused();
@@ -265,7 +268,7 @@ void Evtf075_FadeOutSprite(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      EVT.sprite = unitSprite = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
+      EVT.sprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       unitSprite->d.sprite.hidden = 1;
       EVT.fade = 0x80;
       if (EVT.speed == 0) {
@@ -279,9 +282,9 @@ void Evtf075_FadeOutSprite(EvtData *evt) {
       fxSprite1 = Evt_GetUnused();
       CopyEvtData(unitSprite, fxSprite1);
       fxSprite1->d.sprite.hidden = 0;
-      fxSprite1->d.sprite.x1 = unitSprite->d.sprite.x1;
-      fxSprite1->d.sprite.z1 = unitSprite->d.sprite.z1;
-      fxSprite1->d.sprite.y1 = unitSprite->d.sprite.y1;
+      fxSprite1->x1.n = unitSprite->x1.n;
+      fxSprite1->z1.n = unitSprite->z1.n;
+      fxSprite1->y1.n = unitSprite->y1.n;
       fxSprite1->d.sprite.semiTrans = 2;
 
       fxSprite2 = Evt_GetUnused();
@@ -443,31 +446,31 @@ void Evtf076_Circles_TBD(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      unitSprite = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
-      EVT.x = unitSprite->d.sprite.x1;
-      EVT.z = unitSprite->d.sprite.z1;
-      EVT.y = unitSprite->d.sprite.y1 + 0xc0;
+      unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      evt->x1.n = unitSprite->x1.n;
+      evt->z1.n = unitSprite->z1.n;
+      evt->y1.n = unitSprite->y1.n + 0xc0;
 
       switch (unitSprite->d.sprite.direction) {
       case ANGLE_WEST:
          EVT.todo_x50 = -1;
          EVT.todo_x4e = 1;
-         EVT.x += 0x90;
+         evt->x1.n += 0x90;
          break;
       case ANGLE_EAST:
          EVT.todo_x50 = 1;
          EVT.todo_x4e = 1;
-         EVT.x -= 0x90;
+         evt->x1.n -= 0x90;
          break;
       case ANGLE_SOUTH:
          EVT.todo_x50 = -1;
          EVT.todo_x4e = 0;
-         EVT.z += 0x90;
+         evt->z1.n += 0x90;
          break;
       case ANGLE_NORTH:
          EVT.todo_x50 = 1;
          EVT.todo_x4e = 0;
-         EVT.z -= 0x90;
+         evt->z1.n -= 0x90;
          break;
       }
 
@@ -477,9 +480,9 @@ void Evtf076_Circles_TBD(EvtData *evt) {
    case 1:
       circle = Evt_GetUnused();
       circle->functionIndex = EVTF_CIRCLE;
-      circle->d.evtf077.x = EVT.x;
-      circle->d.evtf077.z = EVT.z;
-      circle->d.evtf077.y = EVT.y;
+      circle->x1.n = evt->x1.n;
+      circle->z1.n = evt->z1.n;
+      circle->y1.n = evt->y1.n;
       circle->d.evtf077.todo_x4e = EVT.todo_x4e;
       circle->d.evtf077.todo_x50 = EVT.todo_x50;
       if (++EVT.timer == 3) {
@@ -516,8 +519,8 @@ void Evtf077_Circle_TBD(EvtData *evt) {
       ringSprite->functionIndex = EVTF_NOOP;
       ringSprite->d.sprite.gfxIdx = GFX_RING;
 
-      a = rsin(EVT.angle) * 0xe0 / ANGLE_360_DEGREES;
-      b = rsin(EVT.angle * 2) * 0xe0 / ANGLE_360_DEGREES;
+      a = rsin(EVT.angle) * 0xe0 / ONE;
+      b = rsin(EVT.angle * 2) * 0xe0 / ONE;
       EVT.angle += 0x80;
 
       fade = EVT.fade;
@@ -525,14 +528,14 @@ void Evtf077_Circle_TBD(EvtData *evt) {
          fade = 0;
       }
 
-      ringSprite->d.sprite.coords[0].x = EVT.x;
-      ringSprite->d.sprite.coords[1].x = EVT.x;
-      ringSprite->d.sprite.coords[2].x = EVT.x;
-      ringSprite->d.sprite.coords[3].x = EVT.x;
-      ringSprite->d.sprite.coords[0].z = EVT.z;
-      ringSprite->d.sprite.coords[1].z = EVT.z;
-      ringSprite->d.sprite.coords[2].z = EVT.z;
-      ringSprite->d.sprite.coords[3].z = EVT.z;
+      ringSprite->d.sprite.coords[0].x = evt->x1.n;
+      ringSprite->d.sprite.coords[1].x = evt->x1.n;
+      ringSprite->d.sprite.coords[2].x = evt->x1.n;
+      ringSprite->d.sprite.coords[3].x = evt->x1.n;
+      ringSprite->d.sprite.coords[0].z = evt->z1.n;
+      ringSprite->d.sprite.coords[1].z = evt->z1.n;
+      ringSprite->d.sprite.coords[2].z = evt->z1.n;
+      ringSprite->d.sprite.coords[3].z = evt->z1.n;
 
       if (EVT.todo_x4e == 0) {
          ringSprite->d.sprite.coords[0].x -= b;
@@ -556,9 +559,9 @@ void Evtf077_Circle_TBD(EvtData *evt) {
          ringSprite->d.sprite.coords[3].x = ringSprite->d.sprite.coords[0].x;
       }
 
-      ringSprite->d.sprite.coords[0].y = EVT.y - b;
+      ringSprite->d.sprite.coords[0].y = evt->y1.n - b;
       ringSprite->d.sprite.coords[1].y = ringSprite->d.sprite.coords[0].y;
-      ringSprite->d.sprite.coords[2].y = EVT.y + b;
+      ringSprite->d.sprite.coords[2].y = evt->y1.n + b;
       ringSprite->d.sprite.coords[3].y = ringSprite->d.sprite.coords[2].y;
 
       ringSprite->d.sprite.clut = 4;
@@ -593,9 +596,8 @@ void Evtf078_SpellFx2_Damage(EvtData *evt) {
       newEvt->functionIndex = EVTF_BOUNCE_ZOOM;
       newEvt = Evt_GetUnused();
       newEvt->functionIndex = EVTF_DISPLAY_DAMAGE_2;
-      // TODO replace
-      HI(newEvt->d.sprite.x1) = HI(EVT.x);
-      HI(newEvt->d.sprite.z1) = HI(EVT.z);
+      newEvt->x1.s.hi = evt->x1.s.hi;
+      newEvt->z1.s.hi = evt->z1.s.hi;
       EVT.timer = 30;
       evt->state++;
 
@@ -620,13 +622,12 @@ void Evtf079_SpellFx3_Slay(EvtData *evt) {
       newEvt->functionIndex = EVTF_BOUNCE_ZOOM;
       newEvt = Evt_GetUnused();
       newEvt->functionIndex = EVTF_STRETCH_WARP_SPRITE;
-      HI(newEvt->d.evtf062.x) = HI(EVT.x);
-      HI(newEvt->d.evtf062.z) = HI(EVT.z);
+      newEvt->x1.s.hi = evt->x1.s.hi;
+      newEvt->z1.s.hi = evt->z1.s.hi;
       newEvt = Evt_GetUnused();
       newEvt->functionIndex = EVTF_DISPLAY_DAMAGE_2;
-      // TODO replace
-      HI(newEvt->d.sprite.x1) = HI(EVT.x);
-      HI(newEvt->d.sprite.z1) = HI(EVT.z);
+      newEvt->x1.s.hi = evt->x1.s.hi;
+      newEvt->z1.s.hi = evt->z1.s.hi;
       EVT.timer = 30;
       evt->state++;
 
@@ -649,7 +650,7 @@ void Evtf_Unk_8006183c(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
+      EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       unitSprite->d.sprite.hidden = 1;
       if (EVT.clut == 0) {
          EVT.clut = 4;
@@ -665,29 +666,29 @@ void Evtf_Unk_8006183c(EvtData *evt) {
       fxSprite = Evt_GetUnused();
       CopyEvtData(unitSprite, fxSprite);
       fxSprite->d.sprite.hidden = 0;
-      fxSprite->d.sprite.x1 = unitSprite->d.sprite.x1;
-      fxSprite->d.sprite.z1 = unitSprite->d.sprite.z1;
-      fxSprite->d.sprite.y1 = unitSprite->d.sprite.y1;
+      fxSprite->x1.n = unitSprite->x1.n;
+      fxSprite->z1.n = unitSprite->z1.n;
+      fxSprite->y1.n = unitSprite->y1.n;
       fxSprite->d.sprite.semiTrans = 0;
       fxSprite->d.sprite.clut = 0;
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite, 0);
 
       switch ((gCameraRotation.vy & 0xfff) >> 10) {
       case CAM_DIR_SOUTH:
-         fxSprite->d.sprite.z1 += 16;
-         fxSprite->d.sprite.x1 -= 16;
+         fxSprite->z1.n += 16;
+         fxSprite->x1.n -= 16;
          break;
       case CAM_DIR_EAST:
-         fxSprite->d.sprite.x1 -= 16;
-         fxSprite->d.sprite.z1 -= 16;
+         fxSprite->x1.n -= 16;
+         fxSprite->z1.n -= 16;
          break;
       case CAM_DIR_NORTH:
-         fxSprite->d.sprite.z1 -= 16;
-         fxSprite->d.sprite.x1 += 16;
+         fxSprite->z1.n -= 16;
+         fxSprite->x1.n += 16;
          break;
       case CAM_DIR_WEST:
-         fxSprite->d.sprite.z1 += 16;
-         fxSprite->d.sprite.x1 += 16;
+         fxSprite->z1.n += 16;
+         fxSprite->x1.n += 16;
          break;
       }
 
@@ -707,7 +708,7 @@ void Evtf_Unk_8006183c(EvtData *evt) {
          gQuad_800fe53c[i].vy /= 100;
       }
 
-      fxSprite->d.sprite.y1 -= (abs(gQuad_800fe53c[0].vy) - abs(quad[0].vy));
+      fxSprite->y1.n -= (abs(gQuad_800fe53c[0].vy) - abs(quad[0].vy));
       fxSprite->d.sprite.semiTrans = 1;
       fxSprite->d.sprite.clut = EVT.clut;
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite, 0);
@@ -781,21 +782,19 @@ void Evtf802_Fx_TBD(EvtData *evt) {
       sprite = EVT.sprite;
       a = EVT.theta;
 
-      gQuad_800fe63c[0].vy =
-          -6 - ((EVT.todo_x28 - 6) * abs(rsin(EVT.todo_x34)) / ANGLE_360_DEGREES);
+      gQuad_800fe63c[0].vy = -6 - ((EVT.todo_x28 - 6) * abs(rsin(EVT.todo_x34)) / ONE);
       gQuad_800fe63c[1].vy = gQuad_800fe63c[0].vy;
 
-      gQuad_800fe63c[0].vx =
-          -3 - ((EVT.todo_x28 / 2 - 3) * abs(rsin(EVT.todo_x34)) / ANGLE_360_DEGREES);
+      gQuad_800fe63c[0].vx = -3 - ((EVT.todo_x28 / 2 - 3) * abs(rsin(EVT.todo_x34)) / ONE);
       gQuad_800fe63c[2].vx = gQuad_800fe63c[0].vx;
       gQuad_800fe63c[1].vx = -gQuad_800fe63c[0].vx;
       gQuad_800fe63c[3].vx = -gQuad_800fe63c[0].vx;
 
       EVT.todo_x34 += EVT.todo_x2a;
 
-      sprite->d.sprite.x1 = EVT.x + (EVT.radius * rcos(a) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 = EVT.z + (EVT.radius * rsin(a) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + EVT.h;
+      sprite->x1.n = evt->x1.n + (EVT.radius * rcos(a) / ONE);
+      sprite->z1.n = evt->z1.n + (EVT.radius * rsin(a) / ONE);
+      sprite->y1.n = evt->y1.n + EVT.h;
 
       UpdateEvtAnimation(sprite);
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
@@ -868,9 +867,9 @@ void Evtf803_Fx_TBD(EvtData *evt) {
 
       EVT.todo_x34 += EVT.todo_x2a;
 
-      sprite->d.sprite.x1 = EVT.x + (EVT.radius * rcos(EVT.theta) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 = EVT.z + (EVT.radius * rsin(EVT.theta) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + EVT.h;
+      sprite->x1.n = evt->x1.n + (EVT.radius * rcos(EVT.theta) / ONE);
+      sprite->z1.n = evt->z1.n + (EVT.radius * rsin(EVT.theta) / ONE);
+      sprite->y1.n = evt->y1.n + EVT.h;
 
       UpdateEvtAnimation(sprite);
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
@@ -934,9 +933,9 @@ void Evtf801_Fx_TBD(EvtData *evt) {
 
       EVT.todo_x34 += EVT.todo_x2a;
 
-      sprite->d.sprite.x1 = EVT.x + (EVT.radius * rcos(EVT.theta) >> 12);
-      sprite->d.sprite.z1 = EVT.z + (EVT.radius * rsin(EVT.theta) >> 12);
-      sprite->d.sprite.y1 = EVT.y + EVT.h;
+      sprite->x1.n = evt->x1.n + (EVT.radius * rcos(EVT.theta) >> 12);
+      sprite->z1.n = evt->z1.n + (EVT.radius * rsin(EVT.theta) >> 12);
+      sprite->y1.n = evt->y1.n + EVT.h;
 
       UpdateEvtAnimation(sprite);
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
@@ -1064,7 +1063,7 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
          break;
       }
 
-      EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
+      EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       unitSprite->d.sprite.hidden = 1;
       EVT.fade = 0x80;
       EVT.increasing = 0;
@@ -1074,9 +1073,9 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
 
       fxEvt1 = Evt_GetUnused();
       fxEvt1->functionIndex = fxInfo[i].evtf;
-      fxEvt1->d.evtf133.x = unitSprite->d.sprite.x1;
-      fxEvt1->d.evtf133.z = unitSprite->d.sprite.z1;
-      fxEvt1->d.evtf133.y = unitSprite->d.sprite.y1 + 0xd0;
+      fxEvt1->x1.n = unitSprite->x1.n;
+      fxEvt1->z1.n = unitSprite->z1.n;
+      fxEvt1->y1.n = unitSprite->y1.n + 0xd0;
       fxEvt1->mem = 30;
       fxEvt1->d.evtf133.radius = fxInfo[i].radius;
       fxEvt1->d.evtf133.todo_x2a = fxInfo[i].to_x2a;
@@ -1127,9 +1126,8 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
       if (EVT.phase == 30) {
          dmgEvt = Evt_GetUnused();
          dmgEvt->functionIndex = EVTF_DISPLAY_DAMAGE_2;
-         // todo replace
-         HI(dmgEvt->d.sprite.x1) = HI(EVT.x);
-         HI(dmgEvt->d.sprite.z1) = HI(EVT.z);
+         dmgEvt->x1.s.hi = evt->x1.s.hi;
+         dmgEvt->z1.s.hi = evt->z1.s.hi;
 
          if (evt->functionIndex == EVTF_FX_TBD_132 || evt->functionIndex == EVTF_FX_TBD_136 ||
              evt->functionIndex == EVTF_FX_TBD_140 || evt->functionIndex == EVTF_FX_TBD_799) {
@@ -1257,7 +1255,7 @@ void Evtf149_Fx_TBD(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
+      EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       EVT.fade = 0x80;
       EVT.increasing = 0;
       unitSprite->d.sprite.hidden = 1;
@@ -1283,7 +1281,7 @@ void Evtf149_Fx_TBD(EvtData *evt) {
 
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite1, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      setRGB0(poly, -0x80 - EVT.fade, -0x80 - EVT.fade, -0x80 - EVT.fade);
+      setRGB0(poly, 0x80 - EVT.fade, 0x80 - EVT.fade, 0x80 - EVT.fade);
 
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite2, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
@@ -1402,76 +1400,60 @@ void Evtf215_Cloud(EvtData *evt) {
       sprite = EVT.sprite;
       UpdateEvtAnimation(sprite);
 
-      sprite->d.sprite.x1 =
-          EVT.x + EVT.position1.x +
-          (EVT.position1.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 =
-          EVT.z + EVT.position1.z +
-          (EVT.position1.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + (EVT.position1.y * rsin(EVT.theta)) / ANGLE_360_DEGREES;
+      sprite->x1.n = evt->x1.n + EVT.position1.x +
+                     (EVT.position1.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->z1.n = evt->z1.n + EVT.position1.z +
+                     (EVT.position1.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.position1.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->d.sprite.x1 =
-          EVT.x + EVT.position2.x +
-          (EVT.position2.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 =
-          EVT.z + EVT.position2.z +
-          (EVT.position2.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + (EVT.position2.y * rsin(EVT.theta)) / ANGLE_360_DEGREES;
+      sprite->x1.n = evt->x1.n + EVT.position2.x +
+                     (EVT.position2.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->z1.n = evt->z1.n + EVT.position2.z +
+                     (EVT.position2.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.position2.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->d.sprite.x1 =
-          EVT.x + EVT.position3.x +
-          (EVT.position3.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 =
-          EVT.z + EVT.position3.z +
-          (EVT.position3.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + (EVT.position3.y * rsin(EVT.theta)) / ANGLE_360_DEGREES;
+      sprite->x1.n = evt->x1.n + EVT.position3.x +
+                     (EVT.position3.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->z1.n = evt->z1.n + EVT.position3.z +
+                     (EVT.position3.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.position3.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->d.sprite.x1 =
-          EVT.x + EVT.position4.x +
-          (EVT.position4.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 =
-          EVT.z + EVT.position4.z +
-          (EVT.position4.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + (EVT.position4.y * rsin(EVT.theta)) / ANGLE_360_DEGREES;
+      sprite->x1.n = evt->x1.n + EVT.position4.x +
+                     (EVT.position4.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->z1.n = evt->z1.n + EVT.position4.z +
+                     (EVT.position4.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.position4.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->d.sprite.x1 =
-          EVT.x + EVT.position5.x +
-          (EVT.position5.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 =
-          EVT.z + EVT.position5.z +
-          (EVT.position5.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + (EVT.position5.y * rsin(EVT.theta)) / ANGLE_360_DEGREES;
+      sprite->x1.n = evt->x1.n + EVT.position5.x +
+                     (EVT.position5.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->z1.n = evt->z1.n + EVT.position5.z +
+                     (EVT.position5.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.position5.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->d.sprite.x1 =
-          EVT.x + EVT.position6.x +
-          (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 =
-          EVT.z + EVT.position6.z +
-          (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + (EVT.position6.y * rsin(EVT.theta)) / ANGLE_360_DEGREES;
+      sprite->x1.n = evt->x1.n + EVT.position6.x +
+                     (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->z1.n = evt->z1.n + EVT.position6.z +
+                     (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.position6.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->d.sprite.x1 =
-          EVT.x + EVT.position7_x +
-          (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 =
-          EVT.z + EVT.position7_z +
-          (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + (EVT.position7_y * rsin(EVT.theta)) / ANGLE_360_DEGREES;
+      sprite->x1.n = evt->x1.n + EVT.position7_x +
+                     (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->z1.n = evt->z1.n + EVT.position7_z +
+                     (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.position7_y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->d.sprite.x1 =
-          EVT.x + EVT.position8_x +
-          (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.z1 =
-          EVT.z + EVT.position8_z +
-          (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ANGLE_360_DEGREES);
-      sprite->d.sprite.y1 = EVT.y + (EVT.position8_y * rsin(EVT.theta)) / ANGLE_360_DEGREES;
+      sprite->x1.n = evt->x1.n + EVT.position8_x +
+                     (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->z1.n = evt->z1.n + EVT.position8_z +
+                     (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.position8_y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
       EVT.theta += (ANGLE_90_DEGREES / 10);
@@ -1498,9 +1480,9 @@ void Evtf213_DustCloudSpawner(EvtData *evt) {
       if (EVT.timer > 2) {
          particle = Evt_GetUnused();
          particle->functionIndex = EVTF_DUST_CLOUD;
-         particle->d.evtf214.x = EVT.x;
-         particle->d.evtf214.z = EVT.z;
-         particle->d.evtf214.y = EVT.y;
+         particle->x1.n = evt->x1.n;
+         particle->z1.n = evt->z1.n;
+         particle->y1.n = evt->y1.n;
       }
       if (--EVT.timer == -1) {
          evt->functionIndex = EVTF_NULL;
@@ -1560,15 +1542,13 @@ void Evtf214_DustCloud(EvtData *evt) {
          qx = pPosition->x >> 2;
          qz = pPosition->z >> 2;
 
-         sprite->d.sprite.x1 =
-             EVT.x + pPosition->x + qx +
-             (pPosition->x * (ANGLE_360_DEGREES - rcos(theta / 2)) / ANGLE_360_DEGREES);
+         sprite->x1.n = evt->x1.n + pPosition->x + qx +
+                        (pPosition->x * (ANGLE_360_DEGREES - rcos(theta / 2)) / ONE);
 
-         sprite->d.sprite.z1 =
-             EVT.z + pPosition->z + qz +
-             (pPosition->z * (ANGLE_360_DEGREES - rcos(theta / 2)) / ANGLE_360_DEGREES);
+         sprite->z1.n = evt->z1.n + pPosition->z + qz +
+                        (pPosition->z * (ANGLE_360_DEGREES - rcos(theta / 2)) / ONE);
 
-         sprite->d.sprite.y1 = EVT.y + (pPosition->y * rsin(theta) / ANGLE_360_DEGREES);
+         sprite->y1.n = evt->y1.n + (pPosition->y * rsin(theta) / ONE);
 
          AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
       }
@@ -1578,6 +1558,727 @@ void Evtf214_DustCloud(EvtData *evt) {
          evt->functionIndex = EVTF_NULL;
          sprite->functionIndex = EVTF_NULL;
       }
+      break;
+   }
+}
+
+#undef EVTF
+#define EVTF 130
+void Evtf130_Fx_TBD(EvtData *evt) {
+   EvtData *sprite, *unitSprite;
+   s32 i, j;
+   s16 a, b, c, d, e; // TBD
+
+   POLY_FT4 *poly;
+
+   switch (evt->state) {
+   case 0:
+      unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      evt->x1.n = unitSprite->x1.n;
+      evt->z1.n = unitSprite->z1.n;
+      evt->y1.n = unitSprite->y1.n;
+
+      switch (unitSprite->d.sprite.direction) {
+      case ANGLE_WEST:
+         EVT.todo_x50 = -1;
+         EVT.todo_x4e = 0;
+         break;
+      case ANGLE_EAST:
+         EVT.todo_x50 = 1;
+         EVT.todo_x4e = 0;
+         break;
+      case ANGLE_SOUTH:
+         EVT.todo_x50 = 0;
+         EVT.todo_x4e = -1;
+         break;
+      case ANGLE_NORTH:
+         EVT.todo_x50 = 0;
+         EVT.todo_x4e = 1;
+         break;
+      }
+
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      sprite = Evt_GetUnused();
+      sprite->functionIndex = EVTF_NOOP;
+      sprite->d.sprite.gfxIdx = GFX_COLOR_13;
+      sprite->d.sprite.clut = 4;
+      sprite->d.sprite.semiTrans = 1;
+
+      switch (EVT.todo_x50) {
+      case 0:
+         a = (EVT.todo_x4e == 1) ? ANGLE_180_DEGREES : 0;
+         break;
+      case 1:
+         a = (EVT.todo_x50 == 1) ? ANGLE_180_DEGREES : 0;
+         break;
+      default:
+         a = 0;
+         break;
+      }
+
+      for (i = EVT.todo_x24; i < EVT.todo_x26; i++) {
+         b = (rsin(i * 401) * 13) >> 8;
+         c = (rsin((i + 1) * 401) * 13) >> 8;
+         d = (rcos(a + i * 401) * 13) >> 8;
+         e = (rcos(a + (i + 1) * 401) * 13) >> 8;
+
+         for (j = 0; j < 16; j++) {
+
+            switch (EVT.todo_x50) {
+            case 0:
+               sprite->d.sprite.coords[0].x = evt->x1.n + (b * rcos(j * 128) >> 12);
+               sprite->d.sprite.coords[0].z = evt->z1.n + d;
+
+               sprite->d.sprite.coords[1].x = evt->x1.n + (b * rcos((j + 1) * 128) >> 12);
+               sprite->d.sprite.coords[1].z = evt->z1.n + d;
+
+               sprite->d.sprite.coords[2].x = evt->x1.n + (c * rcos(j * 128) >> 12);
+               sprite->d.sprite.coords[2].z = evt->z1.n + e;
+
+               sprite->d.sprite.coords[3].x = evt->x1.n + (c * rcos((j + 1) * 128) >> 12);
+               sprite->d.sprite.coords[3].z = evt->z1.n + e;
+               break;
+            case 1:
+               sprite->d.sprite.coords[0].z = evt->z1.n + (b * rcos(j * 128) >> 12);
+               sprite->d.sprite.coords[0].x = evt->x1.n + d;
+
+               sprite->d.sprite.coords[1].z = evt->z1.n + (b * rcos((j + 1) * 128) >> 12);
+               sprite->d.sprite.coords[1].x = evt->x1.n + d;
+
+               sprite->d.sprite.coords[2].z = evt->z1.n + (c * rcos(j * 128) >> 12);
+               sprite->d.sprite.coords[2].x = evt->x1.n + e;
+
+               sprite->d.sprite.coords[3].z = evt->z1.n + (c * rcos((j + 1) * 128) >> 12);
+               sprite->d.sprite.coords[3].x = evt->x1.n + e;
+               break;
+            }
+
+            sprite->d.sprite.coords[0].y = evt->y1.n + (b * rsin(j * 128) >> 12);
+            sprite->d.sprite.coords[1].y = evt->y1.n + (b * rsin((j + 1) * 128) >> 12);
+
+            sprite->d.sprite.coords[2].y = evt->y1.n + (c * rsin(j * 128) >> 12);
+            sprite->d.sprite.coords[3].y = evt->y1.n + (c * rsin((j + 1) * 128) >> 12);
+
+            AddEvtPrim4(gGraphicsPtr->ot, sprite);
+            poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+            setRGB0(poly, 0xff, 0xff, 0xff);
+         }
+      }
+
+      sprite->functionIndex = EVTF_NULL;
+
+      switch (evt->state2) {
+      case 0:
+         EVT.todo_x26++;
+         if (EVT.todo_x26 == 6) {
+            evt->state2++;
+            EVT.todo_x26 = 5;
+         }
+         break;
+      case 1:
+         EVT.todo_x24++;
+         if (EVT.todo_x24 == 5) {
+            evt->functionIndex = EVTF_NULL;
+            gSignal3 = 1;
+         }
+         break;
+      }
+
+      break;
+   }
+}
+
+#undef EVTF
+#define EVTF 131
+void Evtf131_SlayUnit(EvtData *evt) {
+   EvtData *warpFx;
+   s16 initSpeed;
+
+   switch (evt->state) {
+   case 0:
+      warpFx = Evt_GetUnused();
+      warpFx->functionIndex = EVTF_STRETCH_WARP_SPRITE;
+      warpFx->x1.s.hi = evt->x1.s.hi;
+      warpFx->z1.s.hi = evt->z1.s.hi;
+      warpFx->d.evtf062.speed = EVT.speed;
+      if (EVT.unitSprite != NULL) {
+         warpFx->d.evtf062.sprite = EVT.unitSprite;
+      }
+
+      if (EVT.speed == 0) {
+         initSpeed = 0xc0;
+      } else {
+         initSpeed = EVT.speed;
+      }
+      EVT.speed = (0xc00 / initSpeed);
+
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      if (--EVT.speed == -1) {
+         evt->functionIndex = EVTF_NULL;
+         gSignal3 = 1;
+      }
+
+      break;
+   }
+}
+
+#undef EVTF
+#define EVTF 201
+void Evtf201_UnitStruck(EvtData *evt) {
+   static s16 impactAnimData[18] = {3, GFX_IMPACT_1, 2, GFX_IMPACT_2, 2, GFX_IMPACT_3,
+                                    2, GFX_IMPACT_4, 2, GFX_IMPACT_5, 2, GFX_IMPACT_6,
+                                    2, GFX_IMPACT_7, 2, GFX_NULL,     0, GFX_NULL};
+
+   EvtData *evt_s0;
+   EvtData *evt_s2;
+   EvtData *evt_s3;
+   POLY_FT4 *poly;
+
+   switch (evt->state) {
+   case 0:
+      evt_s0 = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      evt->x1.n = evt_s0->x1.n;
+      evt->z1.n = evt_s0->z1.n;
+      evt->y1.n = evt_s0->y1.n;
+      EVT.unitSprite = evt_s0;
+      evt_s0->d.sprite.hidden = 1;
+
+      evt_s0 = Evt_GetUnused();
+      evt_s0->functionIndex = EVTF_NOOP;
+      evt_s0->d.sprite.animData = impactAnimData;
+      evt_s0->x1.n = evt->x1.n;
+      evt_s0->z1.n = evt->z1.n;
+      evt_s0->y1.n = evt->y1.n + 0xe0;
+
+      switch (evt_s0->d.sprite.direction) {
+      case ANGLE_WEST:
+         evt_s0->x1.n += 0x20;
+         break;
+      case ANGLE_EAST:
+         evt_s0->x1.n -= 0x20;
+         break;
+      case ANGLE_SOUTH:
+         evt_s0->z1.n += 0x20;
+         break;
+      case ANGLE_NORTH:
+         evt_s0->z1.n -= 0x20;
+         break;
+      }
+
+      EVT.impactSprite = evt_s0;
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      evt_s0 = EVT.unitSprite;
+      evt_s2 = Evt_GetUnused();
+      CopyEvtData(evt_s0, evt_s2);
+      evt_s3 = Evt_GetUnused();
+      CopyEvtData(evt_s0, evt_s3);
+      evt_s2->d.sprite.hidden = 0;
+      evt_s3->d.sprite.hidden = 0;
+      evt_s2->d.sprite.semiTrans = 2;
+      evt_s2->d.sprite.clut = 10;
+
+      RenderUnitSprite(gGraphicsPtr->ot, evt_s2, 0);
+      poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+      setRGB0(poly, 0x80 - EVT.fade, 0x80 - EVT.fade, 0x80 - EVT.fade);
+
+      RenderUnitSprite(gGraphicsPtr->ot, evt_s3, 0);
+      poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
+
+      if (EVT.flashState == 0) {
+         EVT.fade -= 0x20;
+         if (EVT.fade <= 0) {
+            EVT.fade = 0;
+            EVT.flashState = 1;
+         }
+      } else if (EVT.flashState == 1) {
+         EVT.fade += 0x20;
+         if (EVT.fade >= 0x80) {
+            EVT.fade = 0x80;
+            EVT.flashState = 2;
+         }
+      }
+
+      evt_s0 = EVT.impactSprite;
+      UpdateEvtAnimation(evt_s0);
+      AddEvtPrim6(gGraphicsPtr->ot, evt_s0, 0);
+
+      if (evt_s0->d.sprite.animFinished) {
+         evt->functionIndex = EVTF_NULL;
+         evt_s0 = EVT.impactSprite;
+         evt_s0->functionIndex = EVTF_NULL;
+         evt_s0 = EVT.unitSprite;
+         evt_s0->d.sprite.hidden = 0;
+      }
+
+      evt_s3->functionIndex = EVTF_NULL;
+      evt_s2->functionIndex = EVTF_NULL;
+      break;
+   }
+}
+
+#undef EVTF
+#define EVTF 202
+void Evtf202_746_UnitBlocking(EvtData *evt) {
+   EvtData *evt_s0;
+   EvtData *evt_s2;
+   EvtData *evt_s3;
+   POLY_FT4 *poly;
+   s32 i;
+
+   switch (evt->state) {
+   case 0:
+      if (evt->functionIndex == EVTF_ENTITY_BLOCKING) {
+         evt_s0 = EVT.variant_0x24.entitySpriteParam;
+         evt_s0->d.sprite.direction = DIR_WEST;
+         EVT.variant_0x24.entitySpriteParam = NULL;
+      } else {
+         evt_s0 = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      }
+
+      evt->x1.n = evt_s0->x1.n;
+      evt->z1.n = evt_s0->z1.n;
+      evt->y1.n = evt_s0->y1.n;
+      EVT.unitSprite = evt_s0;
+      evt_s0->d.sprite.hidden = 1;
+      EVT.variant_0x24.timer = 14;
+
+      for (i = 0; i < 8; i++) {
+         evt_s3 = Evt_GetUnused();
+         evt_s3->functionIndex = EVTF_BLOCKING_IMPACT_PARTICLE;
+         evt_s3->x1.n = evt->x1.n;
+         evt_s3->z1.n = evt->z1.n;
+         evt_s3->y1.n = evt->y1.n + 0xe0;
+         evt_s3->d.evtf203.direction = evt_s0->d.sprite.direction;
+      }
+
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      evt_s0 = EVT.unitSprite;
+      evt_s2 = Evt_GetUnused();
+      CopyEvtData(evt_s0, evt_s2);
+      evt_s3 = Evt_GetUnused();
+      CopyEvtData(evt_s0, evt_s3);
+      evt_s2->d.sprite.hidden = 0;
+      evt_s3->d.sprite.hidden = 0;
+      evt_s2->d.sprite.semiTrans = 2;
+      evt_s2->d.sprite.clut = 10;
+
+      RenderUnitSprite(gGraphicsPtr->ot, evt_s2, 0);
+      poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+      setRGB0(poly, 0x80 - EVT.fade, 0x80 - EVT.fade, 0x80 - EVT.fade);
+
+      RenderUnitSprite(gGraphicsPtr->ot, evt_s3, 0);
+      poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+      setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
+
+      if (EVT.flashState == 0) {
+         EVT.fade -= 0x20;
+         if (EVT.fade <= 0) {
+            EVT.fade = 0;
+            EVT.flashState = 1;
+         }
+      } else if (EVT.flashState == 1) {
+         EVT.fade += 0x20;
+         if (EVT.fade >= 0x80) {
+            EVT.fade = 0x80;
+            EVT.flashState = 2;
+         }
+      }
+
+      if (--EVT.variant_0x24.timer == -1) {
+         evt->functionIndex = EVTF_NULL;
+         evt_s0 = EVT.unusedSprite;
+         evt_s0->functionIndex = EVTF_NULL;
+         evt_s0 = EVT.unitSprite;
+         evt_s0->d.sprite.hidden = 0;
+      }
+
+      evt_s3->functionIndex = EVTF_NULL;
+      evt_s2->functionIndex = EVTF_NULL;
+      break;
+   }
+}
+
+#undef EVTF
+#define EVTF 203
+void Evtf203_BlockingImpactParticle(EvtData *evt) {
+   EvtData *sprite;
+   s16 a;
+   s8 unused[32];
+
+   switch (evt->state) {
+   case 0:
+      sprite = Evt_GetUnused();
+      sprite->functionIndex = EVTF_NOOP;
+      sprite->d.sprite.clut = 4;
+      sprite->d.sprite.animData = sImpactAnimData_800feb44;
+      sprite->d.sprite.animInitialized = 0;
+      EVT.sprite = sprite;
+
+      a = rand() % ANGLE_360_DEGREES;
+
+      switch (EVT.direction) {
+      case ANGLE_WEST:
+         evt->x1.n += 0x20;
+         EVT.todo_x4e = rsin(a) / 24;
+         EVT.todo_x50 = rcos(a) / 24;
+         EVT.todo_x4c = 0xc0 - rand() % 0x180;
+         break;
+      case ANGLE_EAST:
+         evt->x1.n -= 0x20;
+         EVT.todo_x4e = rsin(a) / 24;
+         EVT.todo_x50 = rcos(a) / 24;
+         EVT.todo_x4c = 0xc0 - rand() % 0x180;
+         break;
+      case ANGLE_SOUTH:
+         evt->z1.n += 0x20;
+         EVT.todo_x4c = rsin(a) / 24;
+         EVT.todo_x50 = rcos(a) / 24;
+         EVT.todo_x4e = 0xc0 - rand() % 0x180;
+         break;
+      case ANGLE_NORTH:
+         evt->z1.n -= 0x20;
+         EVT.todo_x4c = rsin(a) / 24;
+         EVT.todo_x50 = rcos(a) / 24;
+         EVT.todo_x4e = 0xc0 - rand() % 0x180;
+         break;
+      }
+
+      EVT.todo_x50 = abs(EVT.todo_x50) * 3;
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      sprite = EVT.sprite;
+      sprite->x1.n = evt->x1.n + (EVT.todo_x4c * rsin(EVT.todo_x28) / ONE);
+      sprite->z1.n = evt->z1.n + (EVT.todo_x4e * rsin(EVT.todo_x28) / ONE);
+      sprite->y1.n = evt->y1.n + (EVT.todo_x50 * rsin(EVT.todo_x28) / ONE) - (EVT.todo_x28 / 4);
+
+      UpdateEvtAnimation(sprite);
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      EVT.todo_x28 += 0x4e;
+      if (EVT.todo_x28 >= ANGLE_90_DEGREES) {
+         evt->functionIndex = EVTF_NULL;
+         sprite->functionIndex = EVTF_NULL;
+      }
+
+      break;
+   }
+}
+
+#undef EVTF
+#define EVTF 205
+void Evtf205_BloodSpurt(EvtData *evt) {
+   s32 particleEvtf;
+   EvtData *unitSprite;
+   EvtData *evt_s2;
+   EvtData *evt_s4;
+   POLY_FT4 *poly;
+
+   //? Rock spurt stuff may be left-over code since separate evtf exists (Evtf685_RockSpurt)
+   particleEvtf = (evt->functionIndex == EVTF_ROCK_SPURT) ? EVTF_ROCK_SPURT_PARTICLE_2
+                                                          : EVTF_BLOOD_SPURT_PARTICLE;
+
+   switch (evt->state) {
+   case 0:
+      PerformAudioCommand(0x5df);
+      if (EVT.unitSprite == NULL) {
+         EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      } else {
+         unitSprite = EVT.unitSprite;
+      }
+      evt->x1.n = unitSprite->x1.n;
+      evt->z1.n = unitSprite->z1.n;
+      evt->y1.n = unitSprite->y1.n;
+      unitSprite->d.sprite.hidden = 1;
+      EVT.timer = 22;
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      unitSprite = EVT.unitSprite;
+      evt_s4 = Evt_GetUnused();
+      CopyEvtData(unitSprite, evt_s4);
+      evt_s2 = Evt_GetUnused();
+      CopyEvtData(unitSprite, evt_s2);
+      evt_s4->d.sprite.hidden = 0;
+      evt_s2->d.sprite.hidden = 0;
+
+      if (evt->functionIndex == EVTF_BLOOD_SPURT) {
+         evt_s4->d.sprite.semiTrans = 2;
+
+         RenderUnitSprite(gGraphicsPtr->ot, evt_s4, 0);
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, EVT.fade, 0, 0);
+
+         RenderUnitSprite(gGraphicsPtr->ot, evt_s2, 0);
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, EVT.fade + 0x7f, 0x80 - EVT.fade, 0x80 - EVT.fade);
+      } else {
+         RenderUnitSprite(gGraphicsPtr->ot, evt_s4, 0);
+      }
+
+      if (EVT.flashState == 0) {
+         EVT.fade += 12;
+         if (EVT.fade > 0x80) {
+            EVT.fade = 0x80;
+            EVT.flashState = 1;
+         }
+      } else if (EVT.flashState == 1) {
+         EVT.fade -= 10;
+         if (EVT.fade <= 0) {
+            EVT.fade = 0;
+            EVT.flashState = 2;
+         }
+      }
+
+      evt_s2->functionIndex = EVTF_NULL;
+      evt_s4->functionIndex = EVTF_NULL;
+
+      evt_s2 = Evt_GetUnused();
+      if (gState.mapNum == 32) {
+         evt_s2->functionIndex = EVTF_BLOOD_SPURT_PARTICLE_OFFSET;
+      } else {
+         evt_s2->functionIndex = particleEvtf;
+      }
+      evt_s2->x1.n = unitSprite->x1.n;
+      evt_s2->z1.n = unitSprite->z1.n;
+      evt_s2->y1.n = unitSprite->y1.n + 0x40 + rand() % 0x20;
+
+      if (EVT.timer % 2 == 0) {
+         evt_s2 = Evt_GetUnused();
+         if (gState.mapNum == 32) {
+            evt_s2->functionIndex = EVTF_BLOOD_SPURT_PARTICLE_OFFSET;
+         } else {
+            evt_s2->functionIndex = particleEvtf;
+         }
+         evt_s2->x1.n = unitSprite->x1.n;
+         evt_s2->z1.n = unitSprite->z1.n;
+         evt_s2->y1.n = unitSprite->y1.n + 0x40 + rand() % 0x20;
+      }
+
+      if (--EVT.timer == -1) {
+         evt->functionIndex = EVTF_NULL;
+         unitSprite = EVT.unitSprite;
+         unitSprite->d.sprite.hidden = 0;
+      }
+
+      break;
+   }
+}
+
+#undef EVTF
+#define EVTF 206
+void Evtf206_686_BloodSpurtParticle(EvtData *evt) {
+   EvtData *sprite;
+   s32 i;
+   s32 rnd;
+   s16 a, b;
+   POLY_FT4 *poly;
+   s16 red, green, blue;
+   s16 prevQuadIdx;
+   s16 shade;
+
+   switch (evt->state) {
+   case 0:
+      sprite = Evt_GetUnused();
+      sprite->functionIndex = EVTF_NOOP;
+
+      if (evt->functionIndex == EVTF_BLOOD_SPURT_PARTICLE ||
+          evt->functionIndex == EVTF_BLOOD_SPURT_PARTICLE_OFFSET) {
+         sprite->d.sprite.animData = sImpactAnimData_800feb44;
+         sprite->d.sprite.clut = 3;
+         sprite->d.sprite.animInitialized = 0;
+      } else {
+         sprite->d.sprite.animData = sRockAnimData_800feb68;
+         sprite->d.sprite.clut = 2;
+         sprite->d.sprite.animInitialized = 0;
+         rnd = rand() % 3;
+         for (i = 0; i < rnd; i++) {
+            UpdateEvtAnimation(sprite);
+         }
+      }
+
+      EVT.sprite = sprite;
+      EVT.shade = rand() % 0x60;
+
+      a = rand() % ANGLE_360_DEGREES;
+      EVT.position1.x = (rand() % 0x40 + 0x192) * rsin(a) / ONE;
+      EVT.position1.z = (rand() % 0x40 + 0x192) * rcos(a) / ONE;
+      EVT.position1.y = rand() % 0x200 + 0x100;
+
+      a = rand() % ANGLE_360_DEGREES;
+      EVT.position2.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
+      EVT.position2.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
+      EVT.position2.y = rand() % 0x200 + 0x100;
+
+      a = rand() % ANGLE_360_DEGREES;
+      EVT.position3.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
+      EVT.position3.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
+      EVT.position3.y = rand() % 0x200 + 0x100;
+
+      a = rand() % ANGLE_360_DEGREES;
+      EVT.position4.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
+      EVT.position4.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
+      EVT.position4.y = rand() % 0x200 + 0x100;
+
+      a = rand() % ANGLE_360_DEGREES;
+      EVT.position5.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
+      EVT.position5.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
+      EVT.position5.y = rand() % 0x200 + 0x100;
+
+      a = rand() % ANGLE_360_DEGREES;
+      EVT.position6.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
+      EVT.position6.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
+      EVT.position6.y = rand() % 0x200 + 0x100;
+
+      a = rand() % ANGLE_360_DEGREES;
+      EVT.position7_x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
+      EVT.position7_z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
+      EVT.position7_y = rand() % 0x200 + 0x100;
+
+      a = rand() % ANGLE_360_DEGREES;
+      EVT.position8_x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
+      EVT.position8_z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
+      EVT.position8_y = rand() % 0x200 + 0x100;
+
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      sprite = EVT.sprite;
+      UpdateEvtAnimation(sprite);
+
+      a = ANGLE_360_DEGREES - rcos(EVT.theta / 2);
+      b = rsin(EVT.theta);
+      shade = EVT.shade + 0x40;
+
+      if (evt->functionIndex == EVTF_BLOOD_SPURT_PARTICLE ||
+          evt->functionIndex == EVTF_BLOOD_SPURT_PARTICLE_OFFSET) {
+         red = shade;
+         green = 0;
+         blue = 0;
+      } else {
+         red = 0x80;
+         green = 0x80;
+         blue = 0x80;
+      }
+
+      sprite->x1.n = evt->x1.n + EVT.position1.x * a / ONE;
+      sprite->z1.n = evt->z1.n + EVT.position1.z * a / ONE;
+      sprite->y1.n = evt->y1.n + EVT.position1.y * b / ONE;
+
+      prevQuadIdx = gQuadIndex;
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, red, green, blue);
+      }
+
+      sprite->x1.n = evt->x1.n + EVT.position2.x * a / ONE;
+      sprite->z1.n = evt->z1.n + EVT.position2.z * a / ONE;
+      sprite->y1.n = evt->y1.n + EVT.position2.y * b / ONE;
+
+      prevQuadIdx = gQuadIndex;
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, red, green, blue);
+      }
+
+      sprite->x1.n = evt->x1.n + EVT.position3.x * a / ONE;
+      sprite->z1.n = evt->z1.n + EVT.position3.z * a / ONE;
+      sprite->y1.n = evt->y1.n + EVT.position3.y * b / ONE;
+
+      prevQuadIdx = gQuadIndex;
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, red, green, blue);
+      }
+
+      sprite->x1.n = evt->x1.n + EVT.position4.x * a / ONE;
+      sprite->z1.n = evt->z1.n + EVT.position4.z * a / ONE;
+      sprite->y1.n = evt->y1.n + EVT.position4.y * b / ONE;
+
+      prevQuadIdx = gQuadIndex;
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, red, green, blue);
+      }
+
+      sprite->x1.n = evt->x1.n + EVT.position5.x * a / ONE;
+      sprite->z1.n = evt->z1.n + EVT.position5.z * a / ONE;
+      sprite->y1.n = evt->y1.n + EVT.position5.y * b / ONE;
+
+      prevQuadIdx = gQuadIndex;
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, red, green, blue);
+      }
+
+      sprite->x1.n = evt->x1.n + EVT.position6.x * a / ONE;
+      sprite->z1.n = evt->z1.n + EVT.position6.z * a / ONE;
+      sprite->y1.n = evt->y1.n + EVT.position6.y * b / ONE;
+
+      prevQuadIdx = gQuadIndex;
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, red, green, blue);
+      }
+
+      sprite->x1.n = evt->x1.n + EVT.position7_x * a / ONE;
+      sprite->z1.n = evt->z1.n + EVT.position7_z * a / ONE;
+      sprite->y1.n = evt->y1.n + EVT.position7_y * b / ONE;
+
+      prevQuadIdx = gQuadIndex;
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, red, green, blue);
+      }
+
+      sprite->x1.n = evt->x1.n + EVT.position8_x * a / ONE;
+      sprite->z1.n = evt->z1.n + EVT.position8_z * a / ONE;
+      sprite->y1.n = evt->y1.n + EVT.position8_y * b / ONE;
+
+      prevQuadIdx = gQuadIndex;
+      AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
+
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, red, green, blue);
+      }
+
+      EVT.theta += (ANGLE_180_DEGREES / 32);
+      if (EVT.theta >= ANGLE_180_DEGREES) {
+         evt->functionIndex = EVTF_NULL;
+         sprite->functionIndex = EVTF_NULL;
+      }
+
       break;
    }
 }

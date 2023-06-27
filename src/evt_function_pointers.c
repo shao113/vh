@@ -34,11 +34,12 @@ void Evtf039_MapObject_Flag(EvtData *);
 void Evtf040_MapObject_Chest(EvtData *);
 void Evtf042_MapObject_FlowingSand(EvtData *);
 void Evtf043_SetupMapObjects(EvtData *);
-void Evtf045_BloodSpurtOffset(EvtData *);
+void Evtf045_BloodSpurtParticleOffset(EvtData *);
 void Evtf046_MapObject_Crate(EvtData *);
 void Evtf047_BattleMapCursor(EvtData *);
 void Evtf048_Push(EvtData *);
 void Evtf049_BattleMapCursorControl(EvtData *);
+void Evtf060_SpellFx1_Healing(EvtData *);
 void Evtf062_StretchWarpSprite(EvtData *);
 void Evtf070_FadeFromBlack(EvtData *);
 void Evtf071_FadeToBlack(EvtData *);
@@ -50,14 +51,32 @@ void Evtf076_Circles_TBD(EvtData *);
 void Evtf077_Circle_TBD(EvtData *);
 void Evtf078_SpellFx2_Damage(EvtData *);
 void Evtf079_SpellFx3_Slay(EvtData *);
+void Evtf100_SpellFx2_Healing(EvtData *);
+void Evtf101_HealingSparkle(EvtData *);
+void Evtf102_227_SpellFx2_Poison(EvtData *);
+void Evtf103_PoisonBubbles(EvtData *);
+void Evtf104_SpellFx2_Cure(EvtData *);
 void Evtf119_Fx_TBD(EvtData *);
 void Evtf130_Fx_TBD(EvtData *);
+void Evtf131_SlayUnit(EvtData *);
 void Evtf132_Etc_Fx_TBD(EvtData *);
 void Evtf133_Fx_TBD(EvtData *);
 void Evtf137_Fx_TBD(EvtData *);
 void Evtf141_Fx_TBD(EvtData *);
 void Evtf149_Fx_TBD(EvtData *);
+void Evtf197_SpellFx1_RollingThunder(EvtData *);
+void Evtf198_SpellFx_RollingThunder_CastingBolt(EvtData *);
+void Evtf201_UnitStruck(EvtData *);
+void Evtf202_746_UnitBlocking(EvtData *);
+void Evtf203_BlockingImpactParticle(EvtData *);
+void Evtf204_SummonCrest(EvtData *);
+void Evtf205_BloodSpurt(EvtData *);
 void Evtf206_686_BloodSpurtParticle(EvtData *);
+void Evtf207_SummonRedCrest(EvtData *);
+void Evtf208_SpellFx1_HolyLightning(EvtData *);
+void Evtf209_SummonBlueCrest(EvtData *);
+void Evtf210_SummonGreenCrest(EvtData *);
+void Evtf212_SpellFx_HolyLightning_CastingBolt(EvtData *);
 void Evtf213_DustCloudSpawner(EvtData *);
 void Evtf214_DustCloud(EvtData *);
 void Evtf215_Cloud(EvtData *);
@@ -283,7 +302,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [42] = Evtf042_MapObject_FlowingSand,
     [43] = Evtf043_SetupMapObjects,
     [44] = (EvtFunction)NULL,
-    [45] = Evtf045_BloodSpurtOffset,
+    [45] = Evtf045_BloodSpurtParticleOffset,
     [46] = Evtf046_MapObject_Crate,
     [47] = Evtf047_BattleMapCursor,
     [48] = Evtf048_Push,
@@ -298,7 +317,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [57] = (EvtFunction)NULL,
     [58] = (EvtFunction)NULL,
     [59] = (EvtFunction)0x800c1088,
-    [60] = (EvtFunction)0x80067e00,
+    [60] = Evtf060_SpellFx1_Healing,
     [61] = (EvtFunction)NULL,
     [62] = Evtf062_StretchWarpSprite,
     [63] = (EvtFunction)NULL,
@@ -338,11 +357,11 @@ EvtFunction gEvtFunctionPointers[804] = {
     [97] = (EvtFunction)0x80082498,
     [98] = (EvtFunction)0x80093964,
     [99] = (EvtFunction)0x800abc54,
-    [100] = (EvtFunction)0x80067e18,
-    [101] = (EvtFunction)0x80068104,
-    [102] = (EvtFunction)0x80068344,
-    [103] = (EvtFunction)0x80068658,
-    [104] = (EvtFunction)0x80068954,
+    [100] = Evtf100_SpellFx2_Healing,
+    [101] = Evtf101_HealingSparkle,
+    [102] = Evtf102_227_SpellFx2_Poison,
+    [103] = Evtf103_PoisonBubbles,
+    [104] = Evtf104_SpellFx2_Cure,
     [105] = (EvtFunction)NULL,
     [106] = (EvtFunction)0x800693b0,
     [107] = (EvtFunction)0x80069ae4,
@@ -369,7 +388,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [128] = (EvtFunction)0x80070b64,
     [129] = (EvtFunction)0x80070bdc,
     [130] = Evtf130_Fx_TBD,
-    [131] = (EvtFunction)0x800649d8,
+    [131] = Evtf131_SlayUnit,
     [132] = Evtf132_Etc_Fx_TBD,
     [133] = Evtf133_Fx_TBD,
     [134] = Evtf132_Etc_Fx_TBD,
@@ -435,22 +454,22 @@ EvtFunction gEvtFunctionPointers[804] = {
     [194] = (EvtFunction)0x8007b938,
     [195] = (EvtFunction)0x8007aedc,
     [196] = (EvtFunction)0x8007b030,
-    [197] = (EvtFunction)0x80067718,
-    [198] = (EvtFunction)0x80067abc,
+    [197] = Evtf197_SpellFx1_RollingThunder,
+    [198] = Evtf198_SpellFx_RollingThunder_CastingBolt,
     [199] = (EvtFunction)0x800777c4,
     [200] = (EvtFunction)0x8007ae60,
-    [201] = (EvtFunction)0x80064b00,
-    [202] = (EvtFunction)0x80064e80,
-    [203] = (EvtFunction)0x800651a8,
-    [204] = (EvtFunction)0x80066b70,
-    [205] = (EvtFunction)0x8006552c,
+    [201] = Evtf201_UnitStruck,
+    [202] = Evtf202_746_UnitBlocking,
+    [203] = Evtf203_BlockingImpactParticle,
+    [204] = Evtf204_SummonCrest,
+    [205] = Evtf205_BloodSpurt,
     [206] = Evtf206_686_BloodSpurtParticle,
-    [207] = (EvtFunction)0x80066ef8,
-    [208] = (EvtFunction)0x8006703c,
-    [209] = (EvtFunction)0x80066f64,
-    [210] = (EvtFunction)0x80066fd0,
+    [207] = Evtf207_SummonRedCrest,
+    [208] = Evtf208_SpellFx1_HolyLightning,
+    [209] = Evtf209_SummonBlueCrest,
+    [210] = Evtf210_SummonGreenCrest,
     [211] = (EvtFunction)0x8007ed0c,
-    [212] = (EvtFunction)0x80067408,
+    [212] = Evtf212_SpellFx_HolyLightning_CastingBolt,
     [213] = Evtf213_DustCloudSpawner,
     [214] = Evtf214_DustCloud,
     [215] = Evtf215_Cloud,
@@ -465,7 +484,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [224] = (EvtFunction)0x80079cb8,
     [225] = (EvtFunction)0x80079eb8,
     [226] = (EvtFunction)0x8007a22c,
-    [227] = (EvtFunction)0x80068344,
+    [227] = Evtf102_227_SpellFx2_Poison,
     [228] = (EvtFunction)NULL,
     [229] = (EvtFunction)NULL,
     [230] = (EvtFunction)NULL,
@@ -984,7 +1003,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [743] = (EvtFunction)0x800af520,
     [744] = (EvtFunction)0x800af520,
     [745] = (EvtFunction)0x800af8c8,
-    [746] = (EvtFunction)0x80064e80,
+    [746] = Evtf202_746_UnitBlocking,
     [747] = (EvtFunction)0x8008ff40,
     [748] = (EvtFunction)0x8008ff40,
     [749] = (EvtFunction)0x80090094,

@@ -50,7 +50,7 @@ void UpdateState(void) {
       Initialize();
       LoadItemIcons();
       InitAudio();
-      SetCdaSectorOffset(0x4c0d);
+      SetXaCdSectorOffset(0x4c0d);
       LoadSoundSet(0);
       FinishLoadingVab();
       LoadSoundSet(1);
@@ -146,7 +146,7 @@ void UpdateState(void) {
 
 void Evtf582_MainMenu_Jpn(EvtData *evt) {
    // Left-over debugging stuff?
-   EvtData *evtDialog;
+   EvtData *dialog;
    s32 i;
 
    switch (evt->state) {
@@ -181,8 +181,8 @@ void Evtf582_MainMenu_Jpn(EvtData *evt) {
          }
          if (gWindowChoice.raw == 0x3402) {
             CloseWindow(0x34);
-            evtDialog = Evt_GetUnused();
-            evtDialog->functionIndex = EVTF_FILE_LOAD_DIALOG_360;
+            dialog = Evt_GetUnused();
+            dialog->functionIndex = EVTF_FILE_LOAD_DIALOG_360;
             evt->state++;
             gState.D_8014053E = 0;
          }
@@ -200,17 +200,17 @@ void Evtf583_LoadingIndicator(EvtData *evt) {
    EvtData *spr = Evt_GetUnused();
 
    spr->d.sprite.gfxIdx = GFX_NOW_LOADING;
-   spr->d.sprite.x1 = 120;
-   spr->d.sprite.y1 = 95;
-   spr->d.sprite.x3 = spr->d.sprite.x1 + 80;
-   spr->d.sprite.y3 = spr->d.sprite.y1 + 50;
+   spr->x1.n = 120;
+   spr->y1.n = 95;
+   spr->x3.n = spr->x1.n + 80;
+   spr->y3.n = spr->y1.n + 50;
    AddEvtPrim_Gui(gGraphicsPtr->ot, spr);
 
    spr->d.sprite.gfxIdx = GFX_VANDAL_HEARTS;
-   spr->d.sprite.x1 = 156;
-   spr->d.sprite.y1 = 184;
-   spr->d.sprite.x3 = spr->d.sprite.x1 + 128;
-   spr->d.sprite.y3 = spr->d.sprite.y1 + 32;
+   spr->x1.n = 156;
+   spr->y1.n = 184;
+   spr->x3.n = spr->x1.n + 128;
+   spr->y3.n = spr->y1.n + 32;
    AddEvtPrim_Gui(gGraphicsPtr->ot, spr);
 }
 
@@ -218,10 +218,10 @@ void Evtf006_Logo(EvtData *evt) {
    evt->d.sprite.gfxIdx = GFX_VANDAL_HEARTS;
    evt->d.sprite.otOfs = 2;
    evt->d.sprite.clut = 4;
-   evt->d.sprite.x1 = 12;
-   evt->d.sprite.y1 = 50;
-   evt->d.sprite.x3 = evt->d.sprite.x1 + 128;
-   evt->d.sprite.y3 = evt->d.sprite.y1 + 32;
+   evt->x1.n = 12;
+   evt->y1.n = 50;
+   evt->x3.n = evt->x1.n + 128;
+   evt->y3.n = evt->y1.n + 32;
    AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
 }
 
@@ -269,7 +269,7 @@ void State_Init(void) {
 
    gTempEvt = Evt_GetFirstUnused();
    gTempEvt->functionIndex = EVTF_SCREEN_EFFECT;
-   gState.evtScreenEffect = gTempEvt;
+   gState.screenEffect = gTempEvt;
 
    gDecodingSprites = 0;
    gState.fieldRenderingDisabled = 1;
@@ -313,7 +313,7 @@ void State_EventScene(void) {
       gState.eventCameraPan.y = 0;
       gState.eventCameraPan.z = 0;
       gState.eventCameraHeight = 0;
-      gState.evtFocus = NULL;
+      gState.focus = NULL;
 
       for (i = 0; i < 20; i++) {
          gState.mapState.bytes[i] = 0;

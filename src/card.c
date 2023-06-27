@@ -298,9 +298,9 @@ void Card_PopulateInBattleSave(void) {
 
    for (i = 0; i < UNIT_CT; i++) {
       if (gUnits[i].idx) {
-         evt = gUnits[i].evtSprite;
-         gUnits[i].tileX = TO_TILE(evt->d.sprite.x1);
-         gUnits[i].tileZ = TO_TILE(evt->d.sprite.z1);
+         evt = gUnits[i].sprite;
+         gUnits[i].tileX = evt->x1.s.hi;
+         gUnits[i].tileZ = evt->z1.s.hi;
       }
       gInBattleSaveDataPtr->units[i] = gUnits[i];
    }
@@ -354,8 +354,6 @@ void Card_PopulateInBattleSave(void) {
       gInBattleSaveDataPtr->boulders[i].z = 99;
    }
 
-   /* TODO Replace raw byte accesses with proper evtdata (once defined) */
-
    numChests = 0;
    numCrates = 0;
    numBoulders = 0;
@@ -363,17 +361,17 @@ void Card_PopulateInBattleSave(void) {
 
    for (i = 0; i < EVT_DATA_CT; i++) {
       if (evt->functionIndex == EVTF_MAP_OBJECT_CHEST) {
-         gInBattleSaveDataPtr->chests[numChests].z = evt->d.bytes[0x7];
-         gInBattleSaveDataPtr->chests[numChests].x = evt->d.bytes[0x3];
-         gInBattleSaveDataPtr->chests[numChests++].item = evt->d.bytes[0x14];
+         gInBattleSaveDataPtr->chests[numChests].z = evt->z1.s.hi;
+         gInBattleSaveDataPtr->chests[numChests].x = evt->x1.s.hi;
+         gInBattleSaveDataPtr->chests[numChests++].item = evt->d.mapObj.param;
       }
       if (evt->functionIndex == EVTF_MAP_OBJECT_CRATE) {
-         gInBattleSaveDataPtr->crates[numCrates].z = evt->d.bytes[0x7];
-         gInBattleSaveDataPtr->crates[numCrates++].x = evt->d.bytes[0x3];
+         gInBattleSaveDataPtr->crates[numCrates].z = evt->z1.s.hi;
+         gInBattleSaveDataPtr->crates[numCrates++].x = evt->x1.s.hi;
       }
       if (evt->functionIndex == EVTF_MAP_OBJECT_BOULDER) {
-         gInBattleSaveDataPtr->boulders[numBoulders].z = evt->d.bytes[0x7];
-         gInBattleSaveDataPtr->boulders[numBoulders++].x = evt->d.bytes[0x3];
+         gInBattleSaveDataPtr->boulders[numBoulders].z = evt->z1.s.hi;
+         gInBattleSaveDataPtr->boulders[numBoulders++].x = evt->x1.s.hi;
       }
       evt++;
    }

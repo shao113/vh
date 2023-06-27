@@ -24,12 +24,12 @@ void Evtf027_TargetingSpell(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      caster = &gUnits[gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.unitIdx];
+      caster = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
       EVT.caster = caster;
 
       if (gSpells[gCurrentSpell].area == SPELL_AREA_NULL) {
-         gTargetX = HI(EVT.x);
-         gTargetZ = HI(EVT.z);
+         gTargetX = evt->x1.s.hi;
+         gTargetZ = evt->z1.s.hi;
          evt->state = 100;
          return;
       }
@@ -38,8 +38,8 @@ void Evtf027_TargetingSpell(EvtData *evt) {
    // fallthrough
    case 1:
       ClearGrid(1);
-      gTargetZ = HI(EVT.z);
-      gTargetX = HI(EVT.x);
+      gTargetZ = evt->z1.s.hi;
+      gTargetX = evt->x1.s.hi;
       PopulateCastingGrid(gTargetZ, gTargetX, gSpells[gCurrentSpell].range, 0);
       gYellowTargetGridPtr[gMapCursorZ][gMapCursorX] = 1;
       evt->state++;
@@ -107,8 +107,8 @@ void Evtf027_TargetingSpell(EvtData *evt) {
                if (gRedAttackGridPtr[iz][ix] != 0) {
                   unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
-                     gTargetX = HI(EVT.x);
-                     gTargetZ = HI(EVT.z);
+                     gTargetX = evt->x1.s.hi;
+                     gTargetZ = evt->z1.s.hi;
                      evt->state = 4;
                   }
                }
@@ -123,8 +123,8 @@ void Evtf027_TargetingSpell(EvtData *evt) {
                if (gRedAttackGridPtr[iz][ix] != 0) {
                   unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
-                     gTargetX = HI(EVT.x);
-                     gTargetZ = HI(EVT.z);
+                     gTargetX = evt->x1.s.hi;
+                     gTargetZ = evt->z1.s.hi;
                      evt->state = 4;
                   }
                }
@@ -153,8 +153,8 @@ void Evtf027_TargetingSpell(EvtData *evt) {
       case 7:
       case 8:
       case 9:
-         gTargetX = HI(EVT.x);
-         gTargetZ = HI(EVT.z);
+         gTargetX = evt->x1.s.hi;
+         gTargetZ = evt->z1.s.hi;
          evt->state = 4;
          return;
       default:
@@ -264,9 +264,8 @@ void Evtf027_TargetingSpell(EvtData *evt) {
 
       newEvt = Evt_GetLastUnused();
       newEvt->functionIndex = EVTF_UNIT_CASTING;
-      /// TODO: Replace with d.evtf028 once defined:
-      newEvt->d.sprite.x1 = EVT.x;
-      newEvt->d.sprite.z1 = EVT.z;
+      newEvt->x1.n = evt->x1.n;
+      newEvt->z1.n = evt->z1.n;
 
       evt->state++;
       return;

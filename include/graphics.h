@@ -33,6 +33,8 @@ typedef enum GfxIdx {
    GFX_PORTRAIT_B_SPEAK_1 = 22,
    GFX_PORTRAIT_B_SPEAK_2 = 23,
    GFX_PORTRAIT_B_BLINK = 24,
+   GFX_TBD_25 = 25,
+   GFX_TBD_28 = 28,
    GFX_DIGIT_0 = 30,
    GFX_DIGIT_1 = 31,
    GFX_DIGIT_2 = 32,
@@ -172,6 +174,14 @@ typedef enum GfxIdx {
    GFX_BLUE_CRYSTAL = 267,
    GFX_BLUE_SHARD = 268,
    GFX_SUPPORT = 269,
+   GFX_POISON_1 = 286,
+   GFX_POISON_2 = 287,
+   GFX_POISON_3 = 288,
+   GFX_POISON_4 = 289,
+   GFX_POISON_5 = 290,
+   GFX_POISON_6 = 291,
+   GFX_POISON_7 = 292,
+   GFX_POISON_8 = 293,
    GFX_TREE_SNOWY = 302,
    GFX_TREE_EVERGREEN = 303,
    GFX_TREE_PALM = 304,
@@ -424,7 +434,7 @@ typedef union PortraitOverlayOffsets {
    struct {
       u8 blinkX, blinkY, speakX, speakY;
    } s;
-   u8 bytes[4];
+   s8 bytes[4];
 } PortraitOverlayOffsets;
 
 typedef struct PortraitsDb {
@@ -494,6 +504,7 @@ extern Quad *gSpriteBoxQuads[19];
 void DecodeUnitSprites(void);
 void StartUnitSpritesDecoder(u8);
 struct EvtData *GetUnitSpriteAtPosition(u8, u8);
+void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
 
 void AddEvtPrim_Gui(u32 *ot, struct EvtData *evt);
 

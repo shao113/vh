@@ -247,14 +247,14 @@ void Evtf595_StatusWindow(EvtData *evt) {
       // Pulsating selection arrows
       size = (rcos(gOscillation) * 3 >> 12) + 10;
       arrow = Evt_GetUnused();
-      arrow->d.sprite.x1 = 20 + size;
-      arrow->d.sprite.x3 = 20 - size;
-      arrow->d.sprite.y1 = 136 - size;
-      arrow->d.sprite.y3 = 136 + size;
+      arrow->x1.n = 20 + size;
+      arrow->x3.n = 20 - size;
+      arrow->y1.n = 136 - size;
+      arrow->y3.n = 136 + size;
       arrow->d.sprite.gfxIdx = GFX_SELECTION_ARROW;
       AddEvtPrim_Gui(gGraphicsPtr->ot, arrow);
-      arrow->d.sprite.x1 = 300 - size;
-      arrow->d.sprite.x3 = 300 + size;
+      arrow->x1.n = 300 - size;
+      arrow->x3.n = 300 + size;
       AddEvtPrim_Gui(gGraphicsPtr->ot, arrow);
       if (gPadStateNewPresses & PAD_LEFT) {
          CloseWindow(0x20);

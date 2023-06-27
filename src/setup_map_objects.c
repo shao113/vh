@@ -563,8 +563,8 @@ void Evtf043_SetupMapObjects(EvtData *evt) {
    while (*p != EVTF_NULL) {
       newEvt = Evt_GetUnused();
       newEvt->functionIndex = *p++;
-      HI(newEvt->d.mapObj.z) = *p++;
-      HI(newEvt->d.mapObj.x) = *p++;
+      newEvt->z1.s.hi = *p++;
+      newEvt->x1.s.hi = *p++;
       newEvt->d.mapObj.param = *p++;
 
       if (gState.primary == STATE_LOAD_IN_BATTLE_SAVE) {
@@ -605,8 +605,8 @@ void Evtf043_SetupMapObjects(EvtData *evt) {
          if (gDeferredInBattleSaveData.chests[i].z != 99) {
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_MAP_OBJECT_CHEST;
-            HI(newEvt->d.mapObj.z) = gDeferredInBattleSaveData.chests[i].z;
-            HI(newEvt->d.mapObj.x) = gDeferredInBattleSaveData.chests[i].x;
+            newEvt->z1.s.hi = gDeferredInBattleSaveData.chests[i].z;
+            newEvt->x1.s.hi = gDeferredInBattleSaveData.chests[i].x;
             newEvt->d.mapObj.param = gDeferredInBattleSaveData.chests[i].item;
          }
       }
@@ -614,16 +614,16 @@ void Evtf043_SetupMapObjects(EvtData *evt) {
          if (gDeferredInBattleSaveData.crates[i].z != 99) {
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_MAP_OBJECT_CRATE;
-            HI(newEvt->d.mapObj.z) = gDeferredInBattleSaveData.crates[i].z;
-            HI(newEvt->d.mapObj.x) = gDeferredInBattleSaveData.crates[i].x;
+            newEvt->z1.s.hi = gDeferredInBattleSaveData.crates[i].z;
+            newEvt->x1.s.hi = gDeferredInBattleSaveData.crates[i].x;
          }
       }
       for (i = 0; i < ARRAY_COUNT(gDeferredInBattleSaveData.boulders); i++) {
          if (gDeferredInBattleSaveData.boulders[i].z != 99) {
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_MAP_OBJECT_BOULDER;
-            HI(newEvt->d.mapObj.z) = gDeferredInBattleSaveData.boulders[i].z;
-            HI(newEvt->d.mapObj.x) = gDeferredInBattleSaveData.boulders[i].x;
+            newEvt->z1.s.hi = gDeferredInBattleSaveData.boulders[i].z;
+            newEvt->x1.s.hi = gDeferredInBattleSaveData.boulders[i].x;
          }
       }
    }

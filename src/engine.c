@@ -120,22 +120,22 @@ void Evtf047_BattleMapCursor(EvtData *evt) {
       evt->d.sprite.coords[1].z = z * 0x100;
       evt->d.sprite.coords[3].z = z * 0x100 + 0xff;
 
-      HI(evt->d.sprite.x1) = x;
-      HI(evt->d.sprite.z1) = z;
+      evt->x1.s.hi = x;
+      evt->z1.s.hi = z;
 
       if (gTerrainPtr[z][x].s.terrain != TERRAIN_NO_ENTRY) {
          SetElevationFromTerrain(evt);
       } else {
-         evt->d.sprite.y1 = gMapRowPointers[z][x].height * 128;
+         evt->y1.n = gMapRowPointers[z][x].height * 128;
       }
 
-      evt->d.sprite.coords[0].y = evt->d.sprite.y1;
-      evt->d.sprite.coords[1].y = evt->d.sprite.y1;
-      evt->d.sprite.coords[2].y = evt->d.sprite.y1;
-      evt->d.sprite.coords[3].y = evt->d.sprite.y1;
+      evt->d.sprite.coords[0].y = evt->y1.n;
+      evt->d.sprite.coords[1].y = evt->y1.n;
+      evt->d.sprite.coords[2].y = evt->y1.n;
+      evt->d.sprite.coords[3].y = evt->y1.n;
 
-      LO(evt->d.sprite.x1) = 0x80;
-      LO(evt->d.sprite.z1) = 0x80;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
 
       evt->d.sprite.otOfs = -2;
       evt->d.sprite.semiTrans = 0;
@@ -154,7 +154,7 @@ void Evtf047_BattleMapCursor(EvtData *evt) {
          evt->d.sprite.coords[3].y += s_mapCursorGhostY;
 
          for (i = 0; i < 13; i++) {
-            evt->d.sprite.y1 = evt->d.sprite.coords[0].y;
+            evt->y1.n = evt->d.sprite.coords[0].y;
             AddEvtPrim5(gGraphicsPtr->ot, evt);
             evt->d.sprite.coords[0].y += 0x100;
             evt->d.sprite.coords[1].y += 0x100;
@@ -198,24 +198,24 @@ void Evtf049_BattleMapCursorControl(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      HI(evt->d.sprite.x1) = gMapCursorStartingPos[gState.mapNum].x;
-      HI(evt->d.sprite.z1) = gMapCursorStartingPos[gState.mapNum].z;
+      evt->x1.s.hi = gMapCursorStartingPos[gState.mapNum].x;
+      evt->z1.s.hi = gMapCursorStartingPos[gState.mapNum].z;
 
       if (gState.primary == STATE_LOAD_IN_BATTLE_SAVE) {
-         HI(evt->d.sprite.x1) = gDeferredInBattleSaveData.mapCursorX;
-         HI(evt->d.sprite.z1) = gDeferredInBattleSaveData.mapCursorZ;
+         evt->x1.s.hi = gDeferredInBattleSaveData.mapCursorX;
+         evt->z1.s.hi = gDeferredInBattleSaveData.mapCursorZ;
       }
       // snap to tile center
-      LO(evt->d.sprite.x1) = 0x80;
-      LO(evt->d.sprite.z1) = 0x80;
+      evt->x1.s.lo = 0x80;
+      evt->z1.s.lo = 0x80;
 
       gMapCursorX = 0;
       gMapCursorZ = 0;
 
-      for (gMapCursorX = 0; gMapCursorX <= HI(evt->d.sprite.x1); gMapCursorX++) {
+      for (gMapCursorX = 0; gMapCursorX <= evt->x1.s.hi; gMapCursorX++) {
          CenterCamera(1);
       }
-      for (gMapCursorZ = 0; gMapCursorZ <= HI(evt->d.sprite.z1); gMapCursorZ++) {
+      for (gMapCursorZ = 0; gMapCursorZ <= evt->z1.s.hi; gMapCursorZ++) {
          CenterCamera(1);
       }
 
@@ -225,81 +225,81 @@ void Evtf049_BattleMapCursorControl(EvtData *evt) {
       switch ((gCameraRotation.vy & 0xfff) >> 10) {
       case CAM_DIR_SOUTH:
          if (pad & PAD_UP) {
-            evt->d.sprite.z1 += 0x100;
+            evt->z1.n += 0x100;
          }
          if (pad & PAD_DOWN) {
-            evt->d.sprite.z1 -= 0x100;
+            evt->z1.n -= 0x100;
          }
          if (pad & PAD_LEFT) {
-            evt->d.sprite.x1 -= 0x100;
+            evt->x1.n -= 0x100;
          }
          if (pad & PAD_RIGHT) {
-            evt->d.sprite.x1 += 0x100;
+            evt->x1.n += 0x100;
          }
          break;
       case CAM_DIR_EAST:
          if (pad & PAD_UP) {
-            evt->d.sprite.x1 -= 0x100;
+            evt->x1.n -= 0x100;
          }
          if (pad & PAD_DOWN) {
-            evt->d.sprite.x1 += 0x100;
+            evt->x1.n += 0x100;
          }
          if (pad & PAD_LEFT) {
-            evt->d.sprite.z1 -= 0x100;
+            evt->z1.n -= 0x100;
          }
          if (pad & PAD_RIGHT) {
-            evt->d.sprite.z1 += 0x100;
+            evt->z1.n += 0x100;
          }
          break;
       case CAM_DIR_NORTH:
          if (pad & PAD_UP) {
-            evt->d.sprite.z1 -= 0x100;
+            evt->z1.n -= 0x100;
          }
          if (pad & PAD_DOWN) {
-            evt->d.sprite.z1 += 0x100;
+            evt->z1.n += 0x100;
          }
          if (pad & PAD_LEFT) {
-            evt->d.sprite.x1 += 0x100;
+            evt->x1.n += 0x100;
          }
          if (pad & PAD_RIGHT) {
-            evt->d.sprite.x1 -= 0x100;
+            evt->x1.n -= 0x100;
          }
          break;
       case CAM_DIR_WEST:
          if (pad & PAD_UP) {
-            evt->d.sprite.x1 += 0x100;
+            evt->x1.n += 0x100;
          }
          if (pad & PAD_DOWN) {
-            evt->d.sprite.x1 -= 0x100;
+            evt->x1.n -= 0x100;
          }
          if (pad & PAD_LEFT) {
-            evt->d.sprite.z1 += 0x100;
+            evt->z1.n += 0x100;
          }
          if (pad & PAD_RIGHT) {
-            evt->d.sprite.z1 -= 0x100;
+            evt->z1.n -= 0x100;
          }
          break;
       }
    }
 
-   if (HI(evt->d.sprite.x1) < gMapMinX) {
-      HI(evt->d.sprite.x1) = gMapMinX;
+   if (evt->x1.s.hi < gMapMinX) {
+      evt->x1.s.hi = gMapMinX;
    }
-   if (HI(evt->d.sprite.x1) > gMapMaxX) {
-      HI(evt->d.sprite.x1) = gMapMaxX;
+   if (evt->x1.s.hi > gMapMaxX) {
+      evt->x1.s.hi = gMapMaxX;
    }
-   if (HI(evt->d.sprite.z1) < gMapMinZ) {
-      HI(evt->d.sprite.z1) = gMapMinZ;
+   if (evt->z1.s.hi < gMapMinZ) {
+      evt->z1.s.hi = gMapMinZ;
    }
-   if (HI(evt->d.sprite.z1) > gMapMaxZ) {
-      HI(evt->d.sprite.z1) = gMapMaxZ;
+   if (evt->z1.s.hi > gMapMaxZ) {
+      evt->z1.s.hi = gMapMaxZ;
    }
 
-   gMapCursorX = HI(evt->d.sprite.x1);
-   gMapCursorZ = HI(evt->d.sprite.z1);
+   gMapCursorX = evt->x1.s.hi;
+   gMapCursorZ = evt->z1.s.hi;
 
    if (!gPlayerControlSuppressed && !gIsEnemyTurn) {
-      gCameraPos.vy += ((evt->d.sprite.y1 >> 3) - gCameraPos.vy) >> 2;
+      gCameraPos.vy += ((evt->y1.n >> 3) - gCameraPos.vy) >> 2;
    }
 }
 
@@ -387,6 +387,8 @@ void Evtf019_Compass(EvtData *evt) {
    }
 }
 
+#undef EVTF
+#define EVTF 025
 void Evtf025_OverheadMapView(EvtData *evt) {
    static s16 overheadMapZoomLevels[BATTLE_CT] = {
        1300, 1500, 1700, 1350, 1550, 3550, 1500, 1500, 1900, 1500, 1400, 1500, 1500, 1450, 1500,
@@ -398,12 +400,12 @@ void Evtf025_OverheadMapView(EvtData *evt) {
       CloseWindow(0x1e);
       gOverheadMapState = 1;
       gCameraRotation.vy &= 0xfff;
-      evt->d.evtf025.camSavedRotX = gCameraRotation.vx;
-      evt->d.evtf025.camSavedRotY = gCameraRotation.vy;
-      evt->d.evtf025.camSavedZoom = gCameraZoom.vz;
-      evt->d.evtf025.camSavedX = gCameraPos.vx;
-      evt->d.evtf025.camSavedY = gCameraPos.vy;
-      evt->d.evtf025.camSavedZ = gCameraPos.vz;
+      EVT.camSavedRotX = gCameraRotation.vx;
+      EVT.camSavedRotY = gCameraRotation.vy;
+      EVT.camSavedZoom = gCameraZoom.vz;
+      EVT.camSavedX = gCameraPos.vx;
+      EVT.camSavedY = gCameraPos.vy;
+      EVT.camSavedZ = gCameraPos.vz;
       evt->state++;
       // fallthrough
    case 1:
@@ -420,24 +422,24 @@ void Evtf025_OverheadMapView(EvtData *evt) {
 
       if ((gPadStateNewPresses & PAD_TRIANGLE) || (gPadStateNewPresses & PAD_X)) {
          gOverheadMapState = 0;
-         evt->d.evtf025.delay = 25;
+         EVT.delay = 25;
          evt->state++;
       }
       break;
    case 3:
-      gCameraRotation.vx += (evt->d.evtf025.camSavedRotX - gCameraRotation.vx) >> 2;
-      gCameraRotation.vy += (evt->d.evtf025.camSavedRotY - gCameraRotation.vy) >> 2;
-      gCameraZoom.vz += (evt->d.evtf025.camSavedZoom - gCameraZoom.vz) >> 2;
-      gCameraPos.vx += (evt->d.evtf025.camSavedX - gCameraPos.vx) >> 2;
-      gCameraPos.vz += (evt->d.evtf025.camSavedZ - gCameraPos.vz) >> 2;
-      gCameraPos.vy += (evt->d.evtf025.camSavedY - gCameraPos.vy) >> 2;
-      if (--evt->d.evtf025.delay == 0) {
-         gCameraRotation.vx = evt->d.evtf025.camSavedRotX;
-         gCameraRotation.vy = evt->d.evtf025.camSavedRotY;
-         gCameraZoom.vz = evt->d.evtf025.camSavedZoom;
-         gCameraPos.vx = evt->d.evtf025.camSavedX;
-         gCameraPos.vy = evt->d.evtf025.camSavedY;
-         gCameraPos.vz = evt->d.evtf025.camSavedZ;
+      gCameraRotation.vx += (EVT.camSavedRotX - gCameraRotation.vx) >> 2;
+      gCameraRotation.vy += (EVT.camSavedRotY - gCameraRotation.vy) >> 2;
+      gCameraZoom.vz += (EVT.camSavedZoom - gCameraZoom.vz) >> 2;
+      gCameraPos.vx += (EVT.camSavedX - gCameraPos.vx) >> 2;
+      gCameraPos.vz += (EVT.camSavedZ - gCameraPos.vz) >> 2;
+      gCameraPos.vy += (EVT.camSavedY - gCameraPos.vy) >> 2;
+      if (--EVT.delay == 0) {
+         gCameraRotation.vx = EVT.camSavedRotX;
+         gCameraRotation.vy = EVT.camSavedRotY;
+         gCameraZoom.vz = EVT.camSavedZoom;
+         gCameraPos.vx = EVT.camSavedX;
+         gCameraPos.vy = EVT.camSavedY;
+         gCameraPos.vz = EVT.camSavedZ;
          gSignal1 = 99;
          evt->functionIndex = EVTF_NULL;
       }
@@ -484,17 +486,17 @@ s32 SmoothStepTo(EvtData *sprite, s32 destZ, s32 destX, s32 cont) {
    s32 diff;
 
    if (cont == 0) {
-      s_currentX_80123148 = sprite->d.sprite.x1 << 8;
+      s_currentX_80123148 = sprite->x1.n << 8;
       s_destX_8012314c = destX << 8;
 
-      s_currentY_80123158 = sprite->d.sprite.y1 << 8;
+      s_currentY_80123158 = sprite->y1.n << 8;
       s_destY_8012315c = gTerrainPtr[destZ >> 8][destX >> 8].s.elevation << 8 << 7;
 
-      s_currentZ_80123150 = sprite->d.sprite.z1 << 8;
+      s_currentZ_80123150 = sprite->z1.n << 8;
       s_destZ_80123154 = destZ << 8;
 
       destElevation = gTerrainPtr[destZ >> 8][destX >> 8].s.elevation;
-      currentElevation = gTerrainPtr[HI(sprite->d.sprite.z1)][HI(sprite->d.sprite.x1)].s.elevation;
+      currentElevation = OBJ_TERRAIN(sprite).s.elevation;
       diff = destElevation - currentElevation;
       elevationDiff = diff;
       if (elevationDiff > 0) {
@@ -532,15 +534,15 @@ s32 SmoothStepTo(EvtData *sprite, s32 destZ, s32 destX, s32 cont) {
       s_deltaY_80123164 -= s_rise_80123144;
       s_currentY_80123158 += s_deltaY_80123164;
 
-      sprite->d.sprite.x1 = s_currentX_80123148 >> 8;
-      sprite->d.sprite.z1 = s_currentZ_80123150 >> 8;
-      sprite->d.sprite.y1 = s_currentY_80123158 >> 8;
+      sprite->x1.n = s_currentX_80123148 >> 8;
+      sprite->z1.n = s_currentZ_80123150 >> 8;
+      sprite->y1.n = s_currentY_80123158 >> 8;
       s_isubstep_8012316c++;
 
       if (s_isubstep_8012316c == s_substeps_80123170) {
-         sprite->d.sprite.x1 = s_destX_8012314c >> 8;
-         sprite->d.sprite.z1 = s_destZ_80123154 >> 8;
-         sprite->d.sprite.y1 = s_destY_8012315c >> 8;
+         sprite->x1.n = s_destX_8012314c >> 8;
+         sprite->z1.n = s_destZ_80123154 >> 8;
+         sprite->y1.n = s_destY_8012315c >> 8;
 
          // For cont:1, return 1 when movement completes
          return 1;

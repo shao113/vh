@@ -334,10 +334,8 @@ s32 HasDefeatSpeech(UnitStatus *unit) {
 }
 
 s32 IsSpriteOutsideVisibleRange(EvtData *sprite) {
-   if ((HI(sprite->d.sprite.x1) >= D_80122E28) &&
-       (HI(sprite->d.sprite.x1) <= gMapSizeX + D_80122E28 - 1) &&
-       (HI(sprite->d.sprite.z1) >= D_80122E2C) &&
-       (HI(sprite->d.sprite.z1) <= gMapSizeZ + D_80122E2C - 1)) {
+   if ((sprite->x1.s.hi >= D_80122E28) && (sprite->x1.s.hi <= gMapSizeX + D_80122E28 - 1) &&
+       (sprite->z1.s.hi >= D_80122E2C) && (sprite->z1.s.hi <= gMapSizeZ + D_80122E2C - 1)) {
       return 0;
    } else {
       return 1;

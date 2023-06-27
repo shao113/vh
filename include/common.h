@@ -1,11 +1,9 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include "types.h"
 #include "sys/types.h"
 #include "PsyQ/libetc.h"
-
-#include "types.h"
-/*#include "include_asm.h"*/
 
 #define NULL 0
 #define ASCII_DIGIT 0x30
@@ -48,8 +46,8 @@
 #define BATTLE_CT 44
 #define UNIT_DB_CT 144
 
-//#define ABS(x) (((x)>=0)?(x):(-(x)))
-//#define ABS(arg) abs(arg)
+// #define ABS(x) (((x)>=0)?(x):(-(x)))
+// #define ABS(arg) abs(arg)
 s32 abs(s32);
 #define SET_ABS(x)                                                                                 \
    do {                                                                                            \
@@ -65,13 +63,18 @@ s32 abs(s32);
 #define HI(arg) ((s8 *)&arg)[1]
 #define LO_H(arg) ((s16 *)&arg)[0]
 #define HI_H(arg) ((s16 *)&arg)[1]
-#define TO_TILE(arg) (*((s8 *)&arg + 1))
+// #define TO_TILE(arg) (*((s8 *)&arg + 1))
 #define ARRAY_COUNT(arr) (s32)(sizeof(arr) / sizeof(arr[0]))
 
-#define SPR_TERRAIN(spr) gTerrainPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
-#define SPR_TILE_STATE(spr) gTileStateGridPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
-#define SPR_TILE_MODEL(spr) gMapRowPointers[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
-#define SPR_MAP_UNIT(spr) gMapUnitsPtr[HI((spr)->d.sprite.z1)][HI((spr)->d.sprite.x1)]
+#define OBJ_TERRAIN(obj) gTerrainPtr[(obj)->z1.s.hi][(obj)->x1.s.hi]
+#define OBJ_TILE_STATE(obj) gTileStateGridPtr[(obj)->z1.s.hi][(obj)->x1.s.hi]
+#define OBJ_TILE_MODEL(obj) gMapRowPointers[(obj)->z1.s.hi][(obj)->x1.s.hi]
+#define OBJ_MAP_UNIT(obj) gMapUnitsPtr[(obj)->z1.s.hi][(obj)->x1.s.hi]
+
+#define OBJ_TARGET_TERRAIN(obj) gTerrainPtr[(obj)->z3.s.hi][(obj)->x3.s.hi]
+#define OBJ_TARGET_TILE_STATE(obj) gTileStateGridPtr[(obj)->z3.s.hi][(obj)->x3.s.hi]
+#define OBJ_TARGET_TILE_MODEL(obj) gMapRowPointers[(obj)->z3.s.hi][(obj)->x3.s.hi]
+#define OBJ_TARGET_MAP_UNIT(obj) gMapUnitsPtr[(obj)->z3.s.hi][(obj)->x3.s.hi]
 
 typedef u16 BigInt[8];
 
@@ -108,6 +111,14 @@ typedef struct BVectorZXY {
    u8 x;
    u8 y;
 } BVectorZXY;
+
+typedef union CoordinateValue {
+   s16 n;
+   struct {
+      s8 lo;
+      s8 hi;
+   } s;
+} CoordinateValue;
 
 extern u8 gScratch1_801317c0[];
 extern u8 gScratch2_8013e054[];

@@ -48,8 +48,8 @@ UnitStatus *CreateUnit(u8 last) {
          pUnit->defVar100 = 100;
          pUnit->agiVar100 = 100;
          pUnit->direction = 0;
-         pUnit->evtBattler = NULL;
-         pUnit->evtSprite = NULL;
+         pUnit->battler = NULL;
+         pUnit->sprite = NULL;
          pUnit->hideMarker = 0;
          pUnit->poisoned = 0;
          pUnit->paralyzed = 0;
@@ -81,7 +81,7 @@ EvtData *GetUnitSpriteAtPosition(u8 z, u8 x) {
    if (unitIdx == 0) {
       unitSprite = NULL;
    } else {
-      unitSprite = gUnits[unitIdx].evtSprite;
+      unitSprite = gUnits[unitIdx].sprite;
    }
 
    return unitSprite;
@@ -93,7 +93,7 @@ EvtData *FindUnitSpriteByNameIdx(u8 nameIdx) {
 
    for (i = 1; i < UNIT_CT; i++) {
       if (pUnit->idx != 0 && pUnit->name == nameIdx) {
-         return pUnit->evtSprite;
+         return pUnit->sprite;
       }
       pUnit++;
    }
@@ -107,7 +107,7 @@ EvtData *FindUnitSpriteByType(u8 unitType) {
 
    for (i = 1; i < UNIT_CT; i++) {
       if (pUnit->idx != 0 && pUnit->unitType == unitType) {
-         return pUnit->evtSprite;
+         return pUnit->sprite;
       }
       pUnit++;
    }
@@ -309,7 +309,7 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      unitSprite = GetUnitSpriteAtPosition(HI(EVT.z), HI(EVT.x));
+      unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       RotTransPers(&unitSprite->vec, &screenXY, &p, &flag);
       screenXY.vy += 28;
       if (screenXY.vy > 0xc0) {
@@ -323,13 +323,13 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
       if (savedDamage != 0) {
          evt_s2 = Evt_GetUnused();
          evt_s2->functionIndex = EVTF_FLOATING_DAMAGE_TEXT;
-         HI(evt_s2->d.evtf051.x) = HI(EVT.x);
-         HI(evt_s2->d.evtf051.z) = HI(EVT.z);
+         evt_s2->x1.s.hi = evt->x1.s.hi;
+         evt_s2->z1.s.hi = evt->z1.s.hi;
          evt_s2->d.evtf051.damage = savedDamage;
          evt_s2->d.evtf051.clut = 4;
       }
 
-      if (gMapUnitsPtr[HI(EVT.z)][HI(EVT.x)].s.team == TEAM_PLAYER) {
+      if (OBJ_MAP_UNIT(evt).s.team == TEAM_PLAYER) {
          DisplayBasicWindow(0x1b);
          DisplayBasicWindow(0x1c);
       } else {
@@ -342,10 +342,10 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
       evt_s2 = Evt_GetUnused();
       EVT.barFg = evt_s2;
       evt_s2->functionIndex = EVTF_NOOP;
-      evt_s2->d.sprite.x1 = savedX - 56;
-      evt_s2->d.sprite.x3 = savedX - 56 + (savedHpBefore * 80 / 100);
-      evt_s2->d.sprite.y1 = savedY - 4;
-      evt_s2->d.sprite.y3 = savedY + 4;
+      evt_s2->x1.n = savedX - 56;
+      evt_s2->x3.n = savedX - 56 + (savedHpBefore * 80 / 100);
+      evt_s2->y1.n = savedY - 4;
+      evt_s2->y3.n = savedY + 4;
       evt_s2->d.sprite.gfxIdx = GFX_COLOR_5;
       evt_s2->d.sprite.clut = 3;
       evt_s2->d.sprite.otOfs = 3;
@@ -353,10 +353,10 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
       evt_s3 = Evt_GetUnused();
       EVT.barBg = evt_s3;
       evt_s3->functionIndex = EVTF_NOOP;
-      evt_s3->d.sprite.x1 = savedX - 56;
-      evt_s3->d.sprite.x3 = savedX + 23;
-      evt_s3->d.sprite.y1 = savedY - 4;
-      evt_s3->d.sprite.y3 = savedY + 4;
+      evt_s3->x1.n = savedX - 56;
+      evt_s3->x3.n = savedX + 23;
+      evt_s3->y1.n = savedY - 4;
+      evt_s3->y3.n = savedY + 4;
       evt_s3->d.sprite.gfxIdx = GFX_COLOR_1;
       evt_s3->d.sprite.otOfs = 3;
 
@@ -391,7 +391,7 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
       IntToLeftPaddedGlyphs2(EVT.maxHp, &gGlyphStrip_50[5]);
       DrawGlyphStripGroup(gGlyphStripGroups[28], GFX_TBD_685);
 
-      evt_s2->d.sprite.x3 += (EVT.barDstX3 - evt_s2->d.sprite.x3) >> 2;
+      evt_s2->x3.n += (EVT.barDstX3 - evt_s2->x3.n) >> 2;
 
       if (--EVT.timer == 0) {
          CloseWindow(0x1b);
@@ -403,7 +403,7 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
       }
    }
 
-   if (evt_s2->d.sprite.x3 > evt_s3->d.sprite.x1) {
+   if (evt_s2->x3.n > evt_s3->x1.n) {
       // Bar fill (if visible)
       AddEvtPrim_Gui(gGraphicsPtr->ot, evt_s2);
    }
@@ -446,14 +446,14 @@ void Evtf008_BattlePortrait(EvtData *evt) {
 
    case 1:
       if (EVT.flipped) {
-         sprite->d.sprite.x1 = window->d.evtf004.x + 24;
-         sprite->d.sprite.x3 = window->d.evtf004.x - 23;
+         sprite->x1.n = window->x1.n + 24;
+         sprite->x3.n = window->x1.n - 23;
       } else {
-         sprite->d.sprite.x1 = window->d.evtf004.x - 23;
-         sprite->d.sprite.x3 = window->d.evtf004.x + 24;
+         sprite->x1.n = window->x1.n - 23;
+         sprite->x3.n = window->x1.n + 24;
       }
-      sprite->d.sprite.y1 = window->d.evtf004.y - 23;
-      sprite->d.sprite.y3 = window->d.evtf004.y + 24;
+      sprite->y1.n = window->y1.n - 23;
+      sprite->y3.n = window->y1.n + 24;
 
       for (portraitNum = 0; portraitNum <= 60; portraitNum++) {
          if (gState.portraitsToLoad[portraitNum] == EVT.portraitId) {
@@ -494,6 +494,7 @@ void Evtf008_BattlePortrait(EvtData *evt) {
 #undef EVTF
 #define EVTF 413
 void Evtf413_MsgBoxPortrait(EvtData *evt) {
+   // evt->state3: blinkState
    EvtData *speakSprite, *blinkSprite, *faceSprite, *anchor;
    // This could use some fiddling
    u8 portrait_u8;
@@ -621,7 +622,7 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
       EVT.blinkSprite = blinkSprite;
 
       evt->state2 = 0; // (speaking state)
-      EVT.blinkState = 0;
+      evt->state3 = 0; // (blinking state)
       evt->state++;
       break;
 
@@ -638,39 +639,39 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
 
    anchor = EVT.anchor;
    if (anchor != NULL) {
-      EVT.x = anchor->d.sprite.x1 + EVT.anchorOfsX;
-      EVT.y = anchor->d.sprite.y1 + EVT.anchorOfsY;
+      evt->x1.n = anchor->x1.n + EVT.anchorOfsX;
+      evt->y1.n = anchor->y1.n + EVT.anchorOfsY;
    }
 
    if (!EVT.flipped) {
-      faceSprite->d.sprite.x1 = EVT.x;
-      faceSprite->d.sprite.x3 = EVT.x + 47;
+      faceSprite->x1.n = evt->x1.n;
+      faceSprite->x3.n = evt->x1.n + 47;
    } else {
-      faceSprite->d.sprite.x1 = EVT.x + 47;
-      faceSprite->d.sprite.x3 = EVT.x;
+      faceSprite->x1.n = evt->x1.n + 47;
+      faceSprite->x3.n = evt->x1.n;
    }
-   faceSprite->d.sprite.y1 = EVT.y;
-   faceSprite->d.sprite.y3 = EVT.y + 47;
+   faceSprite->y1.n = evt->y1.n;
+   faceSprite->y3.n = evt->y1.n + 47;
 
    if (!EVT.flipped) {
-      speakSprite->d.sprite.x1 = EVT.x + gPortraitOverlayOffsets[portrait_u8].s.speakX;
-      speakSprite->d.sprite.x3 = speakSprite->d.sprite.x1 + 15;
+      speakSprite->x1.n = evt->x1.n + gPortraitOverlayOffsets[portrait_u8].s.speakX;
+      speakSprite->x3.n = speakSprite->x1.n + 15;
    } else {
-      speakSprite->d.sprite.x1 = EVT.x + 46 - gPortraitOverlayOffsets[portrait_u8].s.speakX + 1;
-      speakSprite->d.sprite.x3 = speakSprite->d.sprite.x1 - 15;
+      speakSprite->x1.n = evt->x1.n + 46 - gPortraitOverlayOffsets[portrait_u8].s.speakX + 1;
+      speakSprite->x3.n = speakSprite->x1.n - 15;
    }
-   speakSprite->d.sprite.y1 = EVT.y + gPortraitOverlayOffsets[portrait_u8].s.speakY;
-   speakSprite->d.sprite.y3 = speakSprite->d.sprite.y1 + 16;
+   speakSprite->y1.n = evt->y1.n + gPortraitOverlayOffsets[portrait_u8].s.speakY;
+   speakSprite->y3.n = speakSprite->y1.n + 16;
 
    if (!EVT.flipped) {
-      blinkSprite->d.sprite.x1 = EVT.x + gPortraitOverlayOffsets[portrait_u8].s.blinkX;
-      blinkSprite->d.sprite.x3 = blinkSprite->d.sprite.x1 + 15;
+      blinkSprite->x1.n = evt->x1.n + gPortraitOverlayOffsets[portrait_u8].s.blinkX;
+      blinkSprite->x3.n = blinkSprite->x1.n + 15;
    } else {
-      blinkSprite->d.sprite.x1 = EVT.x + 46 - gPortraitOverlayOffsets[portrait_u8].s.blinkX + 1;
-      blinkSprite->d.sprite.x3 = blinkSprite->d.sprite.x1 - 15;
+      blinkSprite->x1.n = evt->x1.n + 46 - gPortraitOverlayOffsets[portrait_u8].s.blinkX + 1;
+      blinkSprite->x3.n = blinkSprite->x1.n - 15;
    }
-   blinkSprite->d.sprite.y1 = EVT.y + gPortraitOverlayOffsets[portrait_u8].s.blinkY;
-   blinkSprite->d.sprite.y3 = blinkSprite->d.sprite.y1 + 16;
+   blinkSprite->y1.n = evt->y1.n + gPortraitOverlayOffsets[portrait_u8].s.blinkY;
+   blinkSprite->y3.n = blinkSprite->y1.n + 16;
 
    if (gState.msgTextWaitTimer[EVT.flipped + 1] != 0) {
       gState.msgTextWaitTimer[EVT.flipped + 1]--;
@@ -730,7 +731,7 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
    }
 
    // Blinking animation
-   switch (EVT.blinkState) {
+   switch (evt->state3) {
    case 0:
       blinkSprite->d.sprite.hidden = 1;
 
@@ -745,7 +746,7 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
             EVT.blinkTimer = 4;
          }
       }
-      EVT.blinkState++;
+      evt->state3++;
       break;
 
    case 1:
@@ -764,13 +765,13 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
                EVT.blinkTimer = 40;
             }
          }
-         EVT.blinkState++;
+         evt->state3++;
       }
       break;
 
    case 2:
       if (--EVT.blinkTimer == 0) {
-         EVT.blinkState -= 2;
+         evt->state3 -= 2;
       }
       break;
    }
@@ -817,10 +818,10 @@ void Evtf447_UnitPortrait(EvtData *evt) {
 
    // fallthrough
    case 1:
-      sprite->d.sprite.x1 = window->d.evtf004.x + 24;
-      sprite->d.sprite.x3 = window->d.evtf004.x - 23;
-      sprite->d.sprite.y1 = window->d.evtf004.y - 23;
-      sprite->d.sprite.y3 = window->d.evtf004.y + 24;
+      sprite->x1.n = window->x1.n + 24;
+      sprite->x3.n = window->x1.n - 23;
+      sprite->y1.n = window->y1.n - 23;
+      sprite->y3.n = window->y1.n + 24;
 
       for (portraitNum = 0; portraitNum <= 60; portraitNum++) {
          if (gState.portraitsToLoad[portraitNum] == gState.unitListPortraitId) {
@@ -876,10 +877,10 @@ void Evtf575_StatusPortrait(EvtData *evt) {
 
    // fallthrough
    case 1:
-      EVT.x1 = 29;
-      EVT.x3 = 76;
-      EVT.y1 = 65;
-      EVT.y3 = 112;
+      evt->x1.n = 29;
+      evt->x3.n = 76;
+      evt->y1.n = 65;
+      evt->y3.n = 112;
 
       for (portraitNum = 0; portraitNum < 75; portraitNum++) {
          if (gState.portraitsToLoad[portraitNum] == EVT.portraitId) {

@@ -444,8 +444,8 @@ void DisplaySupporterBonus(u8 z, u8 x, u8 attackerZ, u8 attackerX, u8 team) {
       marker = Evt_GetUnused();
       marker->functionIndex = EVTF_ATTACK_INFO_MARKER;
       marker->d.evtf052.type = 2;
-      HI(marker->d.evtf052.x) = x;
-      HI(marker->d.evtf052.z) = z;
+      marker->x1.s.hi = x;
+      marker->z1.s.hi = z;
    }
 }
 
@@ -465,14 +465,14 @@ s16 CalculateAttackDamage(UnitStatus *attacker, UnitStatus *defender) {
    s32 rnd;
    s16 dirBonus = 0;
 
-   attackerSprite = attacker->evtSprite;
-   defenderSprite = defender->evtSprite;
+   attackerSprite = attacker->sprite;
+   defenderSprite = defender->sprite;
    resist = gAdvantage[attacker->advantage][defender->advantage];
 
-   dx = HI(defenderSprite->d.sprite.x1);
-   dz = HI(defenderSprite->d.sprite.z1);
-   az = HI(attackerSprite->d.sprite.z1);
-   ax = HI(attackerSprite->d.sprite.x1);
+   dx = defenderSprite->x1.s.hi;
+   dz = defenderSprite->z1.s.hi;
+   az = attackerSprite->z1.s.hi;
+   ax = attackerSprite->x1.s.hi;
 
    resist -= CheckForSupporterBonus(dz - 1, dx, az, ax, attacker->team);
    resist -= CheckForSupporterBonus(dz, dx - 1, az, ax, attacker->team);
@@ -489,39 +489,39 @@ s16 CalculateAttackDamage(UnitStatus *attacker, UnitStatus *defender) {
 
    // High-ground bonus
    if (attacker->class == CLASS_ARCHER) {
-      resist -= (SPR_TERRAIN(attackerSprite).s.elevation - SPR_TERRAIN(defenderSprite).s.elevation);
+      resist -= (OBJ_TERRAIN(attackerSprite).s.elevation - OBJ_TERRAIN(defenderSprite).s.elevation);
    } else {
       resist -=
-          (SPR_TERRAIN(attackerSprite).s.elevation - SPR_TERRAIN(defenderSprite).s.elevation) * 3;
+          (OBJ_TERRAIN(attackerSprite).s.elevation - OBJ_TERRAIN(defenderSprite).s.elevation) * 3;
    }
 
    // Direction bonus
    switch (defender->direction >> 10) {
    case DIR_SOUTH:
-      if (HI(attackerSprite->d.sprite.x1) != HI(defenderSprite->d.sprite.x1)) {
+      if (attackerSprite->x1.s.hi != defenderSprite->x1.s.hi) {
          dirBonus += 1;
-      } else if (HI(attackerSprite->d.sprite.z1) < HI(defenderSprite->d.sprite.z1)) {
+      } else if (attackerSprite->z1.s.hi < defenderSprite->z1.s.hi) {
          dirBonus += 2;
       }
       break;
    case DIR_WEST:
-      if (HI(attackerSprite->d.sprite.z1) != HI(defenderSprite->d.sprite.z1)) {
+      if (attackerSprite->z1.s.hi != defenderSprite->z1.s.hi) {
          dirBonus += 1;
-      } else if (HI(attackerSprite->d.sprite.x1) < HI(defenderSprite->d.sprite.x1)) {
+      } else if (attackerSprite->x1.s.hi < defenderSprite->x1.s.hi) {
          dirBonus += 2;
       }
       break;
    case DIR_NORTH:
-      if (HI(attackerSprite->d.sprite.x1) != HI(defenderSprite->d.sprite.x1)) {
+      if (attackerSprite->x1.s.hi != defenderSprite->x1.s.hi) {
          dirBonus += 1;
-      } else if (HI(attackerSprite->d.sprite.z1) > HI(defenderSprite->d.sprite.z1)) {
+      } else if (attackerSprite->z1.s.hi > defenderSprite->z1.s.hi) {
          dirBonus += 2;
       }
       break;
    default:
-      if (HI(attackerSprite->d.sprite.z1) != HI(defenderSprite->d.sprite.z1)) {
+      if (attackerSprite->z1.s.hi != defenderSprite->z1.s.hi) {
          dirBonus += 1;
-      } else if (HI(attackerSprite->d.sprite.x1) > HI(defenderSprite->d.sprite.x1)) {
+      } else if (attackerSprite->x1.s.hi > defenderSprite->x1.s.hi) {
          dirBonus += 2;
       }
       break;
@@ -545,7 +545,7 @@ s16 CalculateAttackDamage(UnitStatus *attacker, UnitStatus *defender) {
    }
 
    power = attacker->atkVar10000 + (100000 / resist);
-   damage = power - (defender->defVar10000 + gTerrainBonus[SPR_TERRAIN(defenderSprite).s.terrain]);
+   damage = power - (defender->defVar10000 + gTerrainBonus[OBJ_TERRAIN(defenderSprite).s.terrain]);
 
    if (damage <= 0) {
       damage = 100;

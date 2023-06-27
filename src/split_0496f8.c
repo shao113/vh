@@ -278,7 +278,7 @@ void SetupPartyBattleUnit(u8 partyIdx, u8 z, u8 x, u8 direction) {
       unit = CreateUnitInNextSlot();
 
       battler = Evt_GetUnused();
-      unit->evtBattler = battler;
+      unit->battler = battler;
       battler->functionIndex = EVTF_BATTLE_UNIT;
       battler->d.evtf014.unit = unit;
       battler->d.evtf014.unitIdx = unit->idx;
@@ -343,8 +343,8 @@ void SetupPartyBattleUnit(u8 partyIdx, u8 z, u8 x, u8 direction) {
       }
       unit->maxMp = unit->mp;
       PopulateUnitSpellList(unit);
-      battler->d.evtf014.x = (x << 8) + 0x80;
-      battler->d.evtf014.z = (z << 8) + 0x80;
+      battler->x1.n = (x << 8) + 0x80;
+      battler->z1.n = (z << 8) + 0x80;
    }
 }
 
@@ -810,7 +810,7 @@ void SetupBattleUnit(s16 stripIdx, u8 z, u8 x, s8 level, u8 team, u8 direction, 
    }
 
    battler = Evt_GetUnused();
-   gTempUnitPtr->evtBattler = battler;
+   gTempUnitPtr->battler = battler;
    battler->functionIndex = EVTF_BATTLE_UNIT;
    battler->d.evtf014.unit = gTempUnitPtr;
    battler->d.evtf014.unitIdx = gTempUnitPtr->idx;
@@ -914,23 +914,23 @@ void SetupBattleUnit(s16 stripIdx, u8 z, u8 x, s8 level, u8 team, u8 direction, 
       gTempUnitPtr->maxMp = 99;
    }
 
-   battler->d.evtf014.x = (x << 8) + 0x80;
-   battler->d.evtf014.z = (z << 8) + 0x80;
+   battler->x1.n = (x << 8) + 0x80;
+   battler->z1.n = (z << 8) + 0x80;
 }
 
 void CreateBattleUnitForUnit(UnitStatus *unit) {
    EvtData *battler;
 
    battler = Evt_GetUnused();
-   unit->evtBattler = battler;
+   unit->battler = battler;
    battler->functionIndex = EVTF_BATTLE_UNIT;
    battler->d.evtf014.unit = unit;
    battler->d.evtf014.unitIdx = unit->idx;
    battler->d.evtf014.team = unit->team;
-   HI(battler->d.evtf014.x) = unit->tileX;
-   HI(battler->d.evtf014.z) = unit->tileZ;
-   LO(battler->d.evtf014.x) = 0x80;
-   LO(battler->d.evtf014.z) = 0x80;
+   battler->x1.s.hi = unit->tileX;
+   battler->z1.s.hi = unit->tileZ;
+   battler->x1.s.lo = 0x80;
+   battler->z1.s.lo = 0x80;
 }
 
 void SetupBattleUnits(void) {
@@ -2509,14 +2509,14 @@ void SetupField(void) {
    s32 gfx;
    // s32 terrain;
 
-   gMapUnitsPtr = &gMapUnits[1][0];
+   gMapUnitsPtr = &gMapUnits[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gMapUnits[i][j].raw = 0;
       }
    }
 
-   gBlueMovementGridPtr = &gPathGrid10[1][0];
+   gBlueMovementGridPtr = &gPathGrid10[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gPathGrid10[i][j] = PATH_STEP_UNSET;
@@ -2538,9 +2538,9 @@ void SetupField(void) {
       gPathGrid10[j][gMapMaxX + 1] = PATH_STEP_INVALID;
    }
 
-   gPathGrid0_Ptr = &gPathGrid0[1][0];
-   gPathGrid1_Ptr = &gPathGrid1[1][0];
-   gPathGrid2_Ptr = &gPathGrid2[1][0];
+   gPathGrid0_Ptr = &gPathGrid0[1];
+   gPathGrid1_Ptr = &gPathGrid1[1];
+   gPathGrid2_Ptr = &gPathGrid2[1];
 
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
@@ -2563,7 +2563,7 @@ void SetupField(void) {
       gPathGrid2[j][gMapMaxX + 1] = PATH_STEP_INVALID;
    }
 
-   gPathGrid3_Ptr = &gPathGrid3[1][0];
+   gPathGrid3_Ptr = &gPathGrid3[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gPathGrid3[i][j] = PATH_STEP_UNSET;
@@ -2585,7 +2585,7 @@ void SetupField(void) {
       gPathGrid3[j][gMapMaxX + 1] = PATH_STEP_INVALID;
    }
 
-   gPathGrid4_Ptr = &gPathGrid4[1][0];
+   gPathGrid4_Ptr = &gPathGrid4[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gPathGrid4[i][j] = PATH_STEP_UNSET;
@@ -2607,7 +2607,7 @@ void SetupField(void) {
       gPathGrid4[j][gMapMaxX + 1] = PATH_STEP_INVALID;
    }
 
-   gPathGrid5_Ptr = &gPathGrid5[1][0];
+   gPathGrid5_Ptr = &gPathGrid5[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gPathGrid5[i][j] = PATH_STEP_UNSET;
@@ -2629,7 +2629,7 @@ void SetupField(void) {
       gPathGrid5[j][gMapMaxX + 1] = PATH_STEP_INVALID;
    }
 
-   gPathGrid6_Ptr = &gPathGrid6[1][0];
+   gPathGrid6_Ptr = &gPathGrid6[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gPathGrid6[i][j] = PATH_STEP_UNSET;
@@ -2651,7 +2651,7 @@ void SetupField(void) {
       gPathGrid6[j][gMapMaxX + 1] = PATH_STEP_INVALID;
    }
 
-   gTerrainPtr = &gTerrain[1][0];
+   gTerrainPtr = &gTerrain[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gTerrain[i][j].raw = 0;
@@ -2674,7 +2674,7 @@ void SetupField(void) {
       gTerrain[j][gMapMaxX + 1].raw = 0xff7f;
    }
 
-   gRedAttackGridPtr = &gPathGrid0[1][0];
+   gRedAttackGridPtr = &gPathGrid0[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gPathGrid0[i][j] = PATH_STEP_UNSET;
@@ -2696,7 +2696,7 @@ void SetupField(void) {
       gPathGrid0[j][gMapMaxX + 1] = PATH_STEP_INVALID;
    }
 
-   gYellowTargetGridPtr = &gPathGrid1[1][0];
+   gYellowTargetGridPtr = &gPathGrid1[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gPathGrid1[i][j] = PATH_STEP_UNSET;
@@ -2718,14 +2718,14 @@ void SetupField(void) {
       gPathGrid1[j][gMapMaxX + 1] = PATH_STEP_INVALID;
    }
 
-   gTileStateGridPtr = &gTileStateGrid[1][0];
+   gTileStateGridPtr = &gTileStateGrid[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gTileStateGrid[i][j].action = TA_NONE;
       }
    }
 
-   gCrateGrid_Ptr = &gCrateGrid[1][0];
+   gCrateGrid_Ptr = &gCrateGrid[1];
    for (i = 0; i < 30; i++) {
       for (j = 0; j < 65; j++) {
          gCrateGrid[i][j] = PATH_STEP_UNSET;
