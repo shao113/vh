@@ -163,11 +163,11 @@ void Evtf022_029_Projectile(EvtData *evt) {
    } else {
       // EVTF_PROJECTILE_INDIRECT: Unused? maybe to open chest w/ ranged attacker?
       targetSprite = gTempGfxEvt;
-      targetSprite->x1.s.hi = LO(gTargetX);
-      targetSprite->z1.s.hi = LO(gTargetZ);
+      targetSprite->x1.s.hi = gTargetX;
+      targetSprite->z1.s.hi = gTargetZ;
       targetSprite->x1.s.lo = 0x80;
       targetSprite->z1.s.lo = 0x80;
-      targetSprite->y1.n = GetTerrainElevation(LO(gTargetZ), LO(gTargetX));
+      targetSprite->y1.n = GetTerrainElevation(gTargetZ, gTargetX);
    }
 
    switch (evt->state) {

@@ -3,7 +3,8 @@
 #include "graphics.h"
 #include "state.h"
 
-// TBD: When to use ANGLE_360_DEGREES vs ONE; tough to make good guesses without knowing the math
+// TBD: When to use ANGLE_360_DEGREES vs ONE; tough to make good guesses without knowing the math;
+// Should at least fix it so that e.g. rsin input is treated as angle, w/ output divided by ONE
 
 #undef EVTF
 #define EVTF 119
@@ -172,19 +173,15 @@ void Evtf062_StretchWarpSprite(EvtData *evt) {
          quad[i].vy = gQuad_800fe53c[i].vy;
       }
       for (i = 0; i < 4; i++) {
-         gQuad_800fe53c[i].vx =
-             (quad[i].vx * (rsin(EVT.phase) + ANGLE_360_DEGREES)) / ANGLE_360_DEGREES;
-         gQuad_800fe53c[i].vz =
-             (quad[i].vz * (rsin(EVT.phase) + ANGLE_360_DEGREES)) / ANGLE_360_DEGREES;
+         gQuad_800fe53c[i].vx = quad[i].vx * (rsin(EVT.phase) + ONE) / ONE;
+         gQuad_800fe53c[i].vz = quad[i].vz * (rsin(EVT.phase) + ONE) / ONE;
 
          if (EVT.phase <= ANGLE_180_DEGREES) {
-            gQuad_800fe53c[i].vy = quad[i].vy *
-                                   (rsin(EVT.phase + ANGLE_180_DEGREES) / 2 + ANGLE_180_DEGREES) /
-                                   ANGLE_180_DEGREES;
+            gQuad_800fe53c[i].vy =
+                quad[i].vy * (rsin(EVT.phase + ANGLE_180_DEGREES) / 2 + (ONE / 2)) / (ONE / 2);
          } else {
-            gQuad_800fe53c[i].vy = quad[i].vy *
-                                   (rsin(EVT.phase + ANGLE_180_DEGREES) * 3 + ANGLE_360_DEGREES) /
-                                   ANGLE_360_DEGREES;
+            gQuad_800fe53c[i].vy =
+                quad[i].vy * (rsin(EVT.phase + ANGLE_180_DEGREES) * 3 + ONE) / ONE;
          }
       }
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite, 0);
@@ -519,8 +516,8 @@ void Evtf077_Circle_TBD(EvtData *evt) {
       ringSprite->functionIndex = EVTF_NOOP;
       ringSprite->d.sprite.gfxIdx = GFX_RING;
 
-      a = rsin(EVT.angle) * 0xe0 / ONE;
-      b = rsin(EVT.angle * 2) * 0xe0 / ONE;
+      a = 0xe0 * rsin(EVT.angle) / ONE;
+      b = 0xe0 * rsin(EVT.angle * 2) / ONE;
       EVT.angle += 0x80;
 
       fade = EVT.fade;
@@ -861,8 +858,7 @@ void Evtf803_Fx_TBD(EvtData *evt) {
    case 2:
       sprite = EVT.sprite;
 
-      gQuad_800fe63c[0].vy =
-          -12 - ((EVT.todo_x28 - 12) * abs(rsin(EVT.todo_x34)) / ANGLE_360_DEGREES);
+      gQuad_800fe63c[0].vy = -12 - ((EVT.todo_x28 - 12) * abs(rsin(EVT.todo_x34)) / ONE);
       gQuad_800fe63c[1].vy = gQuad_800fe63c[0].vy;
 
       EVT.todo_x34 += EVT.todo_x2a;
@@ -927,8 +923,7 @@ void Evtf801_Fx_TBD(EvtData *evt) {
    case 2:
       sprite = EVT.sprite;
 
-      gQuad_800fe63c[0].vy =
-          -16 - ((EVT.todo_x28 - 16) * abs(rsin(EVT.todo_x34)) / ANGLE_360_DEGREES);
+      gQuad_800fe63c[0].vy = -16 - ((EVT.todo_x28 - 16) * abs(rsin(EVT.todo_x34)) / ONE);
       gQuad_800fe63c[1].vy = gQuad_800fe63c[0].vy;
 
       EVT.todo_x34 += EVT.todo_x2a;
@@ -1191,19 +1186,15 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
       }
 
       for (i = 0; i < 4; i++) {
-         gQuad_800fe53c[i].vx =
-             (quad[i].vx * (rsin(EVT.phase) + ANGLE_360_DEGREES)) / ANGLE_360_DEGREES;
-         gQuad_800fe53c[i].vz =
-             (quad[i].vz * (rsin(EVT.phase) + ANGLE_360_DEGREES)) / ANGLE_360_DEGREES;
+         gQuad_800fe53c[i].vx = (quad[i].vx * (rsin(EVT.phase) + ONE) / ONE);
+         gQuad_800fe53c[i].vz = (quad[i].vz * (rsin(EVT.phase) + ONE) / ONE);
 
          if (EVT.phase <= ANGLE_180_DEGREES) {
-            gQuad_800fe53c[i].vy = quad[i].vy *
-                                   (rsin(EVT.phase + ANGLE_180_DEGREES) / 2 + ANGLE_180_DEGREES) /
-                                   ANGLE_180_DEGREES;
+            gQuad_800fe53c[i].vy =
+                quad[i].vy * (rsin(EVT.phase + ANGLE_180_DEGREES) / 2 + (ONE / 2)) / (ONE / 2);
          } else {
-            gQuad_800fe53c[i].vy = quad[i].vy *
-                                   (rsin(EVT.phase + ANGLE_180_DEGREES) * 3 + ANGLE_360_DEGREES) /
-                                   ANGLE_360_DEGREES;
+            gQuad_800fe53c[i].vy =
+                quad[i].vy * (rsin(EVT.phase + ANGLE_180_DEGREES) * 3 + ONE) / ONE;
          }
       }
 
@@ -1400,59 +1391,59 @@ void Evtf215_Cloud(EvtData *evt) {
       sprite = EVT.sprite;
       UpdateEvtAnimation(sprite);
 
-      sprite->x1.n = evt->x1.n + EVT.position1.x +
-                     (EVT.position1.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
-      sprite->z1.n = evt->z1.n + EVT.position1.z +
-                     (EVT.position1.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->x1.n =
+          evt->x1.n + EVT.position1.x + (EVT.position1.x * (ONE - rcos(EVT.theta)) / ONE);
+      sprite->z1.n =
+          evt->z1.n + EVT.position1.z + (EVT.position1.z * (ONE - rcos(EVT.theta)) / ONE);
       sprite->y1.n = evt->y1.n + (EVT.position1.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->x1.n = evt->x1.n + EVT.position2.x +
-                     (EVT.position2.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
-      sprite->z1.n = evt->z1.n + EVT.position2.z +
-                     (EVT.position2.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->x1.n =
+          evt->x1.n + EVT.position2.x + (EVT.position2.x * (ONE - rcos(EVT.theta)) / ONE);
+      sprite->z1.n =
+          evt->z1.n + EVT.position2.z + (EVT.position2.z * (ONE - rcos(EVT.theta)) / ONE);
       sprite->y1.n = evt->y1.n + (EVT.position2.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->x1.n = evt->x1.n + EVT.position3.x +
-                     (EVT.position3.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
-      sprite->z1.n = evt->z1.n + EVT.position3.z +
-                     (EVT.position3.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->x1.n =
+          evt->x1.n + EVT.position3.x + (EVT.position3.x * (ONE - rcos(EVT.theta)) / ONE);
+      sprite->z1.n =
+          evt->z1.n + EVT.position3.z + (EVT.position3.z * (ONE - rcos(EVT.theta)) / ONE);
       sprite->y1.n = evt->y1.n + (EVT.position3.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->x1.n = evt->x1.n + EVT.position4.x +
-                     (EVT.position4.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
-      sprite->z1.n = evt->z1.n + EVT.position4.z +
-                     (EVT.position4.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->x1.n =
+          evt->x1.n + EVT.position4.x + (EVT.position4.x * (ONE - rcos(EVT.theta)) / ONE);
+      sprite->z1.n =
+          evt->z1.n + EVT.position4.z + (EVT.position4.z * (ONE - rcos(EVT.theta)) / ONE);
       sprite->y1.n = evt->y1.n + (EVT.position4.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->x1.n = evt->x1.n + EVT.position5.x +
-                     (EVT.position5.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
-      sprite->z1.n = evt->z1.n + EVT.position5.z +
-                     (EVT.position5.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->x1.n =
+          evt->x1.n + EVT.position5.x + (EVT.position5.x * (ONE - rcos(EVT.theta)) / ONE);
+      sprite->z1.n =
+          evt->z1.n + EVT.position5.z + (EVT.position5.z * (ONE - rcos(EVT.theta)) / ONE);
       sprite->y1.n = evt->y1.n + (EVT.position5.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->x1.n = evt->x1.n + EVT.position6.x +
-                     (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
-      sprite->z1.n = evt->z1.n + EVT.position6.z +
-                     (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->x1.n =
+          evt->x1.n + EVT.position6.x + (EVT.position6.x * (ONE - rcos(EVT.theta)) / ONE);
+      sprite->z1.n =
+          evt->z1.n + EVT.position6.z + (EVT.position6.z * (ONE - rcos(EVT.theta)) / ONE);
       sprite->y1.n = evt->y1.n + (EVT.position6.y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->x1.n = evt->x1.n + EVT.position7_x +
-                     (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
-      sprite->z1.n = evt->z1.n + EVT.position7_z +
-                     (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->x1.n =
+          evt->x1.n + EVT.position7_x + (EVT.position6.x * (ONE - rcos(EVT.theta)) / ONE);
+      sprite->z1.n =
+          evt->z1.n + EVT.position7_z + (EVT.position6.z * (ONE - rcos(EVT.theta)) / ONE);
       sprite->y1.n = evt->y1.n + (EVT.position7_y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      sprite->x1.n = evt->x1.n + EVT.position8_x +
-                     (EVT.position6.x * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
-      sprite->z1.n = evt->z1.n + EVT.position8_z +
-                     (EVT.position6.z * (ANGLE_360_DEGREES - rcos(EVT.theta)) / ONE);
+      sprite->x1.n =
+          evt->x1.n + EVT.position8_x + (EVT.position6.x * (ONE - rcos(EVT.theta)) / ONE);
+      sprite->z1.n =
+          evt->z1.n + EVT.position8_z + (EVT.position6.z * (ONE - rcos(EVT.theta)) / ONE);
       sprite->y1.n = evt->y1.n + (EVT.position8_y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
@@ -1542,11 +1533,11 @@ void Evtf214_DustCloud(EvtData *evt) {
          qx = pPosition->x >> 2;
          qz = pPosition->z >> 2;
 
-         sprite->x1.n = evt->x1.n + pPosition->x + qx +
-                        (pPosition->x * (ANGLE_360_DEGREES - rcos(theta / 2)) / ONE);
+         sprite->x1.n =
+             evt->x1.n + pPosition->x + qx + (pPosition->x * (ONE - rcos(theta / 2)) / ONE);
 
-         sprite->z1.n = evt->z1.n + pPosition->z + qz +
-                        (pPosition->z * (ANGLE_360_DEGREES - rcos(theta / 2)) / ONE);
+         sprite->z1.n =
+             evt->z1.n + pPosition->z + qz + (pPosition->z * (ONE - rcos(theta / 2)) / ONE);
 
          sprite->y1.n = evt->y1.n + (pPosition->y * rsin(theta) / ONE);
 
@@ -2162,7 +2153,7 @@ void Evtf206_686_BloodSpurtParticle(EvtData *evt) {
       sprite = EVT.sprite;
       UpdateEvtAnimation(sprite);
 
-      a = ANGLE_360_DEGREES - rcos(EVT.theta / 2);
+      a = ONE - rcos(EVT.theta / 2);
       b = rsin(EVT.theta);
       shade = EVT.shade + 0x40;
 

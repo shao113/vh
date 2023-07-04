@@ -34,6 +34,8 @@ typedef enum GfxIdx {
    GFX_PORTRAIT_B_SPEAK_2 = 23,
    GFX_PORTRAIT_B_BLINK = 24,
    GFX_TBD_25 = 25,
+   GFX_TBD_26 = 26,
+   GFX_TBD_27 = 27,
    GFX_TBD_28 = 28,
    GFX_DIGIT_0 = 30,
    GFX_DIGIT_1 = 31,
@@ -155,6 +157,7 @@ typedef enum GfxIdx {
    GFX_LIGHTNING_6 = 154,
    GFX_LIGHTNING_7 = 155,
    GFX_LIGHTNING_8 = 156,
+   GFX_TILED_DIAMONDS = 197,
    GFX_ARROW = 212,
    GFX_FOUNTAIN_1 = 219,
    GFX_FOUNTAIN_2 = 220,
@@ -174,6 +177,14 @@ typedef enum GfxIdx {
    GFX_BLUE_CRYSTAL = 267,
    GFX_BLUE_SHARD = 268,
    GFX_SUPPORT = 269,
+   GFX_TBD_278 = 278,
+   GFX_TBD_279 = 279,
+   GFX_TBD_280 = 280,
+   GFX_TBD_281 = 281,
+   GFX_TBD_282 = 282,
+   GFX_TBD_283 = 283,
+   GFX_TBD_284 = 284,
+   GFX_TBD_285 = 285,
    GFX_POISON_1 = 286,
    GFX_POISON_2 = 287,
    GFX_POISON_3 = 288,
@@ -442,6 +453,16 @@ typedef struct PortraitsDb {
    s16 sceneSets[103][26];
 } PortraitsDb;
 
+typedef struct MaskEffectPreset {
+   s16 srcGfxIdx;
+   s16 dstGfxIdx;
+   s8 width;
+   s8 height;
+   s16 semiTrans;
+   s16 clut;
+   CVECTOR color;
+} MaskEffectPreset;
+
 extern Graphics gGraphicBuffers[2];
 extern Graphics *gGraphicsPtr;
 extern SVECTOR gLightRotation;
@@ -449,8 +470,6 @@ extern CVECTOR gLightColor;
 extern MATRIX gCameraMatrix;
 extern SVECTOR gCameraPos;
 extern SVECTOR gCameraRotation;
-/* FIXME - static inline getters? */
-// extern s16 gCameraRotation_vx, gCameraRotation_vy, gCameraRotation_vz;
 extern VECTOR gCameraZoom;
 extern s32 gGeomOffsetX, gGeomOffsetY;
 extern s32 gQuadIndex;
@@ -505,6 +524,7 @@ void DecodeUnitSprites(void);
 void StartUnitSpritesDecoder(u8);
 struct EvtData *GetUnitSpriteAtPosition(u8, u8);
 void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
+void ApplyMaskEffectPreset(struct EvtData *, MaskEffectPreset *);
 
 void AddEvtPrim_Gui(u32 *ot, struct EvtData *evt);
 

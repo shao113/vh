@@ -16,7 +16,7 @@ O_FILES     	:= $(foreach file,$(S_FILES),build/$(file).o) \
 				   $(foreach file,$(C_FILES),build/$(file).o) \
 				   $(foreach file,$(BIN_FILES),build/$(file).o)
 
-PYTHON          := python3.10
+PYTHON          := python3.11
 WINE            := /usr/bin/wine
 CPP             := cpp -P
 AS              := mips-elf-as -EL

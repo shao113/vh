@@ -56,6 +56,14 @@ void Evtf101_HealingSparkle(EvtData *);
 void Evtf102_227_SpellFx2_Poison(EvtData *);
 void Evtf103_PoisonBubbles(EvtData *);
 void Evtf104_SpellFx2_Cure(EvtData *);
+void Evtf106_SpellFx3_MagicCharge(EvtData *);
+void Evtf107_SpellFx_MagicCharge_GlyphRing(EvtData *);
+void Evtf108_SpellFx2_HarmfulWave(EvtData *);
+void Evtf109_SpellFx_HarmfulWave_Ring(EvtData *);
+void Evtf110_CastingStatBuff(EvtData *);
+void Evtf111_SpellFx2_BlessWeapon(EvtData *);
+void Evtf112_SpellFx2_MysticShield(EvtData *);
+void Evtf113_SpellFx2_MysticEnergy(EvtData *);
 void Evtf119_Fx_TBD(EvtData *);
 void Evtf130_Fx_TBD(EvtData *);
 void Evtf131_SlayUnit(EvtData *);
@@ -63,7 +71,11 @@ void Evtf132_Etc_Fx_TBD(EvtData *);
 void Evtf133_Fx_TBD(EvtData *);
 void Evtf137_Fx_TBD(EvtData *);
 void Evtf141_Fx_TBD(EvtData *);
+void Evtf147_Fx_TBD(EvtData *);
 void Evtf149_Fx_TBD(EvtData *);
+void Evtf156_SpellFx1_DeltaMirage(EvtData *);
+void Evtf157_SpellFx_DeltaMirage_Ray(EvtData *);
+void Evtf173_SpellFx_FireGem_Beam(EvtData *);
 void Evtf197_SpellFx1_RollingThunder(EvtData *);
 void Evtf198_SpellFx_RollingThunder_CastingBolt(EvtData *);
 void Evtf201_UnitStruck(EvtData *);
@@ -251,6 +263,8 @@ void Evtf595_StatusWindow(EvtData *);
 void Evtf596_StatusWindowMgr(EvtData *);
 void Evtf597_BattleIntro(EvtData *);
 void Evtf598_WorldActions(EvtData *);
+void Evtf681_StatBuffFx(EvtData *);
+void Evtf733_StatBuffIcon(EvtData *);
 void Evtf801_Fx_TBD(EvtData *);
 void Evtf802_Fx_TBD(EvtData *);
 void Evtf803_Fx_TBD(EvtData *);
@@ -363,14 +377,14 @@ EvtFunction gEvtFunctionPointers[804] = {
     [103] = Evtf103_PoisonBubbles,
     [104] = Evtf104_SpellFx2_Cure,
     [105] = (EvtFunction)NULL,
-    [106] = (EvtFunction)0x800693b0,
-    [107] = (EvtFunction)0x80069ae4,
-    [108] = (EvtFunction)0x8006a01c,
-    [109] = (EvtFunction)0x8006a770,
-    [110] = (EvtFunction)0x8006aabc,
-    [111] = (EvtFunction)0x8006a9c0,
-    [112] = (EvtFunction)0x8006aa14,
-    [113] = (EvtFunction)0x8006aa68,
+    [106] = Evtf106_SpellFx3_MagicCharge,
+    [107] = Evtf107_SpellFx_MagicCharge_GlyphRing,
+    [108] = Evtf108_SpellFx2_HarmfulWave,
+    [109] = Evtf109_SpellFx_HarmfulWave_Ring,
+    [110] = Evtf110_CastingStatBuff,
+    [111] = Evtf111_SpellFx2_BlessWeapon,
+    [112] = Evtf112_SpellFx2_MysticShield,
+    [113] = Evtf113_SpellFx2_MysticEnergy,
     [114] = (EvtFunction)NULL,
     [115] = (EvtFunction)0x8007e9b0,
     [116] = (EvtFunction)0x8007e780,
@@ -404,7 +418,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [144] = (EvtFunction)0x80078264,
     [145] = (EvtFunction)0x800785b4,
     [146] = (EvtFunction)0x80078210,
-    [147] = (EvtFunction)0x8006d7ec,
+    [147] = Evtf147_Fx_TBD,
     [148] = (EvtFunction)0x80070c58,
     [149] = Evtf149_Fx_TBD,
     [150] = (EvtFunction)NULL,
@@ -413,8 +427,8 @@ EvtFunction gEvtFunctionPointers[804] = {
     [153] = (EvtFunction)NULL,
     [154] = (EvtFunction)NULL,
     [155] = (EvtFunction)0x800748e4,
-    [156] = (EvtFunction)0x8006e0bc,
-    [157] = (EvtFunction)0x8006e424,
+    [156] = Evtf156_SpellFx1_DeltaMirage,
+    [157] = Evtf157_SpellFx_DeltaMirage_Ray,
     [158] = (EvtFunction)0x8006e940,
     [159] = (EvtFunction)0x8006ec2c,
     [160] = (EvtFunction)0x80073cf4,
@@ -430,7 +444,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [170] = (EvtFunction)0x800729a8,
     [171] = (EvtFunction)0x80072c58,
     [172] = (EvtFunction)0x80070438,
-    [173] = (EvtFunction)0x8006c3c4,
+    [173] = Evtf173_SpellFx_FireGem_Beam,
     [174] = (EvtFunction)NULL,
     [175] = (EvtFunction)0x80073310,
     [176] = (EvtFunction)0x800736f4,
@@ -938,7 +952,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [678] = (EvtFunction)0x80091248,
     [679] = (EvtFunction)0x800ada90,
     [680] = (EvtFunction)0x800adcf4,
-    [681] = (EvtFunction)0x8006bbdc,
+    [681] = Evtf681_StatBuffFx,
     [682] = (EvtFunction)0x800ade8c,
     [683] = (EvtFunction)0x800b2708,
     [684] = (EvtFunction)0x800b2790,
@@ -990,7 +1004,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [730] = (EvtFunction)0x800b130c,
     [731] = (EvtFunction)0x800b0e04,
     [732] = (EvtFunction)0x800af520,
-    [733] = (EvtFunction)0x8006bff8,
+    [733] = Evtf733_StatBuffIcon,
     [734] = (EvtFunction)0x800b1334,
     [735] = (EvtFunction)0x80092ac0,
     [736] = (EvtFunction)0x80092dc0,

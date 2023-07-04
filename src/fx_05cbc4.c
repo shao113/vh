@@ -1,0 +1,638 @@
+#include "common.h"
+#include "evt.h"
+#include "graphics.h"
+#include "battle.h"
+#include "field.h"
+
+#undef EVTF
+#define EVTF 173
+void Evtf173_SpellFx_FireGem_Beam(EvtData *evt) {
+   s16 x, y, z;
+   s16 a;
+   s32 i;
+   EvtData *evt_s2;
+   EvtData *evt_v1;
+   SVECTOR positions[6];
+   s16 local_38[6][2] = {{0, 1}, {3, 4}, {0, 2}, {3, 5}, {2, 1}, {5, 4}};
+
+   x = evt->x1.n;
+   y = evt->y1.n;
+   z = evt->z1.n;
+
+   switch (evt->state) {
+   case 0:
+      EVT.todo_x2a = 0x800;
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      evt_s2 = Evt_GetUnused();
+      evt_s2->functionIndex = EVTF_NOOP;
+      evt_s2->d.sprite.gfxIdx = GFX_COLOR_1 + EVT.todo_x26;
+      evt_s2->d.sprite.semiTrans = 1;
+
+      a = rsin(EVT.todo_x24);
+      positions[0].vx = 0x140 * rcos(a) >> 12;
+      positions[0].vz = 0x140 * rsin(a) >> 12;
+      positions[1].vx = 0x140 * rcos(a + 0x555) >> 12;
+      positions[1].vz = 0x140 * rsin(a + 0x555) >> 12;
+      positions[2].vx = 0x140 * rcos(a + 0xaaa) >> 12;
+      positions[2].vz = 0x140 * rsin(a + 0xaaa) >> 12;
+      positions[3].vx = 0x140 * rcos(a + 0x2ab) >> 12;
+      positions[3].vz = 0x140 * rsin(a + 0x2ab) >> 12;
+      positions[4].vx = 0x140 * rcos(a + 0x7ff) >> 12;
+      positions[4].vz = 0x140 * rsin(a + 0x7ff) >> 12;
+      positions[5].vx = 0x140 * rcos(a + 0xd55) >> 12;
+      positions[5].vz = 0x140 * rsin(a + 0xd55) >> 12;
+      EVT.todo_x24 += 0x20;
+
+      evt_s2->d.sprite.coords[0].x = evt_s2->d.sprite.coords[1].x = x + positions[0].vx;
+      evt_s2->d.sprite.coords[0].z = evt_s2->d.sprite.coords[1].z = z + positions[0].vz;
+      // y += EVT.todo_x2a;
+      evt_s2->d.sprite.coords[0].y = evt_s2->d.sprite.coords[1].y = evt_s2->d.sprite.coords[2].y =
+          evt_s2->d.sprite.coords[3].y = (y + EVT.todo_x2a);
+      evt_s2->d.sprite.coords[2].x = x + positions[1].vx;
+      evt_s2->d.sprite.coords[2].z = z + positions[1].vz;
+      evt_s2->d.sprite.coords[3].x = x + positions[2].vx;
+      evt_s2->d.sprite.coords[3].z = z + positions[2].vz;
+      AddEvtPrim4(gGraphicsPtr->ot, evt_s2);
+
+      evt_s2->d.sprite.coords[0].x = evt_s2->d.sprite.coords[1].x = x + positions[3].vx;
+      evt_s2->d.sprite.coords[0].z = evt_s2->d.sprite.coords[1].z = z + positions[3].vz;
+      evt_s2->d.sprite.coords[2].x = x + positions[4].vx;
+      evt_s2->d.sprite.coords[2].z = z + positions[4].vz;
+      evt_s2->d.sprite.coords[3].x = x + positions[5].vx;
+      evt_s2->d.sprite.coords[3].z = z + positions[5].vz;
+      AddEvtPrim4(gGraphicsPtr->ot, evt_s2);
+
+      if ((EVT.todo_x2c == 0) && (++EVT.todo_x2e % 3 == 0)) {
+         EVT.todo_x26++;
+         if (EVT.todo_x26 == 7) {
+            EVT.todo_x2c++;
+            EVT.todo_x26 = 6;
+         }
+      } else if ((EVT.todo_x2e % 3 == 0) && (--EVT.todo_x26 < 0)) {
+         EVT.todo_x2c = 0;
+         EVT.todo_x26 = 0;
+      }
+
+      EVT.todo_x2a -= 0x40;
+      if (EVT.todo_x2a < 0) {
+         EVT.todo_x2a = 0;
+         evt_v1 = Evt_GetUnused();
+         evt_v1->functionIndex = EVTF_FX_TBD_149;
+         evt_v1->x1.n = evt->x1.n;
+         evt_v1->z1.n = evt->z1.n;
+         EVT.fx = evt_v1;
+         evt->state++;
+      }
+
+      evt_s2->functionIndex = EVTF_NULL;
+      break;
+
+   case 2:
+      evt_s2 = Evt_GetUnused();
+      evt_s2->functionIndex = EVTF_NOOP;
+      evt_s2->d.sprite.gfxIdx = GFX_COLOR_1 + EVT.todo_x26;
+      evt_s2->d.sprite.semiTrans = 1;
+
+      a = rsin(EVT.todo_x24);
+      positions[0].vx = 0x140 * rcos(a) >> 12;
+      positions[0].vz = 0x140 * rsin(a) >> 12;
+      positions[1].vx = 0x140 * rcos(a + 0x555) >> 12;
+      positions[1].vz = 0x140 * rsin(a + 0x555) >> 12;
+      positions[2].vx = 0x140 * rcos(a + 0xaaa) >> 12;
+      positions[2].vz = 0x140 * rsin(a + 0xaaa) >> 12;
+      positions[3].vx = 0x140 * rcos(a + 0x2ab) >> 12;
+      positions[3].vz = 0x140 * rsin(a + 0x2ab) >> 12;
+      positions[4].vx = 0x140 * rcos(a + 0x7ff) >> 12;
+      positions[4].vz = 0x140 * rsin(a + 0x7ff) >> 12;
+      positions[5].vx = 0x140 * rcos(a + 0xd55) >> 12;
+      positions[5].vz = 0x140 * rsin(a + 0xd55) >> 12;
+      EVT.todo_x24 += 0x20;
+
+      for (i = 0; i < 6; i++) {
+         evt_s2->d.sprite.coords[0].x = x;
+         evt_s2->d.sprite.coords[0].z = z;
+         evt_s2->d.sprite.coords[0].y = evt->y1.n + EVT.todo_x28;
+         evt_s2->d.sprite.coords[1].x = x;
+         evt_s2->d.sprite.coords[1].z = z;
+         evt_s2->d.sprite.coords[1].y = evt->y1.n + EVT.todo_x28;
+         evt_s2->d.sprite.coords[2].x = x + positions[local_38[i][0]].vx;
+         evt_s2->d.sprite.coords[2].z = z + positions[local_38[i][0]].vz;
+         evt_s2->d.sprite.coords[2].y = evt->y1.n + EVT.todo_x2a;
+         evt_s2->d.sprite.coords[3].x = x + positions[local_38[i][1]].vx;
+         evt_s2->d.sprite.coords[3].z = z + positions[local_38[i][1]].vz;
+         evt_s2->d.sprite.coords[3].y = evt->y1.n + EVT.todo_x2a;
+
+         evt_s2->x1.n = (evt_s2->d.sprite.coords[0].x + evt_s2->d.sprite.coords[1].x +
+                         evt_s2->d.sprite.coords[2].x + evt_s2->d.sprite.coords[3].x) >>
+                        2;
+         evt_s2->z1.n = (evt_s2->d.sprite.coords[0].z + evt_s2->d.sprite.coords[1].z +
+                         evt_s2->d.sprite.coords[2].z + evt_s2->d.sprite.coords[3].z) >>
+                        2;
+         evt_s2->y1.n = evt_s2->d.sprite.coords[3].y;
+
+         AddEvtPrim3(gGraphicsPtr->ot, evt_s2);
+         if ((i + 1) % 2 != 0) {
+            evt_s2->d.sprite.gfxIdx++;
+         }
+      }
+
+      evt_s2->d.sprite.coords[0].x = x + positions[0].vx;
+      evt_s2->d.sprite.coords[0].z = z + positions[0].vz;
+      evt_s2->d.sprite.coords[0].y = evt->y1.n + EVT.todo_x2a;
+      evt_s2->d.sprite.coords[1].x = x + positions[0].vx;
+      evt_s2->d.sprite.coords[1].z = z + positions[0].vz;
+      evt_s2->d.sprite.coords[1].y = evt->y1.n + EVT.todo_x2a;
+      evt_s2->d.sprite.coords[2].x = x + positions[1].vx;
+      evt_s2->d.sprite.coords[2].z = z + positions[1].vz;
+      evt_s2->d.sprite.coords[2].y = evt->y1.n + EVT.todo_x2a;
+      evt_s2->d.sprite.coords[3].x = x + positions[2].vx;
+      evt_s2->d.sprite.coords[3].z = z + positions[2].vz;
+      evt_s2->d.sprite.coords[3].y = evt->y1.n + EVT.todo_x2a;
+      AddEvtPrim4(gGraphicsPtr->ot, evt_s2);
+
+      evt_s2->d.sprite.coords[0].x = x + positions[3].vx;
+      evt_s2->d.sprite.coords[0].z = z + positions[3].vz;
+      evt_s2->d.sprite.coords[0].y = evt->y1.n + EVT.todo_x2a;
+      evt_s2->d.sprite.coords[1].x = x + positions[3].vx;
+      evt_s2->d.sprite.coords[1].z = z + positions[3].vz;
+      evt_s2->d.sprite.coords[1].y = evt->y1.n + EVT.todo_x2a;
+      evt_s2->d.sprite.coords[2].x = x + positions[4].vx;
+      evt_s2->d.sprite.coords[2].z = z + positions[4].vz;
+      evt_s2->d.sprite.coords[2].y = evt->y1.n + EVT.todo_x2a;
+      evt_s2->d.sprite.coords[3].x = x + positions[5].vx;
+      evt_s2->d.sprite.coords[3].z = z + positions[5].vz;
+      evt_s2->d.sprite.coords[3].y = evt->y1.n + EVT.todo_x2a;
+      AddEvtPrim4(gGraphicsPtr->ot, evt_s2);
+
+      evt_s2->functionIndex = EVTF_NULL;
+
+      switch (evt->state3) {
+      case 0:
+         if ((EVT.todo_x2c == 0) && (++EVT.todo_x2e % 3 == 0)) {
+            EVT.todo_x26++;
+            if (EVT.todo_x26 == 7) {
+               EVT.todo_x2c++;
+               EVT.todo_x26 = 6;
+            }
+         } else if ((EVT.todo_x2e % 3 == 0) && (--EVT.todo_x26 < 0)) {
+            EVT.todo_x2c = 0;
+            EVT.todo_x26 = 0;
+         }
+         EVT.todo_x28 += 0xc0;
+         if (EVT.todo_x28 > 0x800) {
+            EVT.todo_x28 = 0x800;
+            evt->state3++;
+         }
+         break;
+
+      case 1:
+         if ((EVT.todo_x2c == 0) && (++EVT.todo_x2e % 3 == 0)) {
+            EVT.todo_x26++;
+            if (EVT.todo_x26 == 7) {
+               EVT.todo_x2c++;
+               EVT.todo_x26 = 6;
+            }
+         } else if ((EVT.todo_x2e % 3 == 0) && (--EVT.todo_x26 < 0)) {
+            EVT.todo_x2c = 0;
+            EVT.todo_x26 = 0;
+            EVT.todo_x30++;
+         }
+         if (EVT.todo_x30 == 2) {
+            evt->state3++;
+            EVT.todo_x28 = 0;
+         }
+         break;
+
+      case 2:
+         EVT.todo_x28 = (0x1000U - rsin(EVT.todo_x30)) >> 1;
+         if ((EVT.todo_x2c == 0) && (++EVT.todo_x2e % 3 == 0)) {
+            EVT.todo_x26++;
+            if (EVT.todo_x26 == 7) {
+               EVT.todo_x2c++;
+               EVT.todo_x26 = 6;
+            }
+         } else if ((EVT.todo_x2e % 3 == 0) && (--EVT.todo_x26 < 0)) {
+            EVT.todo_x2c = 0;
+            EVT.todo_x26 = 0;
+         }
+         EVT.todo_x30 += 0x20;
+         if (EVT.todo_x30 > 0x400) {
+            evt->functionIndex = EVTF_NULL;
+            evt_v1 = EVT.fx;
+            evt_v1->state = 99;
+         }
+         break;
+      }
+
+      break;
+   }
+}
+
+void func_8006D1AC(EvtData *fx, EvtData *sprite, s16 param_3, s16 param_4, s16 param_5, s16 param_6,
+                   s16 param_7, s16 param_8, s16 param_9) {
+
+   sprite->d.sprite.coords[0].x = fx->x1.n + param_3 + 0x100;
+   sprite->d.sprite.coords[1].x = fx->x1.n + param_3 - 0x100;
+   if (param_9) { // 1
+      sprite->d.sprite.coords[2].x = fx->x1.n + param_6 + 0x110 - (rand() % 0x20);
+      sprite->d.sprite.coords[3].x = fx->x1.n + param_6 - 0xf0 - (rand() % 0x20);
+   } else {
+      sprite->d.sprite.coords[2].x = fx->x1.n + param_6 + 0x100;
+      sprite->d.sprite.coords[3].x = fx->x1.n + param_6 - 0x100;
+   }
+   sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = fx->y1.n + param_4;
+   sprite->d.sprite.coords[2].y = sprite->d.sprite.coords[3].y = fx->y1.n + param_7;
+   sprite->d.sprite.coords[0].z = sprite->d.sprite.coords[1].z = fx->z1.n + param_5;
+   if (param_9) { // 2
+      sprite->d.sprite.coords[2].z = fx->z1.n + param_8 + 0x10 - (rand() % 0x20);
+      sprite->d.sprite.coords[3].z = fx->z1.n + param_8 + 0x10 - (rand() % 0x20);
+   } else {
+      sprite->d.sprite.coords[2].z = fx->z1.n + param_8;
+      sprite->d.sprite.coords[3].z = fx->z1.n + param_8;
+   }
+   sprite->d.sprite.semiTrans = 0;
+   AddEvtPrim4(gGraphicsPtr->ot, sprite);
+
+   sprite->d.sprite.coords[0].x = fx->x1.n - (param_3 / 2) + 0x100;
+   sprite->d.sprite.coords[1].x = fx->x1.n - (param_3 / 2) - 0x100;
+   if (param_9) { // 3
+      sprite->d.sprite.coords[2].x = fx->x1.n + param_6 + 0x110 - (rand() % 0x20);
+      sprite->d.sprite.coords[3].x = fx->x1.n + param_6 - 0xf0 - (rand() % 0x20);
+   } else {
+      sprite->d.sprite.coords[2].x = fx->x1.n - (param_6 / 2) + 0x100;
+      sprite->d.sprite.coords[3].x = fx->x1.n - (param_6 / 2) - 0x100;
+   }
+   sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = fx->y1.n + param_4;
+   sprite->d.sprite.coords[2].y = sprite->d.sprite.coords[3].y = fx->y1.n + param_7;
+   sprite->d.sprite.coords[0].z = sprite->d.sprite.coords[1].z = fx->z1.n - param_5 / 2;
+   if (param_9) { // 4
+      sprite->d.sprite.coords[2].z = fx->z1.n + param_8 + 0x10 - (rand() % 0x20);
+      sprite->d.sprite.coords[3].z = fx->z1.n + param_8 + 0x10 - (rand() % 0x20);
+   } else {
+      sprite->d.sprite.coords[2].z = sprite->d.sprite.coords[3].z = fx->z1.n - param_8 / 2;
+   }
+   sprite->d.sprite.semiTrans = 4;
+   AddEvtPrim4(gGraphicsPtr->ot, sprite);
+
+   sprite->d.sprite.coords[0].x = fx->x1.n - param_3 + 0x100;
+   sprite->d.sprite.coords[1].x = fx->x1.n - param_3 - 0x100;
+   if (param_9) { // 5
+      sprite->d.sprite.coords[2].x = fx->x1.n + param_6 + 0x110 - (rand() % 0x20);
+      sprite->d.sprite.coords[3].x = fx->x1.n + param_6 - 0xf0 - (rand() % 0x20);
+   } else {
+      sprite->d.sprite.coords[2].x = fx->x1.n - param_6 + 0x100;
+      sprite->d.sprite.coords[3].x = fx->x1.n - param_6 - 0x100;
+   }
+   sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = fx->y1.n + param_4;
+   do {
+      // FIXME: This do-while fixes the reg-swaps, but should try to identify any actual macros.
+      sprite->d.sprite.coords[2].y = sprite->d.sprite.coords[3].y = fx->y1.n + param_7;
+   } while (0);
+   sprite->d.sprite.coords[0].z = sprite->d.sprite.coords[1].z = fx->z1.n - param_5;
+   if (param_9) { // 6
+      sprite->d.sprite.coords[2].z = fx->z1.n + param_8 + 0x10 - (rand() % 0x20);
+      sprite->d.sprite.coords[3].z = fx->z1.n + param_8 + 0x10 - (rand() % 0x20);
+   } else {
+      sprite->d.sprite.coords[2].z = sprite->d.sprite.coords[3].z = fx->z1.n - param_8;
+   }
+   sprite->d.sprite.semiTrans = 1;
+   AddEvtPrim4(gGraphicsPtr->ot, sprite);
+}
+
+// TBD: Which anims use those wiggly things?
+static s16 sAnimData_800fecfc[20] = {5, GFX_TBD_278, 1, GFX_TBD_279, 1, GFX_TBD_280, 1, GFX_TBD_281,
+                                     1, GFX_TBD_282, 1, GFX_TBD_283, 1, GFX_TBD_284, 1, GFX_TBD_285,
+                                     1, GFX_NULL,    1, GFX_NULL};
+
+#undef EVTF
+#define EVTF 147
+void Evtf147_Fx_TBD(EvtData *evt) {
+   static s16 lightningAnimData[64] = {
+       4, GFX_LIGHTNING_1, 2, GFX_LIGHTNING_2, 2, GFX_LIGHTNING_3, 2, GFX_LIGHTNING_4,
+       2, GFX_LIGHTNING_4, 2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_6,
+       2, GFX_LIGHTNING_7, 2, GFX_LIGHTNING_8, 2, GFX_LIGHTNING_1, 2, GFX_LIGHTNING_2,
+       2, GFX_LIGHTNING_3, 2, GFX_LIGHTNING_4, 2, GFX_LIGHTNING_4, 2, GFX_LIGHTNING_5,
+       2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_6, 2, GFX_LIGHTNING_7, 2, GFX_LIGHTNING_8,
+       2, GFX_LIGHTNING_1, 2, GFX_LIGHTNING_2, 2, GFX_LIGHTNING_3, 2, GFX_LIGHTNING_4,
+       2, GFX_LIGHTNING_4, 2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_6,
+       2, GFX_LIGHTNING_7, 2, GFX_LIGHTNING_8, 2, GFX_NULL,        0, GFX_NULL};
+
+   EvtData *sprite;
+
+   switch (evt->state) {
+   case 0:
+      evt->y1.n += 0x400;
+
+      EVT.todo_x4c = 0x80 - (rand() % 0x100);
+      EVT.todo_x50 = 0x80 - (rand() % 0x100);
+      EVT.todo_x4e = -0x400;
+      EVT.todo_x34 = EVT.todo_x4c / 4;
+      EVT.todo_x36 = EVT.todo_x4e / 4;
+      EVT.todo_x38 = EVT.todo_x50 / 4;
+      EVT.todo_x3a = EVT.todo_x34 * 2;
+      EVT.todo_x3c = EVT.todo_x36 * 2;
+      EVT.todo_x3e = EVT.todo_x38 * 2;
+      EVT.todo_x40 = EVT.todo_x34 * 3;
+      EVT.todo_x42 = EVT.todo_x36 * 3;
+      EVT.todo_x44 = EVT.todo_x38 * 3;
+
+      if (EVT.clut == 0) {
+         EVT.clut = 3;
+      }
+
+      sprite = Evt_GetUnused();
+      EVT.sprite = sprite;
+      sprite->functionIndex = EVTF_NOOP;
+      sprite->d.sprite.animData = lightningAnimData;
+      sprite->d.sprite.animInitialized = 0;
+      sprite->d.sprite.clut = EVT.clut;
+
+      evt->state++;
+      break;
+
+   case 1:
+      sprite = EVT.sprite;
+
+      EVT.todo_x34 -= (rand() % 0x80) - 0x40;
+      EVT.todo_x36 -= (rand() % 0x10) - 8;
+      EVT.todo_x38 -= (rand() % 0x80) - 0x40;
+      EVT.todo_x3a -= (rand() % 0x80) - 0x40;
+      EVT.todo_x3c -= (rand() % 0x10) - 8;
+      EVT.todo_x3e -= (rand() % 0x80) - 0x40;
+      EVT.todo_x40 -= (rand() % 0x80) - 0x40;
+      EVT.todo_x42 -= (rand() % 0x10) - 8;
+      EVT.todo_x44 -= (rand() % 0x80) - 0x40;
+
+      UpdateEvtAnimation(sprite);
+      func_8006D1AC(evt, sprite, 0, 0, 0, EVT.todo_x34, EVT.todo_x36, EVT.todo_x38, 0);
+      func_8006D1AC(evt, sprite, EVT.todo_x34, EVT.todo_x36, EVT.todo_x38, EVT.todo_x3a,
+                    EVT.todo_x3c, EVT.todo_x3e, 0);
+      func_8006D1AC(evt, sprite, EVT.todo_x3a, EVT.todo_x3c, EVT.todo_x3e, EVT.todo_x40,
+                    EVT.todo_x42, EVT.todo_x44, 0);
+      func_8006D1AC(evt, sprite, EVT.todo_x40, EVT.todo_x42, EVT.todo_x44, EVT.todo_x4c,
+                    EVT.todo_x4e, EVT.todo_x50, 1);
+
+      if (sprite->d.sprite.animFinished) {
+         evt->functionIndex = EVTF_NULL;
+         sprite->functionIndex = EVTF_NULL;
+      }
+      break;
+   }
+}
+
+void func_8006DCD8(EvtData *deltaMirage) {
+   s32 i;
+   s16 *p;
+   s16 current;
+   s16 a, b, c, d, e;
+   s16 x_1, z_1, x_2, z_2, x_3, z_3;
+   POLY_FT4 *poly;
+   EvtData *sprite;
+
+   if (deltaMirage->state == 3) {
+      a = 0x100 + (0x400 * rsin(ANGLE_90_DEGREES - deltaMirage->d.evtf156.todo_x36 * 2) >> 12);
+      b = 0;
+      c = 0x200 * rcos(ANGLE_90_DEGREES - deltaMirage->d.evtf156.todo_x36 * 2) >> 12;
+   } else {
+      a = 0x100;
+      b = 0;
+      c = 0x200;
+   }
+
+   ApplyMaskEffect(452 << 2, 400, 32, 32, 432 << 2, 256, deltaMirage->d.evtf156.timer % 64, 0,
+                   GFX_TBD_25, 0);
+
+   sprite = Evt_GetUnused();
+   sprite->functionIndex = EVTF_NOOP;
+   sprite->d.sprite.gfxIdx = GFX_TBD_25;
+   sprite->d.sprite.clut = 4;
+   sprite->d.sprite.semiTrans = 1;
+
+   p = &deltaMirage->d.evtf156.todo_x26;
+   for (i = 0; i < 3 - deltaMirage->state2; i++, p++) {
+      current = *p;
+
+      switch (i) {
+      case 2:
+         d = deltaMirage->d.evtf156.todo_x24 + 0xaaa;
+         e = deltaMirage->d.evtf156.todo_x24;
+         break;
+      case 1:
+         d = deltaMirage->d.evtf156.todo_x24 + 0x555;
+         e = deltaMirage->d.evtf156.todo_x24 + 0xaaa;
+         break;
+      case 0:
+      default:
+         d = deltaMirage->d.evtf156.todo_x24;
+         e = deltaMirage->d.evtf156.todo_x24 + 0x555;
+         break;
+      }
+
+      x_1 = c * rcos(d) >> 12;
+      z_1 = c * rsin(d) >> 12;
+      x_2 = (c * rcos(e) >> 12) - x_1;
+      z_2 = (c * rsin(e) >> 12) - z_1;
+      x_3 = x_2 * rsin(current) >> 12;
+      z_3 = z_2 * rsin(current) >> 12;
+
+      sprite->d.sprite.coords[0].x = deltaMirage->x1.n + x_1;
+      sprite->d.sprite.coords[1].x = sprite->d.sprite.coords[0].x + x_3;
+      sprite->d.sprite.coords[2].x = sprite->d.sprite.coords[0].x;
+      sprite->d.sprite.coords[3].x = sprite->d.sprite.coords[1].x;
+
+      sprite->d.sprite.coords[0].z = deltaMirage->z1.n + z_1;
+      sprite->d.sprite.coords[1].z = sprite->d.sprite.coords[0].z + z_3;
+      sprite->d.sprite.coords[2].z = sprite->d.sprite.coords[0].z;
+      sprite->d.sprite.coords[3].z = sprite->d.sprite.coords[1].z;
+
+      sprite->d.sprite.coords[0].y = deltaMirage->y1.n + a;
+      sprite->d.sprite.coords[2].y = deltaMirage->y1.n + b;
+      sprite->d.sprite.coords[1].y = sprite->d.sprite.coords[0].y;
+      sprite->d.sprite.coords[3].y = sprite->d.sprite.coords[2].y;
+
+      sprite->x1.n = (sprite->d.sprite.coords[0].x + sprite->d.sprite.coords[1].x) >> 1;
+      sprite->z1.n = (sprite->d.sprite.coords[0].z + sprite->d.sprite.coords[1].z) >> 1;
+      sprite->y1.n = (sprite->d.sprite.coords[0].y + sprite->d.sprite.coords[2].y) >> 1;
+
+      AddEvtPrim3(gGraphicsPtr->ot, sprite);
+      poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+      setRGB0(poly, 0xff, 0xff, 0xff);
+   }
+
+   sprite->functionIndex = EVTF_NULL;
+}
+
+#undef EVTF
+#define EVTF 156
+void Evtf156_SpellFx1_DeltaMirage(EvtData *evt) {
+   s32 i;
+   EvtData *evt_v1;
+   EvtData *unitSprite;
+
+   switch (evt->state) {
+   case 0:
+      unitSprite = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
+      evt->y1.n = GetTerrainElevation(gTargetZ, gTargetX);
+      evt->x1.n = unitSprite->x1.n;
+      evt->z1.n = unitSprite->z1.n;
+      EVT.todo_x24 = gCameraRotation.vy - 0x656;
+
+      evt_v1 = Evt_GetUnused();
+      evt_v1->functionIndex = EVTF_CAMERA_TBD_026;
+      evt_v1->d.evtf026.sprite = unitSprite;
+
+      evt->state++;
+      evt->state2 = 2;
+
+   // fallthrough
+   case 1:
+      func_8006DCD8(evt);
+
+      switch (evt->state2) {
+      case 0:
+         EVT.todo_x2a += 0x20;
+         if (EVT.todo_x2a > ANGLE_90_DEGREES) {
+            EVT.todo_x2a = ANGLE_90_DEGREES;
+            evt->state++;
+         }
+         break;
+      case 1:
+         EVT.todo_x28 += 0x20;
+         if (EVT.todo_x28 > ANGLE_90_DEGREES) {
+            EVT.todo_x28 = ANGLE_90_DEGREES;
+            evt->state2--;
+         }
+         break;
+      case 2:
+         EVT.todo_x26 += 0x20;
+         if (EVT.todo_x26 > ANGLE_90_DEGREES) {
+            EVT.todo_x26 = ANGLE_90_DEGREES;
+            evt->state2--;
+         }
+         break;
+      }
+
+      EVT.timer++;
+      if (gLightColor.r > 0x20) {
+         gLightColor.r += 0xfc;
+         gLightColor.g += 0xfc;
+         gLightColor.b += 0xfc;
+      }
+
+      break;
+
+   case 2:
+      for (i = 0; i < 0x40; i++) {
+         evt_v1 = Evt_GetUnused();
+         evt_v1->functionIndex = EVTF_SPELL_FX_DELTA_MIRAGE_RAY;
+         evt_v1->d.evtf157.parent = evt;
+      }
+      EVT.todo_x36 = 0x200;
+      evt->state++;
+
+   // fallthrough
+   case 3:
+      func_8006DCD8(evt);
+      EVT.todo_x24 += 0x10;
+      EVT.timer++;
+      EVT.todo_x36 -= 4;
+      if (EVT.todo_x36 == 0x28) {
+         gSignal3 = 1;
+      }
+      if (EVT.todo_x36 < 0x20) {
+         gLightColor.r += 12;
+         gLightColor.g += 12;
+         gLightColor.b += 12;
+      }
+      if (EVT.todo_x36 < 0) {
+         evt->functionIndex = EVTF_NULL;
+         gLightColor.r = 0x80;
+         gLightColor.g = 0x80;
+         gLightColor.b = 0x80;
+      }
+      break;
+   }
+}
+
+#undef EVTF
+#define EVTF 157
+void Evtf157_SpellFx_DeltaMirage_Ray(EvtData *evt) {
+   EvtData *evt_s0;
+
+   switch (evt->state) {
+   case 0:
+      evt_s0 = EVT.parent;
+      evt->x1.n = evt_s0->x1.n;
+      evt->z1.n = evt_s0->z1.n;
+      evt->y1.n = evt_s0->y1.n;
+
+      EVT.todo_x24 = 0x400 + (rand() % 0x400);
+      EVT.todo_x26 = rand() % 0x1000;
+      EVT.todo_x28 = rand() % 0x1000;
+      EVT.todo_x2a = rand() % 0x1000;
+      EVT.todo_x2c = 0x60 - (rand() % 0xc1);
+      EVT.todo_x2e = 0x60 - (rand() % 0xc1);
+      EVT.todo_x30 = 0x60 - (rand() % 0xc1);
+
+      evt->state++;
+
+   // fallthrough
+   case 1:
+      evt_s0 = Evt_GetUnused();
+      evt_s0->functionIndex = EVTF_NOOP;
+      evt_s0->d.sprite.gfxIdx = GFX_COLOR_14;
+      evt_s0->d.sprite.clut = 4;
+      evt_s0->d.sprite.semiTrans = 1;
+
+      EVT.todo_x34 = EVT.todo_x24 * EVT.todo_x36 / 0x30;
+      evt_s0->d.sprite.coords[0].x = evt->x1.n;
+      evt_s0->d.sprite.coords[0].z = evt->z1.n;
+      evt_s0->d.sprite.coords[0].y = evt->y1.n;
+      evt_s0->d.sprite.coords[1].x = evt->x1.n;
+      evt_s0->d.sprite.coords[1].z = evt->z1.n;
+      evt_s0->d.sprite.coords[1].y = evt->y1.n;
+      evt_s0->d.sprite.coords[2].x = evt->x1.n + EVT.todo_x34 * rcos(EVT.todo_x26) / ONE;
+      evt_s0->d.sprite.coords[2].z = evt->z1.n + EVT.todo_x34 * rsin(EVT.todo_x28) / ONE;
+      evt_s0->d.sprite.coords[2].y = evt->y1.n + EVT.todo_x34 * rsin(EVT.todo_x2a) / ONE;
+      evt_s0->d.sprite.coords[3].x = evt->x1.n + EVT.todo_x34 * rcos(EVT.todo_x26 + 0x10) / ONE;
+      evt_s0->d.sprite.coords[3].z = evt->z1.n + EVT.todo_x34 * rsin(EVT.todo_x28 + 0x10) / ONE;
+      evt_s0->d.sprite.coords[3].y = evt->y1.n + EVT.todo_x34 * rsin(EVT.todo_x2a + 0x10) / ONE;
+
+      AddEvtPrim4(gGraphicsPtr->ot, evt_s0);
+
+      EVT.todo_x26 += EVT.todo_x2c;
+      EVT.todo_x28 += EVT.todo_x2e;
+      EVT.todo_x2a += EVT.todo_x30;
+
+      evt_s0->functionIndex = EVTF_NULL;
+
+      switch (evt->state2) {
+      case 0:
+         EVT.todo_x32++;
+         EVT.todo_x36++;
+         if (EVT.todo_x36 == 0x31) {
+            evt->state2++;
+            EVT.todo_x36 = 0x30;
+         }
+         break;
+      case 1:
+         EVT.todo_x32++;
+         if (EVT.todo_x32 == 0x81) {
+            evt->state2++;
+         }
+         break;
+      case 2:
+         EVT.todo_x32++;
+         EVT.todo_x36 -= 3;
+         if (EVT.todo_x36 == 0) {
+            evt->functionIndex = EVTF_NULL;
+         }
+         break;
+      }
+
+      break;
+   }
+}

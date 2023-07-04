@@ -48,7 +48,6 @@
 
 // #define ABS(x) (((x)>=0)?(x):(-(x)))
 // #define ABS(arg) abs(arg)
-s32 abs(s32);
 #define SET_ABS(x)                                                                                 \
    do {                                                                                            \
       s32 tmp = x;                                                                                 \
@@ -149,5 +148,8 @@ s32 BigIntCompare(BigInt, BigInt);
 void BigIntAdd(BigInt, BigInt);
 void BigIntSubtract(BigInt, BigInt);
 void BigIntDivide(BigInt, BigInt, u16);
+
+s32 abs(s32);
+s32 rand(void);
 
 #endif
