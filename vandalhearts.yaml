@@ -85,7 +85,8 @@ segments:
     - [0x005088, .rdata, fx_0506c0]            # 0x80014888
     - [0x0050a4, .rdata, fx_057370]            # 0x800148a4
     - [0x00511c, .rdata, fx_05cbc4]            # 0x8001491c
-    - [0x005134, rdata]
+    - [0x00514c, .rdata, fx_060c38]            # 0x8001494c
+    - [0x005214, rdata]
 
     - [0x006580, .rdata, audio]                # 0x80015d80 
     - [0x0069b0, bin]                          # 0x800161b0 end of audio jtbls
@@ -126,7 +127,8 @@ segments:
     - [0x0506c0, c, fx_0506c0]                 # 0x8005fec0 Evtf119_Fx_TBD ...
     - [0x057370, c, fx_057370]                 # 0x80066b70 Evtf204_SummonCrest ...
     - [0x05cbc4, c, fx_05cbc4]                 # 0x8006c3c4 Evtf173_SpellFx_FireGem_Beam ...
-    - [0x05f140, bin]
+    - [0x060c38, c, fx_060c38]                 # 0x80070438 Evtf172_SpellFx_HolyPressure_Cube ...
+    - [0x0644f4, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
     - [0x0b0480, bin]
@@ -163,7 +165,8 @@ segments:
     - [0x0ef188, .data, fx_0506c0]             # 0x800fe988
     - [0x0ef3e4, .data, fx_057370]             # 0x800febe4
     - [0x0ef4fc, .data, fx_05cbc4]             # 0x800fecfc
-    - [0x0ef5a4, data]
+    - [0x0ef6a8, .data, fx_060c38]             # 0x800feea8
+    - [0x0ef760, data]
   
     - [0x0f76ec, .data, audio]                 # 0x80106eec
     - [0x0f91d0, data]                         # 0x801089d0 lib data
@@ -181,7 +184,8 @@ segments:
     - [0x1136f8, .sdata, tavern]               # 0x80122ef8
     - [0x113700, .sdata, split_037758]         # 0x80122f00
     - [0x113710, .sdata, card]                 # 0x80122f10
-    - [0x11372c, sdata]                        # 0x80122f2c
+    - [0x11372c, .sdata, fx_060c38]            # 0x80122f2c
+    - [0x113740, sdata]
 
     # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses
     # set through symbol_addrs to override the assembler's placement

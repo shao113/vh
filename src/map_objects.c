@@ -949,8 +949,7 @@ void Evtf048_Push(EvtData *evt) {
           gMapUnitsPtr[targetZ][targetX].s.team == TEAM_BOULDER) {
 
          i = OBJ_TERRAIN(sprite).s.elevation - gTerrainPtr[targetZ][targetX].s.elevation;
-         //?
-         if (i + 1U < 3) {
+         if ((i + 1 >= 0) && (i + 1 < 3)) {
             gTileStateGridPtr[targetZ][targetX].cachedShort = gSignal4;
 
             evt1 = gEvtDataArray;

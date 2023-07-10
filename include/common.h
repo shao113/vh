@@ -5,7 +5,7 @@
 #include "sys/types.h"
 #include "PsyQ/libetc.h"
 
-#define NULL 0
+#define NULL ((void *)0)
 #define ASCII_DIGIT 0x30
 #define ANGLE_0_DEGREES 0
 #define ANGLE_45_DEGREES 0x200

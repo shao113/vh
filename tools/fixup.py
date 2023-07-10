@@ -9,6 +9,8 @@ from makeelf.elf import _Strtab, _Symtab
 
 R_MIPS_32 = 2
 R_MIPS_26 = 4
+R_MIPS_HI16 = 5
+R_MIPS_LO16 = 6
 
 #TODO: sync changes (strtab etc)
 #TODO: don't rely on sym names, do look-ups;
@@ -72,7 +74,7 @@ class ElfSection:
         self.dat = dat
 
     def assign(self, newBytes):
-        assert(len(newBytes) == len(self.dat))
+        assert len(newBytes) == len(self.dat)
         self.dat = bytes(newBytes)
         self.obj.elf.sections[self.idx] = self.dat
 
@@ -83,7 +85,7 @@ class ElfObject:
             self.elf, b = Elf32.from_bytes(f.read())
 
         self.sectionNames = self.getSectionNames()
-        assert(self.sectionsExist('.symtab', '.strtab'))
+        assert self.sectionsExist('.symtab', '.strtab')
 
         self.symtabSec = self.getSectionByName('.symtab')
         self.strtabSec = self.getSectionByName('.strtab')
@@ -144,20 +146,33 @@ def fixupTextRelocs(obj: ElfObject):
         if not (textSec.hdr.sh_type == SHT.SHT_PROGBITS and textSec.hdr.sh_addralign == 8):
             error('!! unexpected .text format')
 
-    def processInstruction(data, offset, symName):
-        # fix-up reloc addend for j/jal instruction;
+    def processInstruction(data, offset, symName, relocType):
         # just extracting offset from symbol name for now (FIXME)
         newOfs = int(symName[13:], 16)
         instruction = int.from_bytes(data[offset:offset+4], 'little')
-        op = (instruction & 0xfc000000) >> 26
-        oldOfs = (instruction & 0x3ffffff) << 2
-        if op != 0x2 and op != 0x3:
-            error('!! unexpected op')
-        if newOfs != oldOfs:
-            smolprint(f"@{offset:06X}: {oldOfs:06X} -> {newOfs:06X}")
-            newInstruction = (op << 26) | (newOfs >> 2)
-            data[offset:offset+4] = newInstruction.to_bytes(4, 'little')
-            return True
+        if relocType == R_MIPS_26:
+            # fix-up reloc addend for j/jal instruction;
+            op = (instruction & 0xfc000000) >> 26
+            oldOfs = (instruction & 0x3ffffff) << 2
+            if op != 0x2 and op != 0x3:
+                error('!! unexpected op')
+            if newOfs != oldOfs:
+                smolprint(f"@{offset:06X}: {oldOfs:06X} -> {newOfs:06X}")
+                newInstruction = (op << 26) | (newOfs >> 2)
+                data[offset:offset+4] = newInstruction.to_bytes(4, 'little')
+                return True
+        elif relocType in {R_MIPS_HI16, R_MIPS_LO16}:
+            # fix-up reloc for e.g. function pointer
+            if relocType == R_MIPS_HI16:
+                newOfs >>= 16
+            elif relocType == R_MIPS_LO16:
+                newOfs &= 0xffff
+            oldOfs = (instruction & 0x0000ffff)
+            if newOfs != oldOfs:
+                smolprint(f"@{offset:06X}: {oldOfs:06X} -> {newOfs:06X} (TYPE {relocType})")
+                newInstruction = (instruction & 0xffff0000) | newOfs
+                data[offset:offset+4] = newInstruction.to_bytes(4, 'little')
+                return True
         # no patching was necessary
         return False
 
@@ -179,10 +194,9 @@ def fixupTextRelocs(obj: ElfObject):
         symIdx = getInt(reloc[5:])
         symName = obj.symbolNames[symIdx]
         #print(hex(offset),type,symName)
-        if type != R_MIPS_26 or not symName.startswith("$.rel.text@"):
-            continue
-        if processInstruction(newBytes, offset, symName):
-            modified = True
+        if type in {R_MIPS_26, R_MIPS_HI16, R_MIPS_LO16} and symName.startswith("$.rel.text@"):
+            if processInstruction(newBytes, offset, symName, type):
+                modified = True
 
     if modified:
         textSec.assign(newBytes)
@@ -225,7 +239,7 @@ def fixupJtbls(obj: ElfObject, asmFilename):
         def seekJtblLabel(reg, lines, start):
             for i in range(start, -1, -1):
                 a = lines[i].split()
-                if len(a) == 0 or a[0] in [".set", "nop", "#nop"]:
+                if len(a) == 0 or a[0] in {".set", "nop", "#nop"}:
                     continue
                 elif a[0] == "lw":
                     #e.g.     lw    $2,$L20($2)
@@ -233,7 +247,8 @@ def fixupJtbls(obj: ElfObject, asmFilename):
                     if match and match.group(1) == reg and match.group(3) == reg:
                         return match.group(2)
                 else:
-                    return False
+                    break
+            return False
                     
         def buildJtblList(lines, start):
             lst = []
@@ -389,7 +404,8 @@ def fixupLargeAddends(obj: ElfObject, dumpFilename):
             error('!! unexpected op')
         #FIXME
         # too lazy to dig deeper, but this allows a match (for now)
-        newAddend = oldAddend + 1
+        newAddend = (addend + 0x8000) >> 16
+        newAddend &= 0xffff
         if newAddend != oldAddend:
             smolprint(f"@{offset:06X}: {oldAddend:04X} -> {newAddend:04X}")
             newInstruction = (instruction & 0xffff0000) | (newAddend)
@@ -403,19 +419,26 @@ def fixupLargeAddends(obj: ElfObject, dumpFilename):
         with open(filename) as file:
             for line in file:
                 a = line.split()
-                if (len(a) != 5) or (a[0] != "HI16") or (a[3] != "+") or (int(a[4]) < 0x8000):
+                if (len(a) != 5):
+                    continue
+                if a[0] == "HI16" and a[3] == "+" and int(a[4]) >= 0x8000:
+                    # large addend
+                    offset = int(a[1][7:],16)
+                    addend = int(a[4])
+                elif a[0] == "HI16" and a[3] == "-":
+                    # negative addend
+                    offset = int(a[1][7:],16)
+                    addend = -int(a[4])
+                else:
                     continue
                 if not a[1].startswith(".text:"):
                     print("not .text?")
                     continue
-                offset = int(a[1][7:],16)
-                addend = int(a[4])
                 lst.append((offset, addend))
         return lst
 
     addends = scanDumpForLargeAddends(dumpFilename)
     if len(addends) == 0:
-        #print("no large addends detected, exiting")
         return False
 
     missing = []
@@ -445,8 +468,8 @@ def markupSymNames(obj: ElfObject):
         #TODO clashing names?
         funcName = obj.getNameFromSymbol(fsym)
         oldName = obj.getNameFromSymbol(rsym)
-        assert(len(oldName) == 19)
-        assert(oldName.startswith("$") and not funcName.startswith("$"))
+        assert len(oldName) == 19
+        assert oldName.startswith("$") and not funcName.startswith("$")
         newName = ('$' + funcName[:18]).ljust(19, "_")
         if newName in newNames:
             smolprint(f"!! {newName}", color=33)

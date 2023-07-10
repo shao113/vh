@@ -83,8 +83,18 @@ typedef enum EvtFunctionIdx {
    EVTF_FX_TBD_140 = 140,
    EVTF_FX_TBD_141 = 141,
    EVTF_FX_TBD_142 = 142,
+   EVTF_FX_TBD_147 = 147,
+   EVTF_FX_TBD_148 = 148,
    EVTF_FX_TBD_149 = 149,
    EVTF_SPELL_FX_DELTA_MIRAGE_RAY = 157,
+   EVTF_SPELL_FX_EXPLOSION_RAYS = 159,
+   EVTF_SPELL_FX_STONE_SHOWER_ROCK = 164,
+   EVTF_SPELL_FX2_STONE_SHOWER = 165,
+   EVTF_RAINBOW_SWIRL = 167,
+   EVTF_SPELL_FX_RAINBOW_STROKE_RAINBOW_SWIRL = 168,
+   EVTF_HOMING_RAY = 171,
+   EVTF_SPELL_FX_HOLY_PRESSURE_CUBE = 172,
+   EVTF_SPELL_FX_FIRE_GEM_BEAM = 173,
    EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT = 198,
    EVTF_UNIT_STRUCK = 201,
    EVTF_UNIT_BLOCKING = 202,
@@ -96,6 +106,7 @@ typedef enum EvtFunctionIdx {
    EVTF_DUST_CLOUD_SPAWNER = 213,
    EVTF_DUST_CLOUD = 214,
    EVTF_CLOUD = 215,
+   EVTF_SPELL_FX2_EXPLOSION = 220,
    EVTF_STAT_RAISED = 272,
    EVTF_CASTING_FX = 285,
    EVTF_REVEAL_CHEST_ITEM = 290,
@@ -881,6 +892,15 @@ typedef struct EvtData_147 {
 } EvtData_147;
 
 /* FX - TBD */
+typedef struct EvtData_148 {
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ s16 endingFxType;
+   /* :0x28 */ u8 unk_0x28[36];
+   /* :0x4C */ s16 clut;
+   /* :0x4E */ u8 unk_0x4E[18];
+} EvtData_148;
+
+/* FX - TBD */
 typedef struct EvtData_149 {
    /* :0x24 */ s16 clut;
    /* :0x26 */ s16 fadeSpeed;
@@ -920,6 +940,191 @@ typedef struct EvtData_157 {
    /* :0x5C */ struct EvtData *parent;
 } EvtData_157;
 
+/* Spell FX1 - Explosion */
+typedef struct EvtData_158 {
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[54];
+   /* :0x5C */ struct EvtData *unitSprite;
+} EvtData_158;
+
+/* Spell FX - Explosion - Rays */
+typedef struct EvtData_159 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ s16 todo_x2a;
+   /* :0x2C */ s16 todo_x2c;
+   /* :0x2E */ s16 todo_x2e;
+   /* :0x30 */ s16 todo_x30;
+   /* :0x32 */ s16 todo_x32;
+   /* :0x34 */ s16 todo_x34;
+   /* :0x36 */ s16 todo_x36;
+   /* :0x38 */ s16 todo_x38;
+   /* :0x3A */ s16 todo_x3a;
+   /* :0x3C */ s16 todo_x3c;
+   /* :0x3E */ s16 todo_x3e;
+   /* :0x40 */ s16 todo_x40;
+   /* :0x42 */ s16 todo_x42;
+   /* :0x44 */ s16 todo_x44;
+   /* :0x46 */ s16 todo_x46;
+   /* :0x48 */ s16 todo_x48;
+   /* :0x4A */ s16 todo_x4a;
+   /* :0x4C */ s16 todo_x4c;
+   /* :0x4E */ s16 todo_x4e;
+   /* :0x50 */ s16 todo_x50;
+   /* :0x52 */ s16 todo_x52;
+   /* :0x54 */ u8 unk_0x54[4];
+   /* :0x58 */ s16 todo_x58;
+   /* :0x5A */ s16 todo_x5a;
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_159;
+
+/* Spell FX1 - Piercing Light */
+typedef struct EvtData_161 {
+   /* :0x24 */ u8 unk_0x24[20];
+   /* :0x38 */ s16 clut;
+   /* :0x3A */ u8 unk_0x3A[34];
+   /* :0x5C */ struct EvtData *unitSprite;
+} EvtData_161;
+
+/* Spell FX1 - Stone Shower */
+typedef struct EvtData_163 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 timer;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct EvtData *dataStore;
+} EvtData_163;
+
+/* Spell FX - Stone Shower - Rock */
+typedef struct EvtData_164 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ u8 unk_0x2A[6];
+   /* :0x30 */ s16 todo_x30;
+   /* :0x32 */ s16 todo_x32;
+   /* :0x34 */ u8 unk_0x34[24];
+   /* :0x4C */ s16 todo_x4c;
+   /* :0x4E */ s16 todo_x4e;
+   /* :0x50 */ u8 unk_0x50[4];
+   /* :0x54 */ s16 downward;
+   /* :0x56 */ u8 unk_0x56[2];
+   /* :0x58 */ struct EvtData *sprite;
+   /* :0x5C */ struct EvtData *parent;
+} EvtData_164;
+
+/* Spell FX2 - Stone Shower */
+typedef struct EvtData_165 {
+   /* :0x24 */ s16 endingFxType;
+   /* :0x26 */ s16 timer;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct EvtData *dataStore;
+} EvtData_165;
+
+/* Rainbow Swirl */
+typedef struct EvtData_167 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ s16 todo_x2a;
+   /* :0x2C */ s16 todo_x2c;
+   /* :0x2E */ s16 todo_x2e;
+   /* :0x30 */ s16 todo_x30;
+   /* :0x32 */ s16 todo_x32;
+   /* :0x34 */ s16 todo_x34;
+   /* :0x36 */ s16 todo_x36;
+   /* :0x38 */ s16 todo_x38;
+   /* :0x3A */ s16 todo_x3a;
+   /* :0x3C */ s16 todo_x3c;
+   /* :0x3E */ s16 todo_x3e;
+   /* :0x40 */ s16 todo_x40;
+   /* :0x42 */ s16 todo_x42;
+   /* :0x44 */ s16 todo_x44;
+   /* :0x46 */ s16 todo_x46;
+   /* :0x48 */ s16 todo_x48;
+   /* :0x4A */ s16 todo_x4a;
+   /* :0x4C */ s16 todo_x4c;
+   /* :0x4E */ s16 todo_x4e;
+   /* :0x50 */ s16 todo_x50;
+   /* :0x52 */ s16 todo_x52;
+   /* :0x54 */ s16 todo_x54;
+   /* :0x56 */ s16 todo_x56;
+   /* :0x58 */ s16 todo_x58;
+   /* :0x5A */ s16 todo_x5a;
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_167;
+
+/* Spell FX - Rainbow Stroke - Rainbow Swirl */
+typedef struct EvtData_168 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ s16 todo_x2a;
+   /* :0x2C */ s16 todo_x2c;
+   /* :0x2E */ s16 todo_x2e;
+   /* :0x30 */ s16 todo_x30;
+   /* :0x32 */ s16 todo_x32;
+   /* :0x34 */ s16 todo_x34;
+   /* :0x36 */ s16 todo_x36;
+   /* :0x38 */ s16 todo_x38;
+   /* :0x3A */ s16 todo_x3a;
+   /* :0x3C */ s16 todo_x3c;
+   /* :0x3E */ s16 todo_x3e;
+   /* :0x40 */ s16 todo_x40;
+   /* :0x42 */ s16 todo_x42;
+   /* :0x44 */ s16 todo_x44;
+   /* :0x46 */ s16 todo_x46;
+   /* :0x48 */ s16 todo_x48;
+   /* :0x4A */ s16 todo_x4a;
+   /* :0x4C */ s16 todo_x4c;
+   /* :0x4E */ s16 todo_x4e;
+   /* :0x50 */ s16 todo_x50;
+   /* :0x52 */ s16 todo_x52;
+   /* :0x54 */ s16 todo_x54;
+   /* :0x56 */ s16 todo_x56;
+   /* :0x58 */ s16 todo_x58;
+   /* :0x5A */ s16 todo_x5a;
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_168;
+
+/* Spell FX1 - Evil Stream */
+typedef struct EvtData_169 {
+   /* :0x24 */ s16 clut;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ u8 unk_0x28[2];
+   /* :0x2A */ s16 fade;
+   /* :0x2C */ u8 unk_0x2C[52];
+} EvtData_169;
+
+/* Spell FX1 - Piercing Ray, Plasma Wave */
+typedef struct EvtData_170 {
+   /* :0x24 */ u8 unk_0x24[56];
+   /* :0x5C */ struct EvtData *unitSprite;
+} EvtData_170;
+
+/* Homing Ray */
+typedef struct EvtData_171 {
+   /* :0x24 */ s16 clut;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ s16 todo_x2a;
+   /* :0x2C */ s16 todo_x2c;
+   /* :0x2E */ s16 todo_x2e;
+   /* :0x30 */ s16 todo_x30;
+   /* :0x32 */ u8 unk_0x32[2];
+   /* :0x34 */ s16 todo_x34;
+   /* :0x36 */ s16 todo_x36;
+   /* :0x38 */ u8 unk_0x38[40];
+} EvtData_171;
+
+/* Spell FX - Holy Pressure - Cube */
+typedef struct EvtData_172 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ s16 timer;
+   /* :0x2C */ u8 unk_0x2C[52];
+} EvtData_172;
+
 /* Spell FX - Fire Gem - Beam */
 typedef struct EvtData_173 {
    /* :0x24 */ s16 todo_x24;
@@ -932,6 +1137,32 @@ typedef struct EvtData_173 {
    /* :0x32 */ u8 unk_0x32[42];
    /* :0x5C */ struct EvtData *fx;
 } EvtData_173;
+
+/* Spell FX1 - Rainbow Storm */
+typedef struct EvtData_175 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ u8 unk_0x26[50];
+   /* :0x58 */ s16 iterator;
+   /* :0x5A */ u8 unk_0x5A[2];
+   /* :0x5C */ struct EvtData *dataStore;
+} EvtData_175;
+
+/* Spell FX1 - Rainbow Stroke */
+typedef struct EvtData_176 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ u8 unk_0x26[50];
+   /* :0x58 */ struct EvtData *cam;
+   /* :0x5C */ struct EvtData *fx;
+} EvtData_176;
+
+/* Spell FX1 - Holy Pressure */
+typedef struct EvtData_177 {
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[50];
+   /* :0x58 */ s16 iterator;
+   /* :0x5A */ u8 unk_0x5A[2];
+   /* :0x5C */ struct EvtData *dataStore;
+} EvtData_177;
 
 /* Spell FX1 - Rolling Thunder */
 typedef struct EvtData_197 {
@@ -1096,6 +1327,15 @@ typedef struct EvtData_215 {
    /* :0x5A */ u8 unk_0x5A[2];
    /* :0x5C */ struct EvtData *sprite;
 } EvtData_215;
+
+/* Spell FX2 - Explosion */
+typedef struct EvtData_220 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ u8 unk_0x28[50];
+   /* :0x5A */ s16 endingFxType;
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_220;
 
 /* Stat Raised */
 typedef struct EvtData_272 {
@@ -1568,12 +1808,29 @@ typedef struct EvtData {
       EvtData_131 evtf131;         /* Slay Unit */
       EvtData_132_Etc evtf132;     /* FX - TBD */
       EvtData_133_Etc evtf133;     /* FX - TBD */
+      EvtData_132_Etc evtf136;     /* FX - TBD */
       EvtData_133_Etc evtf137;     /* FX - TBD */
       EvtData_133_Etc evtf141;     /* FX - TBD */
       EvtData_147 evtf147;         /* FX - TBD */
+      EvtData_148 evtf148;         /* FX - TBD */
       EvtData_156 evtf156;         /* Spell FX1 - Delta Mirage */
       EvtData_157 evtf157;         /* Spell FX - Delta Mirage - Ray */
+      EvtData_158 evtf158;         /* Spell FX1 - Explosion */
+      EvtData_159 evtf159;         /* Spell FX - Explosion - Rays */
+      EvtData_161 evtf161;         /* Spell FX1 - Piercing Light */
+      EvtData_163 evtf163;         /* Spell FX1 - Stone Shower */
+      EvtData_164 evtf164;         /* Spell FX - Stone Shower - Rock */
+      EvtData_165 evtf165;         /* Spell FX2 - Stone Shower */
+      EvtData_167 evtf167;         /* Rainbow Swirl */
+      EvtData_168 evtf168;         /* Spell FX - Rainbow Stroke - Rainbow Swirl */
+      EvtData_169 evtf169;         /* Spell FX1 - Evil Stream */
+      EvtData_170 evtf170;         /* Spell FX1 - Piercing Ray, Plasma Wave */
+      EvtData_171 evtf171;         /* Homing Ray */
+      EvtData_172 evtf172;         /* Spell FX - Holy Pressure - Cube */
       EvtData_173 evtf173;         /* Spell FX - Fire Gem - Beam */
+      EvtData_175 evtf175;         /* Spell FX1 - Rainbow Storm */
+      EvtData_176 evtf176;         /* Spell FX1 - Rainbow Stroke */
+      EvtData_177 evtf177;         /* Spell FX1 - Holy Pressure */
       EvtData_197 evtf197;         /* Spell FX1 - Rolling Thunder */
       EvtData_198 evtf198;         /* Spell FX - Rolling Thunder - Casting Bolt */
       EvtData_201 evtf201;         /* Unit Struck */
@@ -1587,6 +1844,7 @@ typedef struct EvtData {
       EvtData_213 evtf213;         /* Dust Cloud Spawner */
       EvtData_214 evtf214;         /* Dust Cloud */
       EvtData_215 evtf215;         /* Cloud (Sand, Dust, etc.) */
+      EvtData_220 evtf220;         /* Spell FX2 - Explosion */
       EvtData_272 evtf272;         /* Stat Raised */
       EvtData_290_294_761 evtf290; /* Reveal Chest Item */
       EvtData_290_294_761 evtf294; /* Reveal Item */
