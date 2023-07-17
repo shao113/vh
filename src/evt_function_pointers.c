@@ -77,11 +77,14 @@ void Evtf147_Fx_TBD(EvtData *);
 void Evtf148_Fx_TBD(EvtData *);
 void Evtf149_Fx_TBD(EvtData *);
 void Evtf151_SpellFx1_FireGem(EvtData *);
+void Evtf155_SpellFx_Spellbind_Glyph(EvtData *);
 void Evtf156_SpellFx1_DeltaMirage(EvtData *);
 void Evtf157_SpellFx_DeltaMirage_Ray(EvtData *);
 void Evtf158_SpellFx1_Explosion(EvtData *);
 void Evtf159_SpellFx_Explosion_Rays(EvtData *);
+void Evtf160_SpellFx_IceStorm_Target(EvtData *);
 void Evtf161_SpellFx1_PiercingLight(EvtData *);
+void Evtf162_SpellFx_IceStorm_Splash(EvtData *);
 void Evtf163_SpellFx1_StoneShower(EvtData *);
 void Evtf164_SpellFx_StoneShower_Rock(EvtData *);
 void Evtf165_SpellFx2_StoneShower(EvtData *);
@@ -96,8 +99,22 @@ void Evtf173_SpellFx_FireGem_Beam(EvtData *);
 void Evtf175_SpellFx1_RainbowStorm(EvtData *);
 void Evtf176_SpellFx1_RainbowStroke(EvtData *);
 void Evtf177_SpellFx1_HolyPressure(EvtData *);
+void Evtf178_SpellFx1_ThunderFlash(EvtData *);
+void Evtf179_SpellFx_ThunderFlash_Ray(EvtData *);
+void Evtf180_SpellFx1_SpreadForce(EvtData *);
+void Evtf181_SpellFx1_Spellbind(EvtData *);
+void Evtf182_Fx_TBD(EvtData *);
+void Evtf183_Fx_TBD(EvtData *);
+void Evtf184_SpellFx1_Avalanche(EvtData *);
+void Evtf185_SpellFx_Avalanche_Rock(EvtData *);
+void Evtf186_Fx_TBD(EvtData *);
+void Evtf187_Fx_TBD(EvtData *);
+void Evtf189_SpellFx1_IceStorm(EvtData *);
+void Evtf190_Fx_TBD(EvtData *);
+void Evtf191_SpellFx_MagicArrow_Arrow(EvtData *);
 void Evtf197_SpellFx1_RollingThunder(EvtData *);
 void Evtf198_SpellFx_RollingThunder_CastingBolt(EvtData *);
+void Evtf199_SpellFx1_MagicArrow(EvtData *);
 void Evtf201_UnitStruck(EvtData *);
 void Evtf202_746_UnitBlocking(EvtData *);
 void Evtf203_BlockingImpactParticle(EvtData *);
@@ -448,14 +465,14 @@ EvtFunction gEvtFunctionPointers[804] = {
     [152] = (EvtFunction)NULL,
     [153] = (EvtFunction)NULL,
     [154] = (EvtFunction)NULL,
-    [155] = (EvtFunction)0x800748e4,
+    [155] = Evtf155_SpellFx_Spellbind_Glyph,
     [156] = Evtf156_SpellFx1_DeltaMirage,
     [157] = Evtf157_SpellFx_DeltaMirage_Ray,
     [158] = Evtf158_SpellFx1_Explosion,
     [159] = Evtf159_SpellFx_Explosion_Rays,
-    [160] = (EvtFunction)0x80073cf4,
+    [160] = Evtf160_SpellFx_IceStorm_Target,
     [161] = Evtf161_SpellFx1_PiercingLight,
-    [162] = (EvtFunction)0x80074030,
+    [162] = Evtf162_SpellFx_IceStorm_Splash,
     [163] = Evtf163_SpellFx1_StoneShower,
     [164] = Evtf164_SpellFx_StoneShower_Rock,
     [165] = Evtf165_SpellFx2_StoneShower,
@@ -471,20 +488,20 @@ EvtFunction gEvtFunctionPointers[804] = {
     [175] = Evtf175_SpellFx1_RainbowStorm,
     [176] = Evtf176_SpellFx1_RainbowStroke,
     [177] = Evtf177_SpellFx1_HolyPressure,
-    [178] = (EvtFunction)0x800753b4,
-    [179] = (EvtFunction)0x80074ed0,
-    [180] = (EvtFunction)0x80075b6c,
-    [181] = (EvtFunction)0x80074dac,
-    [182] = (EvtFunction)0x80076604,
-    [183] = (EvtFunction)0x800768c8,
-    [184] = (EvtFunction)0x80076bcc,
-    [185] = (EvtFunction)0x800772e0,
-    [186] = (EvtFunction)0x80077540,
-    [187] = (EvtFunction)0x80077508,
+    [178] = Evtf178_SpellFx1_ThunderFlash,
+    [179] = Evtf179_SpellFx_ThunderFlash_Ray,
+    [180] = Evtf180_SpellFx1_SpreadForce,
+    [181] = Evtf181_SpellFx1_Spellbind,
+    [182] = Evtf182_Fx_TBD,
+    [183] = Evtf183_Fx_TBD,
+    [184] = Evtf184_SpellFx1_Avalanche,
+    [185] = Evtf185_SpellFx_Avalanche_Rock,
+    [186] = Evtf186_Fx_TBD,
+    [187] = Evtf187_Fx_TBD,
     [188] = (EvtFunction)0x80080434,
-    [189] = (EvtFunction)0x80074230,
-    [190] = (EvtFunction)0x800775dc,
-    [191] = (EvtFunction)0x80077a40,
+    [189] = Evtf189_SpellFx1_IceStorm,
+    [190] = Evtf190_Fx_TBD,
+    [191] = Evtf191_SpellFx_MagicArrow_Arrow,
     [192] = (EvtFunction)0x8007c984,
     [193] = (EvtFunction)0x8007b98c,
     [194] = (EvtFunction)0x8007b938,
@@ -492,7 +509,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [196] = (EvtFunction)0x8007b030,
     [197] = Evtf197_SpellFx1_RollingThunder,
     [198] = Evtf198_SpellFx_RollingThunder_CastingBolt,
-    [199] = (EvtFunction)0x800777c4,
+    [199] = Evtf199_SpellFx1_MagicArrow,
     [200] = (EvtFunction)0x8007ae60,
     [201] = Evtf201_UnitStruck,
     [202] = Evtf202_746_UnitBlocking,
