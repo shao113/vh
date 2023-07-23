@@ -857,7 +857,7 @@ void Evtf151_SpellFx1_FireGem(EvtData *evt) {
 
       evt_s0 = Evt_GetUnused();
       evt_s0->functionIndex = EVTF_CAMERA_TBD_026;
-      evt_s0->d.evtf026.sprite = targetSprite;
+      evt_s0->d.evtf026.target = targetSprite;
 
       evt->state++;
       break;
@@ -901,7 +901,7 @@ void Evtf175_SpellFx1_RainbowStorm(EvtData *evt) {
       for (EVT.iterator = 0; *p != 0xff && EVT.iterator < 15; EVT.iterator++) {
          targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
          evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_FX_TBD_149;
+         evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
          evt_s1->d.evtf149.clut = 4;
          evt_s1->x1.s.hi = targetSprite->x1.s.hi;
          evt_s1->z1.s.hi = targetSprite->z1.s.hi;
@@ -985,13 +985,13 @@ void Evtf176_SpellFx1_RainbowStroke(EvtData *evt) {
 
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_CAMERA_TBD_026;
-      evt_s1->d.evtf026.sprite = evt_s0;
+      evt_s1->d.evtf026.target = evt_s0;
       evt_s1->d.evtf026.type = 2;
       EVT.cam = evt_s1;
 
       targetSprite = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_FX_TBD_149;
+      evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
       evt_s1->d.evtf149.clut = 4;
       evt_s1->x1.s.hi = targetSprite->x1.s.hi;
       evt_s1->z1.s.hi = targetSprite->z1.s.hi;
@@ -1077,7 +1077,7 @@ void Evtf177_SpellFx1_HolyPressure(EvtData *evt) {
       evt_s2 = GetUnitSpriteAtPosition(p[1], p[0]);
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_CAMERA_TBD_026;
-      evt_s1->d.evtf026.sprite = evt_s2;
+      evt_s1->d.evtf026.target = evt_s2;
       evt_s1->d.evtf026.type = 2;
 
       evt_s2 = Evt_GetUnused();
@@ -1088,7 +1088,7 @@ void Evtf177_SpellFx1_HolyPressure(EvtData *evt) {
       for (EVT.iterator = 0; *p != 0xff && EVT.iterator < 15; /*EVT.iterator++*/) {
          targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
          evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_FX_TBD_149;
+         evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
          evt_s1->d.evtf149.clut = 9;
          evt_s1->x1.n = targetSprite->x1.n;
          evt_s1->z1.n = targetSprite->z1.n;
@@ -1294,7 +1294,7 @@ void Evtf189_SpellFx1_IceStorm(EvtData *evt) {
    case 1:
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_NOOP;
-      evt_s1->d.sprite.gfxIdx = GFX_TILED_ICE;
+      evt_s1->d.sprite.gfxIdx = GFX_TILED_ICE_DYN_1;
       evt_s1->d.sprite.clut = 4;
       evt_s1->d.sprite.semiTrans = 1;
 
@@ -1317,10 +1317,10 @@ void Evtf189_SpellFx1_IceStorm(EvtData *evt) {
 
       for (i = 0; i < 4; i++) {
          for (j = 0; j < 4; j++) {
-            gGfxSubTextures[GFX_TILED_ICE].x = 0x80 + ((i * 4 + j) * 2 + EVT.todo_x5c) % 0x20;
-            gGfxSubTextures[GFX_TILED_ICE].y = 0x40 + ((i * 4 + j) * 2 + EVT.todo_x5c) % 0x20;
-            gGfxSubTextures[GFX_TILED_ICE].w = 2;
-            gGfxSubTextures[GFX_TILED_ICE].h = 31;
+            gGfxSubTextures[GFX_TILED_ICE_DYN_1].x = 0x80 + ((i * 4 + j) * 2 + EVT.todo_x5c) % 0x20;
+            gGfxSubTextures[GFX_TILED_ICE_DYN_1].y = 0x40 + ((i * 4 + j) * 2 + EVT.todo_x5c) % 0x20;
+            gGfxSubTextures[GFX_TILED_ICE_DYN_1].w = 2;
+            gGfxSubTextures[GFX_TILED_ICE_DYN_1].h = 31;
 
             evt_s1->d.sprite.coords[0].x = evt->x1.n + b * rcos(a * 0x40 + j * d) / ONE;
             evt_s1->d.sprite.coords[0].z = evt->z1.n + b * rsin(a * 0x40 + j * d) / ONE;
@@ -1490,7 +1490,7 @@ void Evtf181_SpellFx1_Spellbind(EvtData *evt) {
 
       evt_v1 = Evt_GetUnused();
       evt_v1->functionIndex = EVTF_CAMERA_TBD_026;
-      evt_v1->d.evtf026.sprite = targetSprite;
+      evt_v1->d.evtf026.target = targetSprite;
 
       evt->state++;
 
@@ -1755,7 +1755,7 @@ void Evtf180_SpellFx1_SpreadForce(EvtData *evt) {
          for (EVT.iterator = 0; *p != 0xff && EVT.iterator < 15; EVT.iterator++) {
             targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
             evt_s1 = Evt_GetUnused();
-            evt_s1->functionIndex = EVTF_FX_TBD_149;
+            evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
             evt_s1->d.evtf149.clut = 4;
             evt_s1->x1.s.hi = targetSprite->x1.s.hi;
             evt_s1->z1.s.hi = targetSprite->z1.s.hi;
@@ -1897,7 +1897,7 @@ void Evtf182_Fx_TBD(EvtData *evt) {
       unitSprite = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
       evt_s0 = Evt_GetUnused();
       evt_s0->functionIndex = EVTF_CAMERA_TBD_026;
-      evt_s0->d.evtf026.sprite = unitSprite;
+      evt_s0->d.evtf026.target = unitSprite;
       evt_s0->d.evtf026.type = 2;
       EVT.cam = evt_s0;
       EVT.savedZoom = gCameraZoom.vz;
@@ -2016,7 +2016,7 @@ void Evtf183_Fx_TBD(EvtData *evt) {
 #define EVTF 184
 void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
    EvtData *evt_a0;
-   EvtData *evt_s0;
+   EvtData *boulder;
    s16 dy;
 
    switch (evt->state) {
@@ -2026,17 +2026,17 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
       evt->y1.n = evt_a0->y1.n;
       evt->z1.n = evt_a0->z1.n;
 
-      evt_s0 = Evt_GetUnused();
-      evt_s0->functionIndex = EVTF_SPELL_FX_AVALANCHE_BOULDER;
-      evt_s0->x1.n = evt->x1.n;
-      evt_s0->z1.n = evt->z1.n;
-      evt_s0->y1.n = evt->y1.n + 0x300;
-      evt_s0->d.evtf211.todo_x24 = 0x180;
-      evt_s0->d.evtf211.todo_x4c = 0;
-      evt_s0->d.evtf211.rotY = 0;
-      evt_s0->d.evtf211.rotZ = 0;
-      evt_s0->d.evtf211.rotX = 0;
-      EVT.boulder = evt_s0;
+      boulder = Evt_GetUnused();
+      boulder->functionIndex = EVTF_SPELL_FX_AVALANCHE_BOULDER;
+      boulder->x1.n = evt->x1.n;
+      boulder->z1.n = evt->z1.n;
+      boulder->y1.n = evt->y1.n + 0x300;
+      boulder->d.evtf211.todo_x24 = 0x180;
+      boulder->d.evtf211.todo_x4c = 0;
+      boulder->d.evtf211.rotY = 0;
+      boulder->d.evtf211.rotZ = 0;
+      boulder->d.evtf211.rotX = 0;
+      EVT.boulder = boulder;
 
       evt->state++;
 
@@ -2079,20 +2079,20 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
       gCameraZoom.vz += 3;
       gCameraRotation.vy += 0x10;
 
-      evt_s0 = EVT.boulder;
-      evt_s0->d.evtf211.todo_x4c = EVT.timer * 3;
-      evt_s0->d.evtf211.rotY += 12;
-      evt_s0->d.evtf211.rotZ -= 7;
-      evt_s0->d.evtf211.rotX += 3;
-      evt_s0->x1.n = evt->x1.n;
-      evt_s0->z1.n = evt->z1.n;
-      evt_s0->y1.n = evt->y1.n + 0x300;
+      boulder = EVT.boulder;
+      boulder->d.evtf211.todo_x4c = EVT.timer * 3;
+      boulder->d.evtf211.rotY += 12;
+      boulder->d.evtf211.rotZ -= 7;
+      boulder->d.evtf211.rotX += 3;
+      boulder->x1.n = evt->x1.n;
+      boulder->z1.n = evt->z1.n;
+      boulder->y1.n = evt->y1.n + 0x300;
 
       EVT.timer++;
       if (EVT.timer == 80) {
          evt_a0 = Evt_GetUnused();
          evt_a0->functionIndex = EVTF_CAMERA_TBD_026;
-         evt_a0->d.evtf026.sprite = evt_s0;
+         evt_a0->d.evtf026.target = boulder;
          evt_a0->d.evtf026.type = 3;
          EVT.cam = evt_a0;
       }
@@ -2120,20 +2120,20 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
       break;
 
    case 3:
-      evt_s0 = EVT.boulder;
-      evt_s0->d.evtf211.todo_x4c = 0x10e - EVT.todo_x26 / 3;
-      evt_s0->d.evtf211.rotY += 12;
-      evt_s0->d.evtf211.rotZ -= 7;
-      evt_s0->d.evtf211.rotX += 3;
-      evt_s0->x1.n = evt->x1.n;
-      evt_s0->z1.n = evt->z1.n;
-      evt_s0->y1.n = evt->y1.n + 0x300 + EVT.todo_x26 * 0x20;
+      boulder = EVT.boulder;
+      boulder->d.evtf211.todo_x4c = 0x10e - EVT.todo_x26 / 3;
+      boulder->d.evtf211.rotY += 12;
+      boulder->d.evtf211.rotZ -= 7;
+      boulder->d.evtf211.rotX += 3;
+      boulder->x1.n = evt->x1.n;
+      boulder->z1.n = evt->z1.n;
+      boulder->y1.n = evt->y1.n + 0x300 + EVT.todo_x26 * 0x20;
 
       gCameraRotation.vx += (0x400 - gCameraRotation.vx) >> 5;
       gCameraRotation.vy += 0x10;
-      gCameraPos.vx = -(evt_s0->x1.n >> 3);
-      gCameraPos.vz = -(evt_s0->z1.n >> 3);
-      gCameraPos.vy = evt_s0->y1.n >> 3;
+      gCameraPos.vx = -(boulder->x1.n >> 3);
+      gCameraPos.vz = -(boulder->z1.n >> 3);
+      gCameraPos.vy = boulder->y1.n >> 3;
 
       EVT.todo_x26 += 2;
       if (EVT.todo_x26 == 180) {
@@ -2141,7 +2141,7 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
          evt_a0 = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
          EVT.dx = evt_a0->x1.n - evt->x1.n;
          EVT.dz = evt_a0->z1.n - evt->z1.n;
-         dy = evt_s0->y1.n - evt_a0->y1.n;
+         dy = boulder->y1.n - evt_a0->y1.n;
          EVT.todo_x2a = dy;
          EVT.todo_x38 = dy;
          evt->x1.n = evt_a0->x1.n;
@@ -2151,21 +2151,21 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
       break;
 
    case 4:
-      evt_s0 = EVT.boulder;
-      evt_s0->d.evtf211.todo_x4c = 0x10e - EVT.todo_x26 / 3;
-      evt_s0->d.evtf211.rotY += 12;
-      evt_s0->d.evtf211.rotZ -= 7;
-      evt_s0->d.evtf211.rotX += 3;
+      boulder = EVT.boulder;
+      boulder->d.evtf211.todo_x4c = 0x10e - EVT.todo_x26 / 3;
+      boulder->d.evtf211.rotY += 12;
+      boulder->d.evtf211.rotZ -= 7;
+      boulder->d.evtf211.rotX += 3;
       EVT.todo_x34 = (EVT.dx * (EVT.todo_x38 - EVT.todo_x3a)) / EVT.todo_x38;
       EVT.todo_x36 = (EVT.dz * (EVT.todo_x38 - EVT.todo_x3a)) / EVT.todo_x38;
       EVT.todo_x3a = EVT.todo_x2a * rcos((0x2d - EVT.todo_x2c) * 0x1a) / ONE;
-      evt_s0->y1.n = evt->y1.n + EVT.todo_x3a;
+      boulder->y1.n = evt->y1.n + EVT.todo_x3a;
       EVT.todo_x26 -= 4;
-      AddEvtPrim6(gGraphicsPtr->ot, evt_s0, 0);
+      AddEvtPrim6(gGraphicsPtr->ot, boulder, 0);
 
-      gCameraPos.vx = -(evt_s0->x1.n >> 3);
-      gCameraPos.vz = -(evt_s0->z1.n >> 3);
-      gCameraPos.vy = evt_s0->y1.n >> 3;
+      gCameraPos.vx = -(boulder->x1.n >> 3);
+      gCameraPos.vz = -(boulder->z1.n >> 3);
+      gCameraPos.vy = boulder->y1.n >> 3;
       gCameraRotation.vy += 0x10;
 
       EVT.todo_x2c--;
@@ -2177,8 +2177,8 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
       break;
 
    case 5:
-      evt_s0 = EVT.boulder;
-      evt_s0->functionIndex = EVTF_NULL;
+      boulder = EVT.boulder;
+      boulder->functionIndex = EVTF_NULL;
       evt->functionIndex = EVTF_NULL;
       break;
    }

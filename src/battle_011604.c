@@ -269,10 +269,10 @@ void Evtf017_Camera_TBD(EvtData *evt) {
 #undef EVTF
 #define EVTF 026
 void Evtf026_588_Camera_TBD(EvtData *evt) {
-   EvtData *sprite;
+   EvtData *target;
    s16 diff;
 
-   sprite = EVT.sprite;
+   target = EVT.target;
 
    switch (evt->state) {
    case 0:
@@ -290,16 +290,16 @@ void Evtf026_588_Camera_TBD(EvtData *evt) {
 
       switch (EVT.type) {
       case 0:
-         EVT.dstCamRotY = GetBestViewOfTarget(sprite->z1.s.hi, sprite->x1.s.hi, 1);
+         EVT.dstCamRotY = GetBestViewOfTarget(target->z1.s.hi, target->x1.s.hi, 1);
          break;
       case 1:
-         EVT.dstCamRotY = func_800C4150(sprite->z1.s.hi, sprite->x1.s.hi, EVT.todo_x44);
+         EVT.dstCamRotY = func_800C4150(target->z1.s.hi, target->x1.s.hi, EVT.todo_x44);
          break;
       case 2:
-         EVT.dstCamRotY = func_800C3F50(sprite->z1.s.hi, sprite->x1.s.hi, EVT.todo_x44);
+         EVT.dstCamRotY = func_800C3F50(target->z1.s.hi, target->x1.s.hi, EVT.todo_x44);
          break;
       case 3:
-         EVT.dstCamRotY = func_800C3D50(sprite->z1.s.hi, sprite->x1.s.hi, EVT.todo_x44);
+         EVT.dstCamRotY = func_800C3D50(target->z1.s.hi, target->x1.s.hi, EVT.todo_x44);
          break;
       }
 
@@ -324,12 +324,12 @@ void Evtf026_588_Camera_TBD(EvtData *evt) {
    // fallthrough
    case 1:
       if (--EVT.timer != 0) {
-         gCameraPos.vx += (-(sprite->x1.n >> 3) - gCameraPos.vx) >> 2;
-         gCameraPos.vz += (-(sprite->z1.n >> 3) - gCameraPos.vz) >> 2;
+         gCameraPos.vx += (-(target->x1.n >> 3) - gCameraPos.vx) >> 2;
+         gCameraPos.vz += (-(target->z1.n >> 3) - gCameraPos.vz) >> 2;
          if (evt->functionIndex == EVTF_CAMERA_TBD_588) {
-            gCameraPos.vy += (((sprite->y1.n + 0x80) >> 3) - gCameraPos.vy) >> 2;
+            gCameraPos.vy += (((target->y1.n + 0x80) >> 3) - gCameraPos.vy) >> 2;
          } else {
-            gCameraPos.vy += ((sprite->y1.n >> 3) - gCameraPos.vy) >> 2;
+            gCameraPos.vy += ((target->y1.n >> 3) - gCameraPos.vy) >> 2;
          }
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 4;

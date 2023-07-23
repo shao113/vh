@@ -462,7 +462,7 @@ void Evtf021_UnitAttacking(EvtData *evt) {
 
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_CAMERA_TBD_026;
-            newEvt->d.evtf026.sprite = evt2;
+            newEvt->d.evtf026.target = evt2;
             newEvt->d.evtf026.type = 3;
             if (attacker->class != CLASS_ARCHER) {
                newEvt->d.evtf026.todo_x44 = 1;
@@ -1136,7 +1136,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
          evt_s1 = GetUnitSpriteAtPosition(bz, bx);
          evt_a2 = Evt_GetUnused();
          evt_a2->functionIndex = EVTF_CAMERA_TBD_026;
-         evt_a2->d.evtf026.sprite = evt_s1;
+         evt_a2->d.evtf026.target = evt_s1;
          evt_a2->d.evtf026.type = 1;
          EVT.timer = 10;
          evt->state2 = 0;
@@ -1518,7 +1518,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          } else {
             evt_v1 = Evt_GetUnused();
             evt_v1->functionIndex = EVTF_CAMERA_TBD_026;
-            evt_v1->d.evtf026.sprite = evt_s1;
+            evt_v1->d.evtf026.target = evt_s1;
             evt_v1->d.evtf026.type = 1;
          }
          EVT.targets++;
@@ -1640,7 +1640,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          } else {
             evt_v1 = Evt_GetUnused();
             evt_v1->functionIndex = EVTF_CAMERA_TBD_026;
-            evt_v1->d.evtf026.sprite = evt_s1;
+            evt_v1->d.evtf026.target = evt_s1;
             evt_v1->d.evtf026.type = 1;
          }
          EVT.targets++;
@@ -1739,7 +1739,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          } else {
             evt_v1 = Evt_GetUnused();
             evt_v1->functionIndex = EVTF_CAMERA_TBD_026;
-            evt_v1->d.evtf026.sprite = evt_s1;
+            evt_v1->d.evtf026.target = evt_s1;
             evt_v1->d.evtf026.type = 1;
          }
          EVT.targets++;
@@ -1893,7 +1893,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
       } else {
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_CAMERA_TBD_026;
-         evt_v1->d.evtf026.sprite = evt_s1;
+         evt_v1->d.evtf026.target = evt_s1;
          evt_v1->d.evtf026.type = 1;
       }
       EVT.targets++;

@@ -1571,7 +1571,7 @@ void Evtf586_BattleMsgBox(EvtData *evt) {
       sprite = FindUnitSpriteByNameIdx(EVT.nameIdx);
       camEvt = Evt_GetUnused();
       camEvt->functionIndex = EVTF_CAMERA_TBD_588;
-      camEvt->d.evtf588.sprite = sprite;
+      camEvt->d.evtf588.target = sprite;
       EVT.timer = 20;
       evt->state++;
       break;

@@ -65,6 +65,8 @@ void Evtf111_SpellFx2_BlessWeapon(EvtData *);
 void Evtf112_SpellFx2_MysticShield(EvtData *);
 void Evtf113_SpellFx2_MysticEnergy(EvtData *);
 void Evtf119_Fx_TBD(EvtData *);
+void Evtf120_Fx_TBD(EvtData *);
+void Evtf121_Fx_TBD(EvtData *);
 void Evtf128_SpellFx2_ThunderBall(EvtData *);
 void Evtf129_SpellFx3_ThunderBall(EvtData *);
 void Evtf130_Fx_TBD(EvtData *);
@@ -73,9 +75,12 @@ void Evtf132_Etc_Fx_TBD(EvtData *);
 void Evtf133_Fx_TBD(EvtData *);
 void Evtf137_Fx_TBD(EvtData *);
 void Evtf141_Fx_TBD(EvtData *);
+void Evtf144_SpellFx2_HolyLightning(EvtData *);
+void Evtf145_SpellFx_HolyLightning_ElectricOrb(EvtData *);
+void Evtf146_SpellFx3_HolyLightning(EvtData *);
 void Evtf147_Fx_TBD(EvtData *);
 void Evtf148_Fx_TBD(EvtData *);
-void Evtf149_Fx_TBD(EvtData *);
+void Evtf149_FlashingUnitSprite(EvtData *);
 void Evtf151_SpellFx1_FireGem(EvtData *);
 void Evtf155_SpellFx_Spellbind_Glyph(EvtData *);
 void Evtf156_SpellFx1_DeltaMirage(EvtData *);
@@ -112,9 +117,15 @@ void Evtf187_Fx_TBD(EvtData *);
 void Evtf189_SpellFx1_IceStorm(EvtData *);
 void Evtf190_Fx_TBD(EvtData *);
 void Evtf191_SpellFx_MagicArrow_Arrow(EvtData *);
+void Evtf192_SpellFx2_PerfectGuard(EvtData *);
+void Evtf193_SpellFx2_DarkStar(EvtData *);
+void Evtf194_SpellFx3_DarkStar(EvtData *);
+void Evtf195_SpellFx2_RollingThunder(EvtData *);
+void Evtf196_SpellFx_RollingThunder_OrbPair(EvtData *);
 void Evtf197_SpellFx1_RollingThunder(EvtData *);
 void Evtf198_SpellFx_RollingThunder_CastingBolt(EvtData *);
 void Evtf199_SpellFx1_MagicArrow(EvtData *);
+void Evtf200_SpellFx3_RollingThunder(EvtData *);
 void Evtf201_UnitStruck(EvtData *);
 void Evtf202_746_UnitBlocking(EvtData *);
 void Evtf203_BlockingImpactParticle(EvtData *);
@@ -131,6 +142,11 @@ void Evtf214_DustCloud(EvtData *);
 void Evtf215_Cloud(EvtData *);
 void Evtf220_SpellFx2_Explosion(EvtData *);
 void Evtf221_SpellFx3_Explosion(EvtData *);
+void Evtf222_Fx_TBD(EvtData *);
+void Evtf223_Fx_TBD(EvtData *);
+void Evtf224_SpellFx1_ThunderBall(EvtData *);
+void Evtf225_SpellFx_ThunderBall_InitialOrb(EvtData *);
+void Evtf226_SpellFx_ThunderBall_ChildOrb(EvtData *);
 void Evtf250_350_LoadEvent16(EvtData *);
 void Evtf251_LoadEvent14(EvtData *);
 void Evtf252_LoadEvent05(EvtData *);
@@ -430,8 +446,8 @@ EvtFunction gEvtFunctionPointers[804] = {
     [117] = (EvtFunction)0x8007e520,
     [118] = (EvtFunction)0x8007e1c4,
     [119] = Evtf119_Fx_TBD,
-    [120] = (EvtFunction)0x8007ad5c,
-    [121] = (EvtFunction)0x8007addc,
+    [120] = Evtf120_Fx_TBD,
+    [121] = Evtf121_Fx_TBD,
     [122] = (EvtFunction)0x8007fe04,
     [123] = (EvtFunction)NULL,
     [124] = (EvtFunction)NULL,
@@ -454,12 +470,12 @@ EvtFunction gEvtFunctionPointers[804] = {
     [141] = Evtf141_Fx_TBD,
     [142] = Evtf132_Etc_Fx_TBD,
     [143] = (EvtFunction)NULL,
-    [144] = (EvtFunction)0x80078264,
-    [145] = (EvtFunction)0x800785b4,
-    [146] = (EvtFunction)0x80078210,
+    [144] = Evtf144_SpellFx2_HolyLightning,
+    [145] = Evtf145_SpellFx_HolyLightning_ElectricOrb,
+    [146] = Evtf146_SpellFx3_HolyLightning,
     [147] = Evtf147_Fx_TBD,
     [148] = Evtf148_Fx_TBD,
-    [149] = Evtf149_Fx_TBD,
+    [149] = Evtf149_FlashingUnitSprite,
     [150] = (EvtFunction)NULL,
     [151] = Evtf151_SpellFx1_FireGem,
     [152] = (EvtFunction)NULL,
@@ -502,15 +518,15 @@ EvtFunction gEvtFunctionPointers[804] = {
     [189] = Evtf189_SpellFx1_IceStorm,
     [190] = Evtf190_Fx_TBD,
     [191] = Evtf191_SpellFx_MagicArrow_Arrow,
-    [192] = (EvtFunction)0x8007c984,
-    [193] = (EvtFunction)0x8007b98c,
-    [194] = (EvtFunction)0x8007b938,
-    [195] = (EvtFunction)0x8007aedc,
-    [196] = (EvtFunction)0x8007b030,
+    [192] = Evtf192_SpellFx2_PerfectGuard,
+    [193] = Evtf193_SpellFx2_DarkStar,
+    [194] = Evtf194_SpellFx3_DarkStar,
+    [195] = Evtf195_SpellFx2_RollingThunder,
+    [196] = Evtf196_SpellFx_RollingThunder_OrbPair,
     [197] = Evtf197_SpellFx1_RollingThunder,
     [198] = Evtf198_SpellFx_RollingThunder_CastingBolt,
     [199] = Evtf199_SpellFx1_MagicArrow,
-    [200] = (EvtFunction)0x8007ae60,
+    [200] = Evtf200_SpellFx3_RollingThunder,
     [201] = Evtf201_UnitStruck,
     [202] = Evtf202_746_UnitBlocking,
     [203] = Evtf203_BlockingImpactParticle,
@@ -532,11 +548,11 @@ EvtFunction gEvtFunctionPointers[804] = {
     [219] = (EvtFunction)NULL,
     [220] = Evtf220_SpellFx2_Explosion,
     [221] = Evtf221_SpellFx3_Explosion,
-    [222] = (EvtFunction)0x8007a560,
-    [223] = (EvtFunction)0x8007aac4,
-    [224] = (EvtFunction)0x80079cb8,
-    [225] = (EvtFunction)0x80079eb8,
-    [226] = (EvtFunction)0x8007a22c,
+    [222] = Evtf222_Fx_TBD,
+    [223] = Evtf223_Fx_TBD,
+    [224] = Evtf224_SpellFx1_ThunderBall,
+    [225] = Evtf225_SpellFx_ThunderBall_InitialOrb,
+    [226] = Evtf226_SpellFx_ThunderBall_ChildOrb,
     [227] = Evtf102_227_SpellFx2_Poison,
     [228] = (EvtFunction)NULL,
     [229] = (EvtFunction)NULL,

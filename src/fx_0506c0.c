@@ -1240,7 +1240,7 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 149
-void Evtf149_Fx_TBD(EvtData *evt) {
+void Evtf149_FlashingUnitSprite(EvtData *evt) {
    EvtData *unitSprite, *fxSprite1, *fxSprite2;
    POLY_FT4 *poly;
 

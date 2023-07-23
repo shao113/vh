@@ -80,7 +80,7 @@ void Evtf173_SpellFx_FireGem_Beam(EvtData *evt) {
       if (EVT.todo_x2a < 0) {
          EVT.todo_x2a = 0;
          evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_FX_TBD_149;
+         evt_v1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
          evt_v1->x1.n = evt->x1.n;
          evt_v1->z1.n = evt->z1.n;
          EVT.fx = evt_v1;
@@ -482,7 +482,7 @@ void Evtf156_SpellFx1_DeltaMirage(EvtData *evt) {
 
       evt_v1 = Evt_GetUnused();
       evt_v1->functionIndex = EVTF_CAMERA_TBD_026;
-      evt_v1->d.evtf026.sprite = unitSprite;
+      evt_v1->d.evtf026.target = unitSprite;
 
       evt->state++;
       evt->state2 = 2;
@@ -656,7 +656,7 @@ void Evtf158_SpellFx1_Explosion(EvtData *evt) {
 
       evt_s0 = Evt_GetUnused();
       evt_s0->functionIndex = EVTF_CAMERA_TBD_026;
-      evt_s0->d.evtf026.sprite = unitSprite;
+      evt_s0->d.evtf026.target = unitSprite;
       evt_s0->d.evtf026.type = 3;
 
       evt->state++;
