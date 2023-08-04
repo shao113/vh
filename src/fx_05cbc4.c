@@ -4,6 +4,8 @@
 #include "battle.h"
 #include "field.h"
 
+extern void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
+
 #undef EVTF
 #define EVTF 173
 void Evtf173_SpellFx_FireGem_Beam(EvtData *evt) {

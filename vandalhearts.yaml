@@ -87,7 +87,9 @@ segments:
     - [0x00511c, .rdata, fx_05cbc4]            # 0x8001491c
     - [0x00514c, .rdata, fx_060c38]            # 0x8001494c
     - [0x005244, .rdata, fx_068a10]            # 0x80014a44
-    - [0x0052a0, rdata]
+    - [0x0052a0, .rdata, fx_070604]            # 0x80014aa0
+    - [0x005324, .rdata, fx_0743fc]            # 0x80014b24
+    - [0x005338, rdata]
 
     - [0x006580, .rdata, audio]                # 0x80015d80 
     - [0x0069b0, bin]                          # 0x800161b0 end of audio jtbls
@@ -130,7 +132,12 @@ segments:
     - [0x05cbc4, c, fx_05cbc4]                 # 0x8006c3c4 Evtf173_SpellFx_FireGem_Beam ...
     - [0x060c38, c, fx_060c38]                 # 0x80070438 Evtf172_SpellFx_HolyPressure_Cube ...
     - [0x068a10, c, fx_068a10]                 # 0x80078210 Evtf146_SpellFx3_HolyLightning ...
-    - [0x06e9c4, bin]
+    - [0x06e9c4, c, fx_06e9c4]                 # 0x8007e1c4 Evtf118_SpellFx_Faerie_Target ...
+    - [0x06f50c, bin]                          # 0x8007ed0c Evtf211_SpellFx_Avalanche_Boulder (TODO)
+    #- [0x06f50c, c, TEMP_boulder]
+    - [0x070604, c, fx_070604]                 # 0x8007fe04 Evtf122_SpellFx1_DarkFire ... (TODO: re-merge)
+    - [0x0743fc, c, fx_0743fc]                 # 0x80083bfc Evtf327_SpellFx2_HealingCircle ...
+    - [0x0753cc, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
     - [0x0b0480, bin]
@@ -169,7 +176,9 @@ segments:
     - [0x0ef4fc, .data, fx_05cbc4]             # 0x800fecfc
     - [0x0ef6a8, .data, fx_060c38]             # 0x800feea8
     - [0x0ef7b0, .data, fx_068a10]             # 0x800fefb0
-    - [0x0ef98c, data]
+    - [0x0ef98c, .data, fx_06e9c4]             # 0x800ff18c
+    - [0x0efb44, .data, fx_070604]             # 0x800ff344 (TODO: re-merge)
+    - [0x0efdd0, data]
   
     - [0x0f76ec, .data, audio]                 # 0x80106eec
     - [0x0f91d0, data]                         # 0x801089d0 lib data
@@ -189,7 +198,8 @@ segments:
     - [0x113710, .sdata, card]                 # 0x80122f10
     - [0x11372c, .sdata, fx_060c38]            # 0x80122f2c
     - [0x113740, .sdata, fx_068a10]            # 0x80122f40
-    - [0x113748, sdata]
+    - [0x113748, .sdata, fx_06e9c4]            # 0x80122f48
+    - [0x113758, sdata]
 
     # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses
     # set through symbol_addrs to override the assembler's placement

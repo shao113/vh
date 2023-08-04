@@ -4,6 +4,8 @@
 #include "battle.h"
 #include "field.h"
 
+extern void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
+
 #undef EVTF
 #define EVTF 172
 void Evtf172_SpellFx_HolyPressure_Cube(EvtData *evt) {

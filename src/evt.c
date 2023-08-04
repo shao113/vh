@@ -1275,7 +1275,7 @@ void SetElevationFromTerrain(EvtData *evt) {
    }
 }
 
-s32 GetTerrainElevation(s8 z, s8 x) {
+s16 GetTerrainElevation(s8 z, s8 x) {
    if (x < gMapMinX || x > gMapMaxX || z < gMapMinZ || z > gMapMaxZ) {
       return 0;
    } else {

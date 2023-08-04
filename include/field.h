@@ -133,6 +133,6 @@ extern BVectorZXY gMapCursorStartingPos[BATTLE_CT];
 extern HiddenItem gMapHiddenItems[BATTLE_CT][2];
 extern u8 gShowBlueMovementGrid;
 
-s32 GetTerrainElevation(s8, s8);
+s16 GetTerrainElevation(s8, s8);
 
 #endif

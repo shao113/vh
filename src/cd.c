@@ -818,9 +818,9 @@ void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
    extern TILE s_blackScreen_80123918;
    EvtData *nowLoading;
    EvtData *logo;
-   EvtData *fairy;
-   s32 fairyFrameTimer;
-   s32 fairyFrameToggle;
+   EvtData *faerie;
+   s32 faerieFrameTimer;
+   s32 faerieFrameToggle;
 
    gCdLoader.cdf = cdfIdx;
    gCdLoader.loadingVabBody = 0;
@@ -857,15 +857,15 @@ void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
       logo->x3.n = logo->x1.n + 128;
       logo->y3.n = logo->y1.n + 32;
 
-      fairy = Evt_GetUnused();
-      fairy->functionIndex = EVTF_NOOP;
-      fairy->x1.n = 24;
-      fairy->y1.n = 192;
-      fairy->x3.n = fairy->x1.n + 24;
-      fairy->y3.n = fairy->y1.n + 24;
-      fairyFrameTimer = 0;
-      fairyFrameToggle = 0;
-      fairy->d.sprite.gfxIdx = GFX_FAIRY_1;
+      faerie = Evt_GetUnused();
+      faerie->functionIndex = EVTF_NOOP;
+      faerie->x1.n = 24;
+      faerie->y1.n = 192;
+      faerie->x3.n = faerie->x1.n + 24;
+      faerie->y3.n = faerie->y1.n + 24;
+      faerieFrameTimer = 0;
+      faerieFrameToggle = 0;
+      faerie->d.sprite.gfxIdx = GFX_FAERIE_1;
 
       do {
          UpdateAudio();
@@ -884,14 +884,14 @@ void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
          gGraphicsPtr =
              (gGraphicsPtr == &gGraphicBuffers[0]) ? &gGraphicBuffers[1] : &gGraphicBuffers[0];
          ClearOTag(gGraphicsPtr->ot, OT_SIZE);
-         if (++fairyFrameTimer > 4) {
-            fairyFrameToggle = !fairyFrameToggle;
-            fairy->d.sprite.gfxIdx = GFX_FAIRY_1 + fairyFrameToggle;
-            fairyFrameTimer = 0;
+         if (++faerieFrameTimer > 4) {
+            faerieFrameToggle = !faerieFrameToggle;
+            faerie->d.sprite.gfxIdx = GFX_FAERIE_1 + faerieFrameToggle;
+            faerieFrameTimer = 0;
          }
          AddEvtPrim_Gui(gGraphicsPtr->ot, nowLoading);
          AddEvtPrim_Gui(gGraphicsPtr->ot, logo);
-         AddEvtPrim_Gui(gGraphicsPtr->ot, fairy);
+         AddEvtPrim_Gui(gGraphicsPtr->ot, faerie);
          AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], &s_blackScreen_80123918);
          DrawSync(0);
          VSync(0);
@@ -901,7 +901,7 @@ void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
          ContinueLoadingCdFile();
       } while (GetCdFileLoadStatus() != 0);
 
-      fairy->functionIndex = EVTF_NULL;
+      faerie->functionIndex = EVTF_NULL;
       logo->functionIndex = EVTF_NULL;
       nowLoading->functionIndex = EVTF_NULL;
    }

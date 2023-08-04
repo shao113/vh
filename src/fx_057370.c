@@ -3,6 +3,8 @@
 #include "graphics.h"
 #include "field.h"
 
+extern void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
+
 #undef EVTF
 #define EVTF 204
 void Evtf204_SummonCrest(EvtData *evt) {
