@@ -8,7 +8,7 @@ extern void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
 
 #undef EVTF
 #define EVTF 173
-void Evtf173_SpellFx_FireGem_Beam(EvtData *evt) {
+void Evtf173_FireGem_Beam(EvtData *evt) {
    s16 x, y, z;
    s16 a;
    s32 i;
@@ -469,7 +469,7 @@ void func_8006DCD8(EvtData *deltaMirage) {
 
 #undef EVTF
 #define EVTF 156
-void Evtf156_SpellFx1_DeltaMirage(EvtData *evt) {
+void Evtf156_DeltaMirage_FX1(EvtData *evt) {
    s32 i;
    EvtData *evt_v1;
    EvtData *unitSprite;
@@ -529,7 +529,7 @@ void Evtf156_SpellFx1_DeltaMirage(EvtData *evt) {
    case 2:
       for (i = 0; i < 0x40; i++) {
          evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_SPELL_FX_DELTA_MIRAGE_RAY;
+         evt_v1->functionIndex = EVTF_DELTA_MIRAGE_RAY;
          evt_v1->d.evtf157.parent = evt;
       }
       EVT.todo_x36 = 0x200;
@@ -561,7 +561,7 @@ void Evtf156_SpellFx1_DeltaMirage(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 157
-void Evtf157_SpellFx_DeltaMirage_Ray(EvtData *evt) {
+void Evtf157_DeltaMirage_Ray(EvtData *evt) {
    EvtData *evt_s0;
 
    switch (evt->state) {
@@ -641,7 +641,7 @@ void Evtf157_SpellFx_DeltaMirage_Ray(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 158
-void Evtf158_SpellFx1_Explosion(EvtData *evt) {
+void Evtf158_Explosion_FX1(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *evt_s0;
    s32 spriteX, spriteY, spriteW, spriteH;
@@ -697,7 +697,7 @@ void Evtf158_SpellFx1_Explosion(EvtData *evt) {
       EVT.timer += 2;
       if (EVT.timer % 4 == 0) {
          evt_s0 = Evt_GetUnused();
-         evt_s0->functionIndex = EVTF_SPELL_FX_EXPLOSION_RAYS;
+         evt_s0->functionIndex = EVTF_EXPLOSION_RAYS;
          evt_s0->x1.n = evt->x1.n;
          evt_s0->y1.n = evt->y1.n + 0x40;
          evt_s0->z1.n = evt->z1.n;
@@ -715,7 +715,7 @@ void Evtf158_SpellFx1_Explosion(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 159
-void Evtf159_SpellFx_Explosion_Rays(EvtData *evt) {
+void Evtf159_Explosion_Rays(EvtData *evt) {
    static s16 colorsAnimData[64] = {
        4, GFX_COLOR_1,  3, GFX_COLOR_2,  3, GFX_COLOR_3,  3, GFX_COLOR_4,  3, GFX_COLOR_5,
        3, GFX_COLOR_6,  3, GFX_COLOR_7,  3, GFX_COLOR_8,  3, GFX_COLOR_9,  3, GFX_COLOR_10,
@@ -864,7 +864,7 @@ static s16 sAnimData_800fee24[28] = {
 
 #undef EVTF
 #define EVTF 220
-void Evtf220_SpellFx2_Explosion(EvtData *evt) {
+void Evtf220_Explosion_FX2(EvtData *evt) {
    static s16 explosionAnimData[26] = {0, GFX_EXPLOSION_1,  4, GFX_EXPLOSION_2,  4, GFX_EXPLOSION_3,
                                        4, GFX_EXPLOSION_4,  4, GFX_EXPLOSION_5,  4, GFX_EXPLOSION_6,
                                        4, GFX_EXPLOSION_7,  4, GFX_EXPLOSION_8,  4, GFX_EXPLOSION_9,
@@ -940,11 +940,11 @@ void Evtf220_SpellFx2_Explosion(EvtData *evt) {
    }
 }
 
-void Evtf221_SpellFx3_Explosion(EvtData *evt) {
+void Evtf221_Explosion_FX3(EvtData *evt) {
    EvtData *evt_s0;
 
    evt_s0 = Evt_GetUnused();
-   evt_s0->functionIndex = EVTF_SPELL_FX2_EXPLOSION;
+   evt_s0->functionIndex = EVTF_EXPLOSION_FX2;
    evt_s0->x1.s.hi = evt->x1.s.hi;
    evt_s0->z1.s.hi = evt->z1.s.hi;
    evt_s0->d.evtf220.endingFxType = 2;
@@ -954,7 +954,7 @@ void Evtf221_SpellFx3_Explosion(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 163
-void Evtf163_SpellFx1_StoneShower(EvtData *evt) {
+void Evtf163_StoneShower_FX1(EvtData *evt) {
    EvtData *evt_s0;
    EvtData *sprite;
    POLY_FT4 *poly;
@@ -1035,7 +1035,7 @@ void Evtf163_SpellFx1_StoneShower(EvtData *evt) {
          pDataStoreAsEvts = evt_s0->d.dataStore.evts;
          for (i = 0; i < 15; i++) {
             evt_s0 = Evt_GetUnused();
-            evt_s0->functionIndex = EVTF_SPELL_FX_STONE_SHOWER_ROCK;
+            evt_s0->functionIndex = EVTF_STONE_SHOWER_ROCK;
             evt_s0->d.evtf164.parent = evt;
             evt_s0->d.evtf164.downward = 0;
             evt_s0->d.evtf164.todo_x32 = rand() % 5;
@@ -1082,7 +1082,7 @@ void Evtf163_SpellFx1_StoneShower(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 165
-void Evtf165_SpellFx2_StoneShower(EvtData *evt) {
+void Evtf165_StoneShower_FX2(EvtData *evt) {
    s32 i;
    EvtData *evt_s0;
    EvtData *endingFx;
@@ -1108,7 +1108,7 @@ void Evtf165_SpellFx2_StoneShower(EvtData *evt) {
       pDataStoreAsEvts = evt_s0->d.dataStore.evts;
       for (i = 0; i < 15; i++) {
          evt_s0 = Evt_GetUnused();
-         evt_s0->functionIndex = EVTF_SPELL_FX_STONE_SHOWER_ROCK;
+         evt_s0->functionIndex = EVTF_STONE_SHOWER_ROCK;
          evt_s0->d.evtf164.parent = evt;
          evt_s0->d.evtf164.downward = 1;
          evt_s0->d.evtf164.todo_x32 = 0;
@@ -1150,11 +1150,11 @@ void Evtf165_SpellFx2_StoneShower(EvtData *evt) {
    }
 }
 
-void Evtf166_SpellFx3_StoneShower(EvtData *evt) {
+void Evtf166_StoneShower_FX3(EvtData *evt) {
    EvtData *evt_s0;
 
    evt_s0 = Evt_GetUnused();
-   evt_s0->functionIndex = EVTF_SPELL_FX2_STONE_SHOWER;
+   evt_s0->functionIndex = EVTF_STONE_SHOWER_FX2;
    evt_s0->x1.s.hi = evt->x1.s.hi;
    evt_s0->z1.s.hi = evt->z1.s.hi;
    evt_s0->d.evtf165.endingFxType = 2;
@@ -1164,7 +1164,7 @@ void Evtf166_SpellFx3_StoneShower(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 164
-void Evtf164_SpellFx_StoneShower_Rock(EvtData *evt) {
+void Evtf164_StoneShower_Rock(EvtData *evt) {
    static s16 rockAnimData[12] = {5, GFX_ROCK_1, 2, GFX_ROCK_2, 2, GFX_ROCK_3,
                                   2, GFX_ROCK_4, 2, GFX_NULL,   1, GFX_NULL};
 

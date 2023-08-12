@@ -6,6 +6,11 @@
 
 // TODO: Figure out if this data should be split or continued. Some of this is accessed pretty far
 // apart, so it will probably need to be global.
+//
+// From the ordering and xref locations, and the interspersing of probable static data, I'm guessing
+// these were defined (probably as global) as they were needed, and then occasionally re-used later.
+// For now, I'll continue defining them as static (function-scoped where reasonable), making global
+// as needed, and not worry about precise placement until later when I begin finer file splits.
 
 // The values offset by 0x100 will be flipped.
 static s16 sDarkFireSphereAnimData_800ff344[36] = {7, GFX_TILED_GRAY_SPARKLES_DYN_1, // Marker?
@@ -94,7 +99,7 @@ static s16 sLightningAnimData_800ff588[36] = {
 
 #undef EVTF
 #define EVTF 122
-void Evtf122_SpellFx1_DarkFire(EvtData *evt) {
+void Evtf122_DarkFire_FX1(EvtData *evt) {
    EvtData *evt_s2;
    EvtData *evt_s1;
    EvtData *evt_s0;
@@ -124,7 +129,7 @@ void Evtf122_SpellFx1_DarkFire(EvtData *evt) {
 
       for (i = 0; i < 0x40; i++) {
          evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_SPELL_FX_DARK_FIRE_RAY;
+         evt_s1->functionIndex = EVTF_DARK_FIRE_RAY;
          evt_s1->d.evtf188.target = target;
       }
 
@@ -246,7 +251,7 @@ void Evtf122_SpellFx1_DarkFire(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 188
-void Evtf188_SpellFx_DarkFire_Ray(EvtData *evt) {
+void Evtf188_DarkFire_Ray(EvtData *evt) {
    EvtData *target;
    EvtData *sprite;
 
@@ -493,7 +498,7 @@ void Evtf291_ChestImpact(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 080
-void Evtf080_SpellFx1_RomanFire(EvtData *evt) {
+void Evtf080_RomanFire_FX1(EvtData *evt) {
    EvtData *target;
    EvtData *evt_s1;
    s32 i;
@@ -576,8 +581,8 @@ void Evtf080_SpellFx1_RomanFire(EvtData *evt) {
 
    case 4:
       for (i = 0; i < 8; i++) {
-         evt_s1 = CreatePositionedEvt(evt, EVTF_SPELL_FX_ROMAN_FIRE_FLAME);
-         evt_s1->functionIndex = EVTF_SPELL_FX_ROMAN_FIRE_FLAME;
+         evt_s1 = CreatePositionedEvt(evt, EVTF_ROMAN_FIRE_FLAME);
+         evt_s1->functionIndex = EVTF_ROMAN_FIRE_FLAME;
          // evt_s1->x2.n = 0x20 * rcos(i * 0x200 + evt->y1.n * 4) >> 12;
          evt_s1->x2.n = rcos(i * 0x200 + evt->y1.n * 4) >> 7;
          evt_s1->z2.n = rsin(i * 0x200 + evt->y1.n * 4) >> 7;
@@ -614,7 +619,7 @@ void Evtf080_SpellFx1_RomanFire(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 081
-void Evtf081_SpellFx_RomanFire_Flame(EvtData *evt) {
+void Evtf081_RomanFire_Flame(EvtData *evt) {
    s32 elevation;
 
    evt->x1.n += evt->x2.n;
@@ -653,10 +658,10 @@ void Evtf081_SpellFx_RomanFire_Flame(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 094
-void Evtf094_SpellFx1_MoodRing(EvtData *evt) {
+void Evtf094_MoodRing_FX1(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *evt_s1; // ring, cam
-   u8 *p;
+   BVectorXZ *p;
    s32 i;
 
    switch (evt->state) {
@@ -673,10 +678,10 @@ void Evtf094_SpellFx1_MoodRing(EvtData *evt) {
       evt->z2.n = unitSprite->z1.n;
       evt->y2.n = unitSprite->y1.n;
 
-      p = gTargetCoords;
+      p = (BVectorXZ *)gTargetCoords;
       for (i = 0; i < 8; i++) {
          evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_SPELL_FX_MOOD_RING_RING;
+         evt_s1->functionIndex = EVTF_MOOD_RING_RING;
          evt_s1->x1.n = evt->x2.n + (0x800 * rcos(i * 0x200) >> 12);
          evt_s1->z1.n = evt->z2.n + (0x800 * rsin(i * 0x200) >> 12);
          evt_s1->y1.n = evt->y2.n + 0x100;
@@ -688,12 +693,12 @@ void Evtf094_SpellFx1_MoodRing(EvtData *evt) {
          evt_s1->d.evtf095.parent = evt;
          evt_s1->state2 = 56;
 
-         if (*p != 0xff) {
-            unitSprite = GetUnitSpriteAtPosition(p[1], p[0]);
+         if (p->x != 0xff) {
+            unitSprite = GetUnitSpriteAtPosition(p->z, p->x);
             evt_s1->x3.n = unitSprite->x1.n;
             evt_s1->y3.n = unitSprite->y1.n + 0x80;
             evt_s1->z3.n = unitSprite->z1.n;
-            p += 2;
+            p++;
          } else {
             evt_s1->x3.n = evt_s1->x1.n;
             evt_s1->y3.n = evt_s1->y1.n + 0x80;
@@ -726,7 +731,7 @@ void Evtf094_SpellFx1_MoodRing(EvtData *evt) {
    }
 }
 
-void RenderMoodRing(EvtData *evt, s16 halfSize, s16 theta, s16 clut) {
+void MoodRing_RenderRing(EvtData *evt, s16 halfSize, s16 theta, s16 clut) {
    SVECTOR vector;
    EvtData *top;
    EvtData *bottom;
@@ -785,7 +790,7 @@ void RenderMoodRing(EvtData *evt, s16 halfSize, s16 theta, s16 clut) {
 
 #undef EVTF
 #define EVTF 095
-void Evtf095_SpellFx_MoodRing_Ring(EvtData *evt) {
+void Evtf095_MoodRing_Ring(EvtData *evt) {
    EvtData *parent;
    s16 a;
 
@@ -806,7 +811,7 @@ void Evtf095_SpellFx_MoodRing_Ring(EvtData *evt) {
       evt->x1.n = a;
       a = evt->z2.n + (rsin(EVT.theta) * EVT.radius >> 12);
       evt->z1.n = a;
-      RenderMoodRing(evt, evt->state2, 0, 3 + evt->state3 % 3);
+      MoodRing_RenderRing(evt, evt->state2, 0, 3 + evt->state3 % 3);
       evt->state2 -= (evt->state2 - 0x20) >> 4;
       evt->state3++;
       parent = EVT.parent;
@@ -821,7 +826,7 @@ void Evtf095_SpellFx_MoodRing_Ring(EvtData *evt) {
       evt->x1.n -= (evt->x1.n - evt->x3.n) >> 2;
       evt->z1.n -= (evt->z1.n - evt->z3.n) >> 2;
       evt->y1.n -= (evt->y1.n - evt->y3.n) >> 2;
-      RenderMoodRing(evt, evt->state2, 0, 3 + evt->state3 % 3);
+      MoodRing_RenderRing(evt, evt->state2, 0, 3 + evt->state3 % 3);
       if (--evt->state3 == 0) {
          evt->functionIndex = EVTF_NULL;
       }
@@ -831,14 +836,14 @@ void Evtf095_SpellFx_MoodRing_Ring(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 097
-void Evtf097_SpellFx3_MoodRing(EvtData *evt) {
+void Evtf097_MoodRing_FX3(EvtData *evt) {
    EVT.fatal = 1;
-   evt->functionIndex = EVTF_SPELL_FX2_MOOD_RING;
+   evt->functionIndex = EVTF_MOOD_RING_FX2;
 }
 
 #undef EVTF
 #define EVTF 096
-void Evtf096_SpellFx2_MoodRing(EvtData *evt) {
+void Evtf096_MoodRing_FX2(EvtData *evt) {
    EvtData *targetSprite;
 
    switch (evt->state) {
@@ -855,18 +860,18 @@ void Evtf096_SpellFx2_MoodRing(EvtData *evt) {
    case 1:
       targetSprite = EVT.targetSprite;
       evt->y1.n = targetSprite->y1.n + 0xc0;
-      RenderMoodRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
+      MoodRing_RenderRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
       evt->y1.n = targetSprite->y1.n + 0x80;
-      RenderMoodRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
+      MoodRing_RenderRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
       evt->y1.n = targetSprite->y1.n + 0x40;
-      RenderMoodRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
+      MoodRing_RenderRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
       evt->state3++;
       evt->state2 -= 0x10;
       if (evt->state2 <= 0) {
          if (EVT.fatal) {
-            CreatePositionedEvt(evt, EVTF_SPELL_FX3_SLAY);
+            CreatePositionedEvt(evt, EVTF_SLAY_FX3);
          } else {
-            CreatePositionedEvt(evt, EVTF_SPELL_FX2_DAMAGE);
+            CreatePositionedEvt(evt, EVTF_DAMAGE_FX2);
          }
          evt->state++;
       }
@@ -896,7 +901,7 @@ void Evtf096_SpellFx2_MoodRing(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 090
-void Evtf090_SpellFx2_DaggerStorm(EvtData *evt) {
+void Evtf090_DaggerStorm_FX2(EvtData *evt) {
    EvtData *evt_s0;
    EvtData *dagger;
    SVECTOR svector;
@@ -934,7 +939,7 @@ void Evtf090_SpellFx2_DaggerStorm(EvtData *evt) {
             if (dagger == NULL) {
                return;
             }
-            dagger->functionIndex = EVTF_SPELL_FX_DAGGER_STORM_DAGGER;
+            dagger->functionIndex = EVTF_DAGGER_STORM_DAGGER;
             if (evt->state3 >= 25) {
                dagger->state2 = 0;
             } else {
@@ -1030,7 +1035,7 @@ void func_80082E48(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 337
-void Evtf337_SpellFx_DaggerStorm_BloodSplatter(EvtData *evt) {
+void Evtf337_DaggerStorm_BloodSplatter(EvtData *evt) {
    s32 elevation;
 
    switch (evt->state) {
@@ -1063,7 +1068,7 @@ void Evtf337_SpellFx_DaggerStorm_BloodSplatter(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 091
-void Evtf091_SpellFx_DaggerStorm_Dagger(EvtData *evt) {
+void Evtf091_DaggerStorm_Dagger(EvtData *evt) {
    EvtData *evt_a1;
 
    switch (evt->state) {
@@ -1101,7 +1106,7 @@ void Evtf091_SpellFx_DaggerStorm_Dagger(EvtData *evt) {
          if (rand() % 8 == 0) {
             evt_a1 = Evt_GetUnused();
             if (evt_a1 != NULL) {
-               evt_a1->functionIndex = EVTF_SPELL_FX_DAGGER_STORM_BLOOD_SPLATTER;
+               evt_a1->functionIndex = EVTF_DAGGER_STORM_BLOOD_SPLATTER;
                evt_a1->x1.n = evt->x1.n;
                evt_a1->z1.n = evt->z1.n;
                evt_a1->y1.n = evt->y1.n;
@@ -1172,12 +1177,12 @@ void Evtf091_SpellFx_DaggerStorm_Dagger(EvtData *evt) {
    }
 }
 
-void Evtf093_SpellFx3_DaggerStorm(EvtData *evt) {
-   evt->functionIndex = EVTF_SPELL_FX2_DAGGER_STORM;
+void Evtf093_DaggerStorm_FX3(EvtData *evt) {
+   evt->functionIndex = EVTF_DAGGER_STORM_FX2;
    evt->d.evtf090.fatal = 1;
 }
 
-void Evtf092_SpellFx1_DaggerStorm(EvtData *evt) {
+void Evtf092_DaggerStorm_FX1(EvtData *evt) {
    evt->functionIndex = EVTF_NULL;
    gSignal3 = 1;
 }

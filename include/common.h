@@ -105,11 +105,21 @@ typedef struct SVectorXY {
    s16 y;
 } SVectorXY;
 
+typedef struct SVectorXZ {
+   s16 x;
+   s16 z;
+} SVectorXZ;
+
 typedef struct BVectorZXY {
    u8 z;
    u8 x;
    u8 y;
 } BVectorZXY;
+
+typedef struct BVectorXZ {
+   u8 x;
+   u8 z;
+} BVectorXZ;
 
 typedef union CoordinateValue {
    s16 n;

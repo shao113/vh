@@ -8,7 +8,7 @@ extern void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
 
 #undef EVTF
 #define EVTF 172
-void Evtf172_SpellFx_HolyPressure_Cube(EvtData *evt) {
+void Evtf172_HolyPressure_Cube(EvtData *evt) {
    s16 local_88[6][4] = {{0, 256, 0, 0},    {-135, 0, -135, 0}, {135, 0, -135, 0},
                          {-135, 0, 135, 0}, {135, 0, 135, 0},   {0, -256, 0, 0}};
    s16 local_58[8][3] = {{0, 1, 2}, {0, 2, 3}, {0, 3, 4}, {0, 4, 1},
@@ -118,7 +118,7 @@ void Evtf172_SpellFx_HolyPressure_Cube(EvtData *evt) {
    }
 }
 
-void Evtf128_SpellFx2_ThunderBall(EvtData *evt) {
+void Evtf128_ThunderBall_FX2(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *fx;
 
@@ -133,7 +133,7 @@ void Evtf128_SpellFx2_ThunderBall(EvtData *evt) {
    evt->functionIndex = EVTF_NULL;
 }
 
-void Evtf129_SpellFx3_ThunderBall(EvtData *evt) {
+void Evtf129_ThunderBall_FX3(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *fx;
 
@@ -354,7 +354,7 @@ void Evtf167_RainbowSwirl(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 168
-void Evtf168_SpellFx_RainbowStroke_RainbowSwirl(EvtData *evt) {
+void Evtf168_RainbowStroke_RainbowSwirl(EvtData *evt) {
    s16 rainbowCluts[4] = {3, 4, 8, 9};
    EvtData *sprite;
    s32 i;
@@ -499,7 +499,7 @@ void Evtf168_SpellFx_RainbowStroke_RainbowSwirl(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 169
-void Evtf169_SpellFx1_EvilStream(EvtData *evt) {
+void Evtf169_EvilStream_FX1(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *sprite;
    POLY_FT4 *poly;
@@ -647,7 +647,7 @@ void Evtf169_SpellFx1_EvilStream(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 161
-void Evtf161_SpellFx1_PiercingLight(EvtData *evt) {
+void Evtf161_PiercingLight_FX1(EvtData *evt) {
    s16 cluts[4] = {3, 4, 9, 8};
    EvtData *casterSprite;
    EvtData *targetSprite;
@@ -696,13 +696,13 @@ void Evtf161_SpellFx1_PiercingLight(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 170
-void Evtf170_SpellFx1_PiercingRay_Etc(EvtData *evt) {
+void Evtf170_PiercingRay_Etc_FX1(EvtData *evt) {
    // FX1 for Plasma Wave and Piercing Ray / Aura Gem
    s16 cluts[5] = {3, 4, 9, 8, 5};
    EvtData *casterSprite;
    EvtData *targetSprite;
    EvtData *homingRay;
-   u8 *p;
+   BVectorXZ *p;
    s16 i;
 
    switch (evt->state) {
@@ -713,19 +713,19 @@ void Evtf170_SpellFx1_PiercingRay_Etc(EvtData *evt) {
 
    case 1:
       casterSprite = EVT.unitSprite;
-      p = gTargetCoords;
-      for (i = 0; *p != 0xff && i < 15; i++) {
+      p = (BVectorXZ *)gTargetCoords;
+      for (i = 0; p->x != 0xff && i < 15; i++) {
          homingRay = Evt_GetUnused();
          homingRay->functionIndex = EVTF_HOMING_RAY;
          homingRay->x1.n = casterSprite->x1.n;
          homingRay->y1.n = casterSprite->y1.n + 0x80;
          homingRay->z1.n = casterSprite->z1.n;
-         targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
+         targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          homingRay->d.evtf171.dx = targetSprite->x1.n - casterSprite->x1.n;
          homingRay->d.evtf171.dz = targetSprite->z1.n - casterSprite->z1.n;
          homingRay->d.evtf171.dy = (targetSprite->y1.n - casterSprite->y1.n) + 0x70;
          homingRay->d.evtf171.clut = cluts[i % 5];
-         p += 2;
+         p++;
       }
 
       gCameraZoom.vz += 12;
@@ -835,26 +835,26 @@ void Evtf171_HomingRay(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 151
-void Evtf151_SpellFx1_FireGem(EvtData *evt) {
+void Evtf151_FireGem_FX1(EvtData *evt) {
    EvtData *casterSprite;
    EvtData *targetSprite;
    EvtData *evt_s0;
    s16 i;
-   u8 *p;
+   BVectorXZ *p;
 
    switch (evt->state) {
    case 0:
       casterSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
 
-      p = gTargetCoords;
-      for (i = 0; *p != 0xff && i < 15; i++) {
-         targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
+      p = (BVectorXZ *)gTargetCoords;
+      for (i = 0; p->x != 0xff && i < 15; i++) {
+         targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          evt_s0 = Evt_GetUnused();
-         evt_s0->functionIndex = EVTF_SPELL_FX_FIRE_GEM_BEAM;
-         evt_s0->y1.n = GetTerrainElevation(p[1], p[0]);
+         evt_s0->functionIndex = EVTF_FIRE_GEM_BEAM;
+         evt_s0->y1.n = GetTerrainElevation(p->z, p->x);
          evt_s0->x1.n = targetSprite->x1.n;
          evt_s0->z1.n = targetSprite->z1.n;
-         p += 2;
+         p++;
       }
 
       evt_s0 = Evt_GetUnused();
@@ -878,13 +878,12 @@ void Evtf151_SpellFx1_FireGem(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 175
-void Evtf175_SpellFx1_RainbowStorm(EvtData *evt) {
+void Evtf175_RainbowStorm_FX1(EvtData *evt) {
    EvtData *evt_s0;
    EvtData *evt_s1;
-   // register EvtData *evt_s1 asm("s1");
    EvtData *targetSprite; // fixes regswap
    EvtData **pDataStoreAsEvts;
-   u8 *p;
+   BVectorXZ *p;
    s32 i;
 
    switch (evt->state) {
@@ -899,16 +898,16 @@ void Evtf175_SpellFx1_RainbowStorm(EvtData *evt) {
       EVT.dataStore = evt_s0;
 
       pDataStoreAsEvts = evt_s0->d.dataStore.evts;
-      p = gTargetCoords;
-      for (EVT.iterator = 0; *p != 0xff && EVT.iterator < 15; EVT.iterator++) {
-         targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
+      p = (BVectorXZ *)gTargetCoords;
+      for (EVT.iterator = 0; p->x != 0xff && EVT.iterator < 15; EVT.iterator++) {
+         targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          evt_s1 = Evt_GetUnused();
          evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
          evt_s1->d.evtf149.clut = 4;
          evt_s1->x1.s.hi = targetSprite->x1.s.hi;
          evt_s1->z1.s.hi = targetSprite->z1.s.hi;
          pDataStoreAsEvts[EVT.iterator] = evt_s1;
-         p += 2;
+         p++;
       }
 
       evt->state2 = 0;
@@ -973,7 +972,7 @@ void Evtf175_SpellFx1_RainbowStorm(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 176
-void Evtf176_SpellFx1_RainbowStroke(EvtData *evt) {
+void Evtf176_RainbowStroke_FX1(EvtData *evt) {
    EvtData *evt_s0;
    EvtData *evt_s1;
    EvtData *targetSprite; // fixes regswap (again)
@@ -1005,7 +1004,7 @@ void Evtf176_SpellFx1_RainbowStroke(EvtData *evt) {
    case 1:
       if (EVT.todo_x24 < 0x400) {
          evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_SPELL_FX_RAINBOW_STROKE_RAINBOW_SWIRL;
+         evt_s1->functionIndex = EVTF_RAINBOW_STROKE_RAINBOW_SWIRL;
          evt_s1->d.evtf168.todo_x56 = 0xe0 * (ONE - rsin(EVT.todo_x24)) / ONE;
          evt_s1->d.evtf168.todo_x54 = 0x60;
          evt_s1->d.evtf168.todo_x58 = 0x20 + 0x10 * rcos(EVT.todo_x24) / ONE;
@@ -1060,12 +1059,12 @@ void Evtf176_SpellFx1_RainbowStroke(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 177
-void Evtf177_SpellFx1_HolyPressure(EvtData *evt) {
+void Evtf177_HolyPressure_FX1(EvtData *evt) {
    EvtData *evt_s2;
    EvtData *evt_s1;
    EvtData *targetSprite;
    EvtData **pDataStoreAsEvts;
-   u8 *p;
+   BVectorXZ *p;
    s32 i;
 
    switch (evt->state) {
@@ -1075,8 +1074,8 @@ void Evtf177_SpellFx1_HolyPressure(EvtData *evt) {
       evt->y1.n = evt_s2->y1.n;
       evt->z1.n = evt_s2->z1.n;
 
-      p = gTargetCoords;
-      evt_s2 = GetUnitSpriteAtPosition(p[1], p[0]);
+      p = (BVectorXZ *)gTargetCoords;
+      evt_s2 = GetUnitSpriteAtPosition(p->z, p->x);
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_CAMERA_TBD_026;
       evt_s1->d.evtf026.target = evt_s2;
@@ -1087,8 +1086,8 @@ void Evtf177_SpellFx1_HolyPressure(EvtData *evt) {
       EVT.dataStore = evt_s2;
       pDataStoreAsEvts = evt_s2->d.dataStore.evts;
 
-      for (EVT.iterator = 0; *p != 0xff && EVT.iterator < 15; /*EVT.iterator++*/) {
-         targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
+      for (EVT.iterator = 0; p->x != 0xff && EVT.iterator < 15; /*EVT.iterator++*/) {
+         targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          evt_s1 = Evt_GetUnused();
          evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
          evt_s1->d.evtf149.clut = 9;
@@ -1099,11 +1098,11 @@ void Evtf177_SpellFx1_HolyPressure(EvtData *evt) {
          EVT.iterator++;
 
          evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_PRESSURE_CUBE;
+         evt_s1->functionIndex = EVTF_HOLY_PRESSURE_CUBE;
          evt_s1->x1.s.hi = targetSprite->x1.s.hi;
          evt_s1->z1.s.hi = targetSprite->z1.s.hi;
 
-         p += 2;
+         p++;
       }
 
       evt->state++;
@@ -1133,7 +1132,7 @@ void Evtf177_SpellFx1_HolyPressure(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 160
-void Evtf160_SpellFx_IceStorm_Target(EvtData *evt) {
+void Evtf160_IceStorm_Target(EvtData *evt) {
    EvtData *targetSprite;
    EvtData *fxSprite1;
    EvtData *fxSprite2;
@@ -1214,7 +1213,7 @@ void Evtf160_SpellFx_IceStorm_Target(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 162
-void Evtf162_SpellFx_IceStorm_Splash(EvtData *evt) {
+void Evtf162_IceStorm_Splash(EvtData *evt) {
    static s16 splashAnimData[] = {
        7, GFX_SPLASH_1, 1, GFX_SPLASH_2, 1, GFX_SPLASH_3, 1, GFX_SPLASH_4, 1, GFX_SPLASH_5,
        1, GFX_SPLASH_6, 1, GFX_SPLASH_7, 1, GFX_SPLASH_8, 1, GFX_NULL,     0, GFX_NULL};
@@ -1267,7 +1266,7 @@ void Evtf162_SpellFx_IceStorm_Splash(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 189
-void Evtf189_SpellFx1_IceStorm(EvtData *evt) {
+void Evtf189_IceStorm_FX1(EvtData *evt) {
    EvtData *targetSprite;
    EvtData *evt_s1;
    s32 i, j;
@@ -1281,12 +1280,12 @@ void Evtf189_SpellFx1_IceStorm(EvtData *evt) {
       evt->x1.n = targetSprite->x1.n;
       evt->z1.n = targetSprite->z1.n;
 
-      evt_s1 = CreatePositionedEvt(evt, EVTF_SPELL_FX_ICE_STORM_TARGET);
+      evt_s1 = CreatePositionedEvt(evt, EVTF_ICE_STORM_TARGET);
       evt_s1->d.evtf160.targetSprite = targetSprite;
       evt_s1->d.evtf160.clut = 4;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ICE_STORM_CAMERA;
+      evt_s1->functionIndex = EVTF_ICE_STORM_CAMERA;
       evt_s1->d.evtf279.targetSprite = targetSprite;
 
       EVT.todo_x24 = 0x280;
@@ -1365,8 +1364,8 @@ void Evtf189_SpellFx1_IceStorm(EvtData *evt) {
          }
          break;
       case 1:
-         CreatePositionedEvt(evt, EVTF_SPELL_FX_ICE_STORM_SPLASH);
-         CreatePositionedEvt(evt, EVTF_SPELL_FX_ICE_STORM_SPLASH);
+         CreatePositionedEvt(evt, EVTF_ICE_STORM_SPLASH);
+         CreatePositionedEvt(evt, EVTF_ICE_STORM_SPLASH);
          EVT.todo_x28 += 0x10;
          if (EVT.todo_x28 >= 0x400) {
             gSignal3 = 1;
@@ -1381,7 +1380,7 @@ void Evtf189_SpellFx1_IceStorm(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 155
-void Evtf155_SpellFx_Spellbind_Glyph(EvtData *evt) {
+void Evtf155_Spellbind_Glyph(EvtData *evt) {
    POLY_FT4 *poly;
    s16 red, green, blue;
    s16 radius, theta, x_1, z_1, x_2, z_2, y;
@@ -1479,7 +1478,7 @@ void Evtf155_SpellFx_Spellbind_Glyph(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 181
-void Evtf181_SpellFx1_Spellbind(EvtData *evt) {
+void Evtf181_Spellbind_FX1(EvtData *evt) {
    EvtData *targetSprite;
    EvtData *evt_v1;
 
@@ -1502,7 +1501,7 @@ void Evtf181_SpellFx1_Spellbind(EvtData *evt) {
          evt->functionIndex = EVTF_NULL;
       } else {
          evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_SPELL_FX_SPELLBIND_GLYPH;
+         evt_v1->functionIndex = EVTF_SPELLBIND_GLYPH;
          evt_v1->y1.n = evt->y1.n;
          evt_v1->x1.n = evt->x1.n;
          evt_v1->z1.n = evt->z1.n;
@@ -1515,7 +1514,7 @@ void Evtf181_SpellFx1_Spellbind(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 179
-void Evtf179_SpellFx_ThunderFlash_Ray(EvtData *evt) {
+void Evtf179_ThunderFlash_Ray(EvtData *evt) {
    EvtData *evt_s2;
    s16 radius;
 
@@ -1594,7 +1593,7 @@ void Evtf179_SpellFx_ThunderFlash_Ray(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 178
-void Evtf178_SpellFx1_ThunderFlash(EvtData *evt) {
+void Evtf178_ThunderFlash_FX1(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *evt_s1;
    s32 i;
@@ -1615,7 +1614,7 @@ void Evtf178_SpellFx1_ThunderFlash(EvtData *evt) {
    case 1:
       for (i = 0; i < 16; i++) {
          evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_SPELL_FX_THUNDER_FLASH_RAY;
+         evt_s1->functionIndex = EVTF_THUNDER_FLASH_RAY;
          evt_s1->d.evtf179.parent = evt;
       }
       EVT.todo_x5e = 0;
@@ -1710,13 +1709,13 @@ void Evtf178_SpellFx1_ThunderFlash(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 180
-void Evtf180_SpellFx1_SpreadForce(EvtData *evt) {
+void Evtf180_SpreadForce_FX1(EvtData *evt) {
    EvtData *evt_s0;
    EvtData *targetSprite;
    EvtData *evt_s1;
    s32 i, j;
    EvtData **pDataStoreAsEvts;
-   u8 *p;
+   BVectorXZ *p;
    POLY_FT4 *poly;
    s16 a, b, c;
    s16 h_1, h_2;
@@ -1753,16 +1752,16 @@ void Evtf180_SpellFx1_SpreadForce(EvtData *evt) {
          evt_s0->functionIndex = EVTF_NOOP;
          EVT.dataStore = evt_s0;
          pDataStoreAsEvts = evt_s0->d.dataStore.evts;
-         p = gTargetCoords;
-         for (EVT.iterator = 0; *p != 0xff && EVT.iterator < 15; EVT.iterator++) {
-            targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
+         p = (BVectorXZ *)gTargetCoords;
+         for (EVT.iterator = 0; p->x != 0xff && EVT.iterator < 15; EVT.iterator++) {
+            targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
             evt_s1 = Evt_GetUnused();
             evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
             evt_s1->d.evtf149.clut = 4;
             evt_s1->x1.s.hi = targetSprite->x1.s.hi;
             evt_s1->z1.s.hi = targetSprite->z1.s.hi;
             pDataStoreAsEvts[EVT.iterator] = evt_s1;
-            p += 2;
+            p++;
          }
       }
       break;
@@ -2016,7 +2015,7 @@ void Evtf183_Fx_TBD(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 184
-void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
+void Evtf184_Avalanche_FX1(EvtData *evt) {
    EvtData *evt_a0;
    EvtData *boulder;
    s16 dy;
@@ -2029,7 +2028,7 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
       evt->z1.n = evt_a0->z1.n;
 
       boulder = Evt_GetUnused();
-      boulder->functionIndex = EVTF_SPELL_FX_AVALANCHE_BOULDER;
+      boulder->functionIndex = EVTF_AVALANCHE_BOULDER;
       boulder->x1.n = evt->x1.n;
       boulder->z1.n = evt->z1.n;
       boulder->y1.n = evt->y1.n + 0x300;
@@ -2045,32 +2044,32 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
    // fallthrough
    case 1:
       evt_a0 = Evt_GetUnused();
-      evt_a0->functionIndex = EVTF_SPELL_FX_AVALANCHE_ROCK;
+      evt_a0->functionIndex = EVTF_AVALANCHE_ROCK;
       evt_a0->d.evtf185.parent = evt;
       EVT.rocks[5] = evt_a0;
 
       evt_a0 = Evt_GetUnused();
-      evt_a0->functionIndex = EVTF_SPELL_FX_AVALANCHE_ROCK;
+      evt_a0->functionIndex = EVTF_AVALANCHE_ROCK;
       evt_a0->d.evtf185.parent = evt;
       EVT.rocks[4] = evt_a0;
 
       evt_a0 = Evt_GetUnused();
-      evt_a0->functionIndex = EVTF_SPELL_FX_AVALANCHE_ROCK;
+      evt_a0->functionIndex = EVTF_AVALANCHE_ROCK;
       evt_a0->d.evtf185.parent = evt;
       EVT.rocks[3] = evt_a0;
 
       evt_a0 = Evt_GetUnused();
-      evt_a0->functionIndex = EVTF_SPELL_FX_AVALANCHE_ROCK;
+      evt_a0->functionIndex = EVTF_AVALANCHE_ROCK;
       evt_a0->d.evtf185.parent = evt;
       EVT.rocks[2] = evt_a0;
 
       evt_a0 = Evt_GetUnused();
-      evt_a0->functionIndex = EVTF_SPELL_FX_AVALANCHE_ROCK;
+      evt_a0->functionIndex = EVTF_AVALANCHE_ROCK;
       evt_a0->d.evtf185.parent = evt;
       EVT.rocks[1] = evt_a0;
 
       evt_a0 = Evt_GetUnused();
-      evt_a0->functionIndex = EVTF_SPELL_FX_AVALANCHE_ROCK;
+      evt_a0->functionIndex = EVTF_AVALANCHE_ROCK;
       evt_a0->d.evtf185.parent = evt;
       EVT.rocks[0] = evt_a0;
 
@@ -2188,7 +2187,7 @@ void Evtf184_SpellFx1_Avalanche(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 185
-void Evtf185_SpellFx_Avalanche_Rock(EvtData *evt) {
+void Evtf185_Avalanche_Rock(EvtData *evt) {
    static s16 rockAnimData[] = {5, GFX_ROCK_1, 2, GFX_ROCK_2, 2, GFX_ROCK_3,
                                 2, GFX_ROCK_4, 2, GFX_NULL,   1, GFX_NULL};
 
@@ -2290,7 +2289,7 @@ void Evtf190_Fx_TBD(EvtData *evt) {
    // fallthrough
    case 1:
       arrow = Evt_GetUnused();
-      arrow->functionIndex = EVTF_SPELL_FX_MAGIC_ARROW_ARROW;
+      arrow->functionIndex = EVTF_MAGIC_ARROW_ARROW;
       arrow->x1.n = evt->x1.n;
       arrow->y1.n = evt->y1.n + 0x40;
       arrow->z1.n = evt->z1.n;
@@ -2321,11 +2320,11 @@ void Evtf190_Fx_TBD(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 199
-void Evtf199_SpellFx1_MagicArrow(EvtData *evt) {
+void Evtf199_MagicArrow_FX1(EvtData *evt) {
    EvtData *casterSprite;
    EvtData *targetSprite;
    EvtData *arrow;
-   u8 *p;
+   BVectorXZ *p;
    s16 i;
 
    switch (evt->state) {
@@ -2338,18 +2337,18 @@ void Evtf199_SpellFx1_MagicArrow(EvtData *evt) {
    case 1:
       casterSprite = EVT.unitSprite;
 
-      p = gTargetCoords;
-      for (i = 0; *p != 0xff && i < 15; i++) {
+      p = (BVectorXZ *)gTargetCoords;
+      for (i = 0; p->x != 0xff && i < 15; i++) {
          arrow = Evt_GetUnused();
-         arrow->functionIndex = EVTF_SPELL_FX_MAGIC_ARROW_ARROW;
+         arrow->functionIndex = EVTF_MAGIC_ARROW_ARROW;
          arrow->x1.n = casterSprite->x1.n;
          arrow->y1.n = casterSprite->y1.n + 0x40;
          arrow->z1.n = casterSprite->z1.n;
-         targetSprite = GetUnitSpriteAtPosition(p[1], p[0]);
+         targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          arrow->d.evtf191.dx = targetSprite->x1.n - casterSprite->x1.n;
          arrow->d.evtf191.dz = targetSprite->z1.n - casterSprite->z1.n;
          arrow->d.evtf191.dy = (targetSprite->y1.n - casterSprite->y1.n) + 0x40;
-         p += 2;
+         p++;
       }
 
       gCameraZoom.vz += 9;
@@ -2382,7 +2381,7 @@ void Evtf199_SpellFx1_MagicArrow(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 191
-void Evtf191_SpellFx_MagicArrow_Arrow(EvtData *evt) {
+void Evtf191_MagicArrow_Arrow(EvtData *evt) {
    EvtData *sprite;
    POLY_FT4 *poly;
    s32 timer, i, intensity;

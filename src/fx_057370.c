@@ -142,7 +142,7 @@ void Evtf210_SummonGreenCrest(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 208
-void Evtf208_SpellFx1_HolyLightning(EvtData *evt) {
+void Evtf208_HolyLightning_FX1(EvtData *evt) {
    EvtData *evt_s1; // unitSprite, bolt
    EvtData *fxSprite1;
    EvtData *fxSprite2;
@@ -157,55 +157,55 @@ void Evtf208_SpellFx1_HolyLightning(EvtData *evt) {
       evt_s1->d.sprite.hidden = 1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 0;
       EVT.bolts[8] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 4;
       EVT.bolts[7] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 8;
       EVT.bolts[6] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 12;
       EVT.bolts[5] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 16;
       EVT.bolts[4] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 20;
       EVT.bolts[3] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 24;
       EVT.bolts[2] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 28;
       EVT.bolts[1] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_HOLY_LIGHTNING_CASTING_BOLT;
       evt_s1->d.evtf212.parent = evt;
       evt_s1->d.evtf212.todo_x4c = 32;
       EVT.bolts[0] = evt_s1;
@@ -292,7 +292,7 @@ static s16 sRockAnimData_800fec94[12] = {4, GFX_ROCK_1, 8, GFX_ROCK_2, 8, GFX_RO
 
 #undef EVTF
 #define EVTF 212
-void Evtf212_SpellFx_HolyLightning_CastingBolt(EvtData *evt) {
+void Evtf212_HolyLightning_CastingBolt(EvtData *evt) {
    EvtData *parent;
    EvtData *sprite;
    s16 halfHeight;
@@ -362,7 +362,7 @@ void Evtf212_SpellFx_HolyLightning_CastingBolt(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 197
-void Evtf197_SpellFx1_RollingThunder(EvtData *evt) {
+void Evtf197_RollingThunder_FX1(EvtData *evt) {
    EvtData *evt_s1;
    EvtData *fxSprite1;
    EvtData *fxSprite2;
@@ -384,47 +384,47 @@ void Evtf197_SpellFx1_RollingThunder(EvtData *evt) {
       evt_s1->d.sprite.hidden = 1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[8] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[7] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[6] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[5] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[4] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[3] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[2] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[1] = evt_s1;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_CASTING_BOLT;
+      evt_s1->functionIndex = EVTF_ROLLING_THUNDER_CASTING_BOLT;
       evt_s1->d.evtf198.parent = evt;
       EVT.bolts[0] = evt_s1;
 
@@ -492,7 +492,7 @@ void Evtf197_SpellFx1_RollingThunder(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 198
-void Evtf198_SpellFx_RollingThunder_CastingBolt(EvtData *evt) {
+void Evtf198_RollingThunder_CastingBolt(EvtData *evt) {
    EvtData *parent;
    EvtData *sprite;
    s16 halfHeight;
@@ -558,14 +558,14 @@ void Evtf198_SpellFx_RollingThunder_CastingBolt(EvtData *evt) {
    }
 }
 
-void Evtf060_SpellFx1_Healing(EvtData *evt) {
+void Evtf060_Healing_FX1(EvtData *evt) {
    evt->functionIndex = EVTF_NULL;
    gSignal3 = 1;
 }
 
 #undef EVTF
 #define EVTF 100
-void Evtf100_SpellFx2_Healing(EvtData *evt) {
+void Evtf100_Healing_FX2(EvtData *evt) {
    EvtData *evt_s2; // unitSprite, dataStore
    EvtData *evt_s1;
    s32 i;
@@ -713,7 +713,7 @@ void Evtf101_HealingSparkle(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 102
-void Evtf102_227_SpellFx2_Poison(EvtData *evt) {
+void Evtf102_227_Poison_FX2(EvtData *evt) {
    EvtData *evt_s4; // unitSprite, dataStore
    EvtData *evt_s1;
    EvtData **pDataStoreAsEvts;
@@ -774,7 +774,7 @@ void Evtf102_227_SpellFx2_Poison(EvtData *evt) {
          evt_s1->functionIndex = EVTF_ATTACK_INFO_MARKER;
          evt_s1->x1.s.hi = evt->x1.s.hi;
          evt_s1->z1.s.hi = evt->z1.s.hi;
-         if (evt->functionIndex == EVTF_SPELL_FX2_POISON) {
+         if (evt->functionIndex == EVTF_POISON_FX2) {
             evt_s1->d.evtf052.type = 3;
             evt_s1->d.evtf052.clut = 3;
             evt_s1->functionIndex = EVTF_NULL;
@@ -805,7 +805,7 @@ void Evtf102_227_SpellFx2_Poison(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 103
-void Evtf103_PoisonBubbles(EvtData *evt) {
+void Evtf103_Poison_Bubbles(EvtData *evt) {
    static s16 poisonAnimData[20] = {
        4, GFX_POISON_1, 2, GFX_POISON_2, 2, GFX_POISON_3, 2, GFX_POISON_4, 2, GFX_POISON_5,
        2, GFX_POISON_6, 2, GFX_POISON_7, 2, GFX_POISON_8, 2, GFX_NULL,     1, GFX_NULL};
@@ -873,7 +873,7 @@ void Evtf103_PoisonBubbles(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 104
-void Evtf104_SpellFx2_Cure(EvtData *evt) {
+void Evtf104_Cure_FX2(EvtData *evt) {
    EvtData *evt_s2;
    EvtData *evt_s1;
    POLY_FT4 *poly;
@@ -1129,7 +1129,7 @@ void Evtf104_SpellFx2_Cure(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 106
-void Evtf106_SpellFx3_MagicCharge(EvtData *evt) {
+void Evtf106_MagicCharge_FX3(EvtData *evt) {
    // Beam of light encircled by glyphs; Possibly unused - referenced as FX3 for Magic Charge, but
    // FX3 should be unused for friendly spells (?)
    EvtData *evt_s0;
@@ -1146,7 +1146,7 @@ void Evtf106_SpellFx3_MagicCharge(EvtData *evt) {
       evt->z1.n = evt_s0->z1.n;
 
       evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_SPELL_FX_MAGIC_CHARGE_GLYPH_RING;
+      evt_s1->functionIndex = EVTF_MAGIC_CHARGE_GLYPH_RING;
       evt_s1->x1.n = evt->x1.n;
       evt_s1->y1.n = evt->y1.n;
       evt_s1->z1.n = evt->z1.n;
@@ -1305,7 +1305,7 @@ void Evtf106_SpellFx3_MagicCharge(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 107
-void Evtf107_SpellFx_MagicCharge_GlyphRing(EvtData *evt) {
+void Evtf107_MagicCharge_GlyphRing(EvtData *evt) {
    EvtData *sprite;
    s32 i;
    s16 a, b, c;
@@ -1392,7 +1392,7 @@ void Evtf107_SpellFx_MagicCharge_GlyphRing(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 108
-void Evtf108_SpellFx2_HarmfulWave(EvtData *evt) {
+void Evtf108_HarmfulWave_FX2(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *evt_s4;
    s32 spriteX, spriteY, spriteW, spriteH;
@@ -1444,7 +1444,7 @@ void Evtf108_SpellFx2_HarmfulWave(EvtData *evt) {
       if (EVT.timer <= 128) {
          if (EVT.timer % 4 == 0) {
             evt_s4 = Evt_GetUnused();
-            evt_s4->functionIndex = EVTF_SPELL_FX_HARMFUL_WAVE_RING;
+            evt_s4->functionIndex = EVTF_HARMFUL_WAVE_RING;
             evt_s4->d.evtf109.height = abs(rsin(EVT.timer * 16)) / 16 + 16;
             evt_s4->d.evtf109.unitSprite = unitSprite;
          }
@@ -1543,7 +1543,7 @@ void Evtf108_SpellFx2_HarmfulWave(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 109
-void Evtf109_SpellFx_HarmfulWave_Ring(EvtData *evt) {
+void Evtf109_HarmfulWave_Ring(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *sprite;
    s16 y, halfSize;
@@ -1606,7 +1606,7 @@ void Evtf109_SpellFx_HarmfulWave_Ring(EvtData *evt) {
    }
 }
 
-void Evtf111_SpellFx2_BlessWeapon(EvtData *evt) {
+void Evtf111_BlessWeapon_FX2(EvtData *evt) {
    EvtData *summonBuff;
 
    summonBuff = Evt_GetUnused();
@@ -1618,7 +1618,7 @@ void Evtf111_SpellFx2_BlessWeapon(EvtData *evt) {
    evt->functionIndex = EVTF_NULL;
 }
 
-void Evtf112_SpellFx2_MysticShield(EvtData *evt) {
+void Evtf112_MysticShield_FX2(EvtData *evt) {
    EvtData *summonBuff;
 
    summonBuff = Evt_GetUnused();
@@ -1630,7 +1630,7 @@ void Evtf112_SpellFx2_MysticShield(EvtData *evt) {
    evt->functionIndex = EVTF_NULL;
 }
 
-void Evtf113_SpellFx2_MysticEnergy(EvtData *evt) {
+void Evtf113_MysticEnergy_FX2(EvtData *evt) {
    EvtData *summonBuff;
 
    summonBuff = Evt_GetUnused();

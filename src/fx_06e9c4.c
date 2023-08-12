@@ -54,7 +54,7 @@ static s16 sSparkleAnimData_800ff2b8[70] = {
 
 #undef EVTF
 #define EVTF 118
-void Evtf118_SpellFx_Faerie_Target(EvtData *evt) {
+void Evtf118_Faerie_Target(EvtData *evt) {
    EvtData *targetSprite;
    EvtData *evt_s2;
    EvtData *evt_s3;
@@ -133,7 +133,7 @@ void Evtf118_SpellFx_Faerie_Target(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 117
-void Evtf117_SpellFx_Faerie_SparkleTrail(EvtData *evt) {
+void Evtf117_Faerie_SparkleTrail(EvtData *evt) {
    EvtData *sprite;
    s32 rnd;
    s16 halfSize;
@@ -192,7 +192,7 @@ void Evtf117_SpellFx_Faerie_SparkleTrail(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 116
-void Evtf116_SpellFx_Faerie_Sparkle(EvtData *evt) {
+void Evtf116_Faerie_Sparkle(EvtData *evt) {
    EvtData *sprite;
    POLY_FT4 *poly;
 
@@ -246,7 +246,7 @@ s32 s_unused_80123340;
 
 #undef EVTF
 #define EVTF 115
-void Evtf115_SpellFx2_Faerie(EvtData *evt) {
+void Evtf115_Faerie_FX2(EvtData *evt) {
    EvtData *evt_s1;
 
    switch (evt->state) {
@@ -276,10 +276,10 @@ void Evtf115_SpellFx2_Faerie(EvtData *evt) {
       UpdateEvtAnimation(evt_s1);
       AddEvtPrim6(gGraphicsPtr->ot, evt_s1, 0);
 
-      CreatePositionedEvt(evt_s1, EVTF_SPELL_FX_FAERIE_SPARKLE);
+      CreatePositionedEvt(evt_s1, EVTF_FAERIE_SPARKLE);
 
       if (--evt->mem <= 0) {
-         CreatePositionedEvt(evt_s1, EVTF_SPELL_FX_FAERIE_SPARKLE_TRAIL);
+         CreatePositionedEvt(evt_s1, EVTF_FAERIE_SPARKLE_TRAIL);
          evt->mem = (rand() >> 2) % 2 + 1;
       }
 
@@ -292,7 +292,7 @@ void Evtf115_SpellFx2_Faerie(EvtData *evt) {
             EVT.todo_x26 = 0;
             evt->state2++;
             evt_s1 = Evt_GetUnused();
-            evt_s1->functionIndex = EVTF_SPELL_FX_FAERIE_TARGET;
+            evt_s1->functionIndex = EVTF_FAERIE_TARGET;
             evt_s1->x1.n = evt->x1.n;
             evt_s1->z1.n = evt->z1.n;
             evt_s1->y1.n = evt->y1.n;
@@ -330,7 +330,7 @@ void Evtf115_SpellFx2_Faerie(EvtData *evt) {
 /*
 #undef EVTF
 #define EVTF 211
-void Evtf211_SpellFx_Avalanche_Boulder(EvtData *evt) {
+void Evtf211_Avalanche_Boulder(EvtData *evt) {
 
    // WIP: Butchered this pretty badly while trying (unsuccessfully) to eke out a fake match.
 

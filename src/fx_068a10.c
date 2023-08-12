@@ -35,11 +35,11 @@ static s16 sExplosionAnimData_800ff0a4[26] = {
 
 #undef EVTF
 #define EVTF 146
-void Evtf146_SpellFx3_HolyLightning(EvtData *evt) {
+void Evtf146_HolyLightning_FX3(EvtData *evt) {
    EvtData *fx2;
 
    fx2 = Evt_GetUnused();
-   fx2->functionIndex = EVTF_SPELL_FX2_HOLY_LIGHTNING;
+   fx2->functionIndex = EVTF_HOLY_LIGHTNING_FX2;
    fx2->x1.s.hi = evt->x1.s.hi;
    fx2->z1.s.hi = evt->z1.s.hi;
    fx2->d.evtf144.endingFxType = 2;
@@ -49,7 +49,7 @@ void Evtf146_SpellFx3_HolyLightning(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 144
-void Evtf144_SpellFx2_HolyLightning(EvtData *evt) {
+void Evtf144_HolyLightning_FX2(EvtData *evt) {
    EvtData *targetSprite;
    EvtData *evt_v1;
    s32 i;
@@ -101,7 +101,7 @@ void Evtf144_SpellFx2_HolyLightning(EvtData *evt) {
          // EVT.timer--;
          if (EVT.timer-- % 8 == 0) {
             evt_v1 = Evt_GetUnused();
-            evt_v1->functionIndex = EVTF_SPELL_FX_HOLY_LIGHTNING_ELECTRIC_ORB;
+            evt_v1->functionIndex = EVTF_HOLY_LIGHTNING_ELECTRIC_ORB;
             evt_v1->x1.n = evt->x1.n;
             evt_v1->y1.n = evt->y1.n;
             evt_v1->z1.n = evt->z1.n;
@@ -139,7 +139,7 @@ void Evtf144_SpellFx2_HolyLightning(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 145
-void Evtf145_SpellFx_HolyLightning_ElectricOrb(EvtData *evt) {
+void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
    static s16 lightningAnimData[] = {
        4, GFX_LIGHTNING_1, 2, GFX_LIGHTNING_2, 2, GFX_LIGHTNING_3, 2, GFX_LIGHTNING_4,
        2, GFX_LIGHTNING_4, 2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_6,
@@ -404,7 +404,7 @@ void Evtf145_SpellFx_HolyLightning_ElectricOrb(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 224
-void Evtf224_SpellFx1_ThunderBall(EvtData *evt) {
+void Evtf224_ThunderBall_FX1(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *orb;
 
@@ -414,7 +414,7 @@ void Evtf224_SpellFx1_ThunderBall(EvtData *evt) {
       unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
 
       orb = Evt_GetUnused();
-      orb->functionIndex = EVTF_SPELL_FX_THUNDER_BALL_INITIAL_ORB;
+      orb->functionIndex = EVTF_THUNDER_BALL_INITIAL_ORB;
       orb->x1.n = unitSprite->x1.n;
       orb->y1.n = unitSprite->y1.n;
       orb->z1.n = unitSprite->z1.n;
@@ -456,11 +456,11 @@ void Evtf224_SpellFx1_ThunderBall(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 225
-void Evtf225_SpellFx_ThunderBall_InitialOrb(EvtData *evt) {
+void Evtf225_ThunderBall_InitialOrb(EvtData *evt) {
    EvtData *evt_s2;
    EvtData *evt_s1;
    POLY_FT4 *poly;
-   u8 *p;
+   BVectorXZ *p;
 
    switch (evt->state) {
    case 0:
@@ -519,10 +519,10 @@ void Evtf225_SpellFx_ThunderBall_InitialOrb(EvtData *evt) {
       case 1:
          EVT.timer++;
          if (EVT.timer == 46) {
-            for (p = gTargetCoords; *p != 0xff; p += 2) {
-               evt_s1 = GetUnitSpriteAtPosition(p[1], p[0]);
+            for (p = (BVectorXZ *)gTargetCoords; p->x != 0xff; p++) {
+               evt_s1 = GetUnitSpriteAtPosition(p->z, p->x);
                evt_s2 = Evt_GetUnused();
-               evt_s2->functionIndex = EVTF_SPELL_FX_THUNDER_BALL_CHILD_ORB;
+               evt_s2->functionIndex = EVTF_THUNDER_BALL_CHILD_ORB;
                evt_s2->x1.n = evt->x1.n;
                evt_s2->z1.n = evt->z1.n;
                evt_s2->y1.n = evt->y1.n + EVT.dy + 0xe0;
@@ -543,7 +543,7 @@ void Evtf225_SpellFx_ThunderBall_InitialOrb(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 226
-void Evtf226_SpellFx_ThunderBall_ChildOrb(EvtData *evt) {
+void Evtf226_ThunderBall_ChildOrb(EvtData *evt) {
    EvtData *evt_s2;
    EvtData *lightningSprite;
    POLY_FT4 *poly;
@@ -807,13 +807,13 @@ void Evtf121_Fx_TBD(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 200
-void Evtf200_SpellFx3_RollingThunder(EvtData *evt) {
+void Evtf200_RollingThunder_FX3(EvtData *evt) {
    EvtData *unitSprite;
    EvtData *fx;
 
    unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
    fx = Evt_GetUnused();
-   fx->functionIndex = EVTF_SPELL_FX2_ROLLING_THUNDER;
+   fx->functionIndex = EVTF_ROLLING_THUNDER_FX2;
    fx->x1.n = unitSprite->x1.n;
    fx->y1.n = unitSprite->y1.n;
    fx->z1.n = unitSprite->z1.n;
@@ -824,7 +824,7 @@ void Evtf200_SpellFx3_RollingThunder(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 195
-void Evtf195_SpellFx2_RollingThunder(EvtData *evt) {
+void Evtf195_RollingThunder_FX2(EvtData *evt) {
    // static u8 cluts[4] = {3, 4, 8, 9}; //? Explicit size gets this placed into sdata
    static u8 cluts[] = {3, 4, 8, 9}; //? But implicit size gets this placed into data
 
@@ -835,7 +835,7 @@ void Evtf195_SpellFx2_RollingThunder(EvtData *evt) {
    case 0:
       for (i = 0; i < 4; i++) {
          evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_SPELL_FX_ROLLING_THUNDER_ORB_PAIR;
+         evt_v1->functionIndex = EVTF_ROLLING_THUNDER_ORB_PAIR;
          evt_v1->x1.s.hi = evt->x1.s.hi;
          evt_v1->z1.s.hi = evt->z1.s.hi;
          evt_v1->d.evtf196.todo_x28 = i * 0x400;
@@ -863,7 +863,7 @@ void Evtf195_SpellFx2_RollingThunder(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 196
-void Evtf196_SpellFx_RollingThunder_OrbPair(EvtData *evt) {
+void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
    EvtData *targetSprite;
    EvtData *lightningSprite;
    EvtData *orbSprite;
@@ -1057,11 +1057,11 @@ void Evtf196_SpellFx_RollingThunder_OrbPair(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 194
-void Evtf194_SpellFx3_DarkStar(EvtData *evt) {
+void Evtf194_DarkStar_FX3(EvtData *evt) {
    EvtData *fx;
 
    fx = Evt_GetUnused();
-   fx->functionIndex = EVTF_SPELL_FX2_DARK_STAR;
+   fx->functionIndex = EVTF_DARK_STAR_FX2;
    fx->x1.s.hi = evt->x1.s.hi;
    fx->z1.s.hi = evt->z1.s.hi;
    fx->d.evtf193.endingFxType = 1;
@@ -1071,7 +1071,7 @@ void Evtf194_SpellFx3_DarkStar(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 193
-void Evtf193_SpellFx2_DarkStar(EvtData *evt) {
+void Evtf193_DarkStar_FX2(EvtData *evt) {
    static u8 faces[6][4] = {
        {0, 1, 3, 5}, {0, 2, 3, 4}, {1, 2, 4, 5}, {6, 7, 9, 11}, {6, 8, 9, 10}, {7, 8, 10, 11},
    };
@@ -1304,7 +1304,7 @@ void Evtf193_SpellFx2_DarkStar(EvtData *evt) {
       EVT.timer++;
       if (EVT.timer == 191) {
          evt_s2 = Evt_GetUnused();
-         evt_s2->functionIndex = EVTF_SPELL_FX2_DAMAGE + EVT.endingFxType;
+         evt_s2->functionIndex = EVTF_DAMAGE_FX2 + EVT.endingFxType;
          evt_s2->x1.s.hi = evt->x1.s.hi;
          evt_s2->z1.s.hi = evt->z1.s.hi;
       } else if (EVT.timer == 196) {
@@ -1317,7 +1317,7 @@ void Evtf193_SpellFx2_DarkStar(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 192
-void Evtf192_SpellFx2_PerfectGuard(EvtData *evt) {
+void Evtf192_PerfectGuard_FX2(EvtData *evt) {
    extern SVECTOR s_faces_80123a4c[6][4];
 
    EvtData *targetSprite;

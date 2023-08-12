@@ -345,7 +345,7 @@ void Evtf019_Compass(EvtData *evt) {
                     (s32 *)&compassPoly->x0, (s32 *)&compassPoly->x1, (s32 *)&compassPoly->x2,
                     (s32 *)&compassPoly->x3, &p, &flag);
       // setcode(compassPoly, 0x2c); setRGB0(compassPoly, 0x80, 0x80, 0x80);
-      *(u32 *)&compassPoly->r0 = 0x2c808080;
+      *(u32 *)&compassPoly->r0 = POLY_RGB_CODE(GPU_CODE_POLY_FT4, 0x80, 0x80, 0x80);
       addPrim(&gGraphicsPtr->ot[OT_SIZE - 5], compassPoly);
 
       // Shadow
@@ -353,7 +353,7 @@ void Evtf019_Compass(EvtData *evt) {
       RotTransPers4(&compassQuad[0], &compassQuad[1], &compassQuad[2], &compassQuad[3],
                     (s32 *)&shadowPoly->x0, (s32 *)&shadowPoly->x1, (s32 *)&shadowPoly->x2,
                     (s32 *)&shadowPoly->x3, &p, &flag);
-      *(u32 *)&shadowPoly->r0 = 0x2c000000;
+      *(u32 *)&shadowPoly->r0 = POLY_RGB_CODE(GPU_CODE_POLY_FT4, 0, 0, 0);
       addPrim(&gGraphicsPtr->ot[OT_SIZE - 6], shadowPoly);
 
       // E/W/S/N
@@ -376,7 +376,7 @@ void Evtf019_Compass(EvtData *evt) {
          RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3],
                        (s32 *)&compassPoly->x0, (s32 *)&compassPoly->x1, (s32 *)&compassPoly->x2,
                        (s32 *)&compassPoly->x3, &p, &flag);
-         *(u32 *)&compassPoly->r0 = 0x2c808080;
+         *(u32 *)&compassPoly->r0 = POLY_RGB_CODE(GPU_CODE_POLY_FT4, 0x80, 0x80, 0x80);
          addPrim(&gGraphicsPtr->ot[OT_SIZE - 5], compassPoly);
 
          compassPoly++;

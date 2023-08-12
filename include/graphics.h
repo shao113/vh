@@ -10,6 +10,9 @@
 #define VRAM_WIDTH 1024
 #define VRAM_HEIGHT 512
 
+#define POLY_RGB_CODE(code, r, g, b)                                                               \
+   ((((code)&0xff) << 24) + (((b)&0xff) << 16) + (((g)&0xff) << 8) + ((r)&0xff))
+
 typedef enum GfxIdx {
    GFX_NULL = 0,
    GFX_ENEMY_CIRCLE = 2,
@@ -162,11 +165,14 @@ typedef enum GfxIdx {
    //? I'm thinking the extra copies are allotted for dynamic scaling/scrolling texture effects
    GFX_TILED_TBD_162 = 162,
    GFX_TILED_VEINS = 167,
+   GFX_TILED_LINES = 172,
+   GFX_TILED_FLAMES = 182,
    GFX_TILED_ICE = 187,
    GFX_TILED_ICE_DYN_1 = 188,
    GFX_TILED_STONE = 192,
    GFX_TILED_DIAMONDS = 197,
    GFX_TILED_DIAMONDS_DYN_1 = 198,
+   GFX_TILED_RED_SPARKLES = 207,
    GFX_TILED_RED_SPARKLES_DYN_1 = 208,
    GFX_TILED_GRAY_SPARKLES = 210,
    GFX_TILED_GRAY_SPARKLES_DYN_1 = 211,
@@ -198,7 +204,9 @@ typedef enum GfxIdx {
    GFX_GLOBE_6 = 241,
    GFX_GLOBE_7 = 242,
    GFX_GLOBE_8 = 243,
+   GFX_LARGE_RED_CIRCLE = 244,
    GFX_CREST = 247,
+   GFX_SKULL = 252,
    GFX_SALAMANDER_N = 253,
    GFX_SALAMANDER_NE = 254,
    GFX_SALAMANDER_E = 255,
@@ -511,6 +519,20 @@ typedef struct MaskEffectPreset {
    CVECTOR color;
 } MaskEffectPreset;
 
+typedef struct Cylinder {
+   SVECTOR bottom;
+   SVECTOR top;
+   CVECTOR color;
+   s16 sideCt;
+   s16 semiTrans;
+   s16 gfxIdx;
+   s16 bottomRadius;
+   s16 topRadius;
+   s16 useColor;
+   s16 clut;
+   s16 theta;
+} Cylinder;
+
 extern Graphics gGraphicBuffers[2];
 extern Graphics *gGraphicsPtr;
 extern SVECTOR gLightRotation;
@@ -571,7 +593,7 @@ extern Quad *gSpriteBoxQuads[19];
 void DecodeUnitSprites(void);
 void StartUnitSpritesDecoder(u8);
 struct EvtData *GetUnitSpriteAtPosition(u8, u8);
-// FIXME: Discrepancy in Evtf327_SpellFx2_HealingCircle
+// FIXME: Discrepancy in Evtf327_HealingCircle_FX2
 //  void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
 void ApplyMaskEffectPreset(struct EvtData *, MaskEffectPreset *);
 

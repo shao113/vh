@@ -584,7 +584,7 @@ void Evtf077_Circle_TBD(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 078
-void Evtf078_SpellFx2_Damage(EvtData *evt) {
+void Evtf078_Damage_FX2(EvtData *evt) {
    EvtData *newEvt;
 
    switch (evt->state) {
@@ -610,7 +610,7 @@ void Evtf078_SpellFx2_Damage(EvtData *evt) {
 
 #undef EVTF
 #define EVTF 079
-void Evtf079_SpellFx3_Slay(EvtData *evt) {
+void Evtf079_Slay_FX3(EvtData *evt) {
    EvtData *newEvt;
 
    switch (evt->state) {

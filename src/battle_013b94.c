@@ -1566,7 +1566,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          SaveRestoreHp(&s_unit_801231c0->maxHp, &value1, &s_unit_801231c0->hp, 0);
 
          evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_SPELL_FX2_HEALING;
+         evt_v1->functionIndex = EVTF_HEALING_FX2;
          evt_v1->x1.s.hi = gTargetX;
          evt_v1->z1.s.hi = gTargetZ;
 
