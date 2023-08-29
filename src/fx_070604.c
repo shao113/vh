@@ -32,9 +32,9 @@ static s16 sDarkFireSphereAnimData_800ff344[36] = {7, GFX_TILED_GRAY_SPARKLES_DY
                                                    1, GFX_NULL,
                                                    1, GFX_NULL};
 
-static s16 sSparkleAnimData_800ff38c[14] = {4, GFX_SPARKLE_1, 3, GFX_SPARKLE_2, 3, GFX_SPARKLE_3,
-                                            3, GFX_SPARKLE_4, 3, GFX_SPARKLE_5, 3, GFX_NULL,
-                                            1, GFX_NULL};
+s16 gSparkleAnimData_800ff38c[14] = {4, GFX_SPARKLE_1, 3, GFX_SPARKLE_2, 3, GFX_SPARKLE_3,
+                                     3, GFX_SPARKLE_4, 3, GFX_SPARKLE_5, 3, GFX_NULL,
+                                     1, GFX_NULL};
 
 static s16 sExplosionAnimData_800ff3a8[26] = {
     0, GFX_EXPLOSION_1, 2, GFX_EXPLOSION_2,  2, GFX_EXPLOSION_3,  2, GFX_EXPLOSION_4,
@@ -42,11 +42,11 @@ static s16 sExplosionAnimData_800ff3a8[26] = {
     2, GFX_EXPLOSION_9, 2, GFX_EXPLOSION_10, 2, GFX_EXPLOSION_11, 2, GFX_NULL,
     1, GFX_NULL};
 
-static s16 sExplosionAnimData_800ff3dc[26] = {
-    0, GFX_EXPLOSION_1, 2, GFX_EXPLOSION_2,  2, GFX_EXPLOSION_3,  2, GFX_EXPLOSION_4,
-    2, GFX_EXPLOSION_5, 2, GFX_EXPLOSION_6,  2, GFX_EXPLOSION_7,  2, GFX_EXPLOSION_8,
-    2, GFX_EXPLOSION_9, 2, GFX_EXPLOSION_10, 2, GFX_EXPLOSION_11, 2, GFX_NULL,
-    0, GFX_NULL};
+s16 gExplosionAnimData_800ff3dc[26] = {0, GFX_EXPLOSION_1,  2, GFX_EXPLOSION_2,  2, GFX_EXPLOSION_3,
+                                       2, GFX_EXPLOSION_4,  2, GFX_EXPLOSION_5,  2, GFX_EXPLOSION_6,
+                                       2, GFX_EXPLOSION_7,  2, GFX_EXPLOSION_8,  2, GFX_EXPLOSION_9,
+                                       2, GFX_EXPLOSION_10, 2, GFX_EXPLOSION_11, 2, GFX_NULL,
+                                       0, GFX_NULL};
 
 static s16 sFlameAnimData_800ff410[20] = {
     0, GFX_FLAME_1, 2, GFX_FLAME_2, 2, GFX_FLAME_3, 2, GFX_FLAME_4, 2, GFX_FLAME_5,
@@ -56,14 +56,14 @@ static s16 sSmokeAnimData_800ff438[24] = {
     0, GFX_PUFF_1, 2, GFX_PUFF_2, 2, GFX_PUFF_3, 2, GFX_PUFF_4,  2, GFX_PUFF_5, 2, GFX_PUFF_6,
     2, GFX_PUFF_7, 2, GFX_PUFF_8, 2, GFX_PUFF_9, 2, GFX_PUFF_10, 2, GFX_NULL,   1, GFX_NULL};
 
-static s16 sLightningAnimData_800ff468[20] = {
-    0, GFX_LIGHTNING_1, 2, GFX_LIGHTNING_2, 2, GFX_LIGHTNING_3, 2, GFX_LIGHTNING_4,
-    2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_6, 2, GFX_LIGHTNING_7, 2, GFX_LIGHTNING_8,
-    2, GFX_NULL,        1, GFX_NULL};
+s16 gLightningAnimData_800ff468[20] = {0, GFX_LIGHTNING_1, 2, GFX_LIGHTNING_2, 2, GFX_LIGHTNING_3,
+                                       2, GFX_LIGHTNING_4, 2, GFX_LIGHTNING_5, 2, GFX_LIGHTNING_6,
+                                       2, GFX_LIGHTNING_7, 2, GFX_LIGHTNING_8, 2, GFX_NULL,
+                                       1, GFX_NULL};
 
 static s16 sSmokeAnimData_800ff490[8] = {0, GFX_PUFF_2, 1, GFX_PUFF_3, 1, GFX_NULL, 1, GFX_NULL};
 
-static s16 *sAnimPointers_800ff4a0[4] = {sSparkleAnimData_800ff38c, sExplosionAnimData_800ff3a8,
+static s16 *sAnimPointers_800ff4a0[4] = {gSparkleAnimData_800ff38c, sExplosionAnimData_800ff3a8,
                                          sFlameAnimData_800ff410, sSmokeAnimData_800ff438};
 
 static s16 sImpactAnimData_800ff4b0[18] = {5, GFX_IMPACT_1, 1, GFX_IMPACT_2, 1, GFX_IMPACT_3,
@@ -531,7 +531,7 @@ void Evtf080_RomanFire_FX1(EvtData *evt) {
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_NOOP;
       evt_s1->d.sprite.gfxIdx = GFX_TBD_15;
-      evt_s1->d.sprite.animData = sSparkleAnimData_800ff38c;
+      evt_s1->d.sprite.animData = gSparkleAnimData_800ff38c;
       EVT.sprite = evt_s1;
       evt->state2 = 8;
       evt->state++;

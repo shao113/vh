@@ -67,6 +67,7 @@ typedef enum EvtFunctionIdx {
    EVTF_DAMAGE_FX2 = 78,
    EVTF_SLAY_FX3 = 79,
    EVTF_ROMAN_FIRE_FLAME = 81,
+   EVTF_AVALANCHE_DUST_CLOUD = 84,
    EVTF_DAGGER_STORM_FX2 = 90,
    EVTF_DAGGER_STORM_DAGGER = 91,
    EVTF_MOOD_RING_RING = 95,
@@ -136,6 +137,7 @@ typedef enum EvtFunctionIdx {
    EVTF_THUNDER_BALL_INITIAL_ORB = 225,
    EVTF_THUNDER_BALL_CHILD_ORB = 226,
    EVTF_STAT_RAISED = 272,
+   EVTF_OUTWARD_RAY = 273,
    EVTF_ICE_STORM_CAMERA = 279,
    EVTF_DARK_HURRICANE_TARGET = 280,
    EVTF_DARK_HURRICANE_FX2 = 281,
@@ -143,16 +145,28 @@ typedef enum EvtFunctionIdx {
    EVTF_DARK_HURRICANE_CLOUD = 283,
    EVTF_CASTING_FX = 285,
    EVTF_REVEAL_CHEST_ITEM = 290,
+   EVTF_CHEST_IMPACT = 291,
+   EVTF_BLUE_ITEM_SPARKLE = 292,
    EVTF_REVEAL_HIDDEN_ITEM = 294,
+   EVTF_SMOKE = 295,
+   EVTF_MAP32_SMOKESTACK_PARTICLE = 301,
    EVTF_EVIL_STREAM_FX3 = 307,
    EVTF_LIFE_ORB_BEAM = 310,
    EVTF_BUBBLE_SWIRL_BUBBLE = 312,
    EVTF_INWARD_RAY = 314,
    EVTF_VERTICAL_RAY = 315,
+   EVTF_AVALANCHE_FX3 = 317,
+   EVTF_FX_TBD_323 = 323,
    EVTF_EVIL_STREAM_FX2 = 324,
+   EVTF_SALAMANDER_HEAD = 335,
+   EVTF_SALAMANDER_SEGMENT = 336,
    EVTF_DAGGER_STORM_BLOOD_SPLATTER = 337,
+   EVTF_AVALANCHE_RUBBLE = 339,
    EVTF_FILE_SAVE_DIALOG = 341,
    EVTF_FILE_SAVE_DIALOG_IBS = 342,
+   EVTF_ROMAN_FIRE_FX2 = 344,
+   EVTF_ROMAN_FIRE_FX3 = 345,
+   EVTF_RUBBLE = 349,
    EVTF_FILE_LOAD_DIALOG_360 = 360,
    EVTF_SCREEN_EFFECT = 369,
    EVTF_MAGE_OIL_FX2 = 370,
@@ -160,6 +174,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAGIC_CHARGE_FX2 = 372, // + Mage Gem
    EVTF_FILE_LOAD_DIALOG = 373,
    EVTF_FILE_LOAD_DIALOG_IBS = 374,
+   EVTF_FLAME_BREATH_PARTICLE = 375,
    EVTF_FILE_LOAD_DIALOG_376 = 376,
    EVTF_EVIL_STREAM_ROCK = 379,
    EVTF_LEVEL_UP_FX = 380,
@@ -169,6 +184,9 @@ typedef enum EvtFunctionIdx {
    EVTF_FULLSCREEN_IMAGE = 387,
    EVTF_DARK_HURRICANE_VORTEX = 389,
    EVTF_DARK_HURRICANE_VORTEX_LAYER = 390,
+   EVTF_DYNAMO_HUM_ELECTRIC_ORB = 395,
+   EVTF_DYNAMO_HUM_ORB_ELECTRICITY = 396,
+   EVTF_FX_TBD_398 = 398,
    EVTF_AI_TBD_400 = 400,
    EVTF_AI_TBD_401 = 401,
    EVTF_AI_TBD_402 = 402,
@@ -247,17 +265,23 @@ typedef enum EvtFunctionIdx {
    EVTF_STATUS_WINDOW = 595,
    EVTF_STATUS_WINDOW_MGR = 596,
    EVTF_BATTLE_INTRO = 597,
+   EVTF_RIPPLE = 678,
    EVTF_STAT_BUFF_FX = 681,
    EVTF_ADJUST_FACE_ELEVATION = 683,
    EVTF_SLIDING_FACE = 684,
    EVTF_ROCK_SPURT = 685,
    EVTF_ROCK_SPURT_PARTICLE_2 = 686,
+   EVTF_DYNAMO_HUM_COLORED_BOLT = 700,
+   EVTF_FLAMING_ROCK = 702,
    EVTF_PARTICLE_710 = 710, // Generic animated particle?
    EVTF_TBD_732 = 732,
    EVTF_STAT_BUFF_ICON = 733,
    EVTF_SPARKLE_DUST = 735,
    EVTF_REMOVE_PARALYSIS = 737,
    EVTF_ENTITY_BLOCKING = 746,
+   EVTF_WYRMFANG_FLAMES_CW = 747,
+   EVTF_WYRMFANG_FLAMES_CCW = 748,
+   EVTF_WYRMFANG_FLAME = 749,
    EVTF_PUSHED_OBJECT_SPLASH = 757,
    EVTF_ELITE_MELEE_SPARKLES = 760,
    EVTF_REVEAL_USED_ITEM = 761,
@@ -1937,10 +1961,19 @@ typedef struct EvtData_287 {
 
 /* Reveal Item */
 typedef struct EvtData_290_294_761 {
-   /* :0x24 */ u8 unk_0x24[8];
-   /* :0x2C */ u16 gfxIdx;
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ s16 theta;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 gfxIdx;
    /* :0x2E */ u8 unk_0x2E[50];
 } EvtData_290_294_761;
+
+/* Blue Item Sparkles */
+typedef struct EvtData_292 {
+   /* :0x24 */ u8 unk_0x24[56];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_292;
 
 /* Evil Stream - FX2 / FX3 */
 typedef struct EvtData_307_324 {
@@ -2016,9 +2049,16 @@ typedef struct EvtData_315 {
    /* :0x58 */ u8 unk_0x58[8];
 } EvtData_315;
 
+/* Avalanche - FX2 / FX3 */
+typedef struct EvtData_317_338 {
+   /* :0x24 */ s32 availableSlots;
+   /* :0x28 */ s32 rubbleAmount;
+   /* :0x2C */ u8 unk_0x2C[52];
+} EvtData_317_338;
+
 /* FX - TBD */
 typedef struct EvtData_321 {
-   /* :0x24 */ short thetas[8];
+   /* :0x24 */ s16 thetas[8];
    /* :0x34 */ s16 radius;
    /* :0x36 */ u8 unk_0x36[38];
    /* :0x5C */ struct EvtData *sprite;
@@ -2029,6 +2069,18 @@ typedef struct EvtData_322_Etc {
    /* :0x24 */ s16 amount;
    /* :0x26 */ u8 unk_0x26[58];
 } EvtData_322_Etc;
+
+/* FX - TBD */
+typedef struct EvtData_323_713 {
+   /* :0x24 */ struct EvtData *entitySprite;
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[7];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ u8 unk_0x32[10];
+   /* :0x3C */ SVectorXZY coords[4];
+   /* :0x54 */ u8 unk_0x54[8];
+   /* :0x5C */ struct EvtData *dataStore; // cylinder
+} EvtData_323_713;
 
 /* FX - TBD */
 typedef struct EvtData_326 {
@@ -2060,6 +2112,63 @@ typedef struct EvtData_330 {
    /* :0x5C */ struct EvtData *ringTop;
 } EvtData_330;
 
+/* FX - TBD */
+typedef struct EvtData_331 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[10];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[38];
+   /* :0x5C */ struct EvtData *parent; // (Maybe)
+} EvtData_331;
+
+/* Rolling Fire - FX1 */
+typedef struct EvtData_332 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[14];
+   /* :0x38 */ void *animData;
+   /* :0x3C */ u8 unk_0x3C[32];
+   /* :0x5C */ struct EvtData *dataStore; // cylinder
+} EvtData_332;
+
+/* Salamander - FX1 */
+typedef struct EvtData_334 {
+   /* :0x24 */ s32 todo_x24;
+   /* :0x28 */ u8 unk_0x28[56];
+} EvtData_334;
+
+/* Salamander - Head / Segment */
+typedef struct EvtData_335_336 {
+   /* :0x24 */ s16 theta1;
+   /* :0x26 */ s16 theta2;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ s16 todo_x2a;
+   /* :0x2C */ s16 todo_x2c;
+   /* :0x2E */ s16 todo_x2e;
+   /* :0x30 */ SVectorXYZ position1;
+   /* :0x36 */ u8 unk_0x36[2];
+   /* :0x38 */ SVectorXYZ position2;
+   /* :0x3E */ u8 unk_0x3E[2];
+   /* :0x40 */ SVectorXYZ position3;
+   /* :0x46 */ u8 unk_0x46[2];
+   /* :0x48 */ SVectorXYZ position4;
+   /* :0x4E */ s16 unused_0x4E;
+   /* :0x50 */ struct EvtData *parent; // evtf334 (fx1)
+   /* :0x54 */ struct EvtData *sprite;
+   /* :0x58 */ u8 unk_0x58[4];
+   /* :0x5C */ struct EvtData *link; // evtf334/evtf335/evtf336
+} EvtData_335_336;
+
+/* FX - TBD */
+typedef struct EvtData_348 {
+   /* :0x24 */ s16 todo_x24[8];
+   /* :0x34 */ s16 todo_x34[8];
+   /* :0x44 */ s16 todo_x44[8];
+   /* :0x54 */ u8 unk_0x54[8];
+   /* :0x5C */ struct EvtData *dataStore; // cylinder
+} EvtData_348;
+
 /* Screen Effect (Incomplete) */
 typedef struct EvtData_369 {
    /* :0x24 */ u8 unk_0x24[4];
@@ -2082,6 +2191,20 @@ typedef struct EvtData_369 {
    /* :0x4E */ u8 unk_0x4E[18];
 } EvtData_369;
 
+/* FX - TBD */
+typedef struct EvtData_377 {
+   /* :0x24 */ s16 theta1;
+   /* :0x26 */ s16 theta2;
+   /* :0x28 */ s16 theta3;
+   /* :0x2A */ s16 theta4;
+   /* :0x2C */ s16 radius;
+   /* :0x2E */ s16 theta5;
+   /* :0x30 */ u8 unk_0x30[36];
+   /* :0x54 */ struct EvtData *sprite;
+   /* :0x58 */ u8 unk_0x58[4];
+   /* :0x5C */ struct EvtData *todo_x5c;
+} EvtData_377;
+
 /* Evil Stream - Rock */
 typedef struct EvtData_379 {
    /* :0x24 */ u8 unk_0x24[16];
@@ -2091,6 +2214,21 @@ typedef struct EvtData_379 {
    /* :0x3C */ s16 maxHeight;
    /* :0x3E */ u8 unk_0x3E[34];
 } EvtData_379;
+
+/* Flame Breath */
+typedef struct EvtData_382 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ s16 direction;
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[6];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[6];
+   /* :0x3C */ s16 theta;
+   /* :0x3E */ s16 yTheta;
+   /* :0x40 */ s16 unused_0x40;
+   /* :0x42 */ u8 unk_0x42[30];
+} EvtData_382;
 
 /* Dark Hurricane - FX1 */
 typedef struct EvtData_388 {
@@ -2139,6 +2277,43 @@ typedef struct EvtData_392 {
    /* :0x34 */ u8 unk_0x34[40];
    /* :0x5C */ struct EvtData *todo_x5c;
 } EvtData_392;
+
+/* Dynamo Hum - FX1 */
+typedef struct EvtData_394 {
+   /* :0x24 */ u8 unk_0x24[56];
+   /* :0x5C */ struct EvtData *orb; // evtf395
+} EvtData_394;
+
+/* Dynamo Hum - Electric Orb */
+typedef struct EvtData_395 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ s8 animFinished;
+   /* :0x31 */ u8 unk_0x31[3];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[2];
+   /* :0x38 */ void *animData;
+   /* :0x3C */ s16 theta;
+   /* :0x3E */ s16 size;
+   /* :0x40 */ u8 unk_0x40[28];
+   /* :0x5C */ struct EvtData *parent; // evtf394
+} EvtData_395;
+
+/* Dynamo Hum - Orb Electricity */
+typedef struct EvtData_396 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ s16 todo_x2a;
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[10];
+   /* :0x38 */ void *animData;
+   /* :0x3C */ SVectorXZY coords[4];
+   /* :0x54 */ s32 length;
+   /* :0x58 */ struct EvtData *links[2];
+} EvtData_396;
 
 /* AI - TBD */
 typedef struct EvtData_400 {
@@ -2467,6 +2642,27 @@ typedef struct EvtData_733 {
    /* :0x5C */ struct EvtData *sprite;
 } EvtData_733;
 
+/* Wyrmfang - Flames */
+typedef struct EvtData_747_748 {
+   /* :0x24 */ s16 theta;
+   /* :0x26 */ s16 radius;
+   /* :0x28 */ s16 amplitude;
+   /* :0x2A */ s16 timer;
+   /* :0x2C */ s16 todo_x2c;
+   /* :0x2E */ u8 unk_0x2E[50];
+} EvtData_747_748;
+
+/* Wyrmfang - Flame */
+typedef struct EvtData_749 {
+   /* :0x24 */ s16 theta;
+   /* :0x26 */ s16 radius;
+   /* :0x28 */ s16 yTheta;
+   /* :0x2A */ s16 amplitude;
+   /* :0x2C */ u8 unk_0x2C[32];
+   /* :0x4C */ struct EvtData *sprite;
+   /* :0x50 */ u8 unk_0x50[16];
+} EvtData_749;
+
 /* Map Object - Generic */
 typedef struct EvtData_MapObject {
    /* :0x24 */ s16 param;
@@ -2515,6 +2711,21 @@ typedef struct EvtData_Unk_8008a364 {
    /* :0x24 */ u8 unk_0x24[56];
    /* :0x5C */ struct EvtData *sprite;
 } EvtData_Unk_8008a364;
+
+typedef struct EvtData_Unk_8008d1f0 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[3];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ u8 unk_0x32[2];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[6];
+   /* :0x3C */ SVectorXZY coords[4];
+   /* :0x54 */ u8 unk_0x54[8];
+   /* :0x5C */ struct EvtData *unitSprite;
+} EvtData_Unk_8008d1f0;
 
 typedef struct EvtData_Unk_UsedBy392 {
    /* :0x24 */ s32 todo_x24;
@@ -2691,23 +2902,38 @@ typedef struct EvtData {
       EvtData_287 evtf287;         /* FX - TBD */
       EvtData_290_294_761 evtf290; /* Reveal Chest Item */
       EvtData_290_294_761 evtf294; /* Reveal Item */
+      EvtData_292 evtf292;         /* Blue Item Sparkles */
       EvtData_307_324 evtf307;     /* Evil Stream - FX2 / FX3 */
       EvtData_310 evtf310;         /* Life Orb - Beam */
       EvtData_312 evtf312;         /* Bubble Swirl - Bubble */
       EvtData_313 evtf313;         /* Life Orb - FX1 */
       EvtData_314 evtf314;         /* Inward Ray */
       EvtData_315 evtf315;         /* Vertical Ray */
+      EvtData_317_338 evtf317;     /* Avalanche - FX2 / FX3 */
       EvtData_321 evtf321;         /* FX - TBD */
       EvtData_322_Etc evtf322;     /* Magic Restoration (Magic Charge, etc.) - FX2 */
+      EvtData_323_713 evtf323;     /* FX - TBD */
       EvtData_326 evtf326;         /* FX - TBD */
       EvtData_327 evtf327;         /* Healing Circle - FX2 */
       EvtData_330 evtf330;         /* Magic Restoration (Magic Charge, etc.) - FX1 */
+      EvtData_331 evtf331;         /* FX - TBD */
+      EvtData_332 evtf332;         /* Rolling Fire - FX1 */
+      EvtData_334 evtf334;         /* Salamander - FX1 */
+      EvtData_335_336 evtf335;     /* Salamander - Head */
+      EvtData_335_336 evtf336;     /* Salamander - Segment */
+      EvtData_132_Etc evtf344;     /* Roman Fire - FX2 / FX3 */
+      EvtData_348 evtf348;         /* FX - TBD */
       EvtData_369 evtf369;         /* Screen Effect */
+      EvtData_377 evtf377;         /* FX - TBD */
       EvtData_379 evtf379;         /* Evil Stream - Rock */
+      EvtData_382 evtf382;         /* Flame Breath */
       EvtData_388 evtf388;         /* Dark Hurricane - FX1 */
       EvtData_389 evtf389;         /* Dark Hurricane - Vortex */
       EvtData_390 evtf390;         /* Dark Hurricane - Vortex Layer */
       EvtData_392 evtf392;         /* FX - TBD */
+      EvtData_394 evtf394;         /* Dynamo Hum - FX1 */
+      EvtData_395 evtf395;         /* Dynamo Hum - Electric Orb */
+      EvtData_396 evtf396;         /* Dynamo Hum - Orb Electricity */
       EvtData_400 evtf400;         /* AI - TBD */
       EvtData_401 evtf401;         /* AI - TBD */
       EvtData_402_Etc evtf402;     /* AI - TBD */
@@ -2744,6 +2970,8 @@ typedef struct EvtData {
       EvtData_597 evtf597;         /* Battle - Intro */
       EvtData_681 evtf681;         /* Stat Buff FX */
       EvtData_733 evtf733;         /* Stat Buff Icon */
+      EvtData_747_748 evtf747;     /* Wyrmfang - Flames */
+      EvtData_749 evtf749;         /* Wyrmfang - Flame */
       EvtData_133_Etc evtf801;     /* FX - TBD */
       EvtData_133_Etc evtf802;     /* FX - TBD */
       EvtData_133_Etc evtf803;     /* FX - TBD */
@@ -2752,6 +2980,7 @@ typedef struct EvtData {
       EvtData_Unk_80080924 evtfUnk80080924;
       EvtData_Unk_80087b58 evtfUnk80087b58;
       EvtData_Unk_8008a364 evtfUnk8008a364;
+      EvtData_Unk_8008d1f0 evtfUnk8008d1f0;
       EvtData_Unk_UsedBy392 evtfUnkUsedBy392;
    } d;
 } EvtData;
