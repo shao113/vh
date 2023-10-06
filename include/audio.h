@@ -13,22 +13,38 @@
 #define XA_LOOP 0
 #define XA_NO_LOOP 2
 
-// #define PLAY_PREPARED_XA(id) (0x300 | id)
-// #define PREPARE_XA(id) (0x1300 | id)
+#define AUDIO_CMD_PLAY_SEQ(id) (0x200 + (id))
+#define AUDIO_CMD_PLAY_XA(id) (0x300 + (id))
+#define AUDIO_CMD_PLAY_SFX(id) (0x500 + (id))
+#define AUDIO_CMD_PREPARE_XA(id) (0x1300 + (id))
+
+// TODO: Add more of these
+typedef enum AudioCommand {
+   AUDIO_CMD_MONO = 1,
+   AUDIO_CMD_STEREO = 2,
+   AUDIO_CMD_STOP_SEQ = 3,
+   AUDIO_CMD_STOP_ALL = 6,
+   // TODO: Descriptive names
+   AUDIO_CMD_FADE_OUT_32_4 = 32,
+   AUDIO_CMD_FADE_OUT_8_4 = 33,
+   AUDIO_CMD_FADE_OUT_128_1 = 48,
+   AUDIO_CMD_FADE_OUT_8_1 = 49,
+   AUDIO_CMD_FADE_OUT_128_2 = 56,
+} AudioCommand;
 
 typedef enum AudioMode { AUDIO_MODE_MONO = 0, AUDIO_MODE_STEREO = 1 } AudioMode;
 
 typedef enum AudioJob {
-   AUDIO_JOB_NULL = 0x0,
-   AUDIO_JOB_PLAY_SEQ = 0x1,
-   AUDIO_JOB_PLAY_XA = 0x2,
-   AUDIO_JOB_PREPARE_XA = 0x3,
-   AUDIO_JOB_STOP_SEQ = 0x4,
-   AUDIO_JOB_PAUSE_XA = 0x5,
-   AUDIO_JOB_UNUSED_0x7 = 0x7,
-   AUDIO_JOB_UNUSED_0x8 = 0x8,
-   AUDIO_JOB_PLAY_PREPARED_XA = 0xa,
-   AUDIO_JOB_RESET_VOLUME = 0xb
+   AUDIO_JOB_NULL = 0,
+   AUDIO_JOB_PLAY_SEQ = 1,
+   AUDIO_JOB_PLAY_XA = 2,
+   AUDIO_JOB_PREPARE_XA = 3,
+   AUDIO_JOB_STOP_SEQ = 4,
+   AUDIO_JOB_PAUSE_XA = 5,
+   AUDIO_JOB_UNUSED_0x7 = 7,
+   AUDIO_JOB_UNUSED_0x8 = 8,
+   AUDIO_JOB_PLAY_PREPARED_XA = 10,
+   AUDIO_JOB_RESET_VOLUME = 11
 } AudioJob;
 
 typedef enum XaFadeInState {

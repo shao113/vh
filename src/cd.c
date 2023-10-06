@@ -1124,7 +1124,7 @@ void LoadSeqSet(u32 setIdx) {
    static s16 prevSetIdx = -1;
 
    if (setIdx < 38 && prevSetIdx != setIdx) {
-      PerformAudioCommand(3); //<- QueueStopSeq
+      PerformAudioCommand(AUDIO_CMD_STOP_SEQ);
       SetSeqDataPtr(&gSeqData);
       prevSetIdx = setIdx;
       gSeqLoader.state = 0;

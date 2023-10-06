@@ -75,7 +75,7 @@ void Evtf144_HolyLightning_FX2(EvtData *evt) {
 
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
-         evt_v1->d.evtf149.clut = 4;
+         evt_v1->d.evtf149.clut = CLUT_BLUES;
          evt_v1->x1.s.hi = targetSprite->x1.s.hi;
          evt_v1->z1.s.hi = targetSprite->z1.s.hi;
          EVT.targetFlashingFx = evt_v1;
@@ -121,7 +121,7 @@ void Evtf144_HolyLightning_FX2(EvtData *evt) {
       case 2:
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_FX_TBD_136 + EVT.endingFxType;
-         evt_v1->d.evtf136.clut = 4;
+         evt_v1->d.evtf136.clut = CLUT_BLUES;
          evt_v1->x1.n = evt->x1.n;
          evt_v1->y1.n = evt->y1.n;
          evt_v1->z1.n = evt->z1.n;
@@ -226,7 +226,7 @@ void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       orbSprite->d.sprite.semiTrans = 3;
-      orbSprite->d.sprite.clut = 10;
+      orbSprite->d.sprite.clut = CLUT_MASK;
       AddEvtPrim6(gGraphicsPtr->ot, orbSprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
@@ -244,16 +244,16 @@ void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
       EVT.todo_x42 += 4 - rand() % 8;
       EVT.todo_x44 += 0x18 - rand() % 0x30;
 
-      evt_s4->d.sprite.coords[0].x = evt->x1.n + 0xc0 + EVT.x_4;
+      evt_s4->d.sprite.coords[0].x = evt->x1.n + CV(0.75) + EVT.x_4;
       evt_s4->d.sprite.coords[0].y = evt->y1.n;
       evt_s4->d.sprite.coords[0].z = evt->z1.n + EVT.z_4;
-      evt_s4->d.sprite.coords[1].x = evt->x1.n - 0xc0 + EVT.x_4;
+      evt_s4->d.sprite.coords[1].x = evt->x1.n - CV(0.75) + EVT.x_4;
       evt_s4->d.sprite.coords[1].y = evt->y1.n;
       evt_s4->d.sprite.coords[1].z = evt->z1.n + EVT.z_4;
-      evt_s4->d.sprite.coords[2].x = evt->x1.n + EVT.x_1 + 0xc0;
+      evt_s4->d.sprite.coords[2].x = evt->x1.n + EVT.x_1 + CV(0.75);
       evt_s4->d.sprite.coords[2].y = evt->y1.n + EVT.y_1;
       evt_s4->d.sprite.coords[2].z = evt->z1.n + EVT.z_1;
-      evt_s4->d.sprite.coords[3].x = evt->x1.n + EVT.x_1 - 0xc0;
+      evt_s4->d.sprite.coords[3].x = evt->x1.n + EVT.x_1 - CV(0.75);
       evt_s4->d.sprite.coords[3].y = evt->y1.n + EVT.y_1;
       evt_s4->d.sprite.coords[3].z = evt->z1.n + EVT.z_1;
 
@@ -268,16 +268,16 @@ void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
-      evt_s4->d.sprite.coords[0].x = evt->x1.n + 0xc0;
+      evt_s4->d.sprite.coords[0].x = evt->x1.n + CV(0.75);
       evt_s4->d.sprite.coords[0].y = evt->y1.n;
       evt_s4->d.sprite.coords[0].z = evt->z1.n;
-      evt_s4->d.sprite.coords[1].x = evt->x1.n - 0xc0;
+      evt_s4->d.sprite.coords[1].x = evt->x1.n - CV(0.75);
       evt_s4->d.sprite.coords[1].y = evt->y1.n;
       evt_s4->d.sprite.coords[1].z = evt->z1.n;
-      evt_s4->d.sprite.coords[2].x = evt->x1.n - EVT.x_1 / 2 + 0xc0;
+      evt_s4->d.sprite.coords[2].x = evt->x1.n - EVT.x_1 / 2 + CV(0.75);
       evt_s4->d.sprite.coords[2].y = evt->y1.n + EVT.y_1;
       evt_s4->d.sprite.coords[2].z = evt->z1.n - EVT.z_1 / 2;
-      evt_s4->d.sprite.coords[3].x = evt->x1.n - EVT.x_1 / 2 - 0xc0;
+      evt_s4->d.sprite.coords[3].x = evt->x1.n - EVT.x_1 / 2 - CV(0.75);
       evt_s4->d.sprite.coords[3].y = evt->y1.n + EVT.y_1;
       evt_s4->d.sprite.coords[3].z = evt->z1.n - EVT.z_1 / 2;
 
@@ -290,16 +290,16 @@ void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.fade / 3, EVT.fade / 3, EVT.fade / 3);
 
-      evt_s4->d.sprite.coords[0].x = evt->x1.n + EVT.x_1 + 0xc0;
+      evt_s4->d.sprite.coords[0].x = evt->x1.n + EVT.x_1 + CV(0.75);
       evt_s4->d.sprite.coords[0].y = evt->y1.n + EVT.y_1;
       evt_s4->d.sprite.coords[0].z = evt->z1.n + EVT.z_1;
-      evt_s4->d.sprite.coords[1].x = evt->x1.n + EVT.x_1 - 0xc0;
+      evt_s4->d.sprite.coords[1].x = evt->x1.n + EVT.x_1 - CV(0.75);
       evt_s4->d.sprite.coords[1].y = evt->y1.n + EVT.y_1;
       evt_s4->d.sprite.coords[1].z = evt->z1.n + EVT.z_1;
-      evt_s4->d.sprite.coords[2].x = evt->x1.n + EVT.x_2 + 0xc0;
+      evt_s4->d.sprite.coords[2].x = evt->x1.n + EVT.x_2 + CV(0.75);
       evt_s4->d.sprite.coords[2].y = evt->y1.n + EVT.y_2;
       evt_s4->d.sprite.coords[2].z = evt->z1.n + EVT.z_2;
-      evt_s4->d.sprite.coords[3].x = evt->x1.n + EVT.x_2 - 0xc0;
+      evt_s4->d.sprite.coords[3].x = evt->x1.n + EVT.x_2 - CV(0.75);
       evt_s4->d.sprite.coords[3].y = evt->y1.n + EVT.y_2;
       evt_s4->d.sprite.coords[3].z = evt->z1.n + EVT.z_2;
 
@@ -312,16 +312,16 @@ void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
-      evt_s4->d.sprite.coords[0].x = evt->x1.n - EVT.x_1 / 2 + 0xc0;
+      evt_s4->d.sprite.coords[0].x = evt->x1.n - EVT.x_1 / 2 + CV(0.75);
       evt_s4->d.sprite.coords[0].y = evt->y1.n + EVT.y_1;
       evt_s4->d.sprite.coords[0].z = evt->z1.n - EVT.z_1 / 2;
-      evt_s4->d.sprite.coords[1].x = evt->x1.n - EVT.x_1 / 2 - 0xc0;
+      evt_s4->d.sprite.coords[1].x = evt->x1.n - EVT.x_1 / 2 - CV(0.75);
       evt_s4->d.sprite.coords[1].y = evt->y1.n + EVT.y_1;
       evt_s4->d.sprite.coords[1].z = evt->z1.n - EVT.z_1 / 2;
-      evt_s4->d.sprite.coords[2].x = evt->x1.n - EVT.x_2 / 2 + 0xc0;
+      evt_s4->d.sprite.coords[2].x = evt->x1.n - EVT.x_2 / 2 + CV(0.75);
       evt_s4->d.sprite.coords[2].y = evt->y1.n + EVT.y_2;
       evt_s4->d.sprite.coords[2].z = evt->z1.n - EVT.z_2 / 2;
-      evt_s4->d.sprite.coords[3].x = evt->x1.n - EVT.x_2 / 2 - 0xc0;
+      evt_s4->d.sprite.coords[3].x = evt->x1.n - EVT.x_2 / 2 - CV(0.75);
       evt_s4->d.sprite.coords[3].y = evt->y1.n + EVT.y_2;
       evt_s4->d.sprite.coords[3].z = evt->z1.n - EVT.z_2 / 2;
 
@@ -334,18 +334,18 @@ void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.fade / 3, EVT.fade / 3, EVT.fade / 3);
 
-      evt_s4->d.sprite.coords[0].x = evt->x1.n + EVT.x_2 + 0xc0;
+      evt_s4->d.sprite.coords[0].x = evt->x1.n + EVT.x_2 + CV(0.75);
       evt_s4->d.sprite.coords[0].y = evt->y1.n + EVT.y_2;
       evt_s4->d.sprite.coords[0].z = evt->z1.n + EVT.z_2;
-      evt_s4->d.sprite.coords[1].x = evt->x1.n + EVT.x_2 - 0xc0;
+      evt_s4->d.sprite.coords[1].x = evt->x1.n + EVT.x_2 - CV(0.75);
       evt_s4->d.sprite.coords[1].y = evt->y1.n + EVT.y_2;
       evt_s4->d.sprite.coords[1].z = evt->z1.n + EVT.z_2;
-      evt_s4->d.sprite.coords[2].x = evt->x1.n + EVT.x_3 + 0xd0 - rand() % 0x20;
+      evt_s4->d.sprite.coords[2].x = evt->x1.n + EVT.x_3 + CV(0.8125) - rand() % CV(0.125);
       evt_s4->d.sprite.coords[2].y = evt->y1.n + EVT.y_3;
-      evt_s4->d.sprite.coords[2].z = evt->z1.n + EVT.z_3 + 0x10 - rand() % 0x20;
-      evt_s4->d.sprite.coords[3].x = evt->x1.n + EVT.x_3 - 0xb0 - rand() % 0x20;
+      evt_s4->d.sprite.coords[2].z = evt->z1.n + EVT.z_3 + CV(0.0625) - rand() % CV(0.125);
+      evt_s4->d.sprite.coords[3].x = evt->x1.n + EVT.x_3 - CV(0.6875) - rand() % CV(0.125);
       evt_s4->d.sprite.coords[3].y = evt->y1.n + EVT.y_3;
-      evt_s4->d.sprite.coords[3].z = evt->z1.n + EVT.z_3 + 0x10 - rand() % 0x20;
+      evt_s4->d.sprite.coords[3].z = evt->z1.n + EVT.z_3 + CV(0.0625) - rand() % CV(0.125);
       evt_s4->x1.n = (evt_s4->d.sprite.coords[0].x + evt_s4->d.sprite.coords[3].x) / 2;
       evt_s4->y1.n = (evt_s4->d.sprite.coords[0].y + evt_s4->d.sprite.coords[3].y) / 2;
       evt_s4->z1.n = (evt_s4->d.sprite.coords[0].z + evt_s4->d.sprite.coords[3].z) / 2;
@@ -355,18 +355,18 @@ void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
-      evt_s4->d.sprite.coords[0].x = evt->x1.n - EVT.x_2 / 2 + 0xc0;
+      evt_s4->d.sprite.coords[0].x = evt->x1.n - EVT.x_2 / 2 + CV(0.75);
       evt_s4->d.sprite.coords[0].y = evt->y1.n + EVT.y_2;
       evt_s4->d.sprite.coords[0].z = evt->z1.n - EVT.z_2 / 2;
-      evt_s4->d.sprite.coords[1].x = evt->x1.n - EVT.x_2 / 2 - 0xc0;
+      evt_s4->d.sprite.coords[1].x = evt->x1.n - EVT.x_2 / 2 - CV(0.75);
       evt_s4->d.sprite.coords[1].y = evt->y1.n + EVT.y_2;
       evt_s4->d.sprite.coords[1].z = evt->z1.n - EVT.z_2 / 2;
-      evt_s4->d.sprite.coords[2].x = evt->x1.n - EVT.x_3 / 2 + 0xd0 - rand() % 0x20;
+      evt_s4->d.sprite.coords[2].x = evt->x1.n - EVT.x_3 / 2 + CV(0.8125) - rand() % CV(0.125);
       evt_s4->d.sprite.coords[2].y = evt->y1.n + EVT.y_3;
-      evt_s4->d.sprite.coords[2].z = evt->z1.n - EVT.z_3 / 2 + 0x10 - rand() % 0x20;
-      evt_s4->d.sprite.coords[3].x = evt->x1.n - EVT.x_3 / 2 - 0xb0 - rand() % 0x20;
+      evt_s4->d.sprite.coords[2].z = evt->z1.n - EVT.z_3 / 2 + CV(0.0625) - rand() % CV(0.125);
+      evt_s4->d.sprite.coords[3].x = evt->x1.n - EVT.x_3 / 2 - CV(0.6875) - rand() % CV(0.125);
       evt_s4->d.sprite.coords[3].y = evt->y1.n + EVT.y_3;
-      evt_s4->d.sprite.coords[3].z = evt->z1.n - EVT.z_3 / 2 + 0x10 - rand() % 0x20;
+      evt_s4->d.sprite.coords[3].z = evt->z1.n - EVT.z_3 / 2 + CV(0.0625) - rand() % CV(0.125);
 
       evt_s4->x1.n = (evt_s4->d.sprite.coords[0].x + evt_s4->d.sprite.coords[3].x) / 2;
       evt_s4->y1.n = (evt_s4->d.sprite.coords[0].y + evt_s4->d.sprite.coords[3].y) / 2;
@@ -420,7 +420,7 @@ void Evtf224_ThunderBall_FX1(EvtData *evt) {
       orb->z1.n = unitSprite->z1.n;
       orb->d.evtf225.dx = 0; // unused
       orb->d.evtf225.dz = 0; // unused
-      orb->d.evtf225.dy = 0x300;
+      orb->d.evtf225.dy = CV(3.0);
 
       evt->state++;
       break;
@@ -470,7 +470,7 @@ void Evtf225_ThunderBall_InitialOrb(EvtData *evt) {
       evt_s2->d.sprite.animData = sGlobeAnimData_800ff024;
       evt_s2->d.sprite.animInitialized = 0;
       evt_s2->d.sprite.boxIdx = 4;
-      evt_s2->d.sprite.clut = 4;
+      evt_s2->d.sprite.clut = CLUT_BLUES;
 
       evt_s2 = Evt_GetUnused();
       EVT.lightningSprite = evt_s2;
@@ -478,7 +478,7 @@ void Evtf225_ThunderBall_InitialOrb(EvtData *evt) {
       evt_s2->d.sprite.animData = sLightningAnimData_800ff064;
       evt_s2->d.sprite.animInitialized = 0;
       evt_s2->d.sprite.boxIdx = 4;
-      evt_s2->d.sprite.clut = 8;
+      evt_s2->d.sprite.clut = CLUT_PURPLES;
 
       evt->state++;
 
@@ -488,7 +488,7 @@ void Evtf225_ThunderBall_InitialOrb(EvtData *evt) {
       evt_s1 = EVT.lightningSprite;
       evt_s2->x1.n = evt->x1.n;
       evt_s2->z1.n = evt->z1.n;
-      evt_s2->y1.n = evt->y1.n + EVT.timer * EVT.dy / 0x30 + 0xe0;
+      evt_s2->y1.n = evt->y1.n + EVT.timer * EVT.dy / 48 + CV(0.875);
       evt_s1->x1.n = evt_s2->x1.n;
       evt_s1->z1.n = evt_s2->z1.n;
       evt_s1->y1.n = evt_s2->y1.n;
@@ -512,7 +512,7 @@ void Evtf225_ThunderBall_InitialOrb(EvtData *evt) {
             evt_s2->d.sprite.animData = sExplosionAnimData_800ff0a4;
             evt_s2->d.sprite.animInitialized = 0;
             evt_s2->d.sprite.boxIdx = 4;
-            evt_s2->d.sprite.clut = 3;
+            evt_s2->d.sprite.clut = CLUT_REDS;
          }
          break;
 
@@ -525,10 +525,10 @@ void Evtf225_ThunderBall_InitialOrb(EvtData *evt) {
                evt_s2->functionIndex = EVTF_THUNDER_BALL_CHILD_ORB;
                evt_s2->x1.n = evt->x1.n;
                evt_s2->z1.n = evt->z1.n;
-               evt_s2->y1.n = evt->y1.n + EVT.dy + 0xe0;
+               evt_s2->y1.n = evt->y1.n + EVT.dy + CV(0.875);
                evt_s2->d.evtf226.dx = evt_s1->x1.n - evt_s2->x1.n;
                evt_s2->d.evtf226.dz = evt_s1->z1.n - evt_s2->z1.n;
-               evt_s2->d.evtf226.dy = (evt_s1->y1.n - evt_s2->y1.n) + 0x80;
+               evt_s2->d.evtf226.dy = (evt_s1->y1.n - evt_s2->y1.n) + CV(0.5);
             }
          } else if (EVT.timer == 48) {
             evt_s2->functionIndex = EVTF_NULL;
@@ -551,8 +551,8 @@ void Evtf226_ThunderBall_ChildOrb(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      EVT.todo_x26 = 0x100 - rand() % 0x200;
-      EVT.todo_x2a = 0x100 - rand() % 0x200;
+      EVT.todo_x26 = CV(1.0) - rand() % CV(2.0);
+      EVT.todo_x2a = CV(1.0) - rand() % CV(2.0);
 
       evt_s2 = Evt_GetUnused();
       EVT.orbSprite = evt_s2;
@@ -560,7 +560,7 @@ void Evtf226_ThunderBall_ChildOrb(EvtData *evt) {
       evt_s2->d.sprite.animData = sGlobeAnimData_800ff024;
       evt_s2->d.sprite.animInitialized = 0;
       evt_s2->d.sprite.boxIdx = 4;
-      evt_s2->d.sprite.clut = 4;
+      evt_s2->d.sprite.clut = CLUT_BLUES;
 
       evt_s2 = Evt_GetUnused();
       EVT.lightningSprite = evt_s2;
@@ -568,7 +568,7 @@ void Evtf226_ThunderBall_ChildOrb(EvtData *evt) {
       evt_s2->d.sprite.animData = sLightningAnimData_800ff064;
       evt_s2->d.sprite.animInitialized = 0;
       evt_s2->d.sprite.boxIdx = 4;
-      evt_s2->d.sprite.clut = 8;
+      evt_s2->d.sprite.clut = CLUT_PURPLES;
 
       evt->state++;
 
@@ -582,7 +582,7 @@ void Evtf226_ThunderBall_ChildOrb(EvtData *evt) {
           evt->x1.n + (EVT.todo_x26 * rsin(timer * 0x40) >> 11) + (timer * EVT.dx / 0x20);
       evt_s2->z1.n =
           evt->z1.n + (EVT.todo_x2a * rsin(timer * 0x40) >> 11) + (timer * EVT.dz / 0x20);
-      evt_s2->y1.n = evt->y1.n + (0x180 * rsin(timer * 0x40) >> 11) + (timer * EVT.dy / 0x20);
+      evt_s2->y1.n = evt->y1.n + (CV(1.5) * rsin(timer * 0x40) >> 11) + (timer * EVT.dy / 0x20);
 
       lightningSprite->x1.n = evt_s2->x1.n;
       lightningSprite->z1.n = evt_s2->z1.n;
@@ -603,7 +603,7 @@ void Evtf226_ThunderBall_ChildOrb(EvtData *evt) {
          evt_s2->d.sprite.animData = sExplosionAnimData_800ff0a4;
          evt_s2->d.sprite.animInitialized = 0;
          evt_s2->d.sprite.boxIdx = 4;
-         evt_s2->d.sprite.clut = 3;
+         evt_s2->d.sprite.clut = CLUT_REDS;
       } else if (EVT.timer == 32) {
          evt_s2->functionIndex = EVTF_NULL;
          evt->functionIndex = EVTF_NULL;
@@ -633,7 +633,7 @@ void Evtf222_Fx_TBD(EvtData *evt) {
       evt_s2 = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
       evt_s1->d.evtf223.dx = evt_s2->x1.n - evt_s0->x1.n;
       evt_s1->d.evtf223.dz = evt_s2->z1.n - evt_s0->z1.n;
-      evt_s1->d.evtf223.dy = (evt_s2->y1.n - evt_s0->y1.n) + 0x200;
+      evt_s1->d.evtf223.dy = (evt_s2->y1.n - evt_s0->y1.n) + CV(2.0);
       EVT.fx = evt_s1;
 
       evt_s1 = Evt_GetUnused();
@@ -719,7 +719,7 @@ void Evtf223_Fx_TBD(EvtData *evt) {
       evt_s2->d.sprite.animData = sGlobeAnimData_800ff024;
       evt_s2->d.sprite.animInitialized = 0;
       evt_s2->d.sprite.boxIdx = 4;
-      evt_s2->d.sprite.clut = 4;
+      evt_s2->d.sprite.clut = CLUT_BLUES;
 
       evt_s2 = Evt_GetUnused();
       EVT.lightningSprite = evt_s2;
@@ -727,7 +727,7 @@ void Evtf223_Fx_TBD(EvtData *evt) {
       evt_s2->d.sprite.animData = sLightningAnimData_800ff064;
       evt_s2->d.sprite.animInitialized = 0;
       evt_s2->d.sprite.boxIdx = 4;
-      evt_s2->d.sprite.clut = 8;
+      evt_s2->d.sprite.clut = CLUT_PURPLES;
 
       evt->state++;
 
@@ -760,7 +760,7 @@ void Evtf223_Fx_TBD(EvtData *evt) {
          evt_s2->d.sprite.animData = sExplosionAnimData_800ff0a4;
          evt_s2->d.sprite.animInitialized = 0;
          evt_s2->d.sprite.boxIdx = 4;
-         evt_s2->d.sprite.clut = 3;
+         evt_s2->d.sprite.clut = CLUT_REDS;
       } else if (EVT.timer == 64) {
          evt_s2->functionIndex = EVTF_NULL;
          evt->functionIndex = EVTF_NULL;
@@ -839,7 +839,7 @@ void Evtf195_RollingThunder_FX2(EvtData *evt) {
          evt_v1->x1.s.hi = evt->x1.s.hi;
          evt_v1->z1.s.hi = evt->z1.s.hi;
          evt_v1->d.evtf196.todo_x28 = i * 0x400;
-         evt_v1->d.evtf196.todo_x2a = 0x200;
+         evt_v1->d.evtf196.todo_x2a = DEG(45);
          evt_v1->d.evtf196.clut = cluts[i];
       }
       evt->state++;
@@ -850,7 +850,7 @@ void Evtf195_RollingThunder_FX2(EvtData *evt) {
       if (EVT.timer == 191) {
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_FX_TBD_136 + EVT.endingFxType;
-         evt_v1->d.evtf136.clut = 4;
+         evt_v1->d.evtf136.clut = CLUT_BLUES;
          evt_v1->x1.n = evt->x1.n;
          evt_v1->y1.n = evt->y1.n;
          evt_v1->z1.n = evt->z1.n;
@@ -924,13 +924,13 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
       y_3 = EVT.todo_x34 * rsin(EVT.todo_x2a) >> 12;
       x_3 = rcos(EVT.todo_x2a) * x_3 / ONE;
       z_3 = rcos(EVT.todo_x2a) * z_3 / ONE;
-      EVT.todo_x2a += 0x40;
+      EVT.todo_x2a += DEG(5.625);
 
       UpdateEvtAnimation(orbSprite);
 
       orbSprite->x1.n = targetSprite->x1.n + x_3;
       orbSprite->z1.n = targetSprite->z1.n + z_3;
-      orbSprite->y1.n = targetSprite->y1.n + 0x80 + y_3;
+      orbSprite->y1.n = targetSprite->y1.n + CV(0.5) + y_3;
       AddEvtPrim6(gGraphicsPtr->ot, orbSprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, 0xff, 0xff, 0xff);
@@ -941,7 +941,7 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
 
       orbSprite->x1.n = targetSprite->x1.n - x_3;
       orbSprite->z1.n = targetSprite->z1.n - z_3;
-      orbSprite->y1.n = targetSprite->y1.n + 0x80 - y_3;
+      orbSprite->y1.n = targetSprite->y1.n + CV(0.5) - y_3;
       AddEvtPrim6(gGraphicsPtr->ot, orbSprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, 0xff, 0xff, 0xff);
@@ -950,9 +950,9 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
       y_2 = orbSprite->y1.n;
       z_2 = orbSprite->z1.n;
 
-      x_3 = 0x80 - rand() % 0x100;
-      z_3 = 0x80 - rand() % 0x100;
-      y_3 = 0x80 - rand() % 0x100;
+      x_3 = CV(0.5) - rand() % CV(1.0);
+      z_3 = CV(0.5) - rand() % CV(1.0);
+      y_3 = CV(0.5) - rand() % CV(1.0);
 
       UpdateEvtAnimation(lightningSprite);
 
@@ -962,10 +962,10 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
       lightningSprite->d.sprite.coords[1].x = x_1;
       lightningSprite->d.sprite.coords[2].x = (x_1 + x_2) / 2 + x_3;
       lightningSprite->d.sprite.coords[3].x = (x_1 + x_2) / 2 + x_3;
-      lightningSprite->d.sprite.coords[0].y = y_1 + 0x40;
-      lightningSprite->d.sprite.coords[1].y = y_1 - 0x40;
-      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 + y_3 + 0x40;
-      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 + y_3 - 0x40;
+      lightningSprite->d.sprite.coords[0].y = y_1 + CV(0.25);
+      lightningSprite->d.sprite.coords[1].y = y_1 - CV(0.25);
+      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 + y_3 + CV(0.25);
+      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 + y_3 - CV(0.25);
       lightningSprite->d.sprite.coords[0].z = z_1;
       lightningSprite->d.sprite.coords[1].z = z_1;
       lightningSprite->d.sprite.coords[2].z = (z_1 + z_2) / 2 + z_3;
@@ -976,10 +976,10 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
       lightningSprite->d.sprite.coords[1].x = x_2;
       lightningSprite->d.sprite.coords[2].x = (x_1 + x_2) / 2 + x_3;
       lightningSprite->d.sprite.coords[3].x = (x_1 + x_2) / 2 + x_3;
-      lightningSprite->d.sprite.coords[0].y = y_2 + 0x40;
-      lightningSprite->d.sprite.coords[1].y = y_2 - 0x40;
-      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 + y_3 + 0x40;
-      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 + y_3 - 0x40;
+      lightningSprite->d.sprite.coords[0].y = y_2 + CV(0.25);
+      lightningSprite->d.sprite.coords[1].y = y_2 - CV(0.25);
+      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 + y_3 + CV(0.25);
+      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 + y_3 - CV(0.25);
       lightningSprite->d.sprite.coords[0].z = z_2;
       lightningSprite->d.sprite.coords[1].z = z_2;
       lightningSprite->d.sprite.coords[2].z = (z_1 + z_2) / 2 + z_3;
@@ -991,10 +991,10 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
       lightningSprite->d.sprite.coords[1].x = x_1;
       lightningSprite->d.sprite.coords[2].x = (x_1 + x_2) / 2 - x_3;
       lightningSprite->d.sprite.coords[3].x = (x_1 + x_2) / 2 - x_3;
-      lightningSprite->d.sprite.coords[0].y = y_1 + 0x40;
-      lightningSprite->d.sprite.coords[1].y = y_1 - 0x40;
-      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 - y_3 + 0x40;
-      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 - y_3 - 0x40;
+      lightningSprite->d.sprite.coords[0].y = y_1 + CV(0.25);
+      lightningSprite->d.sprite.coords[1].y = y_1 - CV(0.25);
+      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 - y_3 + CV(0.25);
+      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 - y_3 - CV(0.25);
       lightningSprite->d.sprite.coords[0].z = z_1;
       lightningSprite->d.sprite.coords[1].z = z_1;
       lightningSprite->d.sprite.coords[2].z = (z_1 + z_2) / 2 - z_3;
@@ -1005,10 +1005,10 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
       lightningSprite->d.sprite.coords[1].x = x_2;
       lightningSprite->d.sprite.coords[2].x = (x_1 + x_2) / 2 - x_3;
       lightningSprite->d.sprite.coords[3].x = (x_1 + x_2) / 2 - x_3;
-      lightningSprite->d.sprite.coords[0].y = y_2 + 0x40;
-      lightningSprite->d.sprite.coords[1].y = y_2 - 0x40;
-      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 - y_3 + 0x40;
-      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 - y_3 - 0x40;
+      lightningSprite->d.sprite.coords[0].y = y_2 + CV(0.25);
+      lightningSprite->d.sprite.coords[1].y = y_2 - CV(0.25);
+      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 - y_3 + CV(0.25);
+      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 - y_3 - CV(0.25);
       lightningSprite->d.sprite.coords[0].z = z_2;
       lightningSprite->d.sprite.coords[1].z = z_2;
       lightningSprite->d.sprite.coords[2].z = (z_1 + z_2) / 2 - z_3;
@@ -1020,10 +1020,10 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
       lightningSprite->d.sprite.coords[1].x = x_1;
       lightningSprite->d.sprite.coords[2].x = (x_1 + x_2) / 2 - x_3 / 2;
       lightningSprite->d.sprite.coords[3].x = (x_1 + x_2) / 2 - x_3 / 2;
-      lightningSprite->d.sprite.coords[0].y = y_1 + 0x40;
-      lightningSprite->d.sprite.coords[1].y = y_1 - 0x40;
-      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 - y_3 / 2 + 0x40;
-      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 - y_3 / 2 - 0x40;
+      lightningSprite->d.sprite.coords[0].y = y_1 + CV(0.25);
+      lightningSprite->d.sprite.coords[1].y = y_1 - CV(0.25);
+      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 - y_3 / 2 + CV(0.25);
+      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 - y_3 / 2 - CV(0.25);
       lightningSprite->d.sprite.coords[0].z = z_1;
       lightningSprite->d.sprite.coords[1].z = z_1;
       lightningSprite->d.sprite.coords[2].z = (z_1 + z_2) / 2 - z_3 / 2;
@@ -1034,10 +1034,10 @@ void Evtf196_RollingThunder_OrbPair(EvtData *evt) {
       lightningSprite->d.sprite.coords[1].x = x_2;
       lightningSprite->d.sprite.coords[2].x = (x_1 + x_2) / 2 - x_3 / 2;
       lightningSprite->d.sprite.coords[3].x = (x_1 + x_2) / 2 - x_3 / 2;
-      lightningSprite->d.sprite.coords[0].y = y_2 + 0x40;
-      lightningSprite->d.sprite.coords[1].y = y_2 - 0x40;
-      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 - y_3 / 2 + 0x40;
-      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 - y_3 / 2 - 0x40;
+      lightningSprite->d.sprite.coords[0].y = y_2 + CV(0.25);
+      lightningSprite->d.sprite.coords[1].y = y_2 - CV(0.25);
+      lightningSprite->d.sprite.coords[2].y = (y_1 + y_2) / 2 - y_3 / 2 + CV(0.25);
+      lightningSprite->d.sprite.coords[3].y = (y_1 + y_2) / 2 - y_3 / 2 - CV(0.25);
       lightningSprite->d.sprite.coords[0].z = z_2;
       lightningSprite->d.sprite.coords[1].z = z_2;
       lightningSprite->d.sprite.coords[2].z = (z_1 + z_2) / 2 - z_3 / 2;
@@ -1133,7 +1133,7 @@ void Evtf193_DarkStar_FX2(EvtData *evt) {
          evt_s2 = Evt_GetUnused();
          evt_s2->functionIndex = EVTF_NOOP;
          evt_s2->d.sprite.gfxIdx = GFX_TBD_25;
-         evt_s2->d.sprite.clut = 4;
+         evt_s2->d.sprite.clut = CLUT_BLUES;
          evt_s2->d.sprite.semiTrans = 0;
 
          x = targetSprite->x1.n;
@@ -1279,7 +1279,7 @@ void Evtf193_DarkStar_FX2(EvtData *evt) {
          vertices[11].vy = evt_s2->d.sprite.coords[3].y;
 
          evt_s2->d.sprite.gfxIdx = GFX_COLOR_13;
-         evt_s2->d.sprite.clut = 4;
+         evt_s2->d.sprite.clut = CLUT_BLUES;
          evt_s2->d.sprite.semiTrans = 4;
 
          for (i = 0; i < 6; i++) {
@@ -1336,7 +1336,7 @@ void Evtf192_PerfectGuard_FX2(EvtData *evt) {
    case 0:
       targetSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       evt->x1.n = targetSprite->x1.n;
-      evt->y1.n = targetSprite->y1.n + 0x80;
+      evt->y1.n = targetSprite->y1.n + CV(0.5);
       evt->z1.n = targetSprite->z1.n;
 
       for (i = 0; i < 6; i++) {
@@ -1703,8 +1703,8 @@ void Evtf192_PerfectGuard_FX2(EvtData *evt) {
             evt_s2->functionIndex = EVTF_ATTACK_INFO_MARKER;
             evt_s2->x1.s.hi = evt->x1.s.hi;
             evt_s2->z1.s.hi = evt->z1.s.hi;
-            evt_s2->d.evtf052.type = 2;
-            evt_s2->d.evtf052.clut = 9;
+            evt_s2->d.evtf052.type = ATK_MARKER_SUPPORT;
+            evt_s2->d.evtf052.clut = CLUT_GREENS;
          }
          break;
 

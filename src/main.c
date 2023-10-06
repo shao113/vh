@@ -217,7 +217,7 @@ void Evtf583_LoadingIndicator(EvtData *evt) {
 void Evtf006_Logo(EvtData *evt) {
    evt->d.sprite.gfxIdx = GFX_VANDAL_HEARTS;
    evt->d.sprite.otOfs = 2;
-   evt->d.sprite.clut = 4;
+   evt->d.sprite.clut = CLUT_BLUES;
    evt->x1.n = 12;
    evt->y1.n = 50;
    evt->x3.n = evt->x1.n + 128;

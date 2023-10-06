@@ -270,9 +270,9 @@ void Evtf115_Faerie_FX2(EvtData *evt) {
    // fallthrough
    case 1:
       evt_s1 = EVT.faerieSprite;
-      evt_s1->x1.n = evt->x1.n + (EVT.todo_x26 + 0xa0) * rcos(EVT.theta) / ONE;
-      evt_s1->z1.n = evt->z1.n + (EVT.todo_x26 + 0xa0) * rsin(EVT.theta) / ONE;
-      evt_s1->y1.n = evt->y1.n + 0x180 + EVT.todo_x26;
+      evt_s1->x1.n = evt->x1.n + (EVT.todo_x26 + CV(0.625)) * rcos(EVT.theta) / ONE;
+      evt_s1->z1.n = evt->z1.n + (EVT.todo_x26 + CV(0.625)) * rsin(EVT.theta) / ONE;
+      evt_s1->y1.n = evt->y1.n + CV(1.5) + EVT.todo_x26;
       UpdateEvtAnimation(evt_s1);
       AddEvtPrim6(gGraphicsPtr->ot, evt_s1, 0);
 
@@ -297,7 +297,7 @@ void Evtf115_Faerie_FX2(EvtData *evt) {
             evt_s1->z1.n = evt->z1.n;
             evt_s1->y1.n = evt->y1.n;
             evt_s1->d.evtf118.targetSprite = EVT.targetSprite;
-            evt_s1->d.evtf118.clut = 4;
+            evt_s1->d.evtf118.clut = CLUT_BLUES;
          }
          break;
 
@@ -363,7 +363,7 @@ void Evtf211_Avalanche_Boulder(EvtData *evt) {
    switch (evt->state) {
    case 0:
       evt_s0 = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
-      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi) + 0x200;
+      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi) + CV(2.0);
       evt->x1.n = evt_s0->x1.n;
       evt->z1.n = evt_s0->z1.n;
 
@@ -460,7 +460,7 @@ void Evtf211_Avalanche_Boulder(EvtData *evt) {
       evt_s2 = Evt_GetUnused();
       evt_s2->functionIndex = EVTF_NOOP;
       evt_s2->d.sprite.gfxIdx = GFX_TILED_STONE;
-      evt_s2->d.sprite.clut = 5;
+      evt_s2->d.sprite.clut = CLUT_GRAYS;
 
       iVar8s = EVT.todo_x4c;
       PushMatrix();

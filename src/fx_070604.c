@@ -3,6 +3,7 @@
 #include "graphics.h"
 #include "battle.h"
 #include "field.h"
+#include "audio.h"
 
 // TODO: Figure out if this data should be split or continued. Some of this is accessed pretty far
 // apart, so it will probably need to be global.
@@ -113,9 +114,9 @@ void Evtf122_DarkFire_FX1(EvtData *evt) {
    case 0:
       target = Evt_GetUnused();
       target->functionIndex = EVTF_NOOP;
-      target->x1.n = gTargetX * 0x100 + 0x80;
-      target->z1.n = gTargetZ * 0x100 + 0x80;
-      target->y1.n = GetTerrainElevation(gTargetZ, gTargetX) + 0x100;
+      target->x1.n = gTargetX * CV(1.0) + CV(0.5);
+      target->z1.n = gTargetZ * CV(1.0) + CV(0.5);
+      target->y1.n = GetTerrainElevation(gTargetZ, gTargetX) + CV(1.0);
       EVT.target = target;
 
       evt_s1 = Evt_GetUnused();
@@ -158,7 +159,7 @@ void Evtf122_DarkFire_FX1(EvtData *evt) {
          break;
 
       case 1:
-         theta = EVT.theta - ANGLE_90_DEGREES;
+         theta = EVT.theta - DEG(90);
          if (theta < 0) {
             theta = 0;
          }
@@ -187,9 +188,9 @@ void Evtf122_DarkFire_FX1(EvtData *evt) {
 
       evt_s1->x1.n = evt_s2->x1.n;
       evt_s1->z1.n = evt_s2->z1.n;
-      evt_s1->y1.n = GetTerrainElevation(evt_s2->z1.s.hi, evt_s2->x1.s.hi) + 0x100;
+      evt_s1->y1.n = GetTerrainElevation(evt_s2->z1.s.hi, evt_s2->x1.s.hi) + CV(1.0);
       evt_s1->d.sprite.semiTrans = 0;
-      evt_s1->d.sprite.clut = 4;
+      evt_s1->d.sprite.clut = CLUT_BLUES;
 
       if (evt_s1->d.sprite.gfxIdx != GFX_TILED_GRAY_SPARKLES_DYN_1) {
          AddEvtPrim6(gGraphicsPtr->ot, evt_s1, 0);
@@ -200,7 +201,7 @@ void Evtf122_DarkFire_FX1(EvtData *evt) {
       evt_s0 = Evt_GetUnused();
       CopyEvtData(evt_s1, evt_s0);
       evt_s0->d.sprite.gfxIdx = GFX_LIT_SPHERE_8;
-      evt_s0->d.sprite.clut = 4;
+      evt_s0->d.sprite.clut = CLUT_BLUES;
       evt_s0->d.sprite.semiTrans = 0;
       AddEvtPrim6(gGraphicsPtr->ot, evt_s0, 0);
       evt_s0->functionIndex = EVTF_NULL;
@@ -213,8 +214,8 @@ void Evtf122_DarkFire_FX1(EvtData *evt) {
             evt->state2++;
          }
          EVT.timer += 8;
-         gLightRotation.vz = (gLightRotation.vz + 0x80) % ANGLE_360_DEGREES;
-         gLightRotation.vy = (gLightRotation.vy + 0x20) % ANGLE_360_DEGREES;
+         gLightRotation.vz = (gLightRotation.vz + 0x80) % DEG(360);
+         gLightRotation.vy = (gLightRotation.vy + 0x20) % DEG(360);
          break;
 
       case 1:
@@ -225,13 +226,13 @@ void Evtf122_DarkFire_FX1(EvtData *evt) {
             gLightRotation.vz += (EVT.savedLightRotZ - gLightRotation.vz) >> 3;
             gLightRotation.vy += (EVT.savedLightRotY - gLightRotation.vy) >> 3;
          } else {
-            gLightRotation.vz = (gLightRotation.vz + 0x80) % ANGLE_360_DEGREES;
-            gLightRotation.vy = (gLightRotation.vy + 0x20) % ANGLE_360_DEGREES;
+            gLightRotation.vz = (gLightRotation.vz + 0x80) % DEG(360);
+            gLightRotation.vy = (gLightRotation.vy + 0x20) % DEG(360);
          }
          if (theta == 0x220) {
             gSignal3 = 1;
          }
-         if (theta >= ANGLE_90_DEGREES) {
+         if (theta >= DEG(90)) {
             evt->functionIndex = EVTF_NULL;
             evt_s1->functionIndex = EVTF_NULL;
             evt_s2->functionIndex = EVTF_NULL;
@@ -258,14 +259,14 @@ void Evtf188_DarkFire_Ray(EvtData *evt) {
    switch (evt->state) {
    case 0:
       target = EVT.target;
-      evt->y1.n = GetTerrainElevation(target->z1.s.hi, target->x1.s.hi) + 0x100;
+      evt->y1.n = GetTerrainElevation(target->z1.s.hi, target->x1.s.hi) + CV(1.0);
       evt->x1.n = target->x1.n;
       evt->z1.n = target->z1.n;
 
-      EVT.todo_x24 = 0x300 + rand() % 0x300;
-      EVT.todo_x26 = rand() % 0x1000;
-      EVT.todo_x28 = rand() % 0x1000;
-      EVT.todo_x2a = rand() % 0x1000;
+      EVT.todo_x24 = CV(3.0) + rand() % CV(3.0);
+      EVT.todo_x26 = rand() % DEG(360);
+      EVT.todo_x28 = rand() % DEG(360);
+      EVT.todo_x2a = rand() % DEG(360);
       EVT.todo_x2c = 0x60 - rand() % 0xc1;
       EVT.todo_x2e = 0x60 - rand() % 0xc1;
       EVT.todo_x30 = 0x60 - rand() % 0xc1;
@@ -277,7 +278,7 @@ void Evtf188_DarkFire_Ray(EvtData *evt) {
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
       sprite->d.sprite.gfxIdx = GFX_COLOR_14;
-      sprite->d.sprite.clut = 4;
+      sprite->d.sprite.clut = CLUT_BLUES;
       sprite->d.sprite.semiTrans = 1;
 
       EVT.todo_x34 = EVT.todo_x24 * EVT.todo_x36 / 0x20;
@@ -346,42 +347,42 @@ void Evtf_Unk_80080924(EvtData *evt) {
       sprite->d.sprite.animInitialized = 0;
       EVT.sprite = sprite;
 
-      randomAngle = rand() % ANGLE_360_DEGREES;
+      randomAngle = rand() % DEG(360);
       EVT.position1.x = rsin(randomAngle) >> 6;
       EVT.position1.z = rcos(randomAngle) >> 6;
       EVT.position1.y = (rand() % 0x60) + 0x20;
 
-      randomAngle = rand() % ANGLE_360_DEGREES;
+      randomAngle = rand() % DEG(360);
       EVT.position2.x = rsin(randomAngle) >> 6;
       EVT.position2.z = rcos(randomAngle) >> 6;
       EVT.position2.y = (rand() % 0x60) + 0x20;
 
-      randomAngle = rand() % ANGLE_360_DEGREES;
+      randomAngle = rand() % DEG(360);
       EVT.position3.x = rsin(randomAngle) >> 6;
       EVT.position3.z = rcos(randomAngle) >> 6;
       EVT.position3.y = (rand() % 0x60) + 0x20;
 
-      randomAngle = rand() % ANGLE_360_DEGREES;
+      randomAngle = rand() % DEG(360);
       EVT.position4.x = rsin(randomAngle) >> 6;
       EVT.position4.z = rcos(randomAngle) >> 6;
       EVT.position4.y = (rand() % 0x60) + 0x20;
 
-      randomAngle = rand() % ANGLE_360_DEGREES;
+      randomAngle = rand() % DEG(360);
       EVT.position5.x = rsin(randomAngle) >> 6;
       EVT.position5.z = rcos(randomAngle) >> 6;
       EVT.position5.y = (rand() % 0x60) + 0x20;
 
-      randomAngle = rand() % ANGLE_360_DEGREES;
+      randomAngle = rand() % DEG(360);
       EVT.position6.x = rsin(randomAngle) >> 6;
       EVT.position6.z = rcos(randomAngle) >> 6;
       EVT.position6.y = (rand() % 0x60) + 0x20;
 
-      randomAngle = rand() % ANGLE_360_DEGREES;
+      randomAngle = rand() % DEG(360);
       EVT.position7_x = rsin(randomAngle) >> 6;
       EVT.position7_z = rcos(randomAngle) >> 6;
       EVT.position7_y = (rand() % 0x60) + 0x20;
 
-      randomAngle = rand() % ANGLE_360_DEGREES;
+      randomAngle = rand() % DEG(360);
       EVT.position8_x = rsin(randomAngle) >> 6;
       EVT.position8_z = rcos(randomAngle) >> 6;
       EVT.position8_y = (rand() % 0x60) + 0x20;
@@ -460,8 +461,8 @@ void Evtf_Unk_80080924(EvtData *evt) {
       sprite->y1.n = evt->y1.n + (EVT.position8_y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      EVT.theta += (ANGLE_90_DEGREES / 10);
-      if (EVT.theta >= ANGLE_90_DEGREES) {
+      EVT.theta += DEG(9);
+      if (EVT.theta >= DEG(90)) {
          evt->functionIndex = EVTF_NULL;
          sprite->functionIndex = EVTF_NULL;
       }
@@ -507,8 +508,8 @@ void Evtf080_RomanFire_FX1(EvtData *evt) {
    case 0:
       target = Evt_GetUnused();
       target->functionIndex = EVTF_NOOP;
-      target->x1.n = gMapCursorX * 0x100 + 0x80;
-      target->z1.n = gMapCursorZ * 0x100 + 0x80;
+      target->x1.n = gMapCursorX * CV(1.0) + CV(0.5);
+      target->z1.n = gMapCursorZ * CV(1.0) + CV(0.5);
       target->y1.n = GetTerrainElevation(gMapCursorZ, gMapCursorX);
       EVT.target = target;
 
@@ -522,8 +523,8 @@ void Evtf080_RomanFire_FX1(EvtData *evt) {
       evt->x1.n = target->x1.n;
       evt->z1.n = target->z1.n;
       evt->y1.n = target->y1.n;
-      evt->y2.n = 0x60;
-      evt->y3.n = -8;
+      evt->y2.n = CV(0.375);
+      evt->y3.n = CV(-0.03125);
       evt->state++;
 
    // fallthrough
@@ -568,7 +569,7 @@ void Evtf080_RomanFire_FX1(EvtData *evt) {
          evt->state++;
       }
 
-      if (evt->y1.n < GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi) + 0x40) {
+      if (evt->y1.n < GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi) + CV(0.25)) {
          evt->state = 5;
          evt->state2 = 8;
       }
@@ -584,8 +585,8 @@ void Evtf080_RomanFire_FX1(EvtData *evt) {
          evt_s1 = CreatePositionedEvt(evt, EVTF_ROMAN_FIRE_FLAME);
          evt_s1->functionIndex = EVTF_ROMAN_FIRE_FLAME;
          // evt_s1->x2.n = 0x20 * rcos(i * 0x200 + evt->y1.n * 4) >> 12;
-         evt_s1->x2.n = rcos(i * 0x200 + evt->y1.n * 4) >> 7;
-         evt_s1->z2.n = rsin(i * 0x200 + evt->y1.n * 4) >> 7;
+         evt_s1->x2.n = rcos(i * DEG(45) + evt->y1.n * 4) >> 7;
+         evt_s1->z2.n = rsin(i * DEG(45) + evt->y1.n * 4) >> 7;
          evt_s1->y2.n = 0x20;
          evt_s1->y3.n = -8;
          evt_s1->d.sprite.animData = sExplosionAnimData_800ff3a8;
@@ -682,11 +683,11 @@ void Evtf094_MoodRing_FX1(EvtData *evt) {
       for (i = 0; i < 8; i++) {
          evt_s1 = Evt_GetUnused();
          evt_s1->functionIndex = EVTF_MOOD_RING_RING;
-         evt_s1->x1.n = evt->x2.n + (0x800 * rcos(i * 0x200) >> 12);
-         evt_s1->z1.n = evt->z2.n + (0x800 * rsin(i * 0x200) >> 12);
-         evt_s1->y1.n = evt->y2.n + 0x100;
-         evt_s1->d.evtf095.theta = i * 0x200;
-         evt_s1->d.evtf095.radius = 0x800;
+         evt_s1->x1.n = evt->x2.n + (CV(8.0) * rcos(i * DEG(45)) >> 12);
+         evt_s1->z1.n = evt->z2.n + (CV(8.0) * rsin(i * DEG(45)) >> 12);
+         evt_s1->y1.n = evt->y2.n + CV(1.0);
+         evt_s1->d.evtf095.theta = i * DEG(45);
+         evt_s1->d.evtf095.radius = CV(8.0);
          evt_s1->x2.n = evt->x2.n;
          evt_s1->z2.n = evt->z2.n;
          evt_s1->y2.n = evt->y2.n;
@@ -696,12 +697,12 @@ void Evtf094_MoodRing_FX1(EvtData *evt) {
          if (p->x != 0xff) {
             unitSprite = GetUnitSpriteAtPosition(p->z, p->x);
             evt_s1->x3.n = unitSprite->x1.n;
-            evt_s1->y3.n = unitSprite->y1.n + 0x80;
+            evt_s1->y3.n = unitSprite->y1.n + CV(0.5);
             evt_s1->z3.n = unitSprite->z1.n;
             p++;
          } else {
             evt_s1->x3.n = evt_s1->x1.n;
-            evt_s1->y3.n = evt_s1->y1.n + 0x80;
+            evt_s1->y3.n = evt_s1->y1.n + CV(0.5);
             evt_s1->z3.n = evt_s1->z1.n;
          }
       }
@@ -737,12 +738,12 @@ void MoodRing_RenderRing(EvtData *evt, s16 halfSize, s16 theta, s16 clut) {
    EvtData *bottom;
    s32 a;
 
-   if ((gCameraRotation.vy & 0xfff) < 0x400 || (gCameraRotation.vy & 0xfff) > 0xa00) {
+   if ((gCameraRotation.vy & 0xfff) < DEG(90) || (gCameraRotation.vy & 0xfff) > DEG(225)) {
       halfSize = -halfSize;
    }
 
    a = abs(halfSize) * 362 >> 8;
-   func_800A9E78(&vector, a, theta, 0x200);
+   func_800A9E78(&vector, a, theta, DEG(45));
 
    bottom = Evt_GetUnused();
    bottom->functionIndex = EVTF_NOOP;
@@ -859,11 +860,11 @@ void Evtf096_MoodRing_FX2(EvtData *evt) {
    // fallthrough
    case 1:
       targetSprite = EVT.targetSprite;
-      evt->y1.n = targetSprite->y1.n + 0xc0;
+      evt->y1.n = targetSprite->y1.n + CV(0.75);
       MoodRing_RenderRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
-      evt->y1.n = targetSprite->y1.n + 0x80;
+      evt->y1.n = targetSprite->y1.n + CV(0.5);
       MoodRing_RenderRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
-      evt->y1.n = targetSprite->y1.n + 0x40;
+      evt->y1.n = targetSprite->y1.n + CV(0.25);
       MoodRing_RenderRing(evt, evt->state2 + 0x60, 0, 3 + evt->state3 % 3);
       evt->state3++;
       evt->state2 -= 0x10;
@@ -920,7 +921,7 @@ void Evtf090_DaggerStorm_FX2(EvtData *evt) {
       if (--evt->state3 < 0) {
          evt_s0 = Evt_GetUnused();
          if (evt_s0 != NULL) {
-            PerformAudioCommand(0x5e4);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SFX(228));
             evt_s0->functionIndex = EVTF_DISPLAY_DAMAGE_2;
             evt_s0->x1.s.hi = evt->x1.s.hi;
             evt_s0->z1.s.hi = evt->z1.s.hi;
@@ -947,7 +948,7 @@ void Evtf090_DaggerStorm_FX2(EvtData *evt) {
             }
             dagger->d.evtf091.todo_x28 = 0xd4;
             dagger->x2.n = evt->x1.n;
-            dagger->y2.n = evt->y1.n + 0x80;
+            dagger->y2.n = evt->y1.n + CV(0.5);
             dagger->z2.n = evt->z1.n;
             dagger->d.evtf091.todo_x24 = a;
             dagger->d.evtf091.todo_x26 = b;
@@ -1001,7 +1002,7 @@ void Evtf090_DaggerStorm_FX2(EvtData *evt) {
 
    case 3:
       if (EVT.fatal) {
-         PerformAudioCommand(0x5e8);
+         PerformAudioCommand(AUDIO_CMD_PLAY_SFX(232));
          evt_s0 = Evt_GetUnused();
          if (evt_s0 != NULL) {
             evt_s0->functionIndex = EVTF_STRETCH_WARP_SPRITE;
@@ -1094,8 +1095,8 @@ void Evtf091_DaggerStorm_Dagger(EvtData *evt) {
       evt->z1.n += evt->z3.n;
       evt->y1.n += evt->y3.n;
 
-      if (abs(evt->x2.n - evt->x1.n) <= 0x80 && abs(evt->y2.n - evt->y1.n) <= 0x80 &&
-          abs(evt->z2.n - evt->z1.n) <= 0x80) {
+      if (abs(evt->x2.n - evt->x1.n) <= CV(0.5) && abs(evt->y2.n - evt->y1.n) <= CV(0.5) &&
+          abs(evt->z2.n - evt->z1.n) <= CV(0.5)) {
 
          evt_a1 = Evt_GetUnused();
          if (evt_a1 != NULL) {
@@ -1115,7 +1116,7 @@ void Evtf091_DaggerStorm_Dagger(EvtData *evt) {
                evt_a1->y2.n = (evt->y1.n - evt->y2.n) >> 1;
                evt_a1->d.sprite.gfxIdx = GFX_EXPLOSION_11;
                evt_a1->d.sprite.boxIdx = 5;
-               evt_a1->d.sprite.clut = 3;
+               evt_a1->d.sprite.clut = CLUT_REDS;
             }
          }
 
@@ -1203,11 +1204,11 @@ void Evtf082_Fx_TBD(EvtData *evt) {
       sprite->functionIndex = EVTF_NOOP;
       EVT.sprite = sprite;
 
-      EVT.radius = 0x40;
-      EVT.theta1 = 0x400;
-      EVT.theta2 = 0x400;
-      EVT.theta3 = 0x400;
-      EVT.theta4 = 0x400;
+      EVT.radius = CV(0.25);
+      EVT.theta1 = DEG(90);
+      EVT.theta2 = DEG(90);
+      EVT.theta3 = DEG(90);
+      EVT.theta4 = DEG(90);
 
       evt->state2 = 0x100;
       evt->state++;
@@ -1237,10 +1238,10 @@ void Evtf082_Fx_TBD(EvtData *evt) {
          sprite->z1.n = evt_s3->z1.n + vector.vz;
 
          AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
-         EVT.theta1 = (EVT.theta1 + 0x80) & 0xfff;
-         EVT.theta2 = (EVT.theta2 + 0x80) & 0xfff;
-         EVT.theta3 = (EVT.theta3 - 0x80) & 0xfff;
-         EVT.theta4 = (EVT.theta4 - 0x80) & 0xfff;
+         EVT.theta1 = (EVT.theta1 + DEG(11.25)) & 0xfff;
+         EVT.theta2 = (EVT.theta2 + DEG(11.25)) & 0xfff;
+         EVT.theta3 = (EVT.theta3 - DEG(11.25)) & 0xfff;
+         EVT.theta4 = (EVT.theta4 - DEG(11.25)) & 0xfff;
       }
       break;
 
@@ -1324,15 +1325,15 @@ void Evtf321_Fx_TBD(EvtData *evt) {
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
       sprite->d.sprite.animData = sExplosionAnimData_800ff520;
-      sprite->d.sprite.clut = 3;
+      sprite->d.sprite.clut = CLUT_REDS;
       sprite->d.sprite.boxIdx = 5;
       EVT.sprite = sprite;
-      EVT.thetas[3] = ANGLE_90_DEGREES;
-      EVT.thetas[2] = ANGLE_90_DEGREES;
-      EVT.thetas[5] = ANGLE_180_DEGREES;
-      EVT.thetas[4] = ANGLE_180_DEGREES;
-      EVT.thetas[7] = ANGLE_270_DEGREES;
-      EVT.thetas[6] = ANGLE_270_DEGREES;
+      EVT.thetas[3] = DEG(90);
+      EVT.thetas[2] = DEG(90);
+      EVT.thetas[5] = DEG(180);
+      EVT.thetas[4] = DEG(180);
+      EVT.thetas[7] = DEG(270);
+      EVT.thetas[6] = DEG(270);
       EVT.radius = 0;
       evt->state++;
 

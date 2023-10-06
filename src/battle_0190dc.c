@@ -443,7 +443,7 @@ void DisplaySupporterBonus(u8 z, u8 x, u8 attackerZ, u8 attackerX, u8 team) {
    if (CheckForSupporterBonus(z, x, attackerZ, attackerX, team)) {
       marker = Evt_GetUnused();
       marker->functionIndex = EVTF_ATTACK_INFO_MARKER;
-      marker->d.evtf052.type = 2;
+      marker->d.evtf052.type = ATK_MARKER_SUPPORT;
       marker->x1.s.hi = x;
       marker->z1.s.hi = z;
    }

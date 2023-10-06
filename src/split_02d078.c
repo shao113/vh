@@ -326,7 +326,7 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
          evt_s2->x1.s.hi = evt->x1.s.hi;
          evt_s2->z1.s.hi = evt->z1.s.hi;
          evt_s2->d.evtf051.damage = savedDamage;
-         evt_s2->d.evtf051.clut = 4;
+         evt_s2->d.evtf051.clut = CLUT_BLUES;
       }
 
       if (OBJ_MAP_UNIT(evt).s.team == TEAM_PLAYER) {
@@ -347,7 +347,7 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
       evt_s2->y1.n = savedY - 4;
       evt_s2->y3.n = savedY + 4;
       evt_s2->d.sprite.gfxIdx = GFX_COLOR_5;
-      evt_s2->d.sprite.clut = 3;
+      evt_s2->d.sprite.clut = CLUT_REDS;
       evt_s2->d.sprite.otOfs = 3;
 
       evt_s3 = Evt_GetUnused();

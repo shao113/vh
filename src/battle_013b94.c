@@ -365,9 +365,9 @@ void Evtf021_UnitAttacking(EvtData *evt) {
          return;
       }
 
-      opposite = evt1->d.sprite.direction + ANGLE_180_DEGREES;
+      opposite = evt1->d.sprite.direction + DEG(180);
       if (opposite >= 0x1000) {
-         opposite = evt1->d.sprite.direction - ANGLE_180_DEGREES;
+         opposite = evt1->d.sprite.direction - DEG(180);
       }
       evt2->d.sprite.direction = opposite;
 
@@ -719,9 +719,9 @@ void Evtf567_OpeningChest(EvtData *evt) {
          } else {
             gState.depot[item]++;
          }
-         PerformAudioCommand(0x1324);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(36));
       } else {
-         PerformAudioCommand(0x1384);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(132));
       }
 
       evt1 = Evt_GetUnused();
@@ -755,7 +755,7 @@ void Evtf567_OpeningChest(EvtData *evt) {
       }
 
       gTileStateGridPtr[gTargetZ][gTargetX].cachedShort =
-          ((opener->direction + ANGLE_180_DEGREES) & 0xfff) >> 10;
+          ((opener->direction + DEG(180)) & 0xfff) >> 10;
 
       evt->state++;
       break;
@@ -1070,7 +1070,7 @@ void Evtf028_UnitCasting(EvtData *evt) {
       evt_a2->z1.s.hi = evt->z1.s.hi;
 
       DrawWindow(0x38, 0, 100, 144, 36, 172, 200, WBS_CROSSED, 0);
-      DrawText(0x0c, 111, 20, 0, 0, gSpellNames[gCurrentSpell]);
+      DrawText(12, 111, 20, 0, 0, gSpellNames[gCurrentSpell]);
 
       unitIdx = OBJ_MAP_UNIT(evt).s.unitIdx;
       s_casterUnit_801231a4 = &gUnits[unitIdx];
@@ -1465,7 +1465,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
    switch (evt->state) {
    case 0:
       // Clear buffs; gather targets atop healing circles
-      PerformAudioCommand(0x138d);
+      PerformAudioCommand(AUDIO_CMD_PREPARE_XA(141));
       gSignal2 = 0;
       s_unit_801231c0 = &gUnits[1];
 
@@ -1539,7 +1539,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
             return;
          }
          //@443c
-         PerformAudioCommand(0x38d);
+         PerformAudioCommand(AUDIO_CMD_PLAY_XA(141));
          s_unit_801231c0 = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx];
          s_unit_801231c0->mp += s_unit_801231c0->maxMp / 5;
          if (s_unit_801231c0->mp > s_unit_801231c0->maxMp) {
@@ -1584,7 +1584,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          if (--EVT.timer != 0) {
             return;
          }
-         PerformAudioCommand(0x138d);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(141));
          evt->state--;
          return;
       } // switch (evt->state2) (via state:2)
@@ -1593,7 +1593,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
 
    case 3:
       // Gather targets for paralysis removal
-      PerformAudioCommand(0x1387);
+      PerformAudioCommand(AUDIO_CMD_PREPARE_XA(135));
       s_pTargetCoordsToSet_801231bc = gTargetCoords;
       s_unit_801231c0 = &gUnits[1];
 
@@ -1661,7 +1661,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          if (--EVT.timer != 0) {
             return;
          }
-         PerformAudioCommand(0x387);
+         PerformAudioCommand(AUDIO_CMD_PLAY_XA(135));
          s_unit_801231c0 = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx];
 
          gTileStateGridPtr[gTargetZ][gTargetX].action = TA_X1E;
@@ -1691,7 +1691,7 @@ void Evtf592_BattleTurnStart(EvtData *evt) {
          if (--EVT.timer != 0) {
             return;
          }
-         PerformAudioCommand(0x1387);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(135));
          evt->state--;
          return;
       } // switch (evt->state2) (via state:5)

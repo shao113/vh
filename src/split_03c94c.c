@@ -6,6 +6,7 @@
 #include "field.h"
 #include "state.h"
 #include "graphics.h"
+#include "audio.h"
 
 void ShowMsgBoxForSprite(EvtData *sprite, u8 lower, u8 omitTail) {
    EvtData *tail;
@@ -31,7 +32,7 @@ void ShowMsgBoxForSprite(EvtData *sprite, u8 lower, u8 omitTail) {
    }
 }
 
-void SetMsgBoxPortrait(short portraitId, u8 lower) {
+void SetMsgBoxPortrait(s16 portraitId, u8 lower) {
    s32 i;
    EvtData *evt1;
 
@@ -174,8 +175,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
          while (gPathBackToUnit[EVT.pathIdx] != PATH_STEP_INVALID) {
             EVT.pathIdx += 2;
          }
-         sprite->z3.s.lo = 0x80;
-         sprite->x3.s.lo = 0x80;
+         sprite->z3.s.lo = CV(0.5);
+         sprite->x3.s.lo = CV(0.5);
          evt->state2 = 0;
          evt->state++;
       }
@@ -297,7 +298,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
                }
                i_s0 -= 2;
             }
-            sprite->y3.n = elevation * 128;
+            sprite->y3.n = elevation * CV(0.5);
          }
          OBJ_MAP_UNIT(sprite).raw = 0;
 
@@ -670,7 +671,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
             }
             evt1->x1.n = sprite->x1.n;
             evt1->z1.n = sprite->z1.n;
-            evt1->y1.n = sprite->y1.n + 0x80;
+            evt1->y1.n = sprite->y1.n + CV(0.5);
 
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_RANGED_TARGET_CAMERA;
@@ -740,7 +741,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 1:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(0x5e9);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SFX(233));
             gSignal3 = 1;
             evt->state2++;
          }
@@ -977,7 +978,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
                evt->state2 = 98;
             }
             if (unit->unitType == UNIT_TYPE_DOOM_LORD) {
-               PerformAudioCommand(0x1386);
+               PerformAudioCommand(AUDIO_CMD_PREPARE_XA(134));
                i_s0 = PORTRAIT_DOLF_495;
                textPtrIdx = 13;
                evt->state2 = 7;
@@ -1092,7 +1093,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 7:
          if (gState.msgBoxFinished) {
-            PerformAudioCommand(0x386);
+            PerformAudioCommand(AUDIO_CMD_PLAY_XA(134));
             CloseMsgBox(0);
             EVT.timer = 90;
             evt1 = Evt_GetUnused();
@@ -1117,7 +1118,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 9:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(0x31);
+            PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_1);
             gState.D_801405A4 = 1;
             /*gSignal3 = 1;
             gSignal4 = 1;
@@ -1142,7 +1143,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 98:
          if (gState.msgBoxFinished) {
-            PerformAudioCommand(0x5e8);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SFX(232));
             CloseMsgBox(0);
             CloseMsgBox(1);
             evt1 = Evt_GetUnused();
@@ -1196,7 +1197,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 2:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(0x5e9);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SFX(233));
             gSignal3 = 1;
             gSignal5 = 2;
             evt->state2++;
@@ -1218,7 +1219,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         PerformAudioCommand(0x5e4);
+         PerformAudioCommand(AUDIO_CMD_PLAY_SFX(228));
          OBJ_TILE_STATE(sprite).action = TA_NONE;
          EVT.animIdx = ANIM_STRUCK_B;
          evt1 = Evt_GetUnused();
@@ -1288,7 +1289,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
    } // switch (evt->state)
 
    if (unit->class == CLASS_AIRMAN) {
-      sprite->y1.n -= (120 + (rcos(sprite->d.sprite.coords[0].x & 0xfff) * 50 >> 12));
+      sprite->y1.n -= (CV(0.46875) + (rcos(sprite->d.sprite.coords[0].x & 0xfff) * 50 >> 12));
       UpdateAirmanUnitSpriteMovement(sprite, evt);
    } else {
       UpdateUnitSpriteMovement(sprite, evt);
@@ -1333,13 +1334,12 @@ void Evtf014_BattleUnit(EvtData *evt) {
       gSpriteBoxQuads[11] = qswap;
 
       gQuad_800fe65c[0].vx =
-          -((rcos((sprite->d.sprite.coords[0].x + ANGLE_180_DEGREES) & 0xfff) * 5 >> 12) + 15);
+          -((rcos((sprite->d.sprite.coords[0].x + DEG(180)) & 0xfff) * 5 >> 12) + 15);
       gQuad_800fe65c[1].vx = -gQuad_800fe65c[0].vx;
       gQuad_800fe65c[2].vx = gQuad_800fe65c[0].vx;
       gQuad_800fe65c[3].vx = -gQuad_800fe65c[0].vx;
 
-      gQuad_800fe65c[0].vy =
-          -((rcos((sprite->d.sprite.coords[0].x + ANGLE_180_DEGREES) & 0xfff) >> 12) + 4);
+      gQuad_800fe65c[0].vy = -((rcos((sprite->d.sprite.coords[0].x + DEG(180)) & 0xfff) >> 12) + 4);
       gQuad_800fe65c[1].vy = gQuad_800fe65c[0].vy;
       gQuad_800fe65c[2].vy = -gQuad_800fe65c[0].vy;
       gQuad_800fe65c[3].vy = -gQuad_800fe65c[0].vy;
@@ -1353,7 +1353,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
       evt1->d.sprite.gfxIdx = sprite->d.sprite.gfxIdx;
       evt1->d.sprite.stripIdx = sprite->d.sprite.stripIdx;
       evt1->d.sprite.facingLeft = sprite->d.sprite.facingLeft;
-      evt1->d.sprite.clut = 7;
+      evt1->d.sprite.clut = CLUT_BLACK;
 
       if (gOverheadMapState == 0) {
          RenderUnitSprite(gGraphicsPtr->ot, evt1, 1);
@@ -1493,7 +1493,7 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
       if (sprite->y1.n < sprite->y3.n) {
          sprite->state++;
       } else {
-         if ((OBJ_TARGET_TERRAIN(sprite).s.elevation * 128 < sprite->y1.n) &&
+         if ((OBJ_TARGET_TERRAIN(sprite).s.elevation * CV(0.5) < sprite->y1.n) &&
              (gPathBackToUnit[battler->d.evtf014.pathIdx - 1] == PATH_STEP_INVALID)) {
             sprite->state += (sprite->d.sprite.direction >> 9) + 3;
          } else {
@@ -1580,7 +1580,7 @@ void UpdateAirmanUnitSpriteMovement(EvtData *sprite, EvtData *battler) {
 
    case 11:
    HandleState11:
-      sprite->y3.n = OBJ_TARGET_TERRAIN(sprite).s.elevation * 128;
+      sprite->y3.n = OBJ_TARGET_TERRAIN(sprite).s.elevation * CV(0.5);
       sprite->state++;
       break;
 
@@ -1634,7 +1634,7 @@ void Evtf412_EventCamera(EvtData *evt) {
       gCameraPos.vx += (-(focus->x1.n >> 3) - gCameraPos.vx) >> 3;
       gCameraPos.vz += (-(focus->z1.n >> 3) - gCameraPos.vz) >> 3;
       gCameraPos.vy +=
-          (((focus->y1.n + 0x100 + gState.eventCameraHeight) >> 3) - gCameraPos.vy) >> 3;
+          (((focus->y1.n + CV(1.0) + gState.eventCameraHeight) >> 3) - gCameraPos.vy) >> 3;
    } else {
       // x
       diff = -(gState.eventCameraPan.x >> 3) - gCameraPos.vx;
@@ -2117,20 +2117,20 @@ void Evtf409_EventEntity(EvtData *evt) {
          break;
 
       case 0x24:
-         gState.eventCameraRot = gCameraRotation.vy = (argument << 10) | ANGLE_45_DEGREES;
+         gState.eventCameraRot = gCameraRotation.vy = (argument << 10) | DEG(45);
          evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x25:
          gState.eventCameraRot = tmp = argument << 10;
-         gState.eventCameraRot += ANGLE_45_DEGREES;
+         gState.eventCameraRot += DEG(45);
 
          i = gState.eventCameraRot - gCameraRotation.vy;
-         if (i > ANGLE_180_DEGREES) {
-            gState.eventCameraRot -= ANGLE_360_DEGREES;
+         if (i > DEG(180)) {
+            gState.eventCameraRot -= DEG(360);
          }
-         if (i < -ANGLE_180_DEGREES) {
-            gState.eventCameraRot += ANGLE_360_DEGREES;
+         if (i < DEG(-180)) {
+            gState.eventCameraRot += DEG(360);
          }
 
          evt->state3 = 1;
@@ -2256,7 +2256,7 @@ void Evtf409_EventEntity(EvtData *evt) {
          goto HandleRunState1;
 
       case 0x3e:
-         PerformAudioCommand(3);
+         PerformAudioCommand(AUDIO_CMD_STOP_SEQ);
          LoadSeqSet(argument);
          FinishLoadingSeq();
          evt->state3 = 1;
@@ -2480,7 +2480,7 @@ void Evtf409_EventEntity(EvtData *evt) {
          goto HandleRunState1;
 
       case 0x59:
-         gCameraPos.vy = (sprite->y1.n + 0x100 + gState.eventCameraHeight) >> 3;
+         gCameraPos.vy = (sprite->y1.n + CV(1.0) + gState.eventCameraHeight) >> 3;
          evt->state3 = 1;
          goto HandleRunState1;
 

@@ -7,6 +7,7 @@
 #include "field.h"
 #include "battle.h"
 #include "window.h"
+#include "audio.h"
 
 void Evtf035_MapObject_Tree(EvtData *);
 void Evtf036_MapObject_GraveMarker(EvtData *);
@@ -33,8 +34,8 @@ void Evtf035_MapObject_Tree(EvtData *evt) {
       EVT.boxIdx = 10;
       EVT.gfxIdx = EVT.param;
       EVT.param = 0;
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
       OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 4;
       SetElevationFromTerrain(evt);
@@ -55,8 +56,8 @@ void Evtf036_MapObject_GraveMarker(EvtData *evt) {
       EVT.boxIdx = 18;
       EVT.gfxIdx = GFX_GRAVE_MARKER;
       EVT.param = 0;
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
       OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 3;
       SetElevationFromTerrain(evt);
@@ -77,8 +78,8 @@ void Evtf415_MapObject_Torch(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       EVT.animData = torchAnimData;
       OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
       OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 3;
@@ -103,8 +104,8 @@ void Evtf037_MapObject_Fountain(EvtData *evt) {
    switch (evt->state) {
    case 0:
       EVT.animData = fountainAnimData;
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
       SetElevationFromTerrain(evt);
       evt->state++;
@@ -125,8 +126,8 @@ void Evtf038_MapObject_LampPost(EvtData *evt) {
    case 0:
       EVT.boxIdx = 13;
       EVT.gfxIdx = GFX_LAMP_POST;
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
       OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 5;
       SetElevationFromTerrain(evt);
@@ -148,8 +149,8 @@ void Evtf039_MapObject_Flag(EvtData *evt) {
    switch (evt->state) {
    case 0:
       EVT.animData = flagAnimData;
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       OBJ_TERRAIN(evt).s.terrain = TERRAIN_NO_ENTRY;
       OBJ_TILE_MODEL(evt).height = (-OBJ_TILE_MODEL(evt).vertices[0].vy >> 4) + 6;
       SetElevationFromTerrain(evt);
@@ -166,7 +167,7 @@ void Evtf039_MapObject_Flag(EvtData *evt) {
 
 void Evtf045_BloodSpurtParticleOffset(EvtData *evt) {
    // Used during battle 32 to simulate train movement
-   evt->x1.n -= 0x30;
+   evt->x1.n -= CV(0.1875);
    Evtf206_686_BloodSpurtParticle(evt);
 }
 
@@ -190,8 +191,8 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
    case 0:
       EVT.boxIdx = 15;
       EVT.gfxIdx = GFX_BOULDER_1;
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       evt->x3.n = evt->x1.n;
       evt->z3.n = evt->z1.n;
       EVT.gridZ = evt->z1.s.hi;
@@ -204,13 +205,13 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
    case 1:
       if (OBJ_TILE_STATE(evt).action == TA_BOULDER_PUSHED) {
          if (gState.mapNum == 40 && gState.mapState.s.field_0x0 == 0) {
-            PerformAudioCommand(0x1370);
+            PerformAudioCommand(AUDIO_CMD_PREPARE_XA(112));
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_AUDIO_CMD;
-            newEvt->d.evtf581.cmd = 0x370;
+            newEvt->d.evtf581.cmd = AUDIO_CMD_PLAY_XA(112);
             newEvt->d.evtf581.delay = 10;
          } else {
-            PerformAudioCommand(0x136f);
+            PerformAudioCommand(AUDIO_CMD_PREPARE_XA(111));
          }
          evt->state++;
          evt->state2 = 0;
@@ -226,11 +227,11 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
          EVT.dstCamRotY = GetBestViewOfTarget(evt->z3.s.hi, evt->x3.s.hi, 1);
          diff = EVT.dstCamRotY - GetCamRotY_U();
          if (diff > 0) {
-            if (diff > ANGLE_180_DEGREES) {
-               EVT.dstCamRotY -= ANGLE_360_DEGREES;
+            if (diff > DEG(180)) {
+               EVT.dstCamRotY -= DEG(360);
             }
-         } else if (diff < -ANGLE_180_DEGREES) {
-            EVT.dstCamRotY += ANGLE_360_DEGREES;
+         } else if (diff < DEG(-180)) {
+            EVT.dstCamRotY += DEG(360);
          }
 
          OBJ_TILE_STATE(evt).action = TA_NONE;
@@ -239,16 +240,16 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
          evt->x2.n = 0;
          evt->z2.n = 0;
          if (evt->x3.s.hi > evt->x1.s.hi) {
-            evt->x2.n = 0x40;
+            evt->x2.n = CV(0.25);
          }
          if (evt->x3.s.hi < evt->x1.s.hi) {
-            evt->x2.n = -0x40;
+            evt->x2.n = CV(-0.25);
          }
          if (evt->z3.s.hi > evt->z1.s.hi) {
-            evt->z2.n = 0x40;
+            evt->z2.n = CV(0.25);
          }
          if (evt->z3.s.hi < evt->z1.s.hi) {
-            evt->z2.n = -0x40;
+            evt->z2.n = CV(-0.25);
          }
          evt->state2++;
 
@@ -285,11 +286,11 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
       if (OBJ_TERRAIN(evt).s.terrain == TERRAIN_WATER ||
           OBJ_TERRAIN(evt).s.terrain == TERRAIN_LAVA) {
          newEvt->functionIndex = EVTF_PUSHED_OBJECT_SPLASH;
-         PerformAudioCommand(0x5ea);
+         PerformAudioCommand(AUDIO_CMD_PLAY_SFX(234));
       } else {
          newEvt->functionIndex = EVTF_BOULDER_RUBBLE;
          if (!(gState.mapNum == 40 && gState.mapState.s.field_0x0 == 0)) {
-            PerformAudioCommand(0x36f);
+            PerformAudioCommand(AUDIO_CMD_PLAY_XA(111));
          }
       }
       newEvt->x1.n = evt->x1.n;
@@ -325,7 +326,7 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
 
    case 6:
       if (--EVT.timer == 0) {
-         gCameraRotation.vy = GetCamDir() * ANGLE_90_DEGREES + ANGLE_45_DEGREES;
+         gCameraRotation.vy = GetCamDir() * DEG(90) + DEG(45);
          gPlayerControlSuppressed = 0;
          evt->functionIndex = EVTF_NULL;
          return;
@@ -336,7 +337,7 @@ void Evtf591_MapObject_Boulder(EvtData *evt) {
    }
 
    if (evt->state != 1) {
-      evt->y1.n += (OBJ_TERRAIN(evt).s.elevation * 0x80 - evt->y1.n) >> 2;
+      evt->y1.n += (OBJ_TERRAIN(evt).s.elevation * CV(0.5) - evt->y1.n) >> 2;
    }
 
    if (shouldDraw) {
@@ -372,13 +373,13 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
    //?
    *(s16 *)(&face->d.sprite.hidden) = 0;
    face->d.sprite.gfxIdx = GFX_CRATE;
-   face->d.sprite.clut = 0;
+   face->d.sprite.clut = CLUT_NULL;
    face->d.sprite.otOfs = -6;
 
-   x1 = evt->x1.n + 0x80;
-   x2 = evt->x1.n - 0x80;
-   z1 = evt->z1.n + 0x80;
-   z2 = evt->z1.n - 0x80;
+   x1 = evt->x1.n + CV(0.5);
+   x2 = evt->x1.n - CV(0.5);
+   z1 = evt->z1.n + CV(0.5);
+   z2 = evt->z1.n - CV(0.5);
 
    // Top face:
    face->d.sprite.coords[0].x = x2;
@@ -389,11 +390,11 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
    face->d.sprite.coords[2].z = z1 - 1;
    face->d.sprite.coords[1].z = z2;
    face->d.sprite.coords[3].z = z1 - 1;
-   face->d.sprite.coords[0].y = evt->y1.n + 0x100;
-   face->d.sprite.coords[1].y = evt->y1.n + 0x100;
-   face->d.sprite.coords[2].y = evt->y1.n + 0x100;
-   face->d.sprite.coords[3].y = evt->y1.n + 0x100;
-   face->y1.n = evt->y1.n + 0x100;
+   face->d.sprite.coords[0].y = evt->y1.n + CV(1.0);
+   face->d.sprite.coords[1].y = evt->y1.n + CV(1.0);
+   face->d.sprite.coords[2].y = evt->y1.n + CV(1.0);
+   face->d.sprite.coords[3].y = evt->y1.n + CV(1.0);
+   face->y1.n = evt->y1.n + CV(1.0);
    face->x1.n = evt->x1.n;
    face->z1.n = evt->z1.n;
 
@@ -448,8 +449,8 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       face->d.sprite.coords[3].z = z2;
       face->d.sprite.coords[0].y = evt->y1.n;
       face->d.sprite.coords[1].y = evt->y1.n;
-      face->d.sprite.coords[2].y = evt->y1.n + 0x100;
-      face->d.sprite.coords[3].y = evt->y1.n + 0x100;
+      face->d.sprite.coords[2].y = evt->y1.n + CV(1.0);
+      face->d.sprite.coords[3].y = evt->y1.n + CV(1.0);
       if (sideOrdering[dir].north != 0) {
          face->d.sprite.otOfs = sideOrdering[dir].north - 7;
          AddEvtPrim5(gGraphicsPtr->ot, face);
@@ -468,10 +469,10 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       UpdateCrateElevation(evt);
-      evt->y1.n += gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi] * 0x100;
+      evt->y1.n += gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi] * CV(1.0);
       EVT.stack = ++gCrateGrid_Ptr[evt->z1.s.hi][evt->x1.s.hi];
       OBJ_TERRAIN(evt).s.elevation += 2;
       EVT.terrain = OBJ_TERRAIN(evt).s.terrain;
@@ -505,19 +506,19 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         EVT.elevation = evt->y1.n - 0x100;
+         EVT.elevation = evt->y1.n - CV(1.0);
          evt->y2.n = 0;
          evt->state2++;
          break;
 
       case 1:
          evt->y1.n -= evt->y2.n;
-         evt->y2.n += 0x20;
+         evt->y2.n += CV(0.125);
          if (evt->y1.n <= EVT.elevation) {
             evt->y1.n = EVT.elevation;
             EVT.stack--;
             evt->state = 1;
-            PerformAudioCommand(0x5eb);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SFX(235));
             if (EVT.stack == 1) {
                evt1 = Evt_GetUnused();
                evt1->functionIndex = EVTF_DUST_CLOUD_SPAWNER;
@@ -556,16 +557,16 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
          evt->x2.n = 0;
          evt->z2.n = 0;
          if (evt->x3.s.hi > evt->x1.s.hi) {
-            evt->x2.n = 0x40;
+            evt->x2.n = CV(0.25);
          }
          if (evt->x3.s.hi < evt->x1.s.hi) {
-            evt->x2.n = -0x40;
+            evt->x2.n = CV(-0.25);
          }
          if (evt->z3.s.hi > evt->z1.s.hi) {
-            evt->z2.n = 0x40;
+            evt->z2.n = CV(0.25);
          }
          if (evt->z3.s.hi < evt->z1.s.hi) {
-            evt->z2.n = -0x40;
+            evt->z2.n = CV(-0.25);
          }
          evt->state2++;
 
@@ -598,17 +599,17 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          EVT.elevation = evt->y3.n;
-         evt->y2.n = 0x20;
+         evt->y2.n = CV(0.125);
          evt->state2++;
 
       // fallthrough
       case 1:
          evt->y1.n -= evt->y2.n;
-         evt->y2.n += 0x20;
+         evt->y2.n += CV(0.125);
          if (evt->y1.n <= EVT.elevation) {
             evt->y1.n = EVT.elevation;
             evt->state++;
-            PerformAudioCommand(0x5eb);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SFX(235));
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_DUST_CLOUD_SPAWNER;
             evt1->x1.n = evt->x1.n;
@@ -623,13 +624,13 @@ void Evtf046_MapObject_Crate(EvtData *evt) {
    case 5:
       if (OBJ_TERRAIN(evt).s.terrain == TERRAIN_WATER ||
           OBJ_TERRAIN(evt).s.terrain == TERRAIN_LAVA) {
-         PerformAudioCommand(0x5ea);
+         PerformAudioCommand(AUDIO_CMD_PLAY_SFX(234));
          evt1 = Evt_GetUnused();
          evt1->functionIndex = EVTF_PUSHED_OBJECT_SPLASH;
          evt1->x1.n = evt->x1.n;
          evt1->z1.n = evt->z1.n;
          evt1->y1.n = evt->y1.n;
-         evt1->y2.n = 0x100;
+         evt1->y2.n = CV(1.0);
          evt->functionIndex = EVTF_NULL;
       } else {
          EVT.terrain = OBJ_TERRAIN(evt).s.terrain;
@@ -768,7 +769,7 @@ s32 ScanForBoulderDestination(EvtData *evt) {
          return 1;
       }
 
-      elevation = OBJ_TARGET_TERRAIN(evt).s.elevation * 128;
+      elevation = OBJ_TARGET_TERRAIN(evt).s.elevation * CV(0.5);
       hasRoom = 1;
    }
 }
@@ -786,9 +787,9 @@ void Evtf020_PushedBoulder(EvtData *evt) {
    case 0:
       gPlayerControlSuppressed = 1;
       if (gState.mapNum == 40 && gState.mapState.s.field_0x0 == 0) {
-         PerformAudioCommand(0x1370);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(112));
       } else {
-         PerformAudioCommand(0x136f);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(111));
       }
       gSignal5 = 0;
       EVT.savedCamX = gCameraPos.vx;
@@ -805,7 +806,7 @@ void Evtf020_PushedBoulder(EvtData *evt) {
          gCameraPos.vx += (-(unitSprite->x1.n >> 3) - gCameraPos.vx) >> 2;
          gCameraPos.vz += (-(unitSprite->z1.n >> 3) - gCameraPos.vz) >> 2;
          gCameraPos.vy += ((unitSprite->y1.n >> 3) - gCameraPos.vy) >> 2;
-         gCameraRotation.vx += (0x180 - gCameraRotation.vx) >> 2;
+         gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
          gCameraZoom.vz += (250 - gCameraZoom.vz) >> 2;
       } else {
          gSignal5 = 1;
@@ -868,7 +869,7 @@ void Evtf048_Push(EvtData *evt) {
    case 0:
       evt->x1.n = sprite->x1.n;
       evt->z1.n = sprite->z1.n;
-      evt->y1.n = sprite->y1.n + 0x80;
+      evt->y1.n = sprite->y1.n + CV(0.5);
       gSignal4 = sprite->d.sprite.direction;
       evt->state++;
 
@@ -877,30 +878,30 @@ void Evtf048_Push(EvtData *evt) {
 
       switch ((gCameraRotation.vy & 0xfff) >> 10) {
       case CAM_DIR_SOUTH:
-         dir = ANGLE_0_DEGREES;
+         dir = DEG(0);
          break;
       case CAM_DIR_EAST:
-         dir = ANGLE_270_DEGREES;
+         dir = DEG(270);
          break;
       case CAM_DIR_NORTH:
-         dir = ANGLE_180_DEGREES;
+         dir = DEG(180);
          break;
       case CAM_DIR_WEST:
-         dir = ANGLE_90_DEGREES;
+         dir = DEG(90);
          break;
       }
 
       if (gPadStateNewPresses & PAD_UP) {
-         gSignal4 = dir + ANGLE_0_DEGREES;
+         gSignal4 = dir + DEG(0);
       }
       if (gPadStateNewPresses & PAD_RIGHT) {
-         gSignal4 = dir + ANGLE_90_DEGREES;
+         gSignal4 = dir + DEG(90);
       }
       if (gPadStateNewPresses & PAD_DOWN) {
-         gSignal4 = dir + ANGLE_180_DEGREES;
+         gSignal4 = dir + DEG(180);
       }
       if (gPadStateNewPresses & PAD_LEFT) {
-         gSignal4 = dir + ANGLE_270_DEGREES;
+         gSignal4 = dir + DEG(270);
       }
       gSignal4 &= 0xfff;
 
@@ -910,18 +911,21 @@ void Evtf048_Push(EvtData *evt) {
          return;
       }
 
-      EVT.osc += ANGLE_45_DEGREES;
+      EVT.osc += DEG(45);
 
-      fInner = (rcos(EVT.osc & 0xfff) * 50 >> 12) + 192;
-      fOuter = (rcos(EVT.osc & 0xfff) * 130 >> 12) + 512;
-      nfInner = (rcos(EVT.osc & 0xfff) * 25 >> 12) + 192;
-      nfOuter = (rcos(EVT.osc & 0xfff) * 50 >> 12) + 384;
+      fInner = (rcos(EVT.osc & 0xfff) * 50 >> 12) + CV(0.75);
+      fOuter = (rcos(EVT.osc & 0xfff) * 130 >> 12) + CV(2.0);
+      nfInner = (rcos(EVT.osc & 0xfff) * 25 >> 12) + CV(0.75);
+      nfOuter = (rcos(EVT.osc & 0xfff) * 50 >> 12) + CV(1.5);
       evt1 = Evt_GetUnused();
 
-      RenderDirectionArrow(evt, evt1, 0, gSignal4 == 0, fInner, fOuter, nfInner, nfOuter);
-      RenderDirectionArrow(evt, evt1, 0x400, gSignal4 == 0x400, fInner, fOuter, nfInner, nfOuter);
-      RenderDirectionArrow(evt, evt1, 0x800, gSignal4 == 0x800, fInner, fOuter, nfInner, nfOuter);
-      RenderDirectionArrow(evt, evt1, 0xc00, gSignal4 == 0xc00, fInner, fOuter, nfInner, nfOuter);
+      RenderDirectionArrow(evt, evt1, DEG(0), gSignal4 == DEG(0), fInner, fOuter, nfInner, nfOuter);
+      RenderDirectionArrow(evt, evt1, DEG(90), gSignal4 == DEG(90), fInner, fOuter, nfInner,
+                           nfOuter);
+      RenderDirectionArrow(evt, evt1, DEG(180), gSignal4 == DEG(180), fInner, fOuter, nfInner,
+                           nfOuter);
+      RenderDirectionArrow(evt, evt1, DEG(270), gSignal4 == DEG(270), fInner, fOuter, nfInner,
+                           nfOuter);
 
       targetX = sprite->x1.s.hi;
       targetZ = sprite->z1.s.hi;
@@ -1057,30 +1061,30 @@ void Evtf048_Push(EvtData *evt) {
 void TiltChestLid(EvtData *chest, s16 angle, u8 facing) {
    if (facing == 0) {
       chest->d.evtf040.lid_todo_x5c =
-          chest->d.evtf040.lid_todo_x58 + (rcos(angle & 0xfff) * 0xe0 >> 12);
+          chest->d.evtf040.lid_todo_x58 + (CV(0.875) * rcos(angle & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x5e =
-          chest->d.evtf040.lid_todo_x5a + (rcos((angle + 0x400U) & 0xfff) * 0xe0 >> 12);
+          chest->d.evtf040.lid_todo_x5a + (CV(0.875) * rcos((angle + DEG(90)) & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x50 =
-          chest->d.evtf040.lid_todo_x58 + (rcos((angle - 0x280U) & 0xfff) * 0x60 >> 12);
+          chest->d.evtf040.lid_todo_x58 + (CV(0.375) * rcos((angle - DEG(56.25)) & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x52 =
-          chest->d.evtf040.lid_todo_x5a + (rcos((angle + 0x180U) & 0xfff) * 0x60 >> 12);
+          chest->d.evtf040.lid_todo_x5a + (CV(0.375) * rcos((angle + DEG(33.75)) & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x54 =
-          chest->d.evtf040.lid_todo_x58 + (rcos((angle - 0x100U) & 0xfff) * 0xc0 >> 12);
+          chest->d.evtf040.lid_todo_x58 + (CV(0.75) * rcos((angle - DEG(22.5)) & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x56 =
-          chest->d.evtf040.lid_todo_x5a + (rcos((angle + 0x300U) & 0xfff) * 0xc0 >> 12);
+          chest->d.evtf040.lid_todo_x5a + (CV(0.75) * rcos((angle + DEG(67.5)) & 0xfff) >> 12);
    } else {
       chest->d.evtf040.lid_todo_x58 =
-          chest->d.evtf040.lid_todo_x5c - (rcos(angle & 0xfff) * 0xe0 >> 12);
+          chest->d.evtf040.lid_todo_x5c - (CV(0.875) * rcos(angle & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x5a =
-          chest->d.evtf040.lid_todo_x5e + (rcos((angle + 0x400U) & 0xfff) * 0xe0 >> 12);
+          chest->d.evtf040.lid_todo_x5e + (CV(0.875) * rcos((angle + DEG(90)) & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x54 =
-          chest->d.evtf040.lid_todo_x5c - (rcos((angle - 0x280U) & 0xfff) * 0x60 >> 12);
+          chest->d.evtf040.lid_todo_x5c - (CV(0.375) * rcos((angle - DEG(56.25)) & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x56 =
-          chest->d.evtf040.lid_todo_x5e + (rcos((angle + 0x180U) & 0xfff) * 0x60 >> 12);
+          chest->d.evtf040.lid_todo_x5e + (CV(0.375) * rcos((angle + DEG(33.75)) & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x50 =
-          chest->d.evtf040.lid_todo_x5c - (rcos((angle - 0x100U) & 0xfff) * 0xc0 >> 12);
+          chest->d.evtf040.lid_todo_x5c - (CV(0.75) * rcos((angle - DEG(22.5)) & 0xfff) >> 12);
       chest->d.evtf040.lid_todo_x52 =
-          chest->d.evtf040.lid_todo_x5e + (rcos((angle + 0x300U) & 0xfff) * 0xc0 >> 12);
+          chest->d.evtf040.lid_todo_x5e + (CV(0.75) * rcos((angle + DEG(67.5)) & 0xfff) >> 12);
    }
 }
 
@@ -1110,9 +1114,9 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
    *(s16 *)(&face->d.sprite.hidden) = 0;
    idx = 0;
    if (gRedAttackGridPtr[evt->z1.s.hi][evt->x1.s.hi] == PATH_STEP_UNSET) {
-      face->d.sprite.clut = 0;
+      face->d.sprite.clut = CLUT_NULL;
    } else {
-      face->d.sprite.clut = 3;
+      face->d.sprite.clut = CLUT_REDS;
    }
    face->d.sprite.otOfs = 2;
 
@@ -1122,17 +1126,17 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
       OBJ_MAP_UNIT(evt).s.team = TEAM_CHEST;
       EVT.terrain = OBJ_TERRAIN(evt).s.terrain;
       OBJ_TERRAIN(evt).s.terrain = TERRAIN_OBSTACLE;
-      evt->x1.s.lo = 0x80;
-      evt->z1.s.lo = 0x80;
+      evt->x1.s.lo = CV(0.5);
+      evt->z1.s.lo = CV(0.5);
       evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
-      EVT.lid_todo_x50 = evt->z1.n - 0x40;
-      EVT.lid_todo_x54 = evt->z1.n + 0x40;
-      EVT.lid_todo_x58 = evt->z1.n - 0x70;
-      EVT.lid_todo_x5c = evt->z1.n + 0x70;
-      EVT.lid_todo_x52 = evt->y1.n + 0xd0;
-      EVT.lid_todo_x56 = evt->y1.n + 0xd0;
-      EVT.lid_todo_x5a = evt->y1.n + 0x80;
-      EVT.lid_todo_x5e = evt->y1.n + 0x80;
+      EVT.lid_todo_x50 = evt->z1.n - CV(0.25);
+      EVT.lid_todo_x54 = evt->z1.n + CV(0.25);
+      EVT.lid_todo_x58 = evt->z1.n - CV(0.4375);
+      EVT.lid_todo_x5c = evt->z1.n + CV(0.4375);
+      EVT.lid_todo_x52 = evt->y1.n + CV(0.8125);
+      EVT.lid_todo_x56 = evt->y1.n + CV(0.8125);
+      EVT.lid_todo_x5a = evt->y1.n + CV(0.5);
+      EVT.lid_todo_x5e = evt->y1.n + CV(0.5);
       evt->state++;
       break;
 
@@ -1140,7 +1144,7 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
       if (OBJ_TILE_STATE(evt).action == TA_CHEST_1) {
          OBJ_TERRAIN(evt).s.terrain = EVT.terrain;
          OBJ_MAP_UNIT(evt).s.team = TEAM_NULL;
-         EVT.lidAngleVel = -0xc0;
+         EVT.lidAngleVel = DEG(-16.875);
          evt->mem = 3;
          gSignal3 = 0;
          newEvt = Evt_GetUnused();
@@ -1150,11 +1154,11 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
          if (EVT.item != 0) {
             newEvt->functionIndex = EVTF_REVEAL_CHEST_ITEM;
             newEvt->d.evtf290.gfxIdx = GFX_ITEM_ICONS_OFS + EVT.item;
-            PerformAudioCommand(0x324);
+            PerformAudioCommand(AUDIO_CMD_PLAY_XA(36));
          } else {
             newEvt->functionIndex = EVTF_REVEAL_MIMIC;
             gState.D_8014053E = 0;
-            PerformAudioCommand(0x384);
+            PerformAudioCommand(AUDIO_CMD_PLAY_XA(132));
          }
          evt->state++;
       }
@@ -1180,10 +1184,10 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
 
    case 3:
       if (--evt->mem != 0) {
-         EVT.lidAngleVel -= 0x10;
+         EVT.lidAngleVel -= DEG(1.40625);
          EVT.lidAngle += EVT.lidAngleVel;
-         if (EVT.lidAngle < -0x600) {
-            EVT.lidAngle = -0x600;
+         if (EVT.lidAngle < DEG(-135)) {
+            EVT.lidAngle = DEG(-135);
             EVT.lidAngleVel = (-EVT.lidAngleVel >> 1);
          }
          TiltChestLid(evt, EVT.lidAngle, EVT.facing);
@@ -1239,53 +1243,53 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
    }
 
    if (!IsSpriteOutsideVisibleRange(evt)) {
-      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - CV(0.4375);
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[1].x = evt->x1.n + 0x70;
+      face->d.sprite.coords[1].x = evt->x1.n + CV(0.4375);
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
-      face->d.sprite.coords[0].z = evt->z1.n - 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n - CV(0.4375);
       face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
       face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
       face->d.sprite.coords[3].z = face->d.sprite.coords[0].z;
-      face->d.sprite.coords[0].y = evt->y1.n + 0x80;
+      face->d.sprite.coords[0].y = evt->y1.n + CV(0.5);
       face->d.sprite.coords[1].y = face->d.sprite.coords[0].y;
       face->d.sprite.coords[2].y = evt->y1.n;
       face->d.sprite.coords[3].y = face->d.sprite.coords[2].y;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[0]
 
-      face->d.sprite.coords[0].z = evt->z1.n + 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n + CV(0.4375);
       face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
       face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
       face->d.sprite.coords[3].z = face->d.sprite.coords[0].z;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[1]
 
-      face->d.sprite.coords[0].x = evt->x1.n + 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n + CV(0.4375);
       face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[0].z = evt->z1.n - 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n - CV(0.4375);
       face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
-      face->d.sprite.coords[1].z = evt->z1.n + 0x70;
+      face->d.sprite.coords[1].z = evt->z1.n + CV(0.4375);
       face->d.sprite.coords[3].z = face->d.sprite.coords[1].z;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[2]
 
-      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - CV(0.4375);
       face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[0].z = evt->z1.n - 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n - CV(0.4375);
       face->d.sprite.coords[2].z = face->d.sprite.coords[0].z;
-      face->d.sprite.coords[1].z = evt->z1.n + 0x70;
+      face->d.sprite.coords[1].z = evt->z1.n + CV(0.4375);
       face->d.sprite.coords[3].z = face->d.sprite.coords[1].z;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[3]
 
-      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - CV(0.4375);
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[1].x = evt->x1.n + 0x70;
+      face->d.sprite.coords[1].x = evt->x1.n + CV(0.4375);
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
       face->d.sprite.coords[0].z = EVT.lid_todo_x50;
       face->d.sprite.coords[1].z = EVT.lid_todo_x50;
@@ -1309,7 +1313,7 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[5]
 
-      face->d.sprite.coords[0].x = evt->x1.n + 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n + CV(0.4375);
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
@@ -1324,16 +1328,16 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[6]
 
-      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - CV(0.4375);
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[1].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[0].x;
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[7]
 
-      face->d.sprite.coords[0].x = evt->x1.n + 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n + CV(0.4375);
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[1].x = evt->x1.n - 0x70;
+      face->d.sprite.coords[1].x = evt->x1.n - CV(0.4375);
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
       face->d.sprite.coords[0].z = EVT.lid_todo_x54;
       face->d.sprite.coords[1].z = EVT.lid_todo_x54;
@@ -1346,13 +1350,13 @@ void Evtf040_MapObject_Chest(EvtData *evt) {
       face->d.sprite.gfxIdx = chestGfx[idx++];
       AddEvtPrim4(gGraphicsPtr->ot, face); //[8]
 
-      face->d.sprite.coords[0].x = evt->x1.n - 0x70;
+      face->d.sprite.coords[0].x = evt->x1.n - CV(0.4375);
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
-      face->d.sprite.coords[1].x = evt->x1.n + 0x70;
+      face->d.sprite.coords[1].x = evt->x1.n + CV(0.4375);
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
-      face->d.sprite.coords[0].z = evt->z1.n - 0x70;
+      face->d.sprite.coords[0].z = evt->z1.n - CV(0.4375);
       face->d.sprite.coords[1].z = face->d.sprite.coords[0].z;
-      face->d.sprite.coords[2].z = evt->z1.n + 0x70;
+      face->d.sprite.coords[2].z = evt->z1.n + CV(0.4375);
       face->d.sprite.coords[3].z = face->d.sprite.coords[2].z;
       face->d.sprite.coords[0].y = evt->y1.n;
       face->d.sprite.coords[1].y = face->d.sprite.coords[0].y;

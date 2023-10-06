@@ -38,8 +38,8 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
          SnapToUnit(evt);
          evt->y2.n = evt->y1.n;
          EVT.startingTheta1 = 0;
-         EVT.startingTheta2 = 0x400;
-         EVT.ringSize = 0x100;
+         EVT.startingTheta2 = DEG(90);
+         EVT.ringSize = CV(1.0);
          evt->state2++;
 
       // fallthrough
@@ -76,9 +76,9 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
       evt_s7 = Evt_GetUnused();
       evt_s7->functionIndex = EVTF_NOOP;
       EVT.ringTop = evt_s7;
-      direction = (gCameraRotation.vy & 0xfff) / ANGLE_90_DEGREES;
+      direction = (gCameraRotation.vy & 0xfff) / DEG(90);
       evt_s7->d.sprite.gfxIdx = GFX_RING_TOP;
-      evt_s7->d.sprite.clut = 4;
+      evt_s7->d.sprite.clut = CLUT_BLUES;
 
       ringSize = EVT.ringSize;
       dx_0 = deltas[indices[direction][0]].x * ringSize;
@@ -103,7 +103,7 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
       evt_s6->functionIndex = EVTF_NOOP;
       EVT.ringBottom = evt_s6;
       evt_s6->d.sprite.gfxIdx = GFX_RING_BTM;
-      evt_s6->d.sprite.clut = 4;
+      evt_s6->d.sprite.clut = CLUT_BLUES;
       evt_s6->d.sprite.coords[2].x = evt->x1.n + dx_2;
       evt_s6->d.sprite.coords[2].z = evt->z1.n + dz_2;
       evt_s6->d.sprite.coords[3].x = evt->x1.n + dx_3;
@@ -128,7 +128,7 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
          dsCylinder->top.vx = dsCylinder->bottom.vx = evt->x1.n;
          dsCylinder->top.vz = dsCylinder->bottom.vz = evt->z1.n;
          dsCylinder->bottom.vy = evt->y1.n;
-         dsCylinder->top.vy = evt->y1.n + 0x400;
+         dsCylinder->top.vy = evt->y1.n + CV(4.0);
          dsCylinder->sideCt = 16;
          dsCylinder->semiTrans = 4;
          dsCylinder->gfxIdx = GFX_TILED_FLAMES;
@@ -138,7 +138,7 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
          dsCylinder->useColor = 1;
          dsCylinder->color.r = dsCylinder->color.g = dsCylinder->color.b = 0;
          dsCylinder->theta = 0;
-         dsCylinder->clut = 8;
+         dsCylinder->clut = CLUT_PURPLES;
          evt->state2++;
 
       // fallthrough
@@ -148,7 +148,7 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
          evt->mem += 0x10;
          dsCylinder->topRadius = dsCylinder->bottomRadius = evt->mem;
          dsCylinder->color.r = dsCylinder->color.g = dsCylinder->color.b = evt->mem >> 1;
-         dsCylinder->theta += 0x20;
+         dsCylinder->theta += DEG(2.8125);
          RenderCylinder(dsCylinder);
          if (evt->mem >= 0x100) {
             evt->state++;
@@ -169,10 +169,10 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
          evt->mem = 0;
       }
       dsCylinder->color.r = dsCylinder->color.g = dsCylinder->color.b = evt->mem >> 1;
-      dsCylinder->theta += 0x20;
+      dsCylinder->theta += DEG(2.8125);
       RenderCylinder(dsCylinder);
 
-      evt->y1.n += 0x18;
+      evt->y1.n += CV(0.09375);
       evt_s7 = EVT.ringTop;
       evt_s6 = EVT.ringBottom;
       savedY = evt->y1.n;
@@ -180,12 +180,10 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
       EVT.theta2 = EVT.startingTheta2;
 
       for (i = 0; i < 16; i++) {
-         evt_s7->d.sprite.coords[0].y = evt->y1.n + (0x40 * rsin(EVT.theta1) >> 12);
-         evt_s7->d.sprite.coords[1].y = evt->y1.n + (0x40 * rsin(EVT.theta2) >> 12);
-         evt_s7->d.sprite.coords[2].y =
-             evt->y1.n + (0x40 * rsin(EVT.theta2 + ANGLE_180_DEGREES) >> 12);
-         evt_s7->d.sprite.coords[3].y =
-             evt->y1.n + (0x40 * rsin(EVT.theta1 + ANGLE_180_DEGREES) >> 12);
+         evt_s7->d.sprite.coords[0].y = evt->y1.n + (CV(0.25) * rsin(EVT.theta1) >> 12);
+         evt_s7->d.sprite.coords[1].y = evt->y1.n + (CV(0.25) * rsin(EVT.theta2) >> 12);
+         evt_s7->d.sprite.coords[2].y = evt->y1.n + (CV(0.25) * rsin(EVT.theta2 + DEG(180)) >> 12);
+         evt_s7->d.sprite.coords[3].y = evt->y1.n + (CV(0.25) * rsin(EVT.theta1 + DEG(180)) >> 12);
          evt_s7->d.sprite.coords[2].y =
              (evt_s7->d.sprite.coords[2].y + evt_s7->d.sprite.coords[0].y) / 2;
          evt_s7->d.sprite.coords[3].y =
@@ -196,12 +194,10 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
          evt_s7->y1.n = evt_s7->d.sprite.coords[0].y;
          AddEvtPrim5(gGraphicsPtr->ot, evt_s7);
 
-         evt_s6->d.sprite.coords[0].y = evt->y1.n + (0x40 * rsin(EVT.theta1) >> 12);
-         evt_s6->d.sprite.coords[1].y = evt->y1.n + (0x40 * rsin(EVT.theta2) >> 12);
-         evt_s6->d.sprite.coords[2].y =
-             evt->y1.n + (0x40 * rsin(EVT.theta2 + ANGLE_180_DEGREES) >> 12);
-         evt_s6->d.sprite.coords[3].y =
-             evt->y1.n + (0x40 * rsin(EVT.theta1 + ANGLE_180_DEGREES) >> 12);
+         evt_s6->d.sprite.coords[0].y = evt->y1.n + (CV(0.25) * rsin(EVT.theta1) >> 12);
+         evt_s6->d.sprite.coords[1].y = evt->y1.n + (CV(0.25) * rsin(EVT.theta2) >> 12);
+         evt_s6->d.sprite.coords[2].y = evt->y1.n + (CV(0.25) * rsin(EVT.theta2 + DEG(180)) >> 12);
+         evt_s6->d.sprite.coords[3].y = evt->y1.n + (CV(0.25) * rsin(EVT.theta1 + DEG(180)) >> 12);
          evt_s6->d.sprite.coords[0].y =
              (evt_s6->d.sprite.coords[2].y + evt_s6->d.sprite.coords[0].y) / 2;
          evt_s6->d.sprite.coords[1].y =
@@ -215,7 +211,7 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
          EVT.theta1 += increment;
          EVT.theta2 += increment;
 
-         evt->y1.n -= 0x80;
+         evt->y1.n -= CV(0.5);
          if (evt->y1.n < evt->y2.n) {
             break;
          }
@@ -227,10 +223,10 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
          evt_s7->x2.n = evt->x1.n;
          evt_s7->z2.n = evt->z1.n;
          evt_s7->y2.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
-         evt_s7->d.evtf315.theta = rand() % ANGLE_360_DEGREES;
-         evt_s7->d.evtf315.radius = 0xc0;
+         evt_s7->d.evtf315.theta = rand() % DEG(360);
+         evt_s7->d.evtf315.radius = CV(0.75);
          evt_s7->d.evtf315.top = evt->y2.n;
-         evt_s7->d.evtf315.height = rand() % 0x100;
+         evt_s7->d.evtf315.height = rand() % CV(1.0);
          evt_s7->d.evtf315.rotationSpeed = 0x40;
          evt_s7->d.evtf315.speed = 0x18 + rand() % 0x30;
          evt_s7->d.evtf315.clut = 3 + (rand() & 3);
@@ -239,9 +235,9 @@ void Evtf330_MagicRestoration_FX1(EvtData *evt) {
       }
 
       evt->y1.n = savedY;
-      EVT.startingTheta1 += 0x180;
-      EVT.startingTheta2 += 0x180;
-      if (evt->y1.n > evt->y2.n + 0x600) {
+      EVT.startingTheta1 += DEG(33.75);
+      EVT.startingTheta2 += DEG(33.75);
+      if (evt->y1.n > evt->y2.n + CV(6.0)) {
          evt->state++;
       }
       break;
@@ -272,7 +268,7 @@ void HealingCircle_RenderBlueRing(EvtData *healingCircle, s32 outerRadius, s32 t
    cz = healingCircle->z1.n;
    sprite->d.sprite.gfxIdx = GFX_TILED_RED_SPARKLES;
    sprite->d.sprite.semiTrans = 2;
-   sprite->d.sprite.clut = 4;
+   sprite->d.sprite.clut = CLUT_BLUES;
 
    sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = sprite->d.sprite.coords[2].y =
        sprite->d.sprite.coords[3].y = healingCircle->y1.n;
@@ -475,7 +471,7 @@ void Evtf384_Fx_TBD(EvtData *evt) {
       gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].h = gGfxSubTextures[GFX_SKULL].h - evt->state3;
       sprite->d.sprite.boxIdx = 7;
       sprite->d.sprite.gfxIdx = GFX_TILED_RED_SPARKLES_DYN_1;
-      sprite->d.sprite.clut = 2;
+      sprite->d.sprite.clut = CLUT_2;
       sprite->x1.n = evt->x1.n;
       sprite->z1.n = evt->z1.n;
       sprite->y1.n = evt->y1.n + (evt->state3 << 2);
@@ -530,14 +526,14 @@ void Evtf_Unk_80087b58(EvtData *evt) {
       dsCylinder->sideCt = 32;
       dsCylinder->semiTrans = 4;
       dsCylinder->gfxIdx = GFX_COLOR_13;
-      dsCylinder->topRadius = 0x100;
-      dsCylinder->bottomRadius = 0x100;
+      dsCylinder->topRadius = CV(1.0);
+      dsCylinder->bottomRadius = CV(1.0);
       dsCylinder->bottom.vx = evt->x1.n;
       dsCylinder->bottom.vz = evt->z1.n;
       dsCylinder->bottom.vy = evt->y1.n;
       dsCylinder->top.vx = evt->x1.n;
       dsCylinder->top.vz = evt->z1.n;
-      dsCylinder->top.vy = evt->y1.n + 0x400;
+      dsCylinder->top.vy = evt->y1.n + CV(4.0);
       dsCylinder->useColor = 1;
       dsCylinder->color.r = 0x40;
       dsCylinder->color.g = 0x40;
@@ -552,7 +548,8 @@ void Evtf_Unk_80087b58(EvtData *evt) {
       evt->state3 += 0x10;
       dsCylinder = &dataStore->d.dataStore.cylinder;
       dsCylinder->topRadius = 1;
-      dsCylinder->topRadius = dsCylinder->bottomRadius = 0x100 + (0x100 * rsin(evt->state3) >> 12);
+      dsCylinder->topRadius = dsCylinder->bottomRadius =
+          CV(1.0) + (CV(1.0) * rsin(evt->state3) >> 12);
       RenderCylinder(dsCylinder);
       RenderCylinder(dsCylinder);
       if (++evt->state2 >= 0x200) {

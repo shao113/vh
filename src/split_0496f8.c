@@ -6,6 +6,7 @@
 #include "field.h"
 #include "battle.h"
 #include "cd_files.h"
+#include "audio.h"
 
 #include "PsyQ/libsn.h"
 
@@ -343,8 +344,8 @@ void SetupPartyBattleUnit(u8 partyIdx, u8 z, u8 x, u8 direction) {
       }
       unit->maxMp = unit->mp;
       PopulateUnitSpellList(unit);
-      battler->x1.n = (x << 8) + 0x80;
-      battler->z1.n = (z << 8) + 0x80;
+      battler->x1.n = x * CV(1.0) + CV(0.5);
+      battler->z1.n = z * CV(1.0) + CV(0.5);
    }
 }
 
@@ -438,15 +439,15 @@ void Evtf424_BattleEnder(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         PerformAudioCommand(0x20);
-         PerformAudioCommand(0x30);
+         PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
+         PerformAudioCommand(AUDIO_CMD_FADE_OUT_128_1);
          EVT.timer = 20;
          evt->state2++;
 
       // fallthrough
       case 1:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(6);
+            PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             EVT.timer = 4;
             evt->state2++;
          }
@@ -456,7 +457,7 @@ void Evtf424_BattleEnder(EvtData *evt) {
          if (--EVT.timer == 0) {
             LoadSeqSet(1);
             FinishLoadingSeq();
-            PerformAudioCommand(0x217);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(23));
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_BATTLE_VICTORY;
             evt->state += 2;
@@ -472,14 +473,14 @@ void Evtf424_BattleEnder(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         PerformAudioCommand(0x21);
+         PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
          EVT.timer = 30;
          evt->state2++;
 
       // fallthrough
       case 1:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(6);
+            PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             EVT.timer = 4;
             evt->state2++;
          }
@@ -489,7 +490,7 @@ void Evtf424_BattleEnder(EvtData *evt) {
          if (--EVT.timer == 0) {
             LoadSeqSet(1);
             FinishLoadingSeq();
-            PerformAudioCommand(0x218);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(24));
             newEvt = Evt_GetUnused();
             newEvt->functionIndex = EVTF_BATTLE_DEFEAT;
             evt->state += 2;
@@ -516,7 +517,7 @@ void Evtf424_BattleEnder(EvtData *evt) {
 
       case 2:
          if (gPadStateNewPresses & PAD_CIRCLE) {
-            PerformAudioCommand(0x21);
+            PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
             FadeOutScreen(2, 4);
             EVT.timer = 75;
             evt->state2++;
@@ -525,7 +526,7 @@ void Evtf424_BattleEnder(EvtData *evt) {
 
       case 3:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(6);
+            PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             gState.secondary = 0;
             gState.state3 = 0;
             gState.state4 = 0;
@@ -742,7 +743,7 @@ void Evtf424_BattleEnder(EvtData *evt) {
 
       case 2:
          if (PressedCircleOrX()) {
-            PerformAudioCommand(0x21);
+            PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
             EVT.timer = 90;
             evt->state2++;
          }
@@ -914,8 +915,8 @@ void SetupBattleUnit(s16 stripIdx, u8 z, u8 x, s8 level, u8 team, u8 direction, 
       gTempUnitPtr->maxMp = 99;
    }
 
-   battler->x1.n = (x << 8) + 0x80;
-   battler->z1.n = (z << 8) + 0x80;
+   battler->x1.n = x * CV(1.0) + CV(0.5);
+   battler->z1.n = z * CV(1.0) + CV(0.5);
 }
 
 void CreateBattleUnitForUnit(UnitStatus *unit) {
@@ -929,8 +930,8 @@ void CreateBattleUnitForUnit(UnitStatus *unit) {
    battler->d.evtf014.team = unit->team;
    battler->x1.s.hi = unit->tileX;
    battler->z1.s.hi = unit->tileZ;
-   battler->x1.s.lo = 0x80;
-   battler->z1.s.lo = 0x80;
+   battler->x1.s.lo = CV(0.5);
+   battler->z1.s.lo = CV(0.5);
 }
 
 void SetupBattleUnits(void) {

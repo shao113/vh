@@ -56,6 +56,7 @@ void Evtf081_RomanFire_Flame(EvtData *);
 void Evtf082_Fx_TBD(EvtData *);
 void Evtf083_Fx_TBD(EvtData *);
 void Evtf084_Avalanche_DustCloud(EvtData *);
+void Evtf087_Map20_Scn30_ArrowSpawner(EvtData *);
 void Evtf090_DaggerStorm_FX2(EvtData *);
 void Evtf091_DaggerStorm_Dagger(EvtData *);
 void Evtf092_DaggerStorm_FX1(EvtData *);
@@ -64,6 +65,7 @@ void Evtf094_MoodRing_FX1(EvtData *);
 void Evtf095_MoodRing_Ring(EvtData *);
 void Evtf096_MoodRing_FX2(EvtData *);
 void Evtf097_MoodRing_FX3(EvtData *);
+void Evtf098_Map20_Scn30_Arrow(EvtData *);
 void Evtf100_Healing_FX2(EvtData *);
 void Evtf101_HealingSparkle(EvtData *);
 void Evtf102_227_Poison_FX2(EvtData *);
@@ -180,7 +182,9 @@ void Evtf263_LoadEvent54(EvtData *);
 void Evtf264_LoadEvent57(EvtData *);
 void Evtf267_LoadEvent62(EvtData *);
 void Evtf268_LoadEvent67(EvtData *);
+void Evtf272_StatRaised(EvtData *);
 void Evtf274_Noop(EvtData *);
+void Evtf278_FaintSparkles(EvtData *);
 void Evtf280_DarkHurricane_Target(EvtData *);
 void Evtf281_282_DarkHurricane_FX2_FX3(EvtData *);
 void Evtf283_DarkHurricane_Cloud(EvtData *);
@@ -188,6 +192,7 @@ void Evtf284_Fx_TBD(EvtData *);
 void Evtf285_CastingFx(EvtData *);
 void Evtf286_Fx_TBD(EvtData *);
 void Evtf287_Fx_TBD(EvtData *);
+void Evtf289_ChimneySmokeRing(EvtData *);
 void Evtf290_294_761_RevealItem(EvtData *);
 void Evtf291_ChestImpact(EvtData *);
 void Evtf292_BlueItemSparkle(EvtData *);
@@ -195,6 +200,8 @@ void Evtf293_Fx_TBD(EvtData *);
 void Evtf295_Smoke(EvtData *);
 void Evtf300_Map32_Smokestack(EvtData *);
 void Evtf301_Map32_SmokestackParticle(EvtData *);
+void Evtf302_ChimneySmoke(EvtData *);
+void Evtf306_791_792_793_Healing_FX2(EvtData *);
 void Evtf307_324_EvilStream_FX2_FX3(EvtData *);
 void Evtf309_Explosion(EvtData *);
 void Evtf310_LifeOrb_Beam(EvtData *);
@@ -221,14 +228,19 @@ void Evtf337_DaggerStorm_BloodSplatter(EvtData *);
 void Evtf339_349_Rubble(EvtData *);
 void Evtf344_345_RomanFire_FX2_FX3(EvtData *);
 void Evtf348_Fx_TBD(EvtData *);
+void Evtf359_PhaseShift_MapScaler(EvtData *);
+void Evtf363_Wyrmfang_FX1(EvtData *);
 void Evtf375_FlameBreath_Particle(EvtData *);
 void Evtf377_Fx_TBD(EvtData *);
+void Evtf378_PhaseShift_FX1(EvtData *);
 void Evtf379_EvilStream_Rock(EvtData *);
+void Evtf380_LevelUpFx(EvtData *);
 void Evtf381_HealingCircle_FX1(EvtData *);
 void Evtf382_FlameBreath(EvtData *);
 void Evtf383_Sparkle(EvtData *);
 void Evtf384_Fx_TBD(EvtData *);
 void Evtf385_RevealMimic(EvtData *);
+void Evtf386_HealingSparkle(EvtData *);
 void Evtf388_DarkHurricane_FX1(EvtData *);
 void Evtf389_DarkHurricane_Vortex(EvtData *);
 void Evtf390_DarkHurricane_VortexLayer(EvtData *);
@@ -396,11 +408,33 @@ void Evtf595_StatusWindow(EvtData *);
 void Evtf596_StatusWindowMgr(EvtData *);
 void Evtf597_BattleIntro(EvtData *);
 void Evtf598_WorldActions(EvtData *);
+void Evtf675_LeenaForcefield(EvtData *);
+void Evtf676_687_Rainfall(EvtData *);
+void Evtf677_RainfallDrop(EvtData *);
+void Evtf678_Ripple(EvtData *);
 void Evtf681_StatBuffFx(EvtData *);
+void Evtf685_RockSpurt(EvtData *);
+void Evtf692_Campfire(EvtData *);
+void Evtf710_Particle(EvtData *);
 void Evtf711_712_Noop(EvtData *);
+void Evtf715_to_718_Spellbind_FX2_FX3(EvtData *);
 void Evtf733_StatBuffIcon(EvtData *);
+void Evtf735_SparkleDust(EvtData *);
+void Evtf736_RemoveParalysis_Bubble(EvtData *);
+void Evtf737_RemoveParalysis(EvtData *);
+void Evtf739_Particle(EvtData *);
+void Evtf740_RemoveParalysis_Sparkles(EvtData *);
 void Evtf747_748_Wyrmfang_Flames(EvtData *);
 void Evtf749_Wyrmfang_Flame(EvtData *);
+void Evtf757_PushedObjectSplash(EvtData *);
+void Evtf759_RockSpurtParticle(EvtData *);
+void Evtf760_EliteMeleeSparkles(EvtData *);
+void Evtf762_Megaherb(EvtData *);
+void Evtf763_BoulderRubble(EvtData *);
+void Evtf764_to_769_ProjectileTrail(EvtData *);
+void Evtf770_to_789_ItemSpell(EvtData *);
+void Evtf790_Fx_TBD(EvtData *);
+void Evtf797_Map47_Scn14_Dusk(EvtData *);
 void Evtf801_Fx_TBD(EvtData *);
 void Evtf802_Fx_TBD(EvtData *);
 void Evtf803_Fx_TBD(EvtData *);
@@ -499,7 +533,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [84] = Evtf084_Avalanche_DustCloud,
     [85] = (EvtFunction)0x80096824,
     [86] = (EvtFunction)0x800984f0,
-    [87] = (EvtFunction)0x80093824,
+    [87] = Evtf087_Map20_Scn30_ArrowSpawner,
     [88] = (EvtFunction)0x800abe78,
     [89] = (EvtFunction)0x80096d7c,
     [90] = Evtf090_DaggerStorm_FX2,
@@ -510,7 +544,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [95] = Evtf095_MoodRing_Ring,
     [96] = Evtf096_MoodRing_FX2,
     [97] = Evtf097_MoodRing_FX3,
-    [98] = (EvtFunction)0x80093964,
+    [98] = Evtf098_Map20_Scn30_Arrow,
     [99] = (EvtFunction)0x800abc54,
     [100] = Evtf100_Healing_FX2,
     [101] = Evtf101_HealingSparkle,
@@ -684,13 +718,13 @@ EvtFunction gEvtFunctionPointers[804] = {
     [269] = (EvtFunction)0x800aba14,
     [270] = (EvtFunction)0x800ab5f4,
     [271] = (EvtFunction)0x800ab22c,
-    [272] = (EvtFunction)0x80091be8,
+    [272] = Evtf272_StatRaised,
     [273] = (EvtFunction)0x800aadc0,
     [274] = Evtf274_Noop,
     [275] = (EvtFunction)0x800aaccc,
     [276] = (EvtFunction)0x800aaa0c,
     [277] = (EvtFunction)0x800aa0bc,
-    [278] = (EvtFunction)0x800923e0,
+    [278] = Evtf278_FaintSparkles,
     [279] = (EvtFunction)0x800aa160,
     [280] = Evtf280_DarkHurricane_Target,
     [281] = Evtf281_282_DarkHurricane_FX2_FX3,
@@ -701,7 +735,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [286] = Evtf286_Fx_TBD,
     [287] = Evtf287_Fx_TBD,
     [288] = (EvtFunction)0x80096030,
-    [289] = (EvtFunction)0x800908b4,
+    [289] = Evtf289_ChimneySmokeRing,
     [290] = Evtf290_294_761_RevealItem,
     [291] = Evtf291_ChestImpact,
     [292] = Evtf292_BlueItemSparkle,
@@ -714,11 +748,11 @@ EvtFunction gEvtFunctionPointers[804] = {
     [299] = (EvtFunction)0x80097c94,
     [300] = Evtf300_Map32_Smokestack,
     [301] = Evtf301_Map32_SmokestackParticle,
-    [302] = (EvtFunction)0x80090ab8,
+    [302] = Evtf302_ChimneySmoke,
     [303] = (EvtFunction)0x8009eb3c,
     [304] = (EvtFunction)0x8009e760,
     [305] = (EvtFunction)0x800ac540,
-    [306] = (EvtFunction)0x8009034c,
+    [306] = Evtf306_791_792_793_Healing_FX2,
     [307] = Evtf307_324_EvilStream_FX2_FX3,
     [308] = (EvtFunction)NULL,
     [309] = Evtf309_Explosion,
@@ -771,11 +805,11 @@ EvtFunction gEvtFunctionPointers[804] = {
     [356] = (EvtFunction)0x80099f38,
     [357] = (EvtFunction)0x8009a474,
     [358] = (EvtFunction)0x80099b78,
-    [359] = (EvtFunction)0x8009483c,
+    [359] = Evtf359_PhaseShift_MapScaler,
     [360] = (EvtFunction)0x800b40d4,
     [361] = (EvtFunction)0x80095d08,
     [362] = (EvtFunction)0x8009aca8,
-    [363] = (EvtFunction)0x8009457c,
+    [363] = Evtf363_Wyrmfang_FX1,
     [364] = (EvtFunction)0x80097eb4,
     [365] = (EvtFunction)0x80098dcc,
     [366] = (EvtFunction)0x80098938,
@@ -790,15 +824,15 @@ EvtFunction gEvtFunctionPointers[804] = {
     [375] = Evtf375_FlameBreath_Particle,
     [376] = (EvtFunction)0x800b40d4,
     [377] = Evtf377_Fx_TBD,
-    [378] = (EvtFunction)0x80093f8c,
+    [378] = Evtf378_PhaseShift_FX1,
     [379] = Evtf379_EvilStream_Rock,
-    [380] = (EvtFunction)0x80091e78,
+    [380] = Evtf380_LevelUpFx,
     [381] = Evtf381_HealingCircle_FX1,
     [382] = Evtf382_FlameBreath,
     [383] = Evtf383_Sparkle,
     [384] = Evtf384_Fx_TBD,
     [385] = Evtf385_RevealMimic,
-    [386] = (EvtFunction)0x800906d0,
+    [386] = Evtf386_HealingSparkle,
     [387] = (EvtFunction)0x800a9700,
     [388] = Evtf388_DarkHurricane_FX1,
     [389] = Evtf389_DarkHurricane_Vortex,
@@ -1087,24 +1121,24 @@ EvtFunction gEvtFunctionPointers[804] = {
     [672] = (EvtFunction)0x800a43d4,
     [673] = (EvtFunction)0x8009ed24,
     [674] = (EvtFunction)0x800a9ac0,
-    [675] = (EvtFunction)0x80090b60,
-    [676] = (EvtFunction)0x80090db8,
-    [677] = (EvtFunction)0x80090f78,
-    [678] = (EvtFunction)0x80091248,
+    [675] = Evtf675_LeenaForcefield,
+    [676] = Evtf676_687_Rainfall,
+    [677] = Evtf677_RainfallDrop,
+    [678] = Evtf678_Ripple,
     [679] = (EvtFunction)0x800ada90,
     [680] = (EvtFunction)0x800adcf4,
     [681] = Evtf681_StatBuffFx,
     [682] = (EvtFunction)0x800ade8c,
     [683] = (EvtFunction)0x800b2708,
     [684] = (EvtFunction)0x800b2790,
-    [685] = (EvtFunction)0x80092724,
+    [685] = Evtf685_RockSpurt,
     [686] = Evtf206_686_BloodSpurtParticle,
-    [687] = (EvtFunction)0x80090db8,
+    [687] = Evtf676_687_Rainfall,
     [688] = (EvtFunction)0x800aa0b4,
     [689] = (EvtFunction)0x800ae00c,
     [690] = (EvtFunction)0x800ac8e0,
     [691] = (EvtFunction)0x800acab4,
-    [692] = (EvtFunction)0x80091464,
+    [692] = Evtf692_Campfire,
     [693] = (EvtFunction)0x800ae4f8,
     [694] = (EvtFunction)0x800ae678,
     [695] = (EvtFunction)0x800ae8f4,
@@ -1122,15 +1156,15 @@ EvtFunction gEvtFunctionPointers[804] = {
     [707] = (EvtFunction)0x800afc68,
     [708] = (EvtFunction)0x8009d320,
     [709] = (EvtFunction)0x8009d320,
-    [710] = (EvtFunction)0x80093e3c,
+    [710] = Evtf710_Particle,
     [711] = Evtf711_712_Noop,
     [712] = Evtf711_712_Noop,
     [713] = (EvtFunction)0x800ad600,
     [714] = (EvtFunction)0x800afdbc,
-    [715] = (EvtFunction)0x800928bc,
-    [716] = (EvtFunction)0x800928bc,
-    [717] = (EvtFunction)0x800928bc,
-    [718] = (EvtFunction)0x800928bc,
+    [715] = Evtf715_to_718_Spellbind_FX2_FX3,
+    [716] = Evtf715_to_718_Spellbind_FX2_FX3,
+    [717] = Evtf715_to_718_Spellbind_FX2_FX3,
+    [718] = Evtf715_to_718_Spellbind_FX2_FX3,
     [719] = (EvtFunction)0x800aff2c,
     [720] = (EvtFunction)0x800b0500,
     [721] = (EvtFunction)0x800b07cc,
@@ -1147,12 +1181,12 @@ EvtFunction gEvtFunctionPointers[804] = {
     [732] = (EvtFunction)0x800af520,
     [733] = Evtf733_StatBuffIcon,
     [734] = (EvtFunction)0x800b1334,
-    [735] = (EvtFunction)0x80092ac0,
-    [736] = (EvtFunction)0x80092dc0,
-    [737] = (EvtFunction)0x80093040,
+    [735] = Evtf735_SparkleDust,
+    [736] = Evtf736_RemoveParalysis_Bubble,
+    [737] = Evtf737_RemoveParalysis,
     [738] = (EvtFunction)0x800a6b70,
-    [739] = (EvtFunction)0x800929cc,
-    [740] = (EvtFunction)0x80092c64,
+    [739] = Evtf739_Particle,
+    [740] = Evtf740_RemoveParalysis_Sparkles,
     [741] = (EvtFunction)0x800b0cd0,
     [742] = (EvtFunction)0x800ace90,
     [743] = (EvtFunction)0x800af520,
@@ -1169,47 +1203,47 @@ EvtFunction gEvtFunctionPointers[804] = {
     [754] = (EvtFunction)0x800a4fb8,
     [755] = (EvtFunction)0x800985e8,
     [756] = (EvtFunction)0x800b1710,
-    [757] = (EvtFunction)0x800933a8,
+    [757] = Evtf757_PushedObjectSplash,
     [758] = (EvtFunction)0x800b28dc,
-    [759] = (EvtFunction)0x80091588,
-    [760] = (EvtFunction)0x80093530,
+    [759] = Evtf759_RockSpurtParticle,
+    [760] = Evtf760_EliteMeleeSparkles,
     [761] = Evtf290_294_761_RevealItem,
-    [762] = (EvtFunction)0x800936f8,
-    [763] = (EvtFunction)0x8009152c,
-    [764] = (EvtFunction)0x80093b80,
-    [765] = (EvtFunction)0x80093b80,
-    [766] = (EvtFunction)0x80093b80,
-    [767] = (EvtFunction)0x80093b80,
-    [768] = (EvtFunction)0x80093b80,
-    [769] = (EvtFunction)0x80093b80,
-    [770] = (EvtFunction)0x80093798,
-    [771] = (EvtFunction)0x80093798,
-    [772] = (EvtFunction)0x80093798,
-    [773] = (EvtFunction)0x80093798,
-    [774] = (EvtFunction)0x80093798,
-    [775] = (EvtFunction)0x80093798,
-    [776] = (EvtFunction)0x80093798,
-    [777] = (EvtFunction)0x80093798,
-    [778] = (EvtFunction)0x80093798,
-    [779] = (EvtFunction)0x80093798,
-    [780] = (EvtFunction)0x80093798,
-    [781] = (EvtFunction)0x80093798,
-    [782] = (EvtFunction)0x80093798,
-    [783] = (EvtFunction)0x80093798,
-    [784] = (EvtFunction)0x80093798,
-    [785] = (EvtFunction)0x80093798,
-    [786] = (EvtFunction)0x80093798,
-    [787] = (EvtFunction)0x80093798,
-    [788] = (EvtFunction)0x80093798,
-    [789] = (EvtFunction)0x80093798,
-    [790] = (EvtFunction)0x80093d44,
-    [791] = (EvtFunction)0x8009034c,
-    [792] = (EvtFunction)0x8009034c,
-    [793] = (EvtFunction)0x8009034c,
+    [762] = Evtf762_Megaherb,
+    [763] = Evtf763_BoulderRubble,
+    [764] = Evtf764_to_769_ProjectileTrail,
+    [765] = Evtf764_to_769_ProjectileTrail,
+    [766] = Evtf764_to_769_ProjectileTrail,
+    [767] = Evtf764_to_769_ProjectileTrail,
+    [768] = Evtf764_to_769_ProjectileTrail,
+    [769] = Evtf764_to_769_ProjectileTrail,
+    [770] = Evtf770_to_789_ItemSpell,
+    [771] = Evtf770_to_789_ItemSpell,
+    [772] = Evtf770_to_789_ItemSpell,
+    [773] = Evtf770_to_789_ItemSpell,
+    [774] = Evtf770_to_789_ItemSpell,
+    [775] = Evtf770_to_789_ItemSpell,
+    [776] = Evtf770_to_789_ItemSpell,
+    [777] = Evtf770_to_789_ItemSpell,
+    [778] = Evtf770_to_789_ItemSpell,
+    [779] = Evtf770_to_789_ItemSpell,
+    [780] = Evtf770_to_789_ItemSpell,
+    [781] = Evtf770_to_789_ItemSpell,
+    [782] = Evtf770_to_789_ItemSpell,
+    [783] = Evtf770_to_789_ItemSpell,
+    [784] = Evtf770_to_789_ItemSpell,
+    [785] = Evtf770_to_789_ItemSpell,
+    [786] = Evtf770_to_789_ItemSpell,
+    [787] = Evtf770_to_789_ItemSpell,
+    [788] = Evtf770_to_789_ItemSpell,
+    [789] = Evtf770_to_789_ItemSpell,
+    [790] = Evtf790_Fx_TBD,
+    [791] = Evtf306_791_792_793_Healing_FX2,
+    [792] = Evtf306_791_792_793_Healing_FX2,
+    [793] = Evtf306_791_792_793_Healing_FX2,
     [794] = (EvtFunction)0x800b1320,
     [795] = (EvtFunction)0x800a9408,
     [796] = (EvtFunction)0x800b53e0,
-    [797] = (EvtFunction)0x80093f78,
+    [797] = Evtf797_Map47_Scn14_Dusk,
     [798] = (EvtFunction)0x800a8ae4,
     [799] = Evtf132_Etc_Fx_TBD,
     [800] = Evtf132_Etc_Fx_TBD,

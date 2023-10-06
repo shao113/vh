@@ -19,7 +19,7 @@ void Evtf571_LevelUp(EvtData *evt) {
    switch (evt->state) {
    case 0:
       PerformAudioCommand(0x50);
-      PerformAudioCommand(0x1365);
+      PerformAudioCommand(AUDIO_CMD_PREPARE_XA(101));
       gPlayerControlSuppressed = 1;
       gSignal5 = 0;
 
@@ -38,11 +38,11 @@ void Evtf571_LevelUp(EvtData *evt) {
 
       diff = EVT.dstRotY - gCameraRotation.vy;
       if (diff > 0) {
-         if (diff > ANGLE_180_DEGREES) {
-            EVT.dstRotY -= ANGLE_360_DEGREES;
+         if (diff > DEG(180)) {
+            EVT.dstRotY -= DEG(360);
          }
-      } else if (diff < -ANGLE_180_DEGREES) {
-         EVT.dstRotY += ANGLE_360_DEGREES;
+      } else if (diff < DEG(-180)) {
+         EVT.dstRotY += DEG(360);
       }
 
       EVT.timer = 45;
@@ -53,7 +53,7 @@ void Evtf571_LevelUp(EvtData *evt) {
       // fallthrough
    case 1:
       if (EVT.timer == 12) {
-         PerformAudioCommand(0x365);
+         PerformAudioCommand(AUDIO_CMD_PLAY_XA(101));
       }
       if (--EVT.timer != 0) {
          gCameraPos.vx += (-(sprite->x1.n >> 3) - gCameraPos.vx) >> 2;
@@ -62,8 +62,8 @@ void Evtf571_LevelUp(EvtData *evt) {
 
          gCameraRotation.vy += (EVT.dstRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vy += (EVT.dstRotY - gCameraRotation.vy) >> 4;
-         gCameraRotation.vx += (0x180 - gCameraRotation.vx) >> 2;
-         gCameraRotation.vz += -gCameraRotation.vz >> 2;
+         gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
+         gCameraRotation.vz += (0 - gCameraRotation.vz) >> 2;
 
          gCameraZoom.vz += (EVT.dstZoom - gCameraZoom.vz) >> 2;
 
@@ -90,11 +90,11 @@ void Evtf571_LevelUp(EvtData *evt) {
 
          diff = EVT.camSavedRotY - gCameraRotation.vy;
          if (diff > 0) {
-            if (diff > ANGLE_180_DEGREES) {
-               EVT.camSavedRotY -= ANGLE_360_DEGREES;
+            if (diff > DEG(180)) {
+               EVT.camSavedRotY -= DEG(360);
             }
-         } else if (diff < -ANGLE_180_DEGREES) {
-            EVT.camSavedRotY += ANGLE_360_DEGREES;
+         } else if (diff < DEG(-180)) {
+            EVT.camSavedRotY += DEG(360);
          }
       }
       break;
@@ -139,7 +139,7 @@ void Evtf024_BounceZoom(EvtData *evt) {
       // ?: no state++
    // fallthrough
    case 1:
-      EVT.todo_x26 += 96;
+      EVT.todo_x26 += DEG(8.4375);
       if (EVT.soft) {
          EVT.todo_x28 = (rcos(EVT.todo_x26 & 0xfff) * 5) * 2 >> 12;
       } else {
@@ -153,7 +153,7 @@ void Evtf024_BounceZoom(EvtData *evt) {
          tmp = (rcos(EVT.todo_x2a & 0xfff) * EVT.todo_x28) >> 12;
          gCameraZoom.vz = tmp + 350;
       }
-      if (EVT.todo_x26 >= 0x400) {
+      if (EVT.todo_x26 >= DEG(90)) {
          gCameraZoom.vz = EVT.savedZoom;
          evt->functionIndex = EVTF_NULL;
       }
@@ -192,11 +192,11 @@ void Evtf017_Camera_TBD(EvtData *evt) {
 
       diff = EVT.dstCamRotY - gCameraRotation.vy;
       if (diff > 0) {
-         if (diff > ANGLE_180_DEGREES) {
-            EVT.dstCamRotY -= ANGLE_360_DEGREES;
+         if (diff > DEG(180)) {
+            EVT.dstCamRotY -= DEG(360);
          }
-      } else if (diff < -ANGLE_180_DEGREES) {
-         EVT.dstCamRotY += ANGLE_360_DEGREES;
+      } else if (diff < DEG(-180)) {
+         EVT.dstCamRotY += DEG(360);
       }
 
       EVT.timer = 35;
@@ -212,8 +212,8 @@ void Evtf017_Camera_TBD(EvtData *evt) {
          gCameraPos.vy += ((sprite->y1.n >> 3) - gCameraPos.vy) >> 2;
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 4;
-         gCameraRotation.vx += (0x180 - gCameraRotation.vx) >> 2;
-         gCameraRotation.vz += -gCameraRotation.vz >> 2;
+         gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
+         gCameraRotation.vz += (0 - gCameraRotation.vz) >> 2;
          gCameraZoom.vz += (EVT.dstZoom - gCameraZoom.vz) >> 2;
          EVT.geomOfsY += (EVT.dstGeomOfsY - EVT.geomOfsY) >> 2;
          SetGeomOffset(160, EVT.geomOfsY);
@@ -231,11 +231,11 @@ void Evtf017_Camera_TBD(EvtData *evt) {
 
          diff = EVT.camSavedRotY - gCameraRotation.vy;
          if (diff > 0) {
-            if (diff > ANGLE_180_DEGREES) {
-               EVT.camSavedRotY -= ANGLE_360_DEGREES;
+            if (diff > DEG(180)) {
+               EVT.camSavedRotY -= DEG(360);
             }
-         } else if (diff < -ANGLE_180_DEGREES) {
-            EVT.camSavedRotY += ANGLE_360_DEGREES;
+         } else if (diff < DEG(-180)) {
+            EVT.camSavedRotY += DEG(360);
          }
       }
       break;
@@ -305,11 +305,11 @@ void Evtf026_588_Camera_TBD(EvtData *evt) {
 
       diff = EVT.dstCamRotY - gCameraRotation.vy;
       if (diff > 0) {
-         if (diff > ANGLE_180_DEGREES) {
-            EVT.dstCamRotY -= ANGLE_360_DEGREES;
+         if (diff > DEG(180)) {
+            EVT.dstCamRotY -= DEG(360);
          }
-      } else if (diff < -ANGLE_180_DEGREES) {
-         EVT.dstCamRotY += ANGLE_360_DEGREES;
+      } else if (diff < DEG(-180)) {
+         EVT.dstCamRotY += DEG(360);
       }
 
       EVT.timer = 35;
@@ -321,20 +321,21 @@ void Evtf026_588_Camera_TBD(EvtData *evt) {
          EVT.dstGeomOfsY = 150;
       }
       evt->state++;
+
    // fallthrough
    case 1:
       if (--EVT.timer != 0) {
          gCameraPos.vx += (-(target->x1.n >> 3) - gCameraPos.vx) >> 2;
          gCameraPos.vz += (-(target->z1.n >> 3) - gCameraPos.vz) >> 2;
          if (evt->functionIndex == EVTF_CAMERA_TBD_588) {
-            gCameraPos.vy += (((target->y1.n + 0x80) >> 3) - gCameraPos.vy) >> 2;
+            gCameraPos.vy += (((target->y1.n + CV(0.5)) >> 3) - gCameraPos.vy) >> 2;
          } else {
             gCameraPos.vy += ((target->y1.n >> 3) - gCameraPos.vy) >> 2;
          }
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 4;
-         gCameraRotation.vx += (0x180 - gCameraRotation.vx) >> 2;
-         gCameraRotation.vz += -gCameraRotation.vz >> 2;
+         gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
+         gCameraRotation.vz += (0 - gCameraRotation.vz) >> 2;
          gCameraZoom.vz += (EVT.dstZoom - gCameraZoom.vz) >> 2;
          EVT.geomOfsY += (EVT.dstGeomOfsY - EVT.geomOfsY) >> 2;
          SetGeomOffset(160, EVT.geomOfsY);
@@ -379,36 +380,36 @@ void Evtf016_ChooseDoneDirection(EvtData *evt) {
       gSignal4 = otherEvt->d.sprite.direction;
       evt->x1.n = otherEvt->x1.n;
       evt->z1.n = otherEvt->z1.n;
-      evt->y1.n = otherEvt->y1.n + 0x80;
+      evt->y1.n = otherEvt->y1.n + CV(0.5);
       evt->state++;
    // fallthrough
    case 1:
       switch ((gCameraRotation.vy & 0xfff) >> 10) {
       case CAM_DIR_SOUTH:
-         dir = ANGLE_0_DEGREES;
+         dir = DEG(0);
          break;
       case CAM_DIR_EAST:
-         dir = ANGLE_270_DEGREES;
+         dir = DEG(270);
          break;
       case CAM_DIR_NORTH:
-         dir = ANGLE_180_DEGREES;
+         dir = DEG(180);
          break;
       case CAM_DIR_WEST:
-         dir = ANGLE_90_DEGREES;
+         dir = DEG(90);
          break;
       }
 
       if (gPadStateNewPresses & PAD_UP) {
-         gSignal4 = dir + ANGLE_0_DEGREES;
+         gSignal4 = dir + DEG(0);
       }
       if (gPadStateNewPresses & PAD_RIGHT) {
-         gSignal4 = dir + ANGLE_90_DEGREES;
+         gSignal4 = dir + DEG(90);
       }
       if (gPadStateNewPresses & PAD_DOWN) {
-         gSignal4 = dir + ANGLE_180_DEGREES;
+         gSignal4 = dir + DEG(180);
       }
       if (gPadStateNewPresses & PAD_LEFT) {
-         gSignal4 = dir + ANGLE_270_DEGREES;
+         gSignal4 = dir + DEG(270);
       }
       gSignal4 &= 0xfff;
 
@@ -418,20 +419,21 @@ void Evtf016_ChooseDoneDirection(EvtData *evt) {
          return;
       }
 
-      EVT.angle += ANGLE_45_DEGREES;
+      EVT.angle += DEG(45);
 
-      fInner = (rcos(EVT.angle & 0xfff) * 50 >> 12) + 192;
-      fOuter = (rcos(EVT.angle & 0xfff) * 130 >> 12) + 512;
-      nfInner = (rcos(EVT.angle & 0xfff) * 25 >> 12) + 192;
-      nfOuter = (rcos(EVT.angle & 0xfff) * 50 >> 12) + 384;
+      fInner = (rcos(EVT.angle & 0xfff) * 50 >> 12) + CV(0.75);
+      fOuter = (rcos(EVT.angle & 0xfff) * 130 >> 12) + CV(2.0);
+      nfInner = (rcos(EVT.angle & 0xfff) * 25 >> 12) + CV(0.75);
+      nfOuter = (rcos(EVT.angle & 0xfff) * 50 >> 12) + CV(1.5);
       otherEvt = Evt_GetUnused();
 
-      RenderDirectionArrow(evt, otherEvt, 0, gSignal4 == 0, fInner, fOuter, nfInner, nfOuter);
-      RenderDirectionArrow(evt, otherEvt, 0x400, gSignal4 == 0x400, fInner, fOuter, nfInner,
+      RenderDirectionArrow(evt, otherEvt, DEG(0), gSignal4 == DEG(0), fInner, fOuter, nfInner,
                            nfOuter);
-      RenderDirectionArrow(evt, otherEvt, 0x800, gSignal4 == 0x800, fInner, fOuter, nfInner,
+      RenderDirectionArrow(evt, otherEvt, DEG(90), gSignal4 == DEG(90), fInner, fOuter, nfInner,
                            nfOuter);
-      RenderDirectionArrow(evt, otherEvt, 0xc00, gSignal4 == 0xc00, fInner, fOuter, nfInner,
+      RenderDirectionArrow(evt, otherEvt, DEG(180), gSignal4 == DEG(180), fInner, fOuter, nfInner,
+                           nfOuter);
+      RenderDirectionArrow(evt, otherEvt, DEG(270), gSignal4 == DEG(270), fInner, fOuter, nfInner,
                            nfOuter);
    }
 
@@ -448,37 +450,33 @@ void RenderDirectionArrow(EvtData *owner, EvtData *sprite, s16 angle, u8 filled,
    s16 inner, outer;
 
    if (filled) {
-      angle2 = angle - 384;
-      angle3 = angle + 384;
-      angle0 = angle - 128;
-      angle1 = angle + 128;
+      angle2 = angle - DEG(33.75);
+      angle3 = angle + DEG(33.75);
+      angle0 = angle - DEG(11.25);
+      angle1 = angle + DEG(11.25);
       inner = fInner;
       outer = fOuter;
       sprite->d.sprite.gfxIdx = GFX_DIRECTION_ARROW_FILLED;
    } else {
-      angle2 = angle - 192;
-      angle3 = angle + 192;
-      angle0 = angle - 96;
-      angle1 = angle + 96;
+      angle2 = angle - DEG(16.875);
+      angle3 = angle + DEG(16.875);
+      angle0 = angle - DEG(8.4375);
+      angle1 = angle + DEG(8.4375);
       inner = nfInner;
       outer = nfOuter;
       sprite->d.sprite.gfxIdx = GFX_DIRECTION_ARROW_EMPTY;
    }
 
-   sprite->d.sprite.coords[0].x =
-       owner->x1.n + (rcos((angle0 - ANGLE_90_DEGREES) & 0xfff) * outer >> 12);
+   sprite->d.sprite.coords[0].x = owner->x1.n + (rcos((angle0 - DEG(90)) & 0xfff) * outer >> 12);
    sprite->d.sprite.coords[0].z = owner->z1.n + (rcos(angle0 & 0xfff) * outer >> 12);
 
-   sprite->d.sprite.coords[2].x =
-       owner->x1.n + (rcos((angle2 - ANGLE_90_DEGREES) & 0xfff) * inner >> 12);
+   sprite->d.sprite.coords[2].x = owner->x1.n + (rcos((angle2 - DEG(90)) & 0xfff) * inner >> 12);
    sprite->d.sprite.coords[2].z = owner->z1.n + (rcos(angle2 & 0xfff) * inner >> 12);
 
-   sprite->d.sprite.coords[1].x =
-       owner->x1.n + (rcos((angle1 - ANGLE_90_DEGREES) & 0xfff) * outer >> 12);
+   sprite->d.sprite.coords[1].x = owner->x1.n + (rcos((angle1 - DEG(90)) & 0xfff) * outer >> 12);
    sprite->d.sprite.coords[1].z = owner->z1.n + (rcos(angle1 & 0xfff) * outer >> 12);
 
-   sprite->d.sprite.coords[3].x =
-       owner->x1.n + (rcos((angle3 - ANGLE_90_DEGREES) & 0xfff) * inner >> 12);
+   sprite->d.sprite.coords[3].x = owner->x1.n + (rcos((angle3 - DEG(90)) & 0xfff) * inner >> 12);
    sprite->d.sprite.coords[3].z = owner->z1.n + (rcos(angle3 & 0xfff) * inner >> 12);
 
    sprite->d.sprite.coords[0].y = owner->y1.n;

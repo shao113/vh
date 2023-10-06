@@ -14,7 +14,7 @@ void Evtf581_AudioCommand(EvtData *evt) {
          return;
       }
       evt->state++;
-      /* fallthrough */
+   // fallthrough
    case 1:
       PerformAudioCommand(evt->d.evtf581.cmd);
       evt->functionIndex = EVTF_NULL;
@@ -66,7 +66,7 @@ void Evtf405_Panorama(EvtData *evt) {
    case 0:
       evt->state++;
    case 1:
-      evt->x1.n += 0x100;
+      evt->x1.n += CV(1.0);
       xOfs = (EVT.yRot - GetCamRotY()) >> 4;
       xOfs += evt->x1.s.hi;
       if (evt->x1.s.hi != 0) {
@@ -357,7 +357,7 @@ void AddEvtPrim3(u32 *ot, EvtData *evt) {
          quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
 
          gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == 0) {
+         if (evt->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
             poly->clut = gClutIds[evt->d.sprite.clut];
@@ -408,7 +408,7 @@ void AddEvtPrim4(u32 *ot, EvtData *evt) {
       quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
 
       gfx = evt->d.sprite.gfxIdx;
-      if (evt->d.sprite.clut == 0) {
+      if (evt->d.sprite.clut == CLUT_NULL) {
          poly->clut = gGfxClutIds[gfx];
       } else {
          poly->clut = gClutIds[evt->d.sprite.clut];
@@ -468,7 +468,7 @@ void AddEvtPrim5(u32 *ot, EvtData *evt) {
          quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
 
          gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == 0) {
+         if (evt->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
             poly->clut = gClutIds[evt->d.sprite.clut];
@@ -531,7 +531,7 @@ void AddEvtPrim6(u32 *ot, EvtData *evt, s32 useMapElevation) {
          SetTransMatrix(matrix);
 
          gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == 0) {
+         if (evt->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
             poly->clut = gClutIds[evt->d.sprite.clut];
@@ -599,7 +599,7 @@ void AddEvtPrim7(u32 *ot, EvtData *evt, s32 useMapElevation) {
          SetTransMatrix(matrix);
 
          gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == 0) {
+         if (evt->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
             poly->clut = gClutIds[evt->d.sprite.clut];
@@ -668,7 +668,7 @@ void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
          SetTransMatrix(matrix);
 
          gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == 0) {
+         if (evt->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
             poly->clut = gClutIds[evt->d.sprite.clut];
@@ -835,7 +835,7 @@ void RenderUnitSprite(u32 *ot, EvtData *sprite, s32 useMapElevation) {
       gfx = sprite->d.sprite.gfxIdx;
       stripIdx = sprite->d.sprite.stripIdx;
 
-      if (sprite->d.sprite.clut == 0) {
+      if (sprite->d.sprite.clut == CLUT_NULL) {
          poly->clut = gSpriteStripClutIds[stripIdx];
       } else {
          poly->clut = gClutIds[sprite->d.sprite.clut];
@@ -1006,7 +1006,7 @@ void AddEvtPrim_Gui(u32 *ot, EvtData *evt) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
       gfx = evt->d.sprite.gfxIdx;
 
-      if (evt->d.sprite.clut == 0) {
+      if (evt->d.sprite.clut == CLUT_NULL) {
          poly->clut = gGfxClutIds[gfx];
       } else {
          poly->clut = gClutIds[evt->d.sprite.clut];
@@ -1054,7 +1054,7 @@ void AddEvtPrim2(u32 *ot, EvtData *evt) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
       gfx = evt->d.sprite2.gfxIdx;
 
-      if (evt->d.sprite2.clut == 0) {
+      if (evt->d.sprite2.clut == CLUT_NULL) {
          poly->clut = gGfxClutIds[gfx];
       } else {
          poly->clut = gClutIds[evt->d.sprite2.clut];
@@ -1100,7 +1100,7 @@ void AddEvtPrim_Panorama(u32 *ot, EvtData *evt) {
    poly = &gGraphicsPtr->quads[gQuadIndex];
    gfx = evt->d.sprite.gfxIdx;
 
-   if (evt->d.sprite.clut == 0) {
+   if (evt->d.sprite.clut == CLUT_NULL) {
       poly->clut = gGfxClutIds[gfx];
    } else {
       poly->clut = gClutIds[evt->d.sprite.clut];
@@ -1133,17 +1133,17 @@ void RenderOverheadMapUnitMarker(u32 *ot_unused, EvtData *unitSprite, s32 showEl
 
    marker = Evt_GetUnused();
    if (showElevation) {
-      unitSprite->y1.n = OBJ_TERRAIN(unitSprite).s.elevation * 0x80 + 0x100;
+      unitSprite->y1.n = OBJ_TERRAIN(unitSprite).s.elevation * CV(0.5) + CV(1.0);
    }
 
    marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_BLUE_GEM : GFX_RED_GEM;
    marker->x1.s.hi = unitSprite->x1.s.hi;
-   marker->x1.s.lo = 0x80;
+   marker->x1.s.lo = CV(0.5);
    marker->z1.s.hi = unitSprite->z1.s.hi;
-   marker->z1.s.lo = 0x80;
+   marker->z1.s.lo = CV(0.5);
    marker->y1.n = unitSprite->y1.n;
 
-   osc = ((rcos(((gOscillation * 2) & 0xfff)) << 6) >> 12) + 0x80;
+   osc = ((rcos(((gOscillation * 2) & 0xfff)) << 6) >> 12) + CV(0.5);
 
    e = marker->x1.n - osc;
    w = marker->x1.n + osc;
@@ -1187,7 +1187,7 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
       }
       if (!hideMarker && !gIsEnemyTurn && !gPlayerControlSuppressed) {
          marker = Evt_GetUnused();
-         marker->y1.n = OBJ_TERRAIN(unitSprite).s.elevation * 128;
+         marker->y1.n = OBJ_TERRAIN(unitSprite).s.elevation * CV(0.5);
          marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_PLAYER_CIRCLE : GFX_ENEMY_CIRCLE;
          marker->x1.n = unitSprite->x1.n;
          marker->z1.n = unitSprite->z1.n;
@@ -1200,7 +1200,7 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
             spin = gState.unitMarkerSpin;
          } else {
             if (team == TEAM_PLAYER) {
-               spin = ANGLE_45_DEGREES;
+               spin = DEG(45);
             } else {
                spin = gState.unitMarkerSpin;
             }
@@ -1208,19 +1208,19 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
 
          marker->d.sprite.coords[0].x = unitSprite->x1.n + (rcos(spin & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[1].x =
-             unitSprite->x1.n + (rcos((spin + ANGLE_90_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->x1.n + (rcos((spin + DEG(90)) & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[2].x =
-             unitSprite->x1.n + (rcos((spin + ANGLE_270_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->x1.n + (rcos((spin + DEG(270)) & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[3].x =
-             unitSprite->x1.n + (rcos((spin + ANGLE_180_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->x1.n + (rcos((spin + DEG(180)) & 0xfff) * 0xaa >> 12);
 
          marker->d.sprite.coords[0].z =
-             unitSprite->z1.n + (rcos((spin + ANGLE_90_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->z1.n + (rcos((spin + DEG(90)) & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[1].z =
-             unitSprite->z1.n + (rcos((spin + ANGLE_180_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->z1.n + (rcos((spin + DEG(180)) & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[2].z = unitSprite->z1.n + (rcos(spin & 0xfff) * 0xaa >> 12);
          marker->d.sprite.coords[3].z =
-             unitSprite->z1.n + (rcos((spin + ANGLE_270_DEGREES) & 0xfff) * 0xaa >> 12);
+             unitSprite->z1.n + (rcos((spin + DEG(270)) & 0xfff) * 0xaa >> 12);
 
          marker->d.sprite.otOfs = -2;
          AddEvtPrim5(gGraphicsPtr->ot, marker);
@@ -1259,7 +1259,7 @@ void RenderStatusEffectText(u32 *ot_unused, EvtData *unitSprite, u8 paralyzed, u
       text->d.sprite.gfxIdx = GFX_POISONED;
    }
 
-   text->y1.n = unitSprite->y1.n + 0x160 + (slot * 0xa0);
+   text->y1.n = unitSprite->y1.n + CV(1.375) + (slot * CV(0.625));
    text->x1.n = unitSprite->x1.n;
    text->z1.n = unitSprite->z1.n;
 
@@ -1271,7 +1271,7 @@ void SetElevationFromTerrain(EvtData *evt) {
        evt->z1.s.hi > gMapMaxZ) {
       evt->y1.n = 0;
    } else {
-      evt->y1.n = OBJ_TERRAIN(evt).s.elevation * 128;
+      evt->y1.n = OBJ_TERRAIN(evt).s.elevation * CV(0.5);
    }
 }
 
@@ -1279,7 +1279,7 @@ s16 GetTerrainElevation(s8 z, s8 x) {
    if (x < gMapMinX || x > gMapMaxX || z < gMapMinZ || z > gMapMaxZ) {
       return 0;
    } else {
-      return gTerrainPtr[z][x].s.elevation * 128;
+      return gTerrainPtr[z][x].s.elevation * CV(0.5);
    }
 }
 
@@ -1287,7 +1287,7 @@ s32 GetMapModelElevation(s8 z, s8 x) {
    if (x < gMapMinX || x > gMapMaxX || z < gMapMinZ || z > gMapMaxZ) {
       return 0;
    } else {
-      return gMapRowPointers[z][x].height * 128;
+      return gMapRowPointers[z][x].height * CV(0.5);
    }
 }
 

@@ -163,6 +163,7 @@ typedef enum GfxIdx {
    GFX_LIGHTNING_7 = 155,
    GFX_LIGHTNING_8 = 156,
    //? I'm thinking the extra copies are allotted for dynamic scaling/scrolling texture effects
+   GFX_TILED_CLOUDS = 157,
    GFX_TILED_TBD_162 = 162,
    GFX_TILED_VEINS = 167,
    GFX_TILED_LINES = 172,
@@ -173,6 +174,7 @@ typedef enum GfxIdx {
    GFX_TILED_STONE = 192,
    GFX_TILED_DIAMONDS = 197,
    GFX_TILED_DIAMONDS_DYN_1 = 198,
+   GFX_TILED_MAGMA = 202,
    GFX_TILED_RED_SPARKLES = 207,
    GFX_TILED_RED_SPARKLES_DYN_1 = 208,
    GFX_TILED_GRAY_SPARKLES = 210,
@@ -206,6 +208,7 @@ typedef enum GfxIdx {
    GFX_GLOBE_7 = 242,
    GFX_GLOBE_8 = 243,
    GFX_LARGE_RED_CIRCLE = 244,
+   GFX_JP_TBD_245,
    GFX_CREST = 247,
    GFX_SKULL = 252,
    GFX_SALAMANDER_N = 253,
@@ -315,13 +318,33 @@ typedef enum GfxIdx {
    GFX_MAP_TEXTURE_207 = 607,
    GFX_MAP_TEXTURE_212 = 612,
    GFX_MAP_TEXTURE_229 = 629,
+   GFX_MAP_TEXTURE_232 = 632,
+   GFX_MAP_TEXTURE_233 = 633,
    GFX_WINDOW_TBD_657 = 657,
    GFX_WINDOW_TBD_658 = 658,
    GFX_TBD_685 = 685,
    GFX_WINDOW_TBD_707 = 707,
    GFX_WINDOW_TBD_708 = 708,
    GFX_ITEM_ICONS_OFS = 727,
+   GFX_ITEM_MEGAHERB = 729,
 } GfxIdx;
+
+typedef enum ClutIdx {
+   CLUT_NULL = 0,
+   CLUT_2 = 2,
+   CLUT_REDS = 3,
+   CLUT_BLUES = 4,
+   CLUT_GRAYS = 5,
+   CLUT_6 = 6,
+   CLUT_BLACK = 7,
+   CLUT_PURPLES = 8,
+   CLUT_GREENS = 9,
+   CLUT_MASK = 10,
+   CLUT_12 = 12,
+   CLUT_WINDOW = 16,
+   CLUT_INACTIVE_WINDOW = 19,
+   CLUT_25 = 25,
+} ClutIdx;
 
 typedef enum AnimIdx {
    ANIM_IDLE_B = 0,

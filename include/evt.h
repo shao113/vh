@@ -72,6 +72,7 @@ typedef enum EvtFunctionIdx {
    EVTF_DAGGER_STORM_DAGGER = 91,
    EVTF_MOOD_RING_RING = 95,
    EVTF_MOOD_RING_FX2 = 96,
+   EVTF_MAP20_SCN30_ARROW = 98,
    EVTF_HEALING_FX2 = 100,
    EVTF_HEALING_SPARKLE = 101,
    EVTF_POISON_FX2 = 102,
@@ -136,20 +137,30 @@ typedef enum EvtFunctionIdx {
    EVTF_FX_TBD_223 = 223,
    EVTF_THUNDER_BALL_INITIAL_ORB = 225,
    EVTF_THUNDER_BALL_CHILD_ORB = 226,
+   EVTF_MAP36_LEENA = 256,
+   EVTF_MAP36_VILLAGER = 258,
    EVTF_STAT_RAISED = 272,
    EVTF_OUTWARD_RAY = 273,
+   EVTF_CAMERA_TBD_277 = 277,
+   EVTF_FAINT_SPARKLES = 278,
    EVTF_ICE_STORM_CAMERA = 279,
    EVTF_DARK_HURRICANE_TARGET = 280,
    EVTF_DARK_HURRICANE_FX2 = 281,
    EVTF_DARK_HURRICANE_FX3 = 282,
    EVTF_DARK_HURRICANE_CLOUD = 283,
    EVTF_CASTING_FX = 285,
+   EVTF_MAP13_BRIDGE_EXPLOSION_IN_BATTLE = 288,
+   EVTF_CHIMNEY_SMOKE_RING = 289,
    EVTF_REVEAL_CHEST_ITEM = 290,
    EVTF_CHEST_IMPACT = 291,
    EVTF_BLUE_ITEM_SPARKLE = 292,
    EVTF_REVEAL_HIDDEN_ITEM = 294,
    EVTF_SMOKE = 295,
+   EVTF_SPLASH_WITH_DROPLETS = 298,
+   EVTF_MAP32_SMOKESTACK = 300,
    EVTF_MAP32_SMOKESTACK_PARTICLE = 301,
+   EVTF_CHIMNEY_SMOKE = 302,
+   EVTF_EXTRA_HEALING_FX2 = 306, // + Hyper Healing
    EVTF_EVIL_STREAM_FX3 = 307,
    EVTF_LIFE_ORB_BEAM = 310,
    EVTF_BUBBLE_SWIRL_BUBBLE = 312,
@@ -166,8 +177,16 @@ typedef enum EvtFunctionIdx {
    EVTF_FILE_SAVE_DIALOG_IBS = 342,
    EVTF_ROMAN_FIRE_FX2 = 344,
    EVTF_ROMAN_FIRE_FX3 = 345,
+   EVTF_MAP26 = 347,
    EVTF_RUBBLE = 349,
+   EVTF_MAP29 = 352,
+   EVTF_MAP19 = 357,
+   EVTF_PHASE_SHIFT_MAP_SCALER = 359,
    EVTF_FILE_LOAD_DIALOG_360 = 360,
+   EVTF_MAP13_BRIDGE_EXPLOSION_IN_SCENE = 361,
+   EVTF_DRAWBRIDGE_BUTTON = 362,
+   EVTF_MAP17_FLOODGATE = 365,
+   EVTF_MAP17_BUTTON = 366,
    EVTF_SCREEN_EFFECT = 369,
    EVTF_MAGE_OIL_FX2 = 370,
    EVTF_RESTORE_8_MP_UNK_FX2 = 371,
@@ -181,12 +200,14 @@ typedef enum EvtFunctionIdx {
    EVTF_FLAME_BREATH = 382,
    EVTF_SPARKLE = 383,
    EVTF_REVEAL_MIMIC = 385,
+   EVTF_HEALING_SPARKLE_386 = 386,
    EVTF_FULLSCREEN_IMAGE = 387,
    EVTF_DARK_HURRICANE_VORTEX = 389,
    EVTF_DARK_HURRICANE_VORTEX_LAYER = 390,
    EVTF_DYNAMO_HUM_ELECTRIC_ORB = 395,
    EVTF_DYNAMO_HUM_ORB_ELECTRICITY = 396,
    EVTF_FX_TBD_398 = 398,
+   EVTF_MAP11 = 399,
    EVTF_AI_TBD_400 = 400,
    EVTF_AI_TBD_401 = 401,
    EVTF_AI_TBD_402 = 402,
@@ -265,24 +286,45 @@ typedef enum EvtFunctionIdx {
    EVTF_STATUS_WINDOW = 595,
    EVTF_STATUS_WINDOW_MGR = 596,
    EVTF_BATTLE_INTRO = 597,
+   EVTF_MAP32_CAR_RELEASE = 650,
+   EVTF_MAP33 = 651,
+   EVTF_MAP35_BUTTON = 652,
+   EVTF_MAP39 = 656,
+   EVTF_MAP38_FLOODGATE = 657,
+   EVTF_FLAME = 661,
+   EVTF_MAP28_BUTTON = 663,
+   EVTF_MAP27 = 665,
+   EVTF_MAP14_SAND = 670,
+   EVTF_HEAVY_RAINFALL = 676,
+   EVTF_RAINFALL_DROP = 677,
    EVTF_RIPPLE = 678,
    EVTF_STAT_BUFF_FX = 681,
    EVTF_ADJUST_FACE_ELEVATION = 683,
    EVTF_SLIDING_FACE = 684,
    EVTF_ROCK_SPURT = 685,
    EVTF_ROCK_SPURT_PARTICLE_2 = 686,
+   EVTF_LIGHT_RAINFALL = 687,
    EVTF_DYNAMO_HUM_COLORED_BOLT = 700,
    EVTF_FLAMING_ROCK = 702,
+   EVTF_MAP40_BARRICADE = 703,
    EVTF_PARTICLE_710 = 710, // Generic animated particle?
+   EVTF_SPELLBIND_FX2 = 715,
+   EVTF_SPELLBIND_FX3 = 716,
+   EVTF_TBD_717 = 717,
+   EVTF_TBD_718 = 718,
    EVTF_TBD_732 = 732,
    EVTF_STAT_BUFF_ICON = 733,
    EVTF_SPARKLE_DUST = 735,
+   EVTF_REMOVE_PARALYSIS_BUBBLE = 736,
    EVTF_REMOVE_PARALYSIS = 737,
+   EVTF_PARTICLE_739 = 739,
+   EVTF_REMOVE_PARALYSIS_SPARKLES = 740,
    EVTF_ENTITY_BLOCKING = 746,
    EVTF_WYRMFANG_FLAMES_CW = 747,
    EVTF_WYRMFANG_FLAMES_CCW = 748,
    EVTF_WYRMFANG_FLAME = 749,
    EVTF_PUSHED_OBJECT_SPLASH = 757,
+   EVTF_ROCK_SPURT_PARTICLE = 759,
    EVTF_ELITE_MELEE_SPARKLES = 760,
    EVTF_REVEAL_USED_ITEM = 761,
    EVTF_BOULDER_RUBBLE = 763,
@@ -291,6 +333,9 @@ typedef enum EvtFunctionIdx {
    EVTF_PROJECTILE_TRAIL_SMOKE = 766,
    EVTF_PROJECTILE_TRAIL_SPARKLES = 767,
    EVTF_ITEM_SPELL = 770,
+   EVTF_HEALING_PLUS_FX2 = 791,
+   EVTF_ULTRA_HEALING_FX2 = 792,
+   EVTF_SUPREME_HEALING_FX2 = 793, // + Holy H2O
    EVTF_FADE = 795,
    EVTF_FX_TBD_799 = 799,
    EVTF_FX_TBD_800 = 800,
@@ -799,6 +844,19 @@ typedef struct EvtData_082 {
    /* :0x5C */ struct EvtData *sprite;
 } EvtData_082;
 
+/* Map 20 - Scene 30 - Arrow Spawner */
+typedef struct EvtData_087 {
+   /* :0x24 */ union {
+      struct EvtData *entitySpriteParam;
+      struct {
+         s16 z, y;
+      } velocity;
+   } variant_0x24;
+   /* :0x28 */ s16 yAccel;
+   /* :0x2A */ u8 unk_0x2A[50];
+   /* :0x5C */ struct EvtData *entitySprite;
+} EvtData_087;
+
 /* Dagger Storm - FX2 */
 typedef struct EvtData_090 {
    /* :0x24 */ s16 todo_x24;
@@ -857,7 +915,21 @@ typedef struct EvtData_097 {
    /* :0x5C */ struct EvtData *targetSprite;
 } EvtData_097;
 
-/* Healing - FX3 */
+/* Map 20 - Scene 30 - Arrow */
+typedef struct EvtData_098 {
+   /* :0x24 */ s8 hidden;
+   /* :0x25 */ u8 unk_0x25[3];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[6];
+   /* :0x30 */ s8 animFinished;
+   /* :0x31 */ u8 unk_0x31[11];
+   /* :0x3C */ SVectorXZY coords[4];
+   /* :0x54 */ SVectorXZY pos;
+   /* :0x5A */ u8 unk_0x5A[6];
+} EvtData_098;
+
+/* Healing - FX2 */
+// Used for: Healing, Self Healing, Herb, Megaherb, Moon Pie
 typedef struct EvtData_100 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[18];
@@ -1886,18 +1958,27 @@ typedef struct EvtData_226 {
 /* Stat Raised */
 typedef struct EvtData_272 {
    /* :0x24 */ u8 unk_0x24[4];
-   /* :0x28 */ s16 todo_x28;
+   /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[10];
-   /* :0x34 */ s16 todo_x34;
+   /* :0x34 */ s16 boxIdx;
    /* :0x36 */ u8 unk_0x36[22];
    /* :0x4C */ s16 type;
    /* :0x4E */ u8 unk_0x4E[6];
-   /* :0x54 */ s16 todo_x54;
-   /* :0x56 */ s16 todo_x56;
-   /* :0x58 */ s16 todo_x58;
-   /* :0x5A */ s16 todo_x5a;
+   /* :0x54 */ s16 statGfxIdx;
+   /* :0x56 */ s16 upGfxIdx;
+   /* :0x58 */ s16 animRelativeOfs;
+   /* :0x5A */ s16 animYOfs;
    /* :0x5C */ struct EvtData *unitSprite;
 } EvtData_272;
+
+/* Faint Sparkles */
+typedef struct EvtData_278 {
+   /* :0x24 */ struct EvtData *targetSprite;
+   /* :0x28 */ u8 unk_0x28[4];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[46];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_278;
 
 /* Ice Storm - Camera */
 typedef struct EvtData_279 {
@@ -1974,6 +2055,19 @@ typedef struct EvtData_292 {
    /* :0x24 */ u8 unk_0x24[56];
    /* :0x5C */ struct EvtData *sprite;
 } EvtData_292;
+
+/* Healing - FX2 */
+// TODO: Disambiguate from EvtData_100?
+// 306: Extra Healing, Hyper Healing
+// 791: Healing Plus
+// 792: Ultra Healing
+// 793: Supreme Healing, Holy H2O
+typedef struct EvtData_306_Etc {
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[18];
+   /* :0x38 */ struct EvtData *unitSprite;
+   /* :0x3C */ u8 unk_0x3C[36];
+} EvtData_306_Etc;
 
 /* Evil Stream - FX2 / FX3 */
 typedef struct EvtData_307_324 {
@@ -2169,6 +2263,13 @@ typedef struct EvtData_348 {
    /* :0x5C */ struct EvtData *dataStore; // cylinder
 } EvtData_348;
 
+/* Wyrmfang - FX1 */
+typedef struct EvtData_363 {
+   /* :0x24 */ u8 unk_0x24[52];
+   /* :0x58 */ struct EvtData *ccwFlames;
+   /* :0x5C */ struct EvtData *cwFlames;
+} EvtData_363;
+
 /* Screen Effect (Incomplete) */
 typedef struct EvtData_369 {
    /* :0x24 */ u8 unk_0x24[4];
@@ -2205,6 +2306,14 @@ typedef struct EvtData_377 {
    /* :0x5C */ struct EvtData *todo_x5c;
 } EvtData_377;
 
+/* Phase Shift - FX1 */
+typedef struct EvtData_378 {
+   /* :0x24 */ SVectorXY positions[8];
+   /* :0x44 */ u8 unk_0x44[20];
+   /* :0x58 */ struct EvtData *runeSprite;
+   /* :0x5C */ struct EvtData *crestSprite;
+} EvtData_378;
+
 /* Evil Stream - Rock */
 typedef struct EvtData_379 {
    /* :0x24 */ u8 unk_0x24[16];
@@ -2214,6 +2323,14 @@ typedef struct EvtData_379 {
    /* :0x3C */ s16 maxHeight;
    /* :0x3E */ u8 unk_0x3E[34];
 } EvtData_379;
+
+/* Level Up - FX */
+typedef struct EvtData_380 {
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[50];
+   /* :0x58 */ struct EvtData *unitSprite;
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_380;
 
 /* Flame Breath */
 typedef struct EvtData_382 {
@@ -2229,6 +2346,17 @@ typedef struct EvtData_382 {
    /* :0x40 */ s16 unused_0x40;
    /* :0x42 */ u8 unk_0x42[30];
 } EvtData_382;
+
+/* Healing Sparkle */
+// TODO: Disambiguate from EvtData_101?
+typedef struct EvtData_386 {
+   /* :0x24 */ u8 unk_0x24[8];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[10];
+   /* :0x38 */ void *animData;
+   /* :0x3C */ s16 timer;
+   /* :0x3E */ u8 unk_0x3E[34];
+} EvtData_386;
 
 /* Dark Hurricane - FX1 */
 typedef struct EvtData_388 {
@@ -2619,6 +2747,21 @@ typedef struct EvtData_597 {
    /* :0x25 */ u8 unk_0x25[59];
 } EvtData_597;
 
+/* Leena's Forcefield */
+typedef struct EvtData_675 {
+   /* :0x24 */ struct EvtData *targetSprite;
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[3];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ u8 unk_0x32[2];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[6];
+   /* :0x3C */ SVectorXZY coords[4];
+   /* :0x54 */ u8 unk_0x54[12];
+} EvtData_675;
+
 /* Stat Buff FX */
 typedef struct EvtData_681 {
    /* :0x24 */ struct EvtData *unitSprite;
@@ -2629,6 +2772,20 @@ typedef struct EvtData_681 {
    /* :0x50 */ s16 todo_x50;
    /* :0x52 */ u8 unk_0x52[14];
 } EvtData_681;
+
+/* Campfire */
+typedef struct EvtData_692 {
+   /* :0x24 */ struct EvtData *entitySprite;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_692;
+
+/* Spellbind - FX2 / FX3 */
+typedef struct EvtData_715_to_718 {
+   /* :0x24 */ u8 unk_0x24[2];
+   /* :0x26 */ s16 unused_0x26;
+   /* :0x28 */ u8 unk_0x28[56];
+} EvtData_715_to_718;
 
 /* Stat Buff Icon */
 typedef struct EvtData_733 {
@@ -2662,6 +2819,12 @@ typedef struct EvtData_749 {
    /* :0x4C */ struct EvtData *sprite;
    /* :0x50 */ u8 unk_0x50[16];
 } EvtData_749;
+
+/* Elite Melee Sparkles */
+typedef struct EvtData_760 {
+   /* :0x24 */ u8 unk_0x24[56];
+   /* :0x5C */ struct EvtData *unitSprite;
+} EvtData_760;
 
 /* Map Object - Generic */
 typedef struct EvtData_MapObject {
@@ -2800,13 +2963,15 @@ typedef struct EvtData {
       EvtData_079 evtf079;         /* Slay - FX3 */
       EvtData_080 evtf080;         /* Roman Fire - FX1 */
       EvtData_082 evtf082;         /* FX - TBD */
+      EvtData_087 evtf087;         /* Map 20 - Scene 30 - Arrow Spawner */
       EvtData_090 evtf090;         /* Dagger Storm - FX2 */
       EvtData_091 evtf091;         /* Dagger Storm - Dagger */
       EvtData_094 evtf094;         /* Mood Ring - FX1 */
       EvtData_095 evtf095;         /* Mood Ring - Ring */
       EvtData_096 evtf096;         /* Mood Ring - FX2 */
       EvtData_097 evtf097;         /* Mood Ring - FX3 */
-      EvtData_100 evtf100;         /* Healing - FX3 */
+      EvtData_098 evtf098;         /* Map 20 - Scene 30 - Arrow */
+      EvtData_100 evtf100;         /* Healing - FX2 */
       EvtData_101 evtf101;         /* Healing Sparkle */
       EvtData_102_227 evtf102;     /* Poison - FX2 */
       EvtData_103 evtf103;         /* Poison Bubbles */
@@ -2894,6 +3059,7 @@ typedef struct EvtData {
       EvtData_225 evtf225;         /* Thunder Ball - Initial Orb */
       EvtData_226 evtf226;         /* Thunder Ball - Child Orb */
       EvtData_272 evtf272;         /* Stat Raised */
+      EvtData_278 evtf278;         /* Faint Sparkles */
       EvtData_279 evtf279;         /* Ice Storm - Camera */
       EvtData_280 evtf280;         /* Dark Hurricane - Target */
       EvtData_281_282 evtf281;     /* Dark Hurricane - FX2 / FX3 */
@@ -2903,6 +3069,7 @@ typedef struct EvtData {
       EvtData_290_294_761 evtf290; /* Reveal Chest Item */
       EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_292 evtf292;         /* Blue Item Sparkles */
+      EvtData_306_Etc evtf306;     /* Healing - FX2 */
       EvtData_307_324 evtf307;     /* Evil Stream - FX2 / FX3 */
       EvtData_310 evtf310;         /* Life Orb - Beam */
       EvtData_312 evtf312;         /* Bubble Swirl - Bubble */
@@ -2923,10 +3090,14 @@ typedef struct EvtData {
       EvtData_335_336 evtf336;     /* Salamander - Segment */
       EvtData_132_Etc evtf344;     /* Roman Fire - FX2 / FX3 */
       EvtData_348 evtf348;         /* FX - TBD */
+      EvtData_363 evtf363;         /* Wyrmfang - FX1 */
       EvtData_369 evtf369;         /* Screen Effect */
       EvtData_377 evtf377;         /* FX - TBD */
+      EvtData_378 evtf378;         /* Phase Shift - FX1 */
       EvtData_379 evtf379;         /* Evil Stream - Rock */
+      EvtData_380 evtf380;         /* Level Up - FX */
       EvtData_382 evtf382;         /* Flame Breath */
+      EvtData_386 evtf386;         /* Healing Sparkle */
       EvtData_388 evtf388;         /* Dark Hurricane - FX1 */
       EvtData_389 evtf389;         /* Dark Hurricane - Vortex */
       EvtData_390 evtf390;         /* Dark Hurricane - Vortex Layer */
@@ -2968,10 +3139,15 @@ typedef struct EvtData {
       EvtData_593 evtf593;         /* Battle - Results - Unit (Reward or Penalty) */
       EvtData_595 evtf595;         /* Status Window Manager */
       EvtData_597 evtf597;         /* Battle - Intro */
+      EvtData_675 evtf675;         /* Leena's Forcefield */
       EvtData_681 evtf681;         /* Stat Buff FX */
+      EvtData_692 evtf692;         /* Campfire */
+      EvtData_715_to_718 evtf715;  /* Spellbind - FX2 / FX3 */
       EvtData_733 evtf733;         /* Stat Buff Icon */
       EvtData_747_748 evtf747;     /* Wyrmfang - Flames */
       EvtData_749 evtf749;         /* Wyrmfang - Flame */
+      EvtData_760 evtf760;         /* Elite Melee Sparkles */
+      EvtData_290_294_761 evtf761; /* Reveal Used Item */
       EvtData_133_Etc evtf801;     /* FX - TBD */
       EvtData_133_Etc evtf802;     /* FX - TBD */
       EvtData_133_Etc evtf803;     /* FX - TBD */

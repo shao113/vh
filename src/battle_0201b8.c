@@ -6,6 +6,7 @@
 #include "field.h"
 #include "window.h"
 #include "graphics.h"
+#include "audio.h"
 
 typedef struct EnemyEventSpawn {
    u8 z, x, stripIdx, level, expMulti;
@@ -225,12 +226,12 @@ void UpdatePlayerCamera(void) {
    gCameraRotation.vx -= 0x80;
    gCameraRotation.vx = CLAMP(gCameraRotation.vx, 0x80, 0x380);
 
-   gCameraRotation.vy += ANGLE_45_DEGREES;
+   gCameraRotation.vy += DEG(45);
    gCameraRotation.vy += mapYRotationSpeed;
    if ((gCameraRotation.vy & 0x3ff) == 0) {
       mapYRotationSpeed = 0;
    }
-   gCameraRotation.vy -= ANGLE_45_DEGREES;
+   gCameraRotation.vy -= DEG(45);
 
    if (gSavedPadState & PAD_R1) {
       mapYRotationSpeed = 0x80;
@@ -296,12 +297,11 @@ void Evtf597_BattleIntro(EvtData *evt) {
    switch (evt->state) {
    case 0:
       gSignal1 = 1;
-      s_introDstCamRotY_801231e4 =
-          (gMapCursorStartingPos[gState.mapNum].y * ANGLE_90_DEGREES) + ANGLE_45_DEGREES;
+      s_introDstCamRotY_801231e4 = (gMapCursorStartingPos[gState.mapNum].y * DEG(90)) + DEG(45);
       s_introYRotSpeed_801231dc = 8;
       s_introXRotSpeed_801231e0 = 5;
       gCameraZoom.vz = 800;
-      gCameraRotation.vx = ANGLE_90_DEGREES;
+      gCameraRotation.vx = DEG(90);
       gPlayerControlSuppressed = 1;
       EVT.timer = 30;
       evt->state++;
@@ -361,11 +361,11 @@ void Evtf597_BattleIntro(EvtData *evt) {
 
          diff = s_introDstCamRotY_801231e4 - gCameraRotation.vy;
          if (diff > 0) {
-            if (diff > ANGLE_180_DEGREES) {
-               s_introDstCamRotY_801231e4 -= ANGLE_360_DEGREES;
+            if (diff > DEG(180)) {
+               s_introDstCamRotY_801231e4 -= DEG(360);
             }
-         } else if (diff < -ANGLE_180_DEGREES) {
-            s_introDstCamRotY_801231e4 += ANGLE_360_DEGREES;
+         } else if (diff < DEG(-180)) {
+            s_introDstCamRotY_801231e4 += DEG(360);
          }
 
          EVT.timer = 20;
@@ -375,12 +375,12 @@ void Evtf597_BattleIntro(EvtData *evt) {
    case 7:
       if (--EVT.timer != 0) {
          gCameraRotation.vy += (s_introDstCamRotY_801231e4 - gCameraRotation.vy) >> 2;
-         gCameraRotation.vx += (0x180 - gCameraRotation.vx) >> 2;
-         gCameraZoom.vz += (0x280 - gCameraZoom.vz) >> 2;
+         gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
+         gCameraZoom.vz += (640 - gCameraZoom.vz) >> 2;
       } else {
          gCameraRotation.vy = s_introDstCamRotY_801231e4;
-         gCameraRotation.vx = 0x180;
-         gCameraZoom.vz = 0x280;
+         gCameraRotation.vx = DEG(33.75);
+         gCameraZoom.vz = 640;
          gClearSavedPadState = 0;
          evt->functionIndex = EVTF_NULL;
          gSignal1 = 0;
@@ -608,7 +608,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         PerformAudioCommand(0x131c);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(28));
          gState.mapState.s.field_0x0 = 2;
          SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_HAPPY, 16);
 
@@ -637,7 +637,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
          break;
 
       case 4:
-         PerformAudioCommand(0x31c);
+         PerformAudioCommand(AUDIO_CMD_PLAY_XA(28));
          sprite = GetUnitSpriteAtPosition(EVT.xenoSpawnZ, 2);
          fx = Evt_GetUnused();
          fx->functionIndex = EVTF_STRETCH_WARP_SPRITE;
@@ -690,7 +690,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
 
       case 11:
          if (gState.msgFinished) {
-            PerformAudioCommand(0x20);
+            PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
             EVT.timer = 20;
             evt->state2++;
          }
@@ -698,10 +698,10 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
 
       case 12:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(6);
+            PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             LoadSeqSet(0x19);
             FinishLoadingSeq();
-            PerformAudioCommand(0x5e6);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SFX(230));
             sprite = FindUnitSpriteByNameIdx(UNIT_KANE);
             fx = Evt_GetUnused();
             fx->functionIndex = EVTF_TBD_732;
@@ -719,11 +719,11 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
             gState.msgBoxFinished = 1;
          }
          if (gState.msgFinished) {
-            PerformAudioCommand(0x5e7);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SFX(231));
             gState.D_801405A4 = 1;
-            PerformAudioCommand(0x131c);
+            PerformAudioCommand(AUDIO_CMD_PREPARE_XA(28));
             SetupBattleMsgBox(UNIT_XENO, PORTRAIT_XENO, 25);
-            PerformAudioCommand(0x20b);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(11));
             evt->state2++;
          }
          break;
@@ -734,7 +734,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
             OBJ_TILE_STATE(sprite).action = TA_X16;
             EVT.spawnZ = sprite->z1.s.hi;
             EVT.spawnX = sprite->x1.s.hi;
-            PerformAudioCommand(0x31c);
+            PerformAudioCommand(AUDIO_CMD_PLAY_XA(28));
             sprite = GetUnitSpriteAtPosition(EVT.xenoSpawnZ, 2);
             fx = Evt_GetUnused();
             fx->functionIndex = EVTF_STRETCH_WARP_SPRITE;
@@ -762,7 +762,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
 
       case 17:
          if (gState.msgFinished) {
-            PerformAudioCommand(0x21);
+            PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
             EVT.timer = 75;
             evt->state2++;
          }
@@ -770,7 +770,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
 
       case 18:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(0x201);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(1));
             evt->state = 99;
          }
          break;
@@ -1393,7 +1393,7 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         PerformAudioCommand(0x134d);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(77));
          SetupBattleMsgBox(UNIT_DUMAS, PORTRAIT_DUMAS, 14);
          evt->state2++;
          break;
@@ -1448,13 +1448,13 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
          SetupPartyBattleUnit(UNIT_DOLAN, 18, 13, DIR_EAST);
          SetupPartyBattleUnit(UNIT_SARA, 18, 14, DIR_EAST);
          SetupPartyBattleUnit(UNIT_ZOHAR, 19, 14, DIR_EAST);
-         PerformAudioCommand(0x34d);
+         PerformAudioCommand(AUDIO_CMD_PLAY_XA(77));
          evt->state2++;
          break;
 
       case 12:
          if (gState.msgFinished) {
-            PerformAudioCommand(0x38);
+            PerformAudioCommand(AUDIO_CMD_FADE_OUT_128_2);
             EVT.timer = 20;
             evt->state2++;
          }
@@ -1462,7 +1462,7 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
       case 13:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(6);
+            PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             LoadSeqSet(23);
             FinishLoadingSeq();
             EVT.timer = 1;
@@ -1490,7 +1490,7 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
       case 16:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(0x202);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(2));
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 17);
             evt->state2++;
          }
@@ -1911,7 +1911,7 @@ void Evtf003_BattleActions(EvtData *evt) {
          break;
 
       case 1:
-         PerformAudioCommand(0x374);
+         PerformAudioCommand(AUDIO_CMD_PLAY_XA(116));
          gSignal3 = 0;
          evt2 = unit->sprite;
          evt1 = Evt_GetUnused();
@@ -3213,7 +3213,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         PerformAudioCommand(0x1388);
+         PerformAudioCommand(AUDIO_CMD_PREPARE_XA(136));
          if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
             OBJ_TILE_STATE(unitSprite).action = TA_X1D;
             OBJ_TILE_STATE(unitSprite).cachedByte = 16;
@@ -3232,7 +3232,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
          evt1->y1.n = unitSprite->y1.n;
 
          if (gSignal3 != 0) {
-            PerformAudioCommand(0x388);
+            PerformAudioCommand(AUDIO_CMD_PLAY_XA(136));
             unitSprite->d.sprite.hidden = 1;
             OBJ_TILE_STATE(unitSprite).cachedByte = 0;
             gState.mapState.s.field_0x0 = 2;
@@ -3243,7 +3243,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
       case 2:
          if (gState.field_0x96 == 0) {
-            PerformAudioCommand(0x1389);
+            PerformAudioCommand(AUDIO_CMD_PREPARE_XA(137));
             gShowBlueMovementGrid = 1;
             PlotPathBackToUnit(gZ_801233dc, gX_801233d8);
             OBJ_TILE_STATE(unitSprite).action = TA_X6;
@@ -3290,7 +3290,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
          if (gSignal3 != 0) {
             OBJ_TILE_STATE(unitSprite).cachedByte = 0;
-            PerformAudioCommand(0x389);
+            PerformAudioCommand(AUDIO_CMD_PLAY_XA(137));
             gState.field_0x96 = 1;
             gState.mapState.s.field_0x0 = 1;
             gState.mapState.s.field_0x1 = gZ_801233dc;
@@ -3495,10 +3495,10 @@ void Evtf013_BattleMgr(EvtData *evt) {
       // fallthrough
       case 1:
          if (EVT.timer == 25) {
-            PerformAudioCommand(0x20);
+            PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
          }
          if (--EVT.timer == 0) {
-            PerformAudioCommand(6);
+            PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             CloseWindow(0x38);
             EVT.timer = 10;
             evt->state2++;
@@ -3507,7 +3507,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
       case 2:
          if (--EVT.timer == 0) {
-            PerformAudioCommand(0x201);
+            PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(1));
             EVT.timer = 16;
             evt->state2++;
          }
@@ -3572,10 +3572,10 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
       case 2:
          if (EVT.timer == 25) {
-            PerformAudioCommand(0x20);
+            PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
          }
          if (EVT.timer == 10) {
-            PerformAudioCommand(6);
+            PerformAudioCommand(AUDIO_CMD_STOP_ALL);
          }
          if (--EVT.timer == 0) {
             PlayBattleBGM(gState.mapNum);
@@ -3619,11 +3619,11 @@ void Evtf013_BattleMgr(EvtData *evt) {
             gCameraRotation.vy &= 0xfff;
             diff = s_dstCamRotY_80123214 - gCameraRotation.vy;
             if (diff > 0) {
-               if (diff > ANGLE_180_DEGREES) {
-                  s_dstCamRotY_80123214 -= ANGLE_360_DEGREES;
+               if (diff > DEG(180)) {
+                  s_dstCamRotY_80123214 -= DEG(360);
                }
-            } else if (diff < -ANGLE_180_DEGREES) {
-               s_dstCamRotY_80123214 += ANGLE_360_DEGREES;
+            } else if (diff < DEG(-180)) {
+               s_dstCamRotY_80123214 += DEG(360);
             }
             evt->state2++;
          }
@@ -3766,7 +3766,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
       if (EVT.todo_x2d) {
          gCameraPos.vx += (-(unitSprite->x1.n >> 3) - gCameraPos.vx) >> 4;
          gCameraPos.vz += (-(unitSprite->z1.n >> 3) - gCameraPos.vz) >> 4;
-         gCameraPos.vy += (((unitSprite->y1.n + 0x100) >> 3) - gCameraPos.vy) >> 4;
+         gCameraPos.vy += (((unitSprite->y1.n + CV(1.0)) >> 3) - gCameraPos.vy) >> 4;
       }
       if (!gPlayerControlSuppressed && gIsEnemyTurn && gState.cameraMode == CAMERA_MODE_DYNAMIC) {
          gCameraRotation.vy -= 8;

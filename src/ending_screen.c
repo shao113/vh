@@ -61,7 +61,7 @@ void State_EndingScreen(void) {
 
    case 5:
       if (--s_delay_80123280 == 0) {
-         PerformAudioCommand(0x366);
+         PerformAudioCommand(AUDIO_CMD_PLAY_XA(102));
          gState.secondary++;
       }
       break;

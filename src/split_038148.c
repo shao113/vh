@@ -4,6 +4,7 @@
 #include "window.h"
 #include "battle.h"
 #include "state.h"
+#include "audio.h"
 
 void CommitPartyStatus(void) {
    s32 i;
@@ -188,7 +189,7 @@ void Evtf593_BattleResultsUnit(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      PerformAudioCommand(0x5ef);
+      PerformAudioCommand(AUDIO_CMD_PLAY_SFX(239));
       EVT.unitClut = gUnitClutIds[EVT.unitId];
 
       // Find matching sprite strip
@@ -209,7 +210,7 @@ void Evtf593_BattleResultsUnit(EvtData *evt) {
    // fallthrough
    case 1:
       if (EVT.isPenalty) {
-         EVT.clut = 0;
+         EVT.clut = CLUT_NULL;
          EVT.gfxIdx = GFX_RED_X;
          AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
       }

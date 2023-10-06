@@ -3,6 +3,7 @@
 #include "window.h"
 #include "state.h"
 #include "card.h"
+#include "audio.h"
 
 u8 s_menuMem_config_801232ac;
 
@@ -96,11 +97,11 @@ void ShowAudioSettings(EvtData *evt) {
       if (gWindowChoice.raw == 0x3401) {
          CloseWindow(0x34);
          gState.mono = 0;
-         PerformAudioCommand(2);
+         PerformAudioCommand(AUDIO_CMD_STEREO);
          evt->state = 7;
          evt->state2 = 0;
       } else if (gWindowChoice.raw == 0x3402) {
-         PerformAudioCommand(1);
+         PerformAudioCommand(AUDIO_CMD_MONO);
          CloseWindow(0x34);
          gState.mono = 1;
          evt->state = 7;

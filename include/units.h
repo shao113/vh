@@ -296,6 +296,7 @@ typedef enum UnitTeam {
    TEAM_NULL = 0,
    TEAM_PLAYER = 1,
    TEAM_ENEMY = 2,
+   TEAM_NEUTRAL = 100, //?
    TEAM_CHEST = 101,
    TEAM_BOULDER = 102
 } UnitTeam;

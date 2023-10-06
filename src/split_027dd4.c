@@ -276,14 +276,17 @@ void SwapInCodeFromVram(void) {
    gTempRect.h = 128;
    gTempRect.x = 576;
    gTempRect.y = 384;
-   LoadImage(&gTempRect, &gAdditionalCode[64 * 256 * 2]);
+   // 64 * 256 * 2
+   LoadImage(&gTempRect, &gAdditionalCode[0x8000]);
    gTempRect.w = 60;
    gTempRect.h = 144;
    gTempRect.x = 896;
    gTempRect.y = 352;
-   LoadImage(&gTempRect, &gAdditionalCode[(64 * 256 * 2) + (64 * 128 * 2)]);
+   // (64 * 256 * 2) + (64 * 128 * 2)
+   LoadImage(&gTempRect, &gAdditionalCode[0xc000]);
    gTempRect.x = 960;
-   LoadImage(&gTempRect, &gAdditionalCode[(64 * 256 * 2) + (64 * 128 * 2) + (60 * 144 * 2)]);
+   // (64 * 256 * 2) + (64 * 128 * 2) + (60 * 144 * 2)
+   LoadImage(&gTempRect, &gAdditionalCode[0x10380]);
    DrawSync(0);
 }
 
@@ -297,14 +300,17 @@ void SwapOutCodeToVram(void) {
    gTempRect.h = 128;
    gTempRect.x = 576;
    gTempRect.y = 384;
-   StoreImage(&gTempRect, &gAdditionalCode[64 * 256 * 2]);
+   // 64 * 256 * 2
+   StoreImage(&gTempRect, &gAdditionalCode[0x8000]);
    gTempRect.w = 60;
    gTempRect.h = 144;
    gTempRect.x = 896;
    gTempRect.y = 352;
-   StoreImage(&gTempRect, &gAdditionalCode[(64 * 256 * 2) + (64 * 128 * 2)]);
+   // (64 * 256 * 2) + (64 * 128 * 2)
+   StoreImage(&gTempRect, &gAdditionalCode[0xc000]);
    gTempRect.x = 960;
-   StoreImage(&gTempRect, &gAdditionalCode[(64 * 256 * 2) + (64 * 128 * 2) + (60 * 144 * 2)]);
+   // (64 * 256 * 2) + (64 * 128 * 2) + (60 * 144 * 2)
+   StoreImage(&gTempRect, &gAdditionalCode[0x10380]);
    DrawSync(0);
 }
 

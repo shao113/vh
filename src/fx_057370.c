@@ -2,6 +2,7 @@
 #include "evt.h"
 #include "graphics.h"
 #include "field.h"
+#include "battle.h"
 
 extern void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
 
@@ -46,7 +47,7 @@ void Evtf204_SummonCrest(EvtData *evt) {
       ApplyMaskEffect(496 << 2, 384, 64, 64, EVT.vramSrcX, EVT.vramSrcY, 0, EVT.timer % 64,
                       GFX_TBD_28, 0);
       fxSprite1->x1.n = unitSprite->x1.n;
-      fxSprite1->y1.n = unitSprite->y1.n + 0x100;
+      fxSprite1->y1.n = unitSprite->y1.n + CV(1.0);
       fxSprite1->z1.n = unitSprite->z1.n;
       AddEvtPrim6(gGraphicsPtr->ot, fxSprite1, 0);
       GetUnitSpriteVramRect(unitSprite, &spriteX, &spriteY, &spriteW, &spriteH);
@@ -98,8 +99,8 @@ void Evtf207_SummonRedCrest(EvtData *evt) {
    crest->functionIndex = EVTF_SUMMON_CREST;
    crest->x1.s.hi = evt->x1.s.hi;
    crest->z1.s.hi = evt->z1.s.hi;
-   crest->d.evtf204.maskClut = 10;
-   crest->d.evtf204.clut = 3;
+   crest->d.evtf204.maskClut = CLUT_MASK;
+   crest->d.evtf204.clut = CLUT_REDS;
    crest->d.evtf204.vramSrcX = 384 << 2;
    crest->d.evtf204.vramSrcY = 384;
 
@@ -115,8 +116,8 @@ void Evtf209_SummonBlueCrest(EvtData *evt) {
    crest->functionIndex = EVTF_SUMMON_CREST;
    crest->x1.s.hi = evt->x1.s.hi;
    crest->z1.s.hi = evt->z1.s.hi;
-   crest->d.evtf204.maskClut = 10;
-   crest->d.evtf204.clut = 4;
+   crest->d.evtf204.maskClut = CLUT_MASK;
+   crest->d.evtf204.clut = CLUT_BLUES;
    crest->d.evtf204.vramSrcX = 384 << 2;
    crest->d.evtf204.vramSrcY = 384;
 
@@ -132,8 +133,8 @@ void Evtf210_SummonGreenCrest(EvtData *evt) {
    crest->functionIndex = EVTF_SUMMON_CREST;
    crest->x1.s.hi = evt->x1.s.hi;
    crest->z1.s.hi = evt->z1.s.hi;
-   crest->d.evtf204.maskClut = 10;
-   crest->d.evtf204.clut = 9;
+   crest->d.evtf204.maskClut = CLUT_MASK;
+   crest->d.evtf204.clut = CLUT_GREENS;
    crest->d.evtf204.vramSrcX = 384 << 2;
    crest->d.evtf204.vramSrcY = 384;
 
@@ -224,7 +225,7 @@ void Evtf208_HolyLightning_FX1(EvtData *evt) {
       CopyEvtData(evt_s1, fxSprite1);
       fxSprite1->d.sprite.hidden = 0;
       fxSprite1->d.sprite.gfxIdx = GFX_TBD_25;
-      fxSprite1->d.sprite.clut = 8;
+      fxSprite1->d.sprite.clut = CLUT_PURPLES;
       fxSprite1->d.sprite.semiTrans = 2;
 
       if (evt_s1->d.sprite.gfxIdx >= 21 && evt_s1->d.sprite.gfxIdx <= 30) {
@@ -304,7 +305,7 @@ void Evtf212_HolyLightning_CastingBolt(EvtData *evt) {
       evt->y1.n = parent->y1.n;
       evt->z1.n = parent->z1.n;
       EVT.todo_x24 = 0;
-      EVT.todo_x26 = rand() % ANGLE_360_DEGREES;
+      EVT.todo_x26 = rand() % DEG(360);
       EVT.todo_x28 = rand() % 0x30 + 0x64;
       EVT.todo_x2a = rand() % 0xc0 + 0x40;
       EVT.todo_x2c = 0;
@@ -313,7 +314,7 @@ void Evtf212_HolyLightning_CastingBolt(EvtData *evt) {
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
       sprite->d.sprite.animData = sLightningAnimData_800febe4;
-      sprite->d.sprite.clut = 4;
+      sprite->d.sprite.clut = CLUT_BLUES;
       EVT.sprite = sprite;
       evt->state++;
 
@@ -322,8 +323,8 @@ void Evtf212_HolyLightning_CastingBolt(EvtData *evt) {
       sprite = EVT.sprite;
       halfHeight = 4 + rsin(EVT.todo_x24) * 0x18 / ONE;
 
-      sprite->x1.n = evt->x1.n + rcos(EVT.todo_x26) * 0xa0 / ONE;
-      sprite->z1.n = evt->z1.n + rsin(EVT.todo_x26) * 0xa0 / ONE;
+      sprite->x1.n = evt->x1.n + CV(0.625) * rcos(EVT.todo_x26) / ONE;
+      sprite->z1.n = evt->z1.n + CV(0.625) * rsin(EVT.todo_x26) / ONE;
       sprite->y1.n = evt->y1.n + EVT.todo_x2a + halfHeight + EVT.todo_x2c;
 
       gQuad_800fe63c[0].vx = -3;
@@ -343,13 +344,13 @@ void Evtf212_HolyLightning_CastingBolt(EvtData *evt) {
 
       switch (evt->state2) {
       case 0:
-         if (EVT.todo_x2c >= 0x380) {
+         if (EVT.todo_x2c >= CV(3.5)) {
             evt->state = 0;
             sprite->functionIndex = EVTF_NULL;
          }
          break;
       case 99:
-         if (EVT.todo_x2c >= 0x380) {
+         if (EVT.todo_x2c >= CV(3.5)) {
             evt->functionIndex = EVTF_NULL;
             sprite->functionIndex = EVTF_NULL;
          }
@@ -442,7 +443,7 @@ void Evtf197_RollingThunder_FX1(EvtData *evt) {
       CopyEvtData(evt_s1, fxSprite1);
       fxSprite1->d.sprite.hidden = 0;
       fxSprite1->d.sprite.gfxIdx = GFX_TBD_25;
-      fxSprite1->d.sprite.clut = 8;
+      fxSprite1->d.sprite.clut = CLUT_PURPLES;
       fxSprite1->d.sprite.semiTrans = 2;
 
       if (evt_s1->d.sprite.gfxIdx >= 21 && evt_s1->d.sprite.gfxIdx <= 30) {
@@ -505,7 +506,7 @@ void Evtf198_RollingThunder_CastingBolt(EvtData *evt) {
       evt->y1.n = parent->y1.n;
       evt->z1.n = parent->z1.n;
       EVT.todo_x24 = 0;
-      EVT.todo_x26 = rand() % ANGLE_360_DEGREES;
+      EVT.todo_x26 = rand() % DEG(360);
       EVT.todo_x28 = rand() % 8 + 8;
       EVT.todo_x2a = rand() % 0xc0 + 0x40;
       EVT.todo_x2c = 0;
@@ -514,7 +515,7 @@ void Evtf198_RollingThunder_CastingBolt(EvtData *evt) {
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
       sprite->d.sprite.animData = sLightningAnimData_800febe4;
-      sprite->d.sprite.clut = 4;
+      sprite->d.sprite.clut = CLUT_BLUES;
       EVT.sprite = sprite;
       evt->state++;
 
@@ -522,10 +523,10 @@ void Evtf198_RollingThunder_CastingBolt(EvtData *evt) {
    case 1:
       sprite = EVT.sprite;
 
-      if (EVT.todo_x24 <= ANGLE_90_DEGREES) {
+      if (EVT.todo_x24 <= DEG(90)) {
          a = EVT.todo_x26;
          halfHeight = 6 + 18 * rsin(EVT.todo_x24) / ONE;
-         b = 16 + 0x300 * (ONE - rcos(EVT.todo_x2c)) / ONE;
+         b = 16 + CV(3.0) * (ONE - rcos(EVT.todo_x2c)) / ONE;
 
          sprite->x1.n = evt->x1.n + (b * rcos(a) / ONE);
          sprite->z1.n = evt->z1.n + (b * rsin(a) / ONE);
@@ -605,7 +606,7 @@ void Evtf100_Healing_FX2(EvtData *evt) {
       CopyEvtData(evt_s2, evt_s1);
       evt_s1->d.sprite.hidden = 0;
       evt_s1->d.sprite.gfxIdx = GFX_TBD_25;
-      evt_s1->d.sprite.clut = 4;
+      evt_s1->d.sprite.clut = CLUT_BLUES;
       evt_s1->d.sprite.semiTrans = 2;
 
       if (evt_s2->d.sprite.gfxIdx >= 21 && evt_s2->d.sprite.gfxIdx <= 30) {
@@ -675,7 +676,7 @@ void Evtf101_HealingSparkle(EvtData *evt) {
    // fallthrough
    case 1:
       EVT.todo_x24 = 0;
-      EVT.todo_x26 = rand() % ANGLE_360_DEGREES;
+      EVT.todo_x26 = rand() % DEG(360);
       EVT.todo_x28 = (rand() % 6 + 4) * 2;
       EVT.todo_x2a = rand() % 32 + 32;
       sprite = EVT.sprite;
@@ -753,7 +754,7 @@ void Evtf102_227_Poison_FX2(EvtData *evt) {
       CopyEvtData(evt_s4, evt_s1);
       evt_s1->d.sprite.hidden = 0;
       evt_s1->d.sprite.gfxIdx = GFX_TBD_25;
-      evt_s1->d.sprite.clut = 8;
+      evt_s1->d.sprite.clut = CLUT_PURPLES;
       evt_s1->d.sprite.semiTrans = 2;
 
       if (evt_s4->d.sprite.gfxIdx >= 21 && evt_s4->d.sprite.gfxIdx <= 30) {
@@ -775,12 +776,12 @@ void Evtf102_227_Poison_FX2(EvtData *evt) {
          evt_s1->x1.s.hi = evt->x1.s.hi;
          evt_s1->z1.s.hi = evt->z1.s.hi;
          if (evt->functionIndex == EVTF_POISON_FX2) {
-            evt_s1->d.evtf052.type = 3;
-            evt_s1->d.evtf052.clut = 3;
+            evt_s1->d.evtf052.type = ATK_MARKER_POISONED;
+            evt_s1->d.evtf052.clut = CLUT_REDS;
             evt_s1->functionIndex = EVTF_NULL;
          } else {
-            evt_s1->d.evtf052.type = 0;
-            evt_s1->d.evtf052.clut = 3;
+            evt_s1->d.evtf052.type = ATK_MARKER_MISS;
+            evt_s1->d.evtf052.clut = CLUT_REDS;
          }
       }
 
@@ -833,7 +834,7 @@ void Evtf103_Poison_Bubbles(EvtData *evt) {
    // fallthrough
    case 1:
       EVT.todo_x24 = 0;
-      EVT.todo_x26 = rand() % ANGLE_360_DEGREES;
+      EVT.todo_x26 = rand() % DEG(360);
       EVT.todo_x28 = (rand() % 4 + 4) * 2;
       EVT.todo_x2a = rand() % 12 + 12;
       sprite = EVT.sprite;
@@ -892,7 +893,7 @@ void Evtf104_Cure_FX2(EvtData *evt) {
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_NOOP;
       evt_s1->d.sprite.gfxIdx = GFX_SWIRLY_RING;
-      evt_s1->d.sprite.clut = 4;
+      evt_s1->d.sprite.clut = CLUT_BLUES;
       evt_s1->d.sprite.semiTrans = 4;
       evt_s1->d.sprite.otOfs = -1;
       EVT.ringSprite = evt_s1;
@@ -943,13 +944,13 @@ void Evtf104_Cure_FX2(EvtData *evt) {
 
       switch (evt->state2) {
       case 1:
-         unaff_s6 = 0xc0 * rsin(EVT.todo_x24) >> 12;
+         unaff_s6 = CV(0.75) * rsin(EVT.todo_x24) >> 12;
          break;
       case 2:
-         unaff_s6 = 0xc0;
+         unaff_s6 = CV(0.75);
          break;
       case 3:
-         unaff_s6 = 0xc0 * rcos(EVT.todo_x26) >> 12;
+         unaff_s6 = CV(0.75) * rcos(EVT.todo_x26) >> 12;
          break;
       case 4:
       case 5:
@@ -960,7 +961,7 @@ void Evtf104_Cure_FX2(EvtData *evt) {
       evt_s1->functionIndex = EVTF_NOOP;
       evt_s1->d.sprite.gfxIdx = GFX_COLOR_15;
       evt_s1->d.sprite.semiTrans = 0;
-      evt_s1->d.sprite.clut = 4;
+      evt_s1->d.sprite.clut = CLUT_BLUES;
 
       switch (evt->state2) {
       case 1:
@@ -969,7 +970,7 @@ void Evtf104_Cure_FX2(EvtData *evt) {
          for (i = 0; i < 32; i++) {
             evt_s1->d.sprite.coords[0].x = evt->x1.n + (unaff_s6 * rsin(i * 0x80) >> 12);
             evt_s1->d.sprite.coords[0].z = evt->z1.n + (unaff_s6 * rcos(i * 0x80) >> 12);
-            evt_s1->d.sprite.coords[0].y = evt->y1.n + 0x400;
+            evt_s1->d.sprite.coords[0].y = evt->y1.n + CV(4.0);
             evt_s1->d.sprite.coords[1].x = evt->x1.n + (unaff_s6 * rsin(i * 0x80 + 0x80) >> 12);
             evt_s1->d.sprite.coords[1].z = evt->z1.n + (unaff_s6 * rcos(i * 0x80 + 0x80) >> 12);
             evt_s1->d.sprite.coords[1].y = evt_s1->d.sprite.coords[0].y;
@@ -1023,7 +1024,7 @@ void Evtf104_Cure_FX2(EvtData *evt) {
          for (i = 0; i < 32; i++) {
             evt_s1->d.sprite.coords[0].x = evt->x1.n + (unaff_s6 * rsin(i * 0x80) >> 12);
             evt_s1->d.sprite.coords[0].z = evt->z1.n + (unaff_s6 * rcos(i * 0x80) >> 12);
-            evt_s1->d.sprite.coords[0].y = evt->y1.n + 0x400;
+            evt_s1->d.sprite.coords[0].y = evt->y1.n + CV(4.0);
             evt_s1->d.sprite.coords[1].x = evt->x1.n + (unaff_s6 * rsin(i * 0x80 + 0x80) >> 12);
             evt_s1->d.sprite.coords[1].z = evt->z1.n + (unaff_s6 * rcos(i * 0x80 + 0x80) >> 12);
             evt_s1->d.sprite.coords[1].y = evt_s1->d.sprite.coords[0].y;
@@ -1059,7 +1060,7 @@ void Evtf104_Cure_FX2(EvtData *evt) {
             gLightColor.b += 0xfc;
          }
          EVT.todo_x24 += 0x2a;
-         if (EVT.todo_x24 >= ANGLE_90_DEGREES) {
+         if (EVT.todo_x24 >= DEG(90)) {
             evt->state2++;
             EVT.todo_x24 = 0;
          }
@@ -1082,7 +1083,7 @@ void Evtf104_Cure_FX2(EvtData *evt) {
       // fallthrough
       case 3:
          EVT.todo_x26 += 24;
-         if (EVT.todo_x26 >= ANGLE_90_DEGREES) {
+         if (EVT.todo_x26 >= DEG(90)) {
             evt->state2++;
             EVT.todo_x24 = 0;
             EVT.todo_x26 = 0;
@@ -1093,7 +1094,7 @@ void Evtf104_Cure_FX2(EvtData *evt) {
          EVT.todo_x24 += 1;
          if (EVT.todo_x24 >= 0x5a) {
             evt->state2++;
-            EVT.todo_x24 = ANGLE_90_DEGREES;
+            EVT.todo_x24 = DEG(90);
          }
          break;
 
@@ -1181,7 +1182,7 @@ void Evtf106_MagicCharge_FX3(EvtData *evt) {
          for (i = 0; i < 32; i++) {
             evt_s1->d.sprite.coords[0].x = evt->x1.n + (unaff_s6 * rsin(i * 0x80) >> 12);
             evt_s1->d.sprite.coords[0].z = evt->z1.n + (unaff_s6 * rcos(i * 0x80) >> 12);
-            evt_s1->d.sprite.coords[0].y = evt->y1.n + 0x400 - unaff_s7;
+            evt_s1->d.sprite.coords[0].y = evt->y1.n + CV(4.0) - unaff_s7;
             evt_s1->d.sprite.coords[1].x = evt->x1.n + (unaff_s6 * rsin(i * 0x80 + 0x80) >> 12);
             evt_s1->d.sprite.coords[1].z = evt->z1.n + (unaff_s6 * rcos(i * 0x80 + 0x80) >> 12);
             evt_s1->d.sprite.coords[1].y = evt_s1->d.sprite.coords[0].y;
@@ -1233,7 +1234,7 @@ void Evtf106_MagicCharge_FX3(EvtData *evt) {
          for (i = 0; i < 32; i++) {
             evt_s1->d.sprite.coords[0].x = evt->x1.n + (unaff_s6 * rsin(i * 0x80) >> 12);
             evt_s1->d.sprite.coords[0].z = evt->z1.n + (unaff_s6 * rcos(i * 0x80) >> 12);
-            evt_s1->d.sprite.coords[0].y = evt->y1.n + 0x400;
+            evt_s1->d.sprite.coords[0].y = evt->y1.n + CV(4.0);
             evt_s1->d.sprite.coords[1].x = evt->x1.n + (unaff_s6 * rsin(i * 0x80 + 0x80) >> 12);
             evt_s1->d.sprite.coords[1].z = evt->z1.n + (unaff_s6 * rcos(i * 0x80 + 0x80) >> 12);
             evt_s1->d.sprite.coords[1].y = evt_s1->d.sprite.coords[0].y;
@@ -1344,13 +1345,13 @@ void Evtf107_MagicCharge_GlyphRing(EvtData *evt) {
          sprite->d.sprite.gfxIdx = GFX_RUNE_1 + (i % 12);
 
          sprite->d.sprite.semiTrans = 2;
-         sprite->d.sprite.clut = 3;
+         sprite->d.sprite.clut = CLUT_REDS;
          AddEvtPrim3(gGraphicsPtr->ot, sprite);
          poly = &gGraphicsPtr->quads[gQuadIndex - 1];
          setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
          sprite->d.sprite.semiTrans = 3;
-         sprite->d.sprite.clut = 10;
+         sprite->d.sprite.clut = CLUT_MASK;
          AddEvtPrim3(gGraphicsPtr->ot, sprite);
          poly = &gGraphicsPtr->quads[gQuadIndex - 1];
          setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
@@ -1423,7 +1424,7 @@ void Evtf108_HarmfulWave_FX2(EvtData *evt) {
       CopyEvtData(unitSprite, evt_s4);
       evt_s4->d.sprite.hidden = 0;
       evt_s4->d.sprite.gfxIdx = GFX_TBD_25;
-      evt_s4->d.sprite.clut = 8;
+      evt_s4->d.sprite.clut = CLUT_PURPLES;
       evt_s4->d.sprite.semiTrans = 2;
 
       if (unitSprite->d.sprite.gfxIdx >= 21 && unitSprite->d.sprite.gfxIdx <= 30) {
@@ -1454,11 +1455,11 @@ void Evtf108_HarmfulWave_FX2(EvtData *evt) {
 
          evt_s4 = Evt_GetUnused();
          evt_s4->functionIndex = EVTF_NOOP;
-         evt_s4->d.sprite.clut = 8;
+         evt_s4->d.sprite.clut = CLUT_PURPLES;
          evt_s4->d.sprite.gfxIdx = GFX_TBD_26;
          evt_s4->d.sprite.semiTrans = 4;
 
-         a = evt->y1.n + 16 + abs(rsin(EVT.timer * 16)) / 16;
+         a = evt->y1.n + CV(0.0625) + abs(rsin(EVT.timer * 16)) / 16;
          evt_s4->d.sprite.coords[0].y = a;
          evt_s4->d.sprite.coords[1].y = a;
          b = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
@@ -1467,10 +1468,10 @@ void Evtf108_HarmfulWave_FX2(EvtData *evt) {
          evt_s4->y1.n = (evt_s4->d.sprite.coords[0].y + evt_s4->d.sprite.coords[2].y) / 2;
 
          for (i = 0; i < 32; i++) {
-            a = 0x100 * rcos(i * 0x80) >> 12;
-            b = 0x100 * rsin(i * 0x80) >> 12;
-            c = 0x100 * rcos((i + 1) * 0x80) >> 12;
-            d = 0x100 * rsin((i + 1) * 0x80) >> 12;
+            a = CV(1.0) * rcos(i * 0x80) >> 12;
+            b = CV(1.0) * rsin(i * 0x80) >> 12;
+            c = CV(1.0) * rcos((i + 1) * 0x80) >> 12;
+            d = CV(1.0) * rsin((i + 1) * 0x80) >> 12;
 
             evt_s4->d.sprite.coords[0].x = evt->x1.n + a;
             evt_s4->d.sprite.coords[1].x = evt->x1.n + c;
@@ -1490,10 +1491,10 @@ void Evtf108_HarmfulWave_FX2(EvtData *evt) {
                            4;
             AddEvtPrim3(gGraphicsPtr->ot, evt_s4);
 
-            a = 0xf0 * rcos(i * 0x80) >> 12;
-            b = 0xf0 * rsin(i * 0x80) >> 12;
-            c = 0xf0 * rcos((i + 1) * 0x80) >> 12;
-            d = 0xf0 * rsin((i + 1) * 0x80) >> 12;
+            a = CV(0.9375) * rcos(i * 0x80) >> 12;
+            b = CV(0.9375) * rsin(i * 0x80) >> 12;
+            c = CV(0.9375) * rcos((i + 1) * 0x80) >> 12;
+            d = CV(0.9375) * rsin((i + 1) * 0x80) >> 12;
 
             evt_s4->d.sprite.coords[0].x = evt->x1.n + a;
             evt_s4->d.sprite.coords[1].x = evt->x1.n + c;
@@ -1553,7 +1554,7 @@ void Evtf109_HarmfulWave_Ring(EvtData *evt) {
       unitSprite = EVT.unitSprite;
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
-      sprite->d.sprite.clut = 8;
+      sprite->d.sprite.clut = CLUT_PURPLES;
       sprite->d.sprite.gfxIdx = GFX_RING_TOP;
       sprite->d.sprite.semiTrans = 1;
 
@@ -1613,7 +1614,7 @@ void Evtf111_BlessWeapon_FX2(EvtData *evt) {
    summonBuff->functionIndex = EVTF_CASTING_STAT_BUFF;
    summonBuff->x1.s.hi = evt->x1.s.hi;
    summonBuff->z1.s.hi = evt->z1.s.hi;
-   summonBuff->d.evtf110.clut = 3;
+   summonBuff->d.evtf110.clut = CLUT_REDS;
 
    evt->functionIndex = EVTF_NULL;
 }
@@ -1625,7 +1626,7 @@ void Evtf112_MysticShield_FX2(EvtData *evt) {
    summonBuff->functionIndex = EVTF_CASTING_STAT_BUFF;
    summonBuff->x1.s.hi = evt->x1.s.hi;
    summonBuff->z1.s.hi = evt->z1.s.hi;
-   summonBuff->d.evtf110.clut = 4;
+   summonBuff->d.evtf110.clut = CLUT_BLUES;
 
    evt->functionIndex = EVTF_NULL;
 }
@@ -1637,7 +1638,7 @@ void Evtf113_MysticEnergy_FX2(EvtData *evt) {
    summonBuff->functionIndex = EVTF_CASTING_STAT_BUFF;
    summonBuff->x1.s.hi = evt->x1.s.hi;
    summonBuff->z1.s.hi = evt->z1.s.hi;
-   summonBuff->d.evtf110.clut = 9;
+   summonBuff->d.evtf110.clut = CLUT_GREENS;
 
    evt->functionIndex = EVTF_NULL;
 }
@@ -1666,7 +1667,7 @@ void Evtf110_CastingStatBuff(EvtData *evt) {
       evt_s1->d.evtf681.clut = EVT.clut;
       EVT.buffFx = evt_s1;
 
-      EVT.todo_x24 = rand() % ANGLE_360_DEGREES;
+      EVT.todo_x24 = rand() % DEG(360);
       evt->state++;
 
    // fallthrough
@@ -1764,7 +1765,7 @@ void Evtf110_CastingStatBuff(EvtData *evt) {
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.crestFade, EVT.crestFade, EVT.crestFade);
 
-      evt_s1->d.sprite.clut = 10;
+      evt_s1->d.sprite.clut = CLUT_MASK;
       evt_s1->d.sprite.semiTrans = 3;
       AddEvtPrim3(gGraphicsPtr->ot, evt_s1);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
@@ -1928,7 +1929,7 @@ void Evtf681_StatBuffFx(EvtData *evt) {
       break;
 
    case 2:
-      if (EVT.clut == 3 || EVT.clut == 4) {
+      if (EVT.clut == CLUT_REDS || EVT.clut == CLUT_BLUES) {
          evt_v1 = CreatePositionedEvt(evt, EVTF_STAT_BUFF_ICON);
          evt_v1->d.evtf733.type = EVT.clut;
          evt_v1->d.evtf733.clut = EVT.clut;
@@ -1987,10 +1988,10 @@ void Evtf681_StatBuffFx(EvtData *evt) {
 
       unitSprite = EVT.unitSprite;
       evt_tmp = CreatePositionedEvt(unitSprite, EVTF_STAT_RAISED); //@5388
-      if (EVT.clut == 4) {
-         evt_tmp->d.evtf272.type = 2;
+      if (EVT.clut == CLUT_BLUES) {
+         evt_tmp->d.evtf272.type = RAISED_STAT_DF;
       } else {
-         evt_tmp->d.evtf272.type = 1;
+         evt_tmp->d.evtf272.type = RAISED_STAT_AT;
       }
       evt_tmp->mem = 0x30;
       evt_tmp->d.evtf272.unitSprite = unitSprite;
@@ -2002,7 +2003,7 @@ void Evtf681_StatBuffFx(EvtData *evt) {
    case 5:
       evt->state2--;
       if (evt->state2 <= 0) {
-         if (EVT.clut == 9) {
+         if (EVT.clut == CLUT_GREENS) {
             evt->state++;
          } else {
             evt->functionIndex = EVTF_NULL;
@@ -2014,7 +2015,7 @@ void Evtf681_StatBuffFx(EvtData *evt) {
    case 6:
       unitSprite = EVT.unitSprite;
       evt_v1 = CreatePositionedEvt(unitSprite, EVTF_STAT_RAISED);
-      evt_v1->d.evtf272.type = 2;
+      evt_v1->d.evtf272.type = RAISED_STAT_DF;
       evt_v1->mem = 0x30;
       evt_v1->d.evtf272.unitSprite = unitSprite;
       evt->state2 = 0x30;
@@ -2102,18 +2103,18 @@ void Evtf733_StatBuffIcon(EvtData *evt) {
       sprite->d.sprite.clut = EVT.clut;
       sprite->x1.n = evt->x1.n;
       sprite->z1.n = evt->z1.n;
-      sprite->y1.n = evt->y1.n + 0x1a0;
+      sprite->y1.n = evt->y1.n + CV(1.625);
 
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, evt->state2, evt->state2, evt->state2);
 
       if (EVT.type == 3) {
-         sprite->d.sprite.clut = 12;
+         sprite->d.sprite.clut = CLUT_12;
       } else if (EVT.type == 4) {
-         sprite->d.sprite.clut = 12;
+         sprite->d.sprite.clut = CLUT_12;
       } else {
-         sprite->d.sprite.clut = 6;
+         sprite->d.sprite.clut = CLUT_6;
       }
 
       if (EVT.type == 3) {

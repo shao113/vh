@@ -174,7 +174,7 @@ void Card_LoadRegularSaveFromBuf(void) {
 
 void Card_LoadRegularSave_Internal(void) {
    Card_LoadRegularSaveFromBuf();
-   PerformAudioCommand(!gState.mono ? 2 : 1);
+   PerformAudioCommand(!gState.mono ? AUDIO_CMD_STEREO : AUDIO_CMD_MONO);
 
    switch (gState.saveLocation) {
    case SAVE_LOC_UNK:

@@ -165,8 +165,8 @@ void Evtf022_029_Projectile(EvtData *evt) {
       targetSprite = gTempGfxEvt;
       targetSprite->x1.s.hi = gTargetX;
       targetSprite->z1.s.hi = gTargetZ;
-      targetSprite->x1.s.lo = 0x80;
-      targetSprite->z1.s.lo = 0x80;
+      targetSprite->x1.s.lo = CV(0.5);
+      targetSprite->z1.s.lo = CV(0.5);
       targetSprite->y1.n = GetTerrainElevation(gTargetZ, gTargetX);
    }
 
@@ -209,8 +209,8 @@ void Evtf022_029_Projectile(EvtData *evt) {
       EVT.xzMidDist += EVT.zMidDist;
 
       if (projectileSprite->x1.n == targetSprite->x1.n) {
-         EVT.yRotOfs = ANGLE_90_DEGREES;
-         EVT.zRotOfs = ANGLE_180_DEGREES;
+         EVT.yRotOfs = DEG(90);
+         EVT.zRotOfs = DEG(180);
       }
       evt->state++;
       ArcProjectileTo(projectileSprite, 0, 0, 0, 1);
@@ -271,7 +271,7 @@ void Evtf022_029_Projectile(EvtData *evt) {
    EVT.zRot = ratan2(projectileSprite->y2.n, projectileSprite->x2.n);
 
    if (EVT.yRotOfs == 0) {
-      EVT.zRot = ANGLE_360_DEGREES - EVT.zRot;
+      EVT.zRot = DEG(360) - EVT.zRot;
    }
 
    EVT.zRot += EVT.zRotOfs;
@@ -292,11 +292,11 @@ void Evtf023_Camera_RangedTarget(EvtData *evt) {
 
       diff = EVT.yRotDst - gCameraRotation.vy;
       if (diff > 0) {
-         if (diff > ANGLE_180_DEGREES) {
-            EVT.yRotDst -= ANGLE_360_DEGREES;
+         if (diff > DEG(180)) {
+            EVT.yRotDst -= DEG(360);
          }
-      } else if (diff < -ANGLE_180_DEGREES) {
-         EVT.yRotDst += ANGLE_360_DEGREES;
+      } else if (diff < DEG(-180)) {
+         EVT.yRotDst += DEG(360);
       }
 
       EVT.delay = 35;

@@ -34,18 +34,18 @@ void Evtf173_FireGem_Beam(EvtData *evt) {
       evt_s2->d.sprite.semiTrans = 1;
 
       a = rsin(EVT.todo_x24);
-      positions[0].vx = 0x140 * rcos(a) >> 12;
-      positions[0].vz = 0x140 * rsin(a) >> 12;
-      positions[1].vx = 0x140 * rcos(a + 0x555) >> 12;
-      positions[1].vz = 0x140 * rsin(a + 0x555) >> 12;
-      positions[2].vx = 0x140 * rcos(a + 0xaaa) >> 12;
-      positions[2].vz = 0x140 * rsin(a + 0xaaa) >> 12;
-      positions[3].vx = 0x140 * rcos(a + 0x2ab) >> 12;
-      positions[3].vz = 0x140 * rsin(a + 0x2ab) >> 12;
-      positions[4].vx = 0x140 * rcos(a + 0x7ff) >> 12;
-      positions[4].vz = 0x140 * rsin(a + 0x7ff) >> 12;
-      positions[5].vx = 0x140 * rcos(a + 0xd55) >> 12;
-      positions[5].vz = 0x140 * rsin(a + 0xd55) >> 12;
+      positions[0].vx = CV(1.25) * rcos(a) >> 12;
+      positions[0].vz = CV(1.25) * rsin(a) >> 12;
+      positions[1].vx = CV(1.25) * rcos(a + 0x555) >> 12;
+      positions[1].vz = CV(1.25) * rsin(a + 0x555) >> 12;
+      positions[2].vx = CV(1.25) * rcos(a + 0xaaa) >> 12;
+      positions[2].vz = CV(1.25) * rsin(a + 0xaaa) >> 12;
+      positions[3].vx = CV(1.25) * rcos(a + 0x2ab) >> 12;
+      positions[3].vz = CV(1.25) * rsin(a + 0x2ab) >> 12;
+      positions[4].vx = CV(1.25) * rcos(a + 0x7ff) >> 12;
+      positions[4].vz = CV(1.25) * rsin(a + 0x7ff) >> 12;
+      positions[5].vx = CV(1.25) * rcos(a + 0xd55) >> 12;
+      positions[5].vz = CV(1.25) * rsin(a + 0xd55) >> 12;
       EVT.todo_x24 += 0x20;
 
       evt_s2->d.sprite.coords[0].x = evt_s2->d.sprite.coords[1].x = x + positions[0].vx;
@@ -99,18 +99,18 @@ void Evtf173_FireGem_Beam(EvtData *evt) {
       evt_s2->d.sprite.semiTrans = 1;
 
       a = rsin(EVT.todo_x24);
-      positions[0].vx = 0x140 * rcos(a) >> 12;
-      positions[0].vz = 0x140 * rsin(a) >> 12;
-      positions[1].vx = 0x140 * rcos(a + 0x555) >> 12;
-      positions[1].vz = 0x140 * rsin(a + 0x555) >> 12;
-      positions[2].vx = 0x140 * rcos(a + 0xaaa) >> 12;
-      positions[2].vz = 0x140 * rsin(a + 0xaaa) >> 12;
-      positions[3].vx = 0x140 * rcos(a + 0x2ab) >> 12;
-      positions[3].vz = 0x140 * rsin(a + 0x2ab) >> 12;
-      positions[4].vx = 0x140 * rcos(a + 0x7ff) >> 12;
-      positions[4].vz = 0x140 * rsin(a + 0x7ff) >> 12;
-      positions[5].vx = 0x140 * rcos(a + 0xd55) >> 12;
-      positions[5].vz = 0x140 * rsin(a + 0xd55) >> 12;
+      positions[0].vx = CV(1.25) * rcos(a) >> 12;
+      positions[0].vz = CV(1.25) * rsin(a) >> 12;
+      positions[1].vx = CV(1.25) * rcos(a + 0x555) >> 12;
+      positions[1].vz = CV(1.25) * rsin(a + 0x555) >> 12;
+      positions[2].vx = CV(1.25) * rcos(a + 0xaaa) >> 12;
+      positions[2].vz = CV(1.25) * rsin(a + 0xaaa) >> 12;
+      positions[3].vx = CV(1.25) * rcos(a + 0x2ab) >> 12;
+      positions[3].vz = CV(1.25) * rsin(a + 0x2ab) >> 12;
+      positions[4].vx = CV(1.25) * rcos(a + 0x7ff) >> 12;
+      positions[4].vz = CV(1.25) * rsin(a + 0x7ff) >> 12;
+      positions[5].vx = CV(1.25) * rcos(a + 0xd55) >> 12;
+      positions[5].vz = CV(1.25) * rsin(a + 0xd55) >> 12;
       EVT.todo_x24 += 0x20;
 
       for (i = 0; i < 6; i++) {
@@ -183,9 +183,9 @@ void Evtf173_FireGem_Beam(EvtData *evt) {
             EVT.todo_x2c = 0;
             EVT.todo_x26 = 0;
          }
-         EVT.todo_x28 += 0xc0;
-         if (EVT.todo_x28 > 0x800) {
-            EVT.todo_x28 = 0x800;
+         EVT.todo_x28 += CV(0.75);
+         if (EVT.todo_x28 > CV(8.0)) {
+            EVT.todo_x28 = CV(8.0);
             evt->state3++;
          }
          break;
@@ -209,7 +209,7 @@ void Evtf173_FireGem_Beam(EvtData *evt) {
          break;
 
       case 2:
-         EVT.todo_x28 = (0x1000U - rsin(EVT.todo_x30)) >> 1;
+         EVT.todo_x28 = CV(8.0) * (ONE - rsin(EVT.todo_x30)) >> 12;
          if ((EVT.todo_x2c == 0) && (++EVT.todo_x2e % 3 == 0)) {
             EVT.todo_x26++;
             if (EVT.todo_x26 == 7) {
@@ -326,7 +326,7 @@ void Evtf147_Fx_TBD(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      evt->y1.n += 0x400;
+      evt->y1.n += CV(4.0);
 
       EVT.todo_x4c = 0x80 - (rand() % 0x100);
       EVT.todo_x50 = 0x80 - (rand() % 0x100);
@@ -341,8 +341,8 @@ void Evtf147_Fx_TBD(EvtData *evt) {
       EVT.todo_x42 = EVT.todo_x36 * 3;
       EVT.todo_x44 = EVT.todo_x38 * 3;
 
-      if (EVT.clut == 0) {
-         EVT.clut = 3;
+      if (EVT.clut == CLUT_NULL) {
+         EVT.clut = CLUT_REDS;
       }
 
       sprite = Evt_GetUnused();
@@ -395,9 +395,9 @@ void func_8006DCD8(EvtData *deltaMirage) {
    EvtData *sprite;
 
    if (deltaMirage->state == 3) {
-      a = 0x100 + (0x400 * rsin(ANGLE_90_DEGREES - deltaMirage->d.evtf156.todo_x36 * 2) >> 12);
+      a = 0x100 + (0x400 * rsin(DEG(90) - deltaMirage->d.evtf156.todo_x36 * 2) >> 12);
       b = 0;
-      c = 0x200 * rcos(ANGLE_90_DEGREES - deltaMirage->d.evtf156.todo_x36 * 2) >> 12;
+      c = 0x200 * rcos(DEG(90) - deltaMirage->d.evtf156.todo_x36 * 2) >> 12;
    } else {
       a = 0x100;
       b = 0;
@@ -410,7 +410,7 @@ void func_8006DCD8(EvtData *deltaMirage) {
    sprite = Evt_GetUnused();
    sprite->functionIndex = EVTF_NOOP;
    sprite->d.sprite.gfxIdx = GFX_TBD_25;
-   sprite->d.sprite.clut = 4;
+   sprite->d.sprite.clut = CLUT_BLUES;
    sprite->d.sprite.semiTrans = 1;
 
    p = &deltaMirage->d.evtf156.todo_x26;
@@ -496,22 +496,22 @@ void Evtf156_DeltaMirage_FX1(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          EVT.todo_x2a += 0x20;
-         if (EVT.todo_x2a > ANGLE_90_DEGREES) {
-            EVT.todo_x2a = ANGLE_90_DEGREES;
+         if (EVT.todo_x2a > DEG(90)) {
+            EVT.todo_x2a = DEG(90);
             evt->state++;
          }
          break;
       case 1:
          EVT.todo_x28 += 0x20;
-         if (EVT.todo_x28 > ANGLE_90_DEGREES) {
-            EVT.todo_x28 = ANGLE_90_DEGREES;
+         if (EVT.todo_x28 > DEG(90)) {
+            EVT.todo_x28 = DEG(90);
             evt->state2--;
          }
          break;
       case 2:
          EVT.todo_x26 += 0x20;
-         if (EVT.todo_x26 > ANGLE_90_DEGREES) {
-            EVT.todo_x26 = ANGLE_90_DEGREES;
+         if (EVT.todo_x26 > DEG(90)) {
+            EVT.todo_x26 = DEG(90);
             evt->state2--;
          }
          break;
@@ -586,7 +586,7 @@ void Evtf157_DeltaMirage_Ray(EvtData *evt) {
       evt_s0 = Evt_GetUnused();
       evt_s0->functionIndex = EVTF_NOOP;
       evt_s0->d.sprite.gfxIdx = GFX_COLOR_14;
-      evt_s0->d.sprite.clut = 4;
+      evt_s0->d.sprite.clut = CLUT_BLUES;
       evt_s0->d.sprite.semiTrans = 1;
 
       EVT.todo_x34 = EVT.todo_x24 * EVT.todo_x36 / 0x30;
@@ -682,7 +682,7 @@ void Evtf158_Explosion_FX1(EvtData *evt) {
       CopyEvtData(unitSprite, evt_s0);
       evt_s0->d.sprite.hidden = 0;
       evt_s0->d.sprite.gfxIdx = GFX_TBD_25;
-      evt_s0->d.sprite.clut = 3;
+      evt_s0->d.sprite.clut = CLUT_REDS;
       evt_s0->d.sprite.semiTrans = 0;
 
       if (unitSprite->d.sprite.gfxIdx >= 21 && unitSprite->d.sprite.gfxIdx <= 30) {
@@ -699,7 +699,7 @@ void Evtf158_Explosion_FX1(EvtData *evt) {
          evt_s0 = Evt_GetUnused();
          evt_s0->functionIndex = EVTF_EXPLOSION_RAYS;
          evt_s0->x1.n = evt->x1.n;
-         evt_s0->y1.n = evt->y1.n + 0x40;
+         evt_s0->y1.n = evt->y1.n + CV(0.25);
          evt_s0->z1.n = evt->z1.n;
          evt_s0->d.evtf159.todo_x5a = EVT.timer;
       }
@@ -760,7 +760,7 @@ void Evtf159_Explosion_Rays(EvtData *evt) {
       sprite->d.sprite.semiTrans = 1;
       sprite->x1.n = evt->x1.n;
       sprite->z1.n = evt->z1.n;
-      sprite->y1.n = evt->y1.n + 0x80;
+      sprite->y1.n = evt->y1.n + CV(0.5);
       EVT.sprite = sprite;
 
       evt->state++;
@@ -986,7 +986,7 @@ void Evtf163_StoneShower_FX1(EvtData *evt) {
       for (i = 0; i < 32; i++) {
          sprite->d.sprite.coords[0].x = evt->x1.n + (radius * rsin(i * 0x80) >> 12);
          sprite->d.sprite.coords[0].z = evt->z1.n + (radius * rcos(i * 0x80) >> 12);
-         sprite->d.sprite.coords[0].y = evt->y1.n + 0xa00;
+         sprite->d.sprite.coords[0].y = evt->y1.n + CV(10.0);
          sprite->d.sprite.coords[1].x = evt->x1.n + (radius * rsin(i * 0x80 + 0x80) >> 12);
          sprite->d.sprite.coords[1].z = evt->z1.n + (radius * rcos(i * 0x80 + 0x80) >> 12);
          sprite->d.sprite.coords[1].y = sprite->d.sprite.coords[0].y;
@@ -1003,7 +1003,7 @@ void Evtf163_StoneShower_FX1(EvtData *evt) {
          sprite->z1.n = (sprite->d.sprite.coords[0].z + sprite->d.sprite.coords[1].z +
                          sprite->d.sprite.coords[2].z + sprite->d.sprite.coords[3].z) >>
                         2;
-         sprite->y1.n = evt->y1.n + 0xe0;
+         sprite->y1.n = evt->y1.n + CV(0.875);
 
          AddEvtPrim3(gGraphicsPtr->ot, sprite);
          poly = &gGraphicsPtr->quads[gQuadIndex - 1];

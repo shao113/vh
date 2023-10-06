@@ -4,6 +4,7 @@
 #include "evt.h"
 #include "cd_files.h"
 #include "window.h"
+#include "audio.h"
 
 s32 PlayerHasItem(s32 item) {
    s32 i;
@@ -365,10 +366,10 @@ s32 Evtf576_Tavern(EvtData *evt) {
 
             case 1:
                if (--EVT.timer == 0) {
-                  PerformAudioCommand(3);
+                  PerformAudioCommand(AUDIO_CMD_STOP_SEQ);
                   LoadSeqSet(0x10);
                   FinishLoadingSeq();
-                  PerformAudioCommand(0x21d);
+                  PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(29));
                   func_80044364(5, 2);
                   evt->state3++;
                }

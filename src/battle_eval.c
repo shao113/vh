@@ -41,15 +41,15 @@ BVectorZXY gMapCursorStartingPos[BATTLE_CT] = {
     {11, 22, 3}, {8, 20, 3}};
 
 void PlayBattleBGM(u8 battleNum) {
-   PerformAudioCommand(6);
+   PerformAudioCommand(AUDIO_CMD_STOP_ALL);
    if (gState.mapNum == 28 && gState.turn > 1) {
       LoadSeqSet(23);
       FinishLoadingSeq();
-      PerformAudioCommand(0x202);
+      PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(2));
    } else if (gState.mapNum == 40 && gState.mapState.s.field_0x0 != 0) {
       LoadSeqSet(25);
       FinishLoadingSeq();
-      PerformAudioCommand(0x20b);
+      PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(11));
    } else {
       LoadSeqSet(gBattleBGM[battleNum].seqSetIdx);
       FinishLoadingSeq();
@@ -220,7 +220,7 @@ s32 State_Battle(void) {
             gState.zoom = gDeferredInBattleSaveData.zoom;
             gState.lastSelectedUnit = gDeferredInBattleSaveData.lastSelectedUnit;
             gState.mono = gDeferredInBattleSaveData.mono;
-            PerformAudioCommand(!gState.mono ? 2 : 1);
+            PerformAudioCommand(!gState.mono ? AUDIO_CMD_STEREO : AUDIO_CMD_MONO);
             gState.debug = gDeferredInBattleSaveData.debug;
             gState.cameraMode = gDeferredInBattleSaveData.cameraMode;
             gState.textSpeed = gDeferredInBattleSaveData.textSpeed;
@@ -369,14 +369,14 @@ void Evtf438_EvaluateBattle08(EvtData *evt) {
    case 0:
       if ((gState.D_80140859 != 0) || ((gPadStateNewPresses & PAD_START) != 0)) {
          FadeOutScreen(2, 6);
-         PerformAudioCommand(0x21);
+         PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
          evt->d.evtf438.delay = 75;
          evt->state++;
       }
       break;
    case 1:
       if (--evt->d.evtf438.delay == 0) {
-         PerformAudioCommand(6);
+         PerformAudioCommand(AUDIO_CMD_STOP_ALL);
          gIsEnemyTurn = 0;
          gState.primary = STATE_TITLE_SCREEN;
          gState.secondary = 0;
@@ -1082,11 +1082,11 @@ void Evtf446_BattleVictoryParticle(EvtData *evt) {
    }
 
    x = (rcos(EVT.todo_x4c & 0xfff) * EVT.todo_x54) >> 12;
-   y = (rcos((EVT.todo_x4c + ANGLE_90_DEGREES) & 0xfff) * EVT.todo_x54) >> 12;
+   y = (rcos((EVT.todo_x4c + DEG(90)) & 0xfff) * EVT.todo_x54) >> 12;
 
    x += (rcos(EVT.todo_x4e & 0xfff) * EVT.todo_x56) >> 12;
-   y += (rcos((EVT.todo_x4e + ANGLE_90_DEGREES) & 0xfff) * EVT.todo_x56) >> 12;
-   angle = EVT.todo_x4c + ANGLE_45_DEGREES;
+   y += (rcos((EVT.todo_x4e + DEG(90)) & 0xfff) * EVT.todo_x56) >> 12;
+   angle = EVT.todo_x4c + DEG(45);
 
    if (x > 0) {
       d = x * x;
@@ -1103,13 +1103,13 @@ void Evtf446_BattleVictoryParticle(EvtData *evt) {
    x += evt->x1.n;
    y += evt->y1.n;
    EVT.coords[1].x = x + ((rcos(angle & 0xfff) * d) >> 12);
-   EVT.coords[0].x = x + ((rcos((angle + ANGLE_90_DEGREES) & 0xfff) * d) >> 12);
-   EVT.coords[3].x = x + ((rcos((angle + ANGLE_270_DEGREES) & 0xfff) * d) >> 12);
-   EVT.coords[2].x = x + ((rcos((angle + ANGLE_180_DEGREES) & 0xfff) * d) >> 12);
-   EVT.coords[1].y = y + ((rcos((angle + ANGLE_90_DEGREES) & 0xfff) * d) >> 12);
-   EVT.coords[0].y = y + ((rcos((angle + ANGLE_180_DEGREES) & 0xfff) * d) >> 12);
+   EVT.coords[0].x = x + ((rcos((angle + DEG(90)) & 0xfff) * d) >> 12);
+   EVT.coords[3].x = x + ((rcos((angle + DEG(270)) & 0xfff) * d) >> 12);
+   EVT.coords[2].x = x + ((rcos((angle + DEG(180)) & 0xfff) * d) >> 12);
+   EVT.coords[1].y = y + ((rcos((angle + DEG(90)) & 0xfff) * d) >> 12);
+   EVT.coords[0].y = y + ((rcos((angle + DEG(180)) & 0xfff) * d) >> 12);
    EVT.coords[3].y = y + ((rcos(angle & 0xfff) * d) >> 12);
-   EVT.coords[2].y = y + ((rcos((angle + ANGLE_270_DEGREES) & 0xfff) * d) >> 12);
+   EVT.coords[2].y = y + ((rcos((angle + DEG(270)) & 0xfff) * d) >> 12);
 
    EVT.otOfs = 55 - EVT.todo_x5c;
    AddEvtPrim2(gGraphicsPtr->ot, evt);

@@ -2,9 +2,7 @@
 #include "evt.h"
 #include "graphics.h"
 #include "state.h"
-
-// TBD: When to use ANGLE_360_DEGREES vs ONE; tough to make good guesses without knowing the math;
-// Should at least fix it so that e.g. rsin input is treated as angle, w/ output divided by ONE
+#include "audio.h"
 
 #undef EVTF
 #define EVTF 119
@@ -51,12 +49,12 @@ void Evtf119_Fx_TBD(EvtData *evt) {
       if (EVT.boxIdx == 0) {
          EVT.boxIdx = 4;
       }
-      if (EVT.clut == 0) {
-         EVT.clut = 4;
+      if (EVT.clut == CLUT_NULL) {
+         EVT.clut = CLUT_BLUES;
       }
 
       rnd1 = rand();
-      EVT.theta = rnd1 % ANGLE_360_DEGREES;
+      EVT.theta = rnd1 % DEG(360);
       rnd2 = rand();
       EVT.h = 0x80 - (rnd2 % 0x100);
 
@@ -153,11 +151,11 @@ void Evtf062_StretchWarpSprite(EvtData *evt) {
       }
       unitSprite->d.sprite.hidden = 1;
       if (EVT.speed == 0) {
-         EVT.speed = ANGLE_270_DEGREES / 0x10;
+         EVT.speed = DEG(270) / 0x10;
       }
       if (evt->mem != 0) {
          // Reversed (warp in)
-         EVT.phase = ANGLE_270_DEGREES;
+         EVT.phase = DEG(270);
       }
       evt->state++;
 
@@ -176,12 +174,11 @@ void Evtf062_StretchWarpSprite(EvtData *evt) {
          gQuad_800fe53c[i].vx = quad[i].vx * (rsin(EVT.phase) + ONE) / ONE;
          gQuad_800fe53c[i].vz = quad[i].vz * (rsin(EVT.phase) + ONE) / ONE;
 
-         if (EVT.phase <= ANGLE_180_DEGREES) {
+         if (EVT.phase <= DEG(180)) {
             gQuad_800fe53c[i].vy =
-                quad[i].vy * (rsin(EVT.phase + ANGLE_180_DEGREES) / 2 + (ONE / 2)) / (ONE / 2);
+                quad[i].vy * (rsin(EVT.phase + DEG(180)) / 2 + (ONE / 2)) / (ONE / 2);
          } else {
-            gQuad_800fe53c[i].vy =
-                quad[i].vy * (rsin(EVT.phase + ANGLE_180_DEGREES) * 3 + ONE) / ONE;
+            gQuad_800fe53c[i].vy = quad[i].vy * (rsin(EVT.phase + DEG(180)) * 3 + ONE) / ONE;
          }
       }
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite, 0);
@@ -192,7 +189,7 @@ void Evtf062_StretchWarpSprite(EvtData *evt) {
       }
       if (evt->mem == 0) {
          EVT.phase += EVT.speed;
-         if (EVT.phase >= ANGLE_270_DEGREES) {
+         if (EVT.phase >= DEG(270)) {
             evt->functionIndex = EVTF_NULL;
          }
       } else {
@@ -236,7 +233,7 @@ void Evtf074_FadeInSprite(EvtData *evt) {
       fxSprite2 = Evt_GetUnused();
       CopyEvtData(fxSprite1, fxSprite2);
       fxSprite2->d.sprite.semiTrans = 3;
-      fxSprite2->d.sprite.clut = 10;
+      fxSprite2->d.sprite.clut = CLUT_MASK;
 
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite1, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
@@ -446,28 +443,28 @@ void Evtf076_Circles_TBD(EvtData *evt) {
       unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       evt->x1.n = unitSprite->x1.n;
       evt->z1.n = unitSprite->z1.n;
-      evt->y1.n = unitSprite->y1.n + 0xc0;
+      evt->y1.n = unitSprite->y1.n + CV(0.75);
 
       switch (unitSprite->d.sprite.direction) {
       case ANGLE_WEST:
          EVT.todo_x50 = -1;
          EVT.todo_x4e = 1;
-         evt->x1.n += 0x90;
+         evt->x1.n += CV(0.5625);
          break;
       case ANGLE_EAST:
          EVT.todo_x50 = 1;
          EVT.todo_x4e = 1;
-         evt->x1.n -= 0x90;
+         evt->x1.n -= CV(0.5625);
          break;
       case ANGLE_SOUTH:
          EVT.todo_x50 = -1;
          EVT.todo_x4e = 0;
-         evt->z1.n += 0x90;
+         evt->z1.n += CV(0.5625);
          break;
       case ANGLE_NORTH:
          EVT.todo_x50 = 1;
          EVT.todo_x4e = 0;
-         evt->z1.n -= 0x90;
+         evt->z1.n -= CV(0.5625);
          break;
       }
 
@@ -561,13 +558,13 @@ void Evtf077_Circle_TBD(EvtData *evt) {
       ringSprite->d.sprite.coords[2].y = evt->y1.n + b;
       ringSprite->d.sprite.coords[3].y = ringSprite->d.sprite.coords[2].y;
 
-      ringSprite->d.sprite.clut = 4;
+      ringSprite->d.sprite.clut = CLUT_BLUES;
       ringSprite->d.sprite.semiTrans = 2;
       AddEvtPrim4(gGraphicsPtr->ot, ringSprite);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, fade, fade, fade);
 
-      ringSprite->d.sprite.clut = 10;
+      ringSprite->d.sprite.clut = CLUT_MASK;
       ringSprite->d.sprite.semiTrans = 3;
       AddEvtPrim3(gGraphicsPtr->ot, ringSprite);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
@@ -649,8 +646,8 @@ void Evtf_Unk_8006183c(EvtData *evt) {
    case 0:
       EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       unitSprite->d.sprite.hidden = 1;
-      if (EVT.clut == 0) {
-         EVT.clut = 4;
+      if (EVT.clut == CLUT_NULL) {
+         EVT.clut = CLUT_BLUES;
       }
       if (EVT.scale == 0) {
          EVT.scale = 110;
@@ -667,25 +664,25 @@ void Evtf_Unk_8006183c(EvtData *evt) {
       fxSprite->z1.n = unitSprite->z1.n;
       fxSprite->y1.n = unitSprite->y1.n;
       fxSprite->d.sprite.semiTrans = 0;
-      fxSprite->d.sprite.clut = 0;
+      fxSprite->d.sprite.clut = CLUT_NULL;
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite, 0);
 
       switch ((gCameraRotation.vy & 0xfff) >> 10) {
       case CAM_DIR_SOUTH:
-         fxSprite->z1.n += 16;
-         fxSprite->x1.n -= 16;
+         fxSprite->z1.n += CV(0.0625);
+         fxSprite->x1.n -= CV(0.0625);
          break;
       case CAM_DIR_EAST:
-         fxSprite->x1.n -= 16;
-         fxSprite->z1.n -= 16;
+         fxSprite->x1.n -= CV(0.0625);
+         fxSprite->z1.n -= CV(0.0625);
          break;
       case CAM_DIR_NORTH:
-         fxSprite->z1.n -= 16;
-         fxSprite->x1.n += 16;
+         fxSprite->z1.n -= CV(0.0625);
+         fxSprite->x1.n += CV(0.0625);
          break;
       case CAM_DIR_WEST:
-         fxSprite->z1.n += 16;
-         fxSprite->x1.n += 16;
+         fxSprite->z1.n += CV(0.0625);
+         fxSprite->x1.n += CV(0.0625);
          break;
       }
 
@@ -756,9 +753,9 @@ void Evtf802_Fx_TBD(EvtData *evt) {
    switch (evt->state) {
    case 0:
       rnd1 = rand();
-      EVT.theta = rnd1 % ANGLE_360_DEGREES;
+      EVT.theta = rnd1 % DEG(360);
       rnd2 = rand();
-      EVT.h = (rnd2 % 0x60) - 0xd0;
+      EVT.h = (rnd2 % CV(0.375)) - CV(0.8125);
 
       EVT.sprite = sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
@@ -836,7 +833,7 @@ void Evtf803_Fx_TBD(EvtData *evt) {
    switch (evt->state) {
    case 0:
       rnd1 = rand();
-      EVT.theta = rnd1 % ANGLE_360_DEGREES;
+      EVT.theta = rnd1 % DEG(360);
       rnd2 = rand();
       EVT.h = (rnd2 % 0x20) - 0xd0;
 
@@ -901,7 +898,7 @@ void Evtf801_Fx_TBD(EvtData *evt) {
    switch (evt->state) {
    case 0:
       rnd1 = rand();
-      EVT.theta = rnd1 % ANGLE_360_DEGREES;
+      EVT.theta = rnd1 % DEG(360);
       rnd2 = rand();
       EVT.h = (rnd2 % 0x46) - 0xd0;
 
@@ -909,7 +906,7 @@ void Evtf801_Fx_TBD(EvtData *evt) {
       sprite->functionIndex = EVTF_NOOP;
       EVT.sprite = sprite;
       sprite->d.sprite.animData = sFlameAnimData_800fead4;
-      sprite->d.sprite.clut = 0;
+      sprite->d.sprite.clut = CLUT_NULL;
       sprite->d.sprite.semiTrans = 2;
       evt->state++;
 
@@ -1062,7 +1059,7 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
       unitSprite->d.sprite.hidden = 1;
       EVT.fade = 0x80;
       EVT.increasing = 0;
-      if (EVT.clut == 0) {
+      if (EVT.clut == CLUT_NULL) {
          EVT.clut = fxInfo[i].clut;
       }
 
@@ -1070,7 +1067,7 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
       fxEvt1->functionIndex = fxInfo[i].evtf;
       fxEvt1->x1.n = unitSprite->x1.n;
       fxEvt1->z1.n = unitSprite->z1.n;
-      fxEvt1->y1.n = unitSprite->y1.n + 0xd0;
+      fxEvt1->y1.n = unitSprite->y1.n + CV(0.8125);
       fxEvt1->mem = 30;
       fxEvt1->d.evtf133.radius = fxInfo[i].radius;
       fxEvt1->d.evtf133.todo_x2a = fxInfo[i].to_x2a;
@@ -1189,12 +1186,11 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
          gQuad_800fe53c[i].vx = (quad[i].vx * (rsin(EVT.phase) + ONE) / ONE);
          gQuad_800fe53c[i].vz = (quad[i].vz * (rsin(EVT.phase) + ONE) / ONE);
 
-         if (EVT.phase <= ANGLE_180_DEGREES) {
+         if (EVT.phase <= DEG(180)) {
             gQuad_800fe53c[i].vy =
-                quad[i].vy * (rsin(EVT.phase + ANGLE_180_DEGREES) / 2 + (ONE / 2)) / (ONE / 2);
+                quad[i].vy * (rsin(EVT.phase + DEG(180)) / 2 + (ONE / 2)) / (ONE / 2);
          } else {
-            gQuad_800fe53c[i].vy =
-                quad[i].vy * (rsin(EVT.phase + ANGLE_180_DEGREES) * 3 + ONE) / ONE;
+            gQuad_800fe53c[i].vy = quad[i].vy * (rsin(EVT.phase + DEG(180)) * 3 + ONE) / ONE;
          }
       }
 
@@ -1227,7 +1223,7 @@ void Evtf132_Etc_Fx_TBD(EvtData *evt) {
       }
 
       EVT.phase += stretchSpeed;
-      if (EVT.phase > ANGLE_270_DEGREES) {
+      if (EVT.phase > DEG(270)) {
          evt->functionIndex = EVTF_NULL;
          gSignal3 = 1;
       }
@@ -1250,8 +1246,8 @@ void Evtf149_FlashingUnitSprite(EvtData *evt) {
       EVT.fade = 0x80;
       EVT.increasing = 0;
       unitSprite->d.sprite.hidden = 1;
-      if (EVT.clut == 0) {
-         EVT.clut = 3;
+      if (EVT.clut == CLUT_NULL) {
+         EVT.clut = CLUT_REDS;
       }
       if (EVT.fadeSpeed == 0) {
          EVT.fadeSpeed = 16;
@@ -1333,42 +1329,42 @@ void Evtf215_Cloud(EvtData *evt) {
       sprite->d.sprite.animInitialized = 0;
       EVT.sprite = sprite;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
       EVT.position1.x = rsin(a) >> 5;
       EVT.position1.z = rcos(a) >> 5;
       EVT.position1.y = (rand() % 0x60) + 0x20;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
       EVT.position2.x = rsin(a) >> 5;
       EVT.position2.z = rcos(a) >> 5;
       EVT.position2.y = (rand() % 0x60) + 0x20;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
       EVT.position3.x = rsin(a) >> 5;
       EVT.position3.z = rcos(a) >> 5;
       EVT.position3.y = (rand() % 0x60) + 0x20;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
       EVT.position4.x = rsin(a) >> 5;
       EVT.position4.z = rcos(a) >> 5;
       EVT.position4.y = (rand() % 0x60) + 0x20;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
       EVT.position5.x = rsin(a) >> 5;
       EVT.position5.z = rcos(a) >> 5;
       EVT.position5.y = (rand() % 0x60) + 0x20;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
       EVT.position6.x = rsin(a) >> 5;
       EVT.position6.z = rcos(a) >> 5;
       EVT.position6.y = (rand() % 0x60) + 0x20;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
       EVT.position7_x = rsin(a) >> 5;
       EVT.position7_z = rcos(a) >> 5;
       EVT.position7_y = (rand() % 0x60) + 0x20;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
       EVT.position8_x = rsin(a) >> 5;
       EVT.position8_z = rcos(a) >> 5;
       EVT.position8_y = (rand() % 0x60) + 0x20;
@@ -1447,8 +1443,8 @@ void Evtf215_Cloud(EvtData *evt) {
       sprite->y1.n = evt->y1.n + (EVT.position8_y * rsin(EVT.theta)) / ONE;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
-      EVT.theta += (ANGLE_90_DEGREES / 10);
-      if (EVT.theta >= ANGLE_90_DEGREES) {
+      EVT.theta += (DEG(90) / 10);
+      if (EVT.theta >= DEG(90)) {
          evt->functionIndex = EVTF_NULL;
          sprite->functionIndex = EVTF_NULL;
       }
@@ -1504,7 +1500,7 @@ void Evtf214_DustCloud(EvtData *evt) {
       EVT.sprite = sprite;
 
       for (i = 0; i < ARRAY_COUNT(EVT.positions); i++, pPosition++) {
-         a = rand() % ANGLE_360_DEGREES;
+         a = rand() % DEG(360);
          pPosition->x = rsin(a) >> 5;
          pPosition->z = rcos(a) >> 5;
          pPosition->y = (rand() % 0x40) + 0x20;
@@ -1544,8 +1540,8 @@ void Evtf214_DustCloud(EvtData *evt) {
          AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
       }
 
-      EVT.theta += (ANGLE_180_DEGREES / 10);
-      if (EVT.theta >= (ANGLE_180_DEGREES / 10 * 10)) {
+      EVT.theta += (DEG(180) / 10);
+      if (EVT.theta >= (DEG(180) / 10 * 10)) {
          evt->functionIndex = EVTF_NULL;
          sprite->functionIndex = EVTF_NULL;
       }
@@ -1595,15 +1591,15 @@ void Evtf130_Fx_TBD(EvtData *evt) {
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
       sprite->d.sprite.gfxIdx = GFX_COLOR_13;
-      sprite->d.sprite.clut = 4;
+      sprite->d.sprite.clut = CLUT_BLUES;
       sprite->d.sprite.semiTrans = 1;
 
       switch (EVT.todo_x50) {
       case 0:
-         a = (EVT.todo_x4e == 1) ? ANGLE_180_DEGREES : 0;
+         a = (EVT.todo_x4e == 1) ? DEG(180) : 0;
          break;
       case 1:
-         a = (EVT.todo_x50 == 1) ? ANGLE_180_DEGREES : 0;
+         a = (EVT.todo_x50 == 1) ? DEG(180) : 0;
          break;
       default:
          a = 0;
@@ -1745,20 +1741,20 @@ void Evtf201_UnitStruck(EvtData *evt) {
       evt_s0->d.sprite.animData = impactAnimData;
       evt_s0->x1.n = evt->x1.n;
       evt_s0->z1.n = evt->z1.n;
-      evt_s0->y1.n = evt->y1.n + 0xe0;
+      evt_s0->y1.n = evt->y1.n + CV(0.875);
 
       switch (evt_s0->d.sprite.direction) {
       case ANGLE_WEST:
-         evt_s0->x1.n += 0x20;
+         evt_s0->x1.n += CV(0.125);
          break;
       case ANGLE_EAST:
-         evt_s0->x1.n -= 0x20;
+         evt_s0->x1.n -= CV(0.125);
          break;
       case ANGLE_SOUTH:
-         evt_s0->z1.n += 0x20;
+         evt_s0->z1.n += CV(0.125);
          break;
       case ANGLE_NORTH:
-         evt_s0->z1.n -= 0x20;
+         evt_s0->z1.n -= CV(0.125);
          break;
       }
 
@@ -1775,7 +1771,7 @@ void Evtf201_UnitStruck(EvtData *evt) {
       evt_s2->d.sprite.hidden = 0;
       evt_s3->d.sprite.hidden = 0;
       evt_s2->d.sprite.semiTrans = 2;
-      evt_s2->d.sprite.clut = 10;
+      evt_s2->d.sprite.clut = CLUT_MASK;
 
       RenderUnitSprite(gGraphicsPtr->ot, evt_s2, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
@@ -1848,7 +1844,7 @@ void Evtf202_746_UnitBlocking(EvtData *evt) {
          evt_s3->functionIndex = EVTF_BLOCKING_IMPACT_PARTICLE;
          evt_s3->x1.n = evt->x1.n;
          evt_s3->z1.n = evt->z1.n;
-         evt_s3->y1.n = evt->y1.n + 0xe0;
+         evt_s3->y1.n = evt->y1.n + CV(0.875);
          evt_s3->d.evtf203.direction = evt_s0->d.sprite.direction;
       }
 
@@ -1864,7 +1860,7 @@ void Evtf202_746_UnitBlocking(EvtData *evt) {
       evt_s2->d.sprite.hidden = 0;
       evt_s3->d.sprite.hidden = 0;
       evt_s2->d.sprite.semiTrans = 2;
-      evt_s2->d.sprite.clut = 10;
+      evt_s2->d.sprite.clut = CLUT_MASK;
 
       RenderUnitSprite(gGraphicsPtr->ot, evt_s2, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
@@ -1913,37 +1909,37 @@ void Evtf203_BlockingImpactParticle(EvtData *evt) {
    case 0:
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
-      sprite->d.sprite.clut = 4;
+      sprite->d.sprite.clut = CLUT_BLUES;
       sprite->d.sprite.animData = sImpactAnimData_800feb44;
       sprite->d.sprite.animInitialized = 0;
       EVT.sprite = sprite;
 
-      a = rand() % ANGLE_360_DEGREES;
+      a = rand() % DEG(360);
 
       switch (EVT.direction) {
       case ANGLE_WEST:
-         evt->x1.n += 0x20;
+         evt->x1.n += CV(0.125);
          EVT.todo_x4e = rsin(a) / 24;
          EVT.todo_x50 = rcos(a) / 24;
-         EVT.todo_x4c = 0xc0 - rand() % 0x180;
+         EVT.todo_x4c = CV(0.75) - rand() % CV(1.5);
          break;
       case ANGLE_EAST:
-         evt->x1.n -= 0x20;
+         evt->x1.n -= CV(0.125);
          EVT.todo_x4e = rsin(a) / 24;
          EVT.todo_x50 = rcos(a) / 24;
-         EVT.todo_x4c = 0xc0 - rand() % 0x180;
+         EVT.todo_x4c = CV(0.75) - rand() % CV(1.5);
          break;
       case ANGLE_SOUTH:
-         evt->z1.n += 0x20;
+         evt->z1.n += CV(0.125);
          EVT.todo_x4c = rsin(a) / 24;
          EVT.todo_x50 = rcos(a) / 24;
-         EVT.todo_x4e = 0xc0 - rand() % 0x180;
+         EVT.todo_x4e = CV(0.75) - rand() % CV(1.5);
          break;
       case ANGLE_NORTH:
-         evt->z1.n -= 0x20;
+         evt->z1.n -= CV(0.125);
          EVT.todo_x4c = rsin(a) / 24;
          EVT.todo_x50 = rcos(a) / 24;
-         EVT.todo_x4e = 0xc0 - rand() % 0x180;
+         EVT.todo_x4e = CV(0.75) - rand() % CV(1.5);
          break;
       }
 
@@ -1961,7 +1957,7 @@ void Evtf203_BlockingImpactParticle(EvtData *evt) {
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
 
       EVT.todo_x28 += 0x4e;
-      if (EVT.todo_x28 >= ANGLE_90_DEGREES) {
+      if (EVT.todo_x28 >= DEG(90)) {
          evt->functionIndex = EVTF_NULL;
          sprite->functionIndex = EVTF_NULL;
       }
@@ -1985,7 +1981,7 @@ void Evtf205_BloodSpurt(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      PerformAudioCommand(0x5df);
+      PerformAudioCommand(AUDIO_CMD_PLAY_SFX(223));
       if (EVT.unitSprite == NULL) {
          EVT.unitSprite = unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
       } else {
@@ -2047,7 +2043,7 @@ void Evtf205_BloodSpurt(EvtData *evt) {
       }
       evt_s2->x1.n = unitSprite->x1.n;
       evt_s2->z1.n = unitSprite->z1.n;
-      evt_s2->y1.n = unitSprite->y1.n + 0x40 + rand() % 0x20;
+      evt_s2->y1.n = unitSprite->y1.n + CV(0.25) + rand() % CV(0.125);
 
       if (EVT.timer % 2 == 0) {
          evt_s2 = Evt_GetUnused();
@@ -2058,7 +2054,7 @@ void Evtf205_BloodSpurt(EvtData *evt) {
          }
          evt_s2->x1.n = unitSprite->x1.n;
          evt_s2->z1.n = unitSprite->z1.n;
-         evt_s2->y1.n = unitSprite->y1.n + 0x40 + rand() % 0x20;
+         evt_s2->y1.n = unitSprite->y1.n + CV(0.25) + rand() % CV(0.125);
       }
 
       if (--EVT.timer == -1) {
@@ -2091,11 +2087,11 @@ void Evtf206_686_BloodSpurtParticle(EvtData *evt) {
       if (evt->functionIndex == EVTF_BLOOD_SPURT_PARTICLE ||
           evt->functionIndex == EVTF_BLOOD_SPURT_PARTICLE_OFFSET) {
          sprite->d.sprite.animData = sImpactAnimData_800feb44;
-         sprite->d.sprite.clut = 3;
+         sprite->d.sprite.clut = CLUT_REDS;
          sprite->d.sprite.animInitialized = 0;
       } else {
          sprite->d.sprite.animData = sRockAnimData_800feb68;
-         sprite->d.sprite.clut = 2;
+         sprite->d.sprite.clut = CLUT_2;
          sprite->d.sprite.animInitialized = 0;
          rnd = rand() % 3;
          for (i = 0; i < rnd; i++) {
@@ -2106,45 +2102,45 @@ void Evtf206_686_BloodSpurtParticle(EvtData *evt) {
       EVT.sprite = sprite;
       EVT.shade = rand() % 0x60;
 
-      a = rand() % ANGLE_360_DEGREES;
-      EVT.position1.x = (rand() % 0x40 + 0x192) * rsin(a) / ONE;
-      EVT.position1.z = (rand() % 0x40 + 0x192) * rcos(a) / ONE;
-      EVT.position1.y = rand() % 0x200 + 0x100;
+      a = rand() % DEG(360);
+      EVT.position1.x = (rand() % CV(0.25) + CV(1.5703125)) * rsin(a) / ONE;
+      EVT.position1.z = (rand() % CV(0.25) + CV(1.5703125)) * rcos(a) / ONE;
+      EVT.position1.y = rand() % CV(2.0) + CV(1.0);
 
-      a = rand() % ANGLE_360_DEGREES;
-      EVT.position2.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
-      EVT.position2.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
-      EVT.position2.y = rand() % 0x200 + 0x100;
+      a = rand() % DEG(360);
+      EVT.position2.x = (rand() % CV(0.75) + CV(1.25)) * rsin(a) / ONE;
+      EVT.position2.z = (rand() % CV(0.75) + CV(1.25)) * rcos(a) / ONE;
+      EVT.position2.y = rand() % CV(2.0) + CV(1.0);
 
-      a = rand() % ANGLE_360_DEGREES;
-      EVT.position3.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
-      EVT.position3.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
-      EVT.position3.y = rand() % 0x200 + 0x100;
+      a = rand() % DEG(360);
+      EVT.position3.x = (rand() % CV(0.75) + CV(1.25)) * rsin(a) / ONE;
+      EVT.position3.z = (rand() % CV(0.75) + CV(1.25)) * rcos(a) / ONE;
+      EVT.position3.y = rand() % CV(2.0) + CV(1.0);
 
-      a = rand() % ANGLE_360_DEGREES;
-      EVT.position4.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
-      EVT.position4.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
-      EVT.position4.y = rand() % 0x200 + 0x100;
+      a = rand() % DEG(360);
+      EVT.position4.x = (rand() % CV(0.75) + CV(1.25)) * rsin(a) / ONE;
+      EVT.position4.z = (rand() % CV(0.75) + CV(1.25)) * rcos(a) / ONE;
+      EVT.position4.y = rand() % CV(2.0) + CV(1.0);
 
-      a = rand() % ANGLE_360_DEGREES;
-      EVT.position5.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
-      EVT.position5.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
-      EVT.position5.y = rand() % 0x200 + 0x100;
+      a = rand() % DEG(360);
+      EVT.position5.x = (rand() % CV(0.75) + CV(1.25)) * rsin(a) / ONE;
+      EVT.position5.z = (rand() % CV(0.75) + CV(1.25)) * rcos(a) / ONE;
+      EVT.position5.y = rand() % CV(2.0) + CV(1.0);
 
-      a = rand() % ANGLE_360_DEGREES;
-      EVT.position6.x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
-      EVT.position6.z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
-      EVT.position6.y = rand() % 0x200 + 0x100;
+      a = rand() % DEG(360);
+      EVT.position6.x = (rand() % CV(0.75) + CV(1.25)) * rsin(a) / ONE;
+      EVT.position6.z = (rand() % CV(0.75) + CV(1.25)) * rcos(a) / ONE;
+      EVT.position6.y = rand() % CV(2.0) + CV(1.0);
 
-      a = rand() % ANGLE_360_DEGREES;
-      EVT.position7_x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
-      EVT.position7_z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
-      EVT.position7_y = rand() % 0x200 + 0x100;
+      a = rand() % DEG(360);
+      EVT.position7_x = (rand() % CV(0.75) + CV(1.25)) * rsin(a) / ONE;
+      EVT.position7_z = (rand() % CV(0.75) + CV(1.25)) * rcos(a) / ONE;
+      EVT.position7_y = rand() % CV(2.0) + CV(1.0);
 
-      a = rand() % ANGLE_360_DEGREES;
-      EVT.position8_x = (rand() % 0xc0 + 0x140) * rsin(a) / ONE;
-      EVT.position8_z = (rand() % 0xc0 + 0x140) * rcos(a) / ONE;
-      EVT.position8_y = rand() % 0x200 + 0x100;
+      a = rand() % DEG(360);
+      EVT.position8_x = (rand() % CV(0.75) + CV(1.25)) * rsin(a) / ONE;
+      EVT.position8_z = (rand() % CV(0.75) + CV(1.25)) * rcos(a) / ONE;
+      EVT.position8_y = rand() % CV(2.0) + CV(1.0);
 
       evt->state++;
 
@@ -2264,8 +2260,8 @@ void Evtf206_686_BloodSpurtParticle(EvtData *evt) {
          setRGB0(poly, red, green, blue);
       }
 
-      EVT.theta += (ANGLE_180_DEGREES / 32);
-      if (EVT.theta >= ANGLE_180_DEGREES) {
+      EVT.theta += (DEG(180) / 32);
+      if (EVT.theta >= DEG(180)) {
          evt->functionIndex = EVTF_NULL;
          sprite->functionIndex = EVTF_NULL;
       }

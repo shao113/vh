@@ -54,7 +54,7 @@ void Evtf327_HealingCircle_FX2(EvtData *evt) {
       }
 
       fxSprite->d.sprite.gfxIdx = GFX_TBD_25;
-      fxSprite->d.sprite.clut = 4;
+      fxSprite->d.sprite.clut = CLUT_BLUES;
       fxSprite->d.sprite.semiTrans = 2;
       fxSprite->d.sprite.facingLeft = targetSprite->d.sprite.facingLeft;
       AddEvtPrim6(gGraphicsPtr->ot, fxSprite, 0);
@@ -75,7 +75,7 @@ void Evtf327_HealingCircle_FX2(EvtData *evt) {
       evt_s1->y1.n = evt->y1.n + rand() % 0x80 + 0x41;
       evt_s1->state2 = (rand() >> 4) % 5;
       evt_s1->mem = 0x10;
-      evt_s1->d.sprite.clut = 3;
+      evt_s1->d.sprite.clut = CLUT_REDS;
       evt_s1->d.sprite.animData = gSparkleAnimData_800ffab4;
 
       if (evt->state2 == 0x20) {
@@ -153,7 +153,7 @@ void Evtf322_370_371_372_MagicRestoration_FX2(EvtData *evt) {
       maskEffect.semiTrans = 2;
       fade = evt->state2 << 1;
       maskEffect.color.r = maskEffect.color.g = maskEffect.color.b = fade;
-      maskEffect.clut = 8;
+      maskEffect.clut = CLUT_PURPLES;
       ApplyMaskEffectPreset(fxSprite, &maskEffect);
       fxSprite->functionIndex = EVTF_NULL;
 
@@ -167,7 +167,7 @@ void Evtf322_370_371_372_MagicRestoration_FX2(EvtData *evt) {
       if (--evt->state2 == 0x20) {
          floatingText = CreatePositionedEvt(targetSprite, EVTF_FLOATING_DAMAGE_TEXT);
          floatingText->d.evtf051.damage = EVT.amount;
-         floatingText->d.evtf051.clut = 8;
+         floatingText->d.evtf051.clut = CLUT_PURPLES;
       }
       if (evt->state2 <= 0) {
          targetSprite->d.sprite.hidden = 0;
@@ -194,12 +194,12 @@ void Evtf310_LifeOrb_Beam(EvtData *evt) {
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
       sprite->d.sprite.gfxIdx = GFX_TILED_RED_SPARKLES_DYN_1;
-      sprite->d.sprite.clut = 4;
+      sprite->d.sprite.clut = CLUT_BLUES;
       sprite->d.sprite.semiTrans = 2;
       EVT.sprite = sprite;
       EVT.height = 0;
       EVT.unused_0x26 = 0x10;
-      EVT.radius = 0x40;
+      EVT.radius = CV(0.25);
       evt->state++;
 
    // fallthrough
@@ -209,13 +209,13 @@ void Evtf310_LifeOrb_Beam(EvtData *evt) {
 
       for (i = 0; i < 8; i++) {
          sprite->d.sprite.coords[0].x = sprite->d.sprite.coords[2].x =
-             evt->x1.n + (EVT.radius * rcos(i * 0x200) >> 12);
+             evt->x1.n + (EVT.radius * rcos(i * DEG(45)) >> 12);
          sprite->d.sprite.coords[1].x = sprite->d.sprite.coords[3].x =
-             evt->x1.n + (EVT.radius * rcos((i + 1) * 0x200) >> 12);
+             evt->x1.n + (EVT.radius * rcos((i + 1) * DEG(45)) >> 12);
          sprite->d.sprite.coords[0].z = sprite->d.sprite.coords[2].z =
-             evt->z1.n + (EVT.radius * rsin(i * 0x200) >> 12);
+             evt->z1.n + (EVT.radius * rsin(i * DEG(45)) >> 12);
          sprite->d.sprite.coords[1].z = sprite->d.sprite.coords[3].z =
-             evt->z1.n + (EVT.radius * rsin((i + 1) * 0x200) >> 12);
+             evt->z1.n + (EVT.radius * rsin((i + 1) * DEG(45)) >> 12);
          sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = evt->y1.n + EVT.height;
          sprite->d.sprite.coords[2].y = sprite->d.sprite.coords[3].y = evt->y1.n;
          sprite->x1.n = sprite->d.sprite.coords[0].x;
@@ -226,8 +226,8 @@ void Evtf310_LifeOrb_Beam(EvtData *evt) {
          setRGB0(poly, 0xff, 0xff, 0xff);
       }
 
-      if (EVT.height < 0x500) {
-         EVT.height += 0x20;
+      if (EVT.height < CV(5.0)) {
+         EVT.height += CV(0.125);
       }
 
       if (--evt->state2 <= 0) {
@@ -274,8 +274,8 @@ void Evtf312_BubbleSwirl_Bubble(EvtData *evt) {
    case 0:
       EVT.gfxIdx = GFX_BUBBLE;
       EVT.boxIdx = 5;
-      EVT.clut = 4;
-      EVT.theta = rand() % ANGLE_360_DEGREES;
+      EVT.clut = CLUT_BLUES;
+      EVT.theta = rand() % DEG(360);
       EVT.yVelocity = 0x10;
       EVT.rVelocity = 1;
       EVT.radius = 0x100;
@@ -290,7 +290,7 @@ void Evtf312_BubbleSwirl_Bubble(EvtData *evt) {
       EVT.theta = (EVT.theta + 0x80) & 0xfff;
       evt->y2.n += EVT.yVelocity;
       EVT.radius += EVT.rVelocity;
-      if (evt->y2.n >= 0x500) {
+      if (evt->y2.n >= CV(5.0)) {
          evt->functionIndex = EVTF_NULL;
       }
       break;
@@ -415,8 +415,8 @@ void Evtf314_InwardRay(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      EVT.theta1 = -(rand() % 0x180);
-      EVT.theta2 = rand() % ANGLE_360_DEGREES;
+      EVT.theta1 = -(rand() % DEG(33.75));
+      EVT.theta2 = rand() % DEG(360);
       if (EVT.todo_x38 == 0) {
          EVT.todo_x38 = 0x500;
       }
@@ -482,10 +482,10 @@ void Evtf314_InwardRay(EvtData *evt) {
 void Evtf315_VerticalRay(EvtData *evt) {
    switch (evt->state) {
    case 0:
-      EVT.theta = rand() % ANGLE_360_DEGREES;
-      EVT.radius = 0x20;
+      EVT.theta = rand() % DEG(360);
+      EVT.radius = CV(0.125);
       EVT.top = evt->y2.n;
-      EVT.height = rand() % 0x100;
+      EVT.height = rand() % CV(1.0);
       EVT.rotationSpeed = 0x20;
       EVT.speed = 0x40;
       EVT.clut = 3 + rand() % 3;
@@ -510,7 +510,7 @@ void Evtf315_VerticalRay(EvtData *evt) {
       EVT.theta += EVT.rotationSpeed;
       AddEvtPrim5(gGraphicsPtr->ot, evt, 0x400); //? Extra arg
       EVT.top += EVT.speed;
-      if (EVT.top >= evt->y2.n + 0x500) {
+      if (EVT.top >= evt->y2.n + CV(5.0)) {
          evt->state++;
       }
       break;
@@ -538,7 +538,7 @@ void RenderCylinder(Cylinder *cylinder) {
    }
 
    sideCt = cylinder->sideCt;
-   increment = ANGLE_360_DEGREES / sideCt;
+   increment = DEG(360) / sideCt;
 
    if (cylinder->theta != 0) {
       startingTheta = cylinder->theta;
@@ -601,7 +601,7 @@ void RenderCylinderWithRotatedTexture(Cylinder *cylinder) {
    }
 
    sideCt = cylinder->sideCt;
-   increment = ANGLE_360_DEGREES / sideCt;
+   increment = DEG(360) / sideCt;
 
    if (cylinder->theta != 0) {
       startingTheta = cylinder->theta;
@@ -722,7 +722,7 @@ void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
       cylinder->bottomRadius = 0;
       cylinder->useColor = 1;
       cylinder->color.r = cylinder->color.g = cylinder->color.b = 0;
-      cylinder->clut = 3;
+      cylinder->clut = CLUT_REDS;
 
       evt->state2 = 0x80;
       evt->mem = 0;
@@ -734,7 +734,7 @@ void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
 
       switch (evt->mem) {
       case 0:
-         cylinder->topRadius += (0xc0 - cylinder->topRadius) >> 4;
+         cylinder->topRadius += (CV(0.75) - cylinder->topRadius) >> 4;
          cylinder->bottomRadius = cylinder->topRadius;
          cylinder->color.b += (0x40 - cylinder->color.b) >> 3;
          cylinder->color.r += (0x40 - cylinder->color.r) >> 3;
@@ -749,12 +749,12 @@ void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
          if (evt->state2 % 2 == 0) {
             evt_s1 = Evt_GetUnused();
             evt_s1->functionIndex = EVTF_EVIL_STREAM_ROCK;
-            rnd = (rand() >> 2) % ANGLE_360_DEGREES;
-            evt_s1->x1.n = evt->x1.n + (0x80 * rcos(rnd) >> 12);
-            evt_s1->z1.n = evt->z1.n + (0x80 * rsin(rnd) >> 12);
+            rnd = (rand() >> 2) % DEG(360);
+            evt_s1->x1.n = evt->x1.n + (CV(0.5) * rcos(rnd) >> 12);
+            evt_s1->z1.n = evt->z1.n + (CV(0.5) * rsin(rnd) >> 12);
             evt_s1->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
             evt_s1->y2.n = 0x20 + (rand() >> 2) % 0x20; // y velocity
-            evt_s1->d.evtf379.maxHeight = evt_s1->y1.n + 0x800;
+            evt_s1->d.evtf379.maxHeight = evt_s1->y1.n + CV(8.0);
          }
          if (--evt->state2 <= 32) {
             evt->mem++;
@@ -801,10 +801,10 @@ void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
       evt_s1->d.sprite.hidden = 0;
       if (evt->functionIndex == EVTF_EVIL_STREAM_FX3) {
          evt_s1 = CreatePositionedEvt(evt, EVTF_FX_TBD_134);
-         evt_s1->d.evtf134.clut = 3;
+         evt_s1->d.evtf134.clut = CLUT_REDS;
       } else { // EVTF_EVIL_STREAM_FX2:
          evt_s1 = CreatePositionedEvt(evt, EVTF_FX_TBD_132);
-         evt_s1->d.evtf132.clut = 3;
+         evt_s1->d.evtf132.clut = CLUT_REDS;
       }
       evt->functionIndex = EVTF_NULL;
       gLightColor.r = gLightColor.g = gLightColor.b = 0x80;
@@ -826,7 +826,7 @@ void Evtf326_Fx_TBD(EvtData *evt) {
       sprite = Evt_GetUnused();
       sprite->functionIndex = EVTF_NOOP;
       sprite->d.sprite.gfxIdx = GFX_TILED_RED_SPARKLES_DYN_1;
-      sprite->d.sprite.clut = 3;
+      sprite->d.sprite.clut = CLUT_REDS;
       sprite->d.sprite.semiTrans = 2;
       EVT.sprite = sprite;
 
@@ -866,8 +866,8 @@ void Evtf326_Fx_TBD(EvtData *evt) {
    case 1:
       dataStore = EVT.dataStore;
       dsCylinder = &dataStore->d.dataStore.cylinder;
-      EVT.radius += (0xc0 - EVT.radius) >> 4;
-      if (EVT.height < 0x400) {
+      EVT.radius += (CV(0.75) - EVT.radius) >> 4;
+      if (EVT.height < CV(4.0)) {
          EVT.height += EVT.speed;
       }
       dsCylinder->top.vy = evt->y1.n + EVT.height;

@@ -1402,7 +1402,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
          switch (evt->state3) {
          case 0:
             EVT.relQuadX1 = EVT.halfWidth << 1;
-            EVT.clut = 8;
+            EVT.clut = CLUT_PURPLES;
             evt->state3++;
          // fallthrough
          case 1:
@@ -1450,7 +1450,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.relQuadY3 = -EVT.halfHeight;
             EVT.effectX = EVT.halfWidth >> 3;
             EVT.effectY = EVT.halfHeight >> 3;
-            EVT.clut = 16;
+            EVT.clut = CLUT_WINDOW;
             evt->state3++;
          // fallthrough
          case 1:
@@ -1519,7 +1519,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
       if (gWindowActiveIdx == EVT.windowId) {
          if (gPadStateNewPresses & PAD_DOWN) {
             if (EVT.choiceCt > 1 && !WindowIsOffScreen(evt)) {
-               PerformAudioCommand(0x5ed);
+               PerformAudioCommand(AUDIO_CMD_PLAY_SFX(237));
             }
             if (!EVT.disableWraparound && evt->state2 + 1 == EVT.choiceCt) {
                // Wrap-around to first choice
@@ -1531,7 +1531,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
          }
          if (gPadStateNewPresses & PAD_UP) {
             if (EVT.choiceCt > 1 && !WindowIsOffScreen(evt)) {
-               PerformAudioCommand(0x5ed);
+               PerformAudioCommand(AUDIO_CMD_PLAY_SFX(237));
             }
             if (!EVT.disableWraparound && evt->state2 == 0) {
                // Wrap-around to last choice
@@ -1591,11 +1591,11 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.relQuadY1 = -EVT.halfHeight;
             EVT.relQuadY2 = EVT.halfHeight;
             EVT.relQuadY3 = EVT.halfHeight;
-            EVT.clut = 8;
+            EVT.clut = CLUT_PURPLES;
             evt->state3++;
          // fallthrough
          case 1:
-            if (--EVT.clut == 0) {
+            if (--EVT.clut == CLUT_NULL) {
                if (highlight) {
                   highlight->d.sprite.hidden = 1;
                }
@@ -1631,7 +1631,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.relQuadY3 = EVT.halfHeight;
             EVT.effectX = EVT.halfWidth >> 3;
             EVT.effectY = EVT.halfHeight >> 3;
-            EVT.clut = 16;
+            EVT.clut = CLUT_WINDOW;
             evt->state3++;
          // fallthrough
          case 1:
@@ -1642,7 +1642,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.relQuadY2 = EVT.relQuadY2 - EVT.effectY;
             EVT.relQuadY3 = EVT.relQuadY3 - EVT.effectY;
 
-            if (--EVT.clut == 0) {
+            if (--EVT.clut == CLUT_NULL) {
                if (highlight) {
                   highlight->d.sprite.hidden = 1;
                }
@@ -1674,7 +1674,7 @@ void Evtf004_005_408_Window(EvtData *evt) {
             EVT.relQuadY3 = -EVT.relQuadY0;
 
             if (EVT.effectPhase <= 0) {
-               EVT.clut = 0;
+               EVT.clut = CLUT_NULL;
                evt->state3 = 0;
                evt->state++;
             }
@@ -1724,9 +1724,9 @@ void Evtf004_005_408_Window(EvtData *evt) {
           (EVT.todo_x2c >> 16) + gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].y;
       gGfxSubTextures[GFX_WINDOW_TBD_657].h = EVT.highlightHeight;
       if (EVT.windowId == gWindowActiveIdx) {
-         highlight->d.sprite.clut = 0;
+         highlight->d.sprite.clut = CLUT_NULL;
       } else {
-         highlight->d.sprite.clut = 19;
+         highlight->d.sprite.clut = CLUT_INACTIVE_WINDOW;
       }
       AddEvtPrim_Gui(gGraphicsPtr->ot, highlight);
    }
@@ -1955,7 +1955,7 @@ void Evtf421_UpperMsgBoxTail(EvtData *evt) {
    }
 
    gTempGfxEvt->d.sprite.hidden = 0;
-   gTempGfxEvt->d.sprite.clut = 25;
+   gTempGfxEvt->d.sprite.clut = CLUT_25;
    gTempGfxEvt->d.sprite.otOfs = 2;
 
    if (gTempGfxEvt->d.sprite.gfxIdx == GFX_MSGBOX_TAIL_DOWN) {

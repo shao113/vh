@@ -23,7 +23,7 @@ void Evtf172_HolyPressure_Cube(EvtData *evt) {
    switch (evt->state) {
    case 0:
       evt_s4 = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
-      evt->y1.n = evt_s4->y1.n + 0x80;
+      evt->y1.n = evt_s4->y1.n + CV(0.5);
       evt->x1.n = evt_s4->x1.n;
       evt->z1.n = evt_s4->z1.n;
       evt->state++;
@@ -33,7 +33,7 @@ void Evtf172_HolyPressure_Cube(EvtData *evt) {
       evt_s4 = Evt_GetUnused();
       evt_s4->functionIndex = EVTF_NOOP;
       evt_s4->d.sprite.semiTrans = 4;
-      evt_s4->d.sprite.clut = 8;
+      evt_s4->d.sprite.clut = CLUT_PURPLES;
       evt_s4->d.sprite.gfxIdx = GFX_TILED_TBD_162;
 
       a = EVT.todo_x28;
@@ -159,7 +159,7 @@ void Evtf148_Fx_TBD(EvtData *evt) {
       switch (evt->state2) {
       case 0:
          if (EVT.timer == 0) {
-            EVT.clut = 3;
+            EVT.clut = CLUT_REDS;
          }
          evt_v1 = Evt_GetUnused();
          evt_v1->functionIndex = EVTF_FX_TBD_147;
@@ -508,11 +508,11 @@ void Evtf169_EvilStream_FX1(EvtData *evt) {
    switch (evt->state) {
    case 0:
       unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
-      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi) + 0x100;
+      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi) + CV(1.0);
       evt->x1.n = unitSprite->x1.n;
       evt->z1.n = unitSprite->z1.n;
-      if (EVT.clut == 0) {
-         EVT.clut = 3;
+      if (EVT.clut == CLUT_NULL) {
+         EVT.clut = CLUT_REDS;
       }
       EVT.fade = 0x80;
 
@@ -548,7 +548,7 @@ void Evtf169_EvilStream_FX1(EvtData *evt) {
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       sprite->d.sprite.semiTrans = 3;
-      sprite->d.sprite.clut = 10;
+      sprite->d.sprite.clut = CLUT_MASK;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
@@ -583,7 +583,7 @@ void Evtf169_EvilStream_FX1(EvtData *evt) {
       setRGB0(poly, 0x80 - EVT.fade, 0x80 - EVT.fade, 0x80 - EVT.fade);
 
       sprite->d.sprite.semiTrans = 3;
-      sprite->d.sprite.clut = 10;
+      sprite->d.sprite.clut = CLUT_MASK;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, 0x80 - EVT.fade, 0x80 - EVT.fade, 0x80 - EVT.fade);
@@ -627,7 +627,7 @@ void Evtf169_EvilStream_FX1(EvtData *evt) {
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
 
       sprite->d.sprite.semiTrans = 3;
-      sprite->d.sprite.clut = 10;
+      sprite->d.sprite.clut = CLUT_MASK;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
@@ -665,12 +665,12 @@ void Evtf161_PiercingLight_FX1(EvtData *evt) {
       homingRay = Evt_GetUnused();
       homingRay->functionIndex = EVTF_HOMING_RAY;
       homingRay->x1.n = casterSprite->x1.n;
-      homingRay->y1.n = casterSprite->y1.n + 0x80;
+      homingRay->y1.n = casterSprite->y1.n + CV(0.5);
       homingRay->z1.n = casterSprite->z1.n;
       targetSprite = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
       homingRay->d.evtf171.dx = targetSprite->x1.n - casterSprite->x1.n;
       homingRay->d.evtf171.dz = targetSprite->z1.n - casterSprite->z1.n;
-      homingRay->d.evtf171.dy = (targetSprite->y1.n - casterSprite->y1.n) + 0x70;
+      homingRay->d.evtf171.dy = (targetSprite->y1.n - casterSprite->y1.n) + CV(0.4375);
       homingRay->d.evtf171.clut = EVT.clut;
 
       if (++evt->state2 == 17) {
@@ -718,12 +718,12 @@ void Evtf170_PiercingRay_Etc_FX1(EvtData *evt) {
          homingRay = Evt_GetUnused();
          homingRay->functionIndex = EVTF_HOMING_RAY;
          homingRay->x1.n = casterSprite->x1.n;
-         homingRay->y1.n = casterSprite->y1.n + 0x80;
+         homingRay->y1.n = casterSprite->y1.n + CV(0.5);
          homingRay->z1.n = casterSprite->z1.n;
          targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          homingRay->d.evtf171.dx = targetSprite->x1.n - casterSprite->x1.n;
          homingRay->d.evtf171.dz = targetSprite->z1.n - casterSprite->z1.n;
-         homingRay->d.evtf171.dy = (targetSprite->y1.n - casterSprite->y1.n) + 0x70;
+         homingRay->d.evtf171.dy = (targetSprite->y1.n - casterSprite->y1.n) + CV(0.4375);
          homingRay->d.evtf171.clut = cluts[i % 5];
          p++;
       }
@@ -764,12 +764,12 @@ void Evtf171_HomingRay(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      if (EVT.clut == 0) {
-         EVT.clut = 3;
+      if (EVT.clut == CLUT_NULL) {
+         EVT.clut = CLUT_REDS;
       }
-      EVT.todo_x26 = 0x180 - rand() % 0x300;
-      EVT.todo_x28 = 0x180 + rand() % 0x180;
-      EVT.todo_x2a = 0x180 - rand() % 0x300;
+      EVT.todo_x26 = CV(1.5) - rand() % CV(3.0);
+      EVT.todo_x28 = CV(1.5) + rand() % CV(1.5);
+      EVT.todo_x2a = CV(1.5) - rand() % CV(3.0);
       evt->state++;
       break;
 
@@ -903,7 +903,7 @@ void Evtf175_RainbowStorm_FX1(EvtData *evt) {
          targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          evt_s1 = Evt_GetUnused();
          evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
-         evt_s1->d.evtf149.clut = 4;
+         evt_s1->d.evtf149.clut = CLUT_BLUES;
          evt_s1->x1.s.hi = targetSprite->x1.s.hi;
          evt_s1->z1.s.hi = targetSprite->z1.s.hi;
          pDataStoreAsEvts[EVT.iterator] = evt_s1;
@@ -993,7 +993,7 @@ void Evtf176_RainbowStroke_FX1(EvtData *evt) {
       targetSprite = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
-      evt_s1->d.evtf149.clut = 4;
+      evt_s1->d.evtf149.clut = CLUT_BLUES;
       evt_s1->x1.s.hi = targetSprite->x1.s.hi;
       evt_s1->z1.s.hi = targetSprite->z1.s.hi;
       EVT.fx = evt_s1;
@@ -1090,7 +1090,7 @@ void Evtf177_HolyPressure_FX1(EvtData *evt) {
          targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          evt_s1 = Evt_GetUnused();
          evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
-         evt_s1->d.evtf149.clut = 9;
+         evt_s1->d.evtf149.clut = CLUT_GREENS;
          evt_s1->x1.n = targetSprite->x1.n;
          evt_s1->z1.n = targetSprite->z1.n;
          evt_s1->y1.n = targetSprite->y1.n;
@@ -1282,7 +1282,7 @@ void Evtf189_IceStorm_FX1(EvtData *evt) {
 
       evt_s1 = CreatePositionedEvt(evt, EVTF_ICE_STORM_TARGET);
       evt_s1->d.evtf160.targetSprite = targetSprite;
-      evt_s1->d.evtf160.clut = 4;
+      evt_s1->d.evtf160.clut = CLUT_BLUES;
 
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_ICE_STORM_CAMERA;
@@ -1296,7 +1296,7 @@ void Evtf189_IceStorm_FX1(EvtData *evt) {
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_NOOP;
       evt_s1->d.sprite.gfxIdx = GFX_TILED_ICE_DYN_1;
-      evt_s1->d.sprite.clut = 4;
+      evt_s1->d.sprite.clut = CLUT_BLUES;
       evt_s1->d.sprite.semiTrans = 1;
 
       EVT.todo_x5c += 2;
@@ -1540,7 +1540,7 @@ void Evtf179_ThunderFlash_Ray(EvtData *evt) {
       evt_s2 = Evt_GetUnused();
       evt_s2->functionIndex = EVTF_NOOP;
       evt_s2->d.sprite.gfxIdx = GFX_COLOR_11;
-      evt_s2->d.sprite.clut = 9;
+      evt_s2->d.sprite.clut = CLUT_GREENS;
       evt_s2->d.sprite.semiTrans = 1;
 
       radius = EVT.todo_x24 * EVT.todo_x36 / 30;
@@ -1637,7 +1637,7 @@ void Evtf178_ThunderFlash_FX1(EvtData *evt) {
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_NOOP;
       evt_s1->d.sprite.gfxIdx = GFX_COLOR_13;
-      evt_s1->d.sprite.clut = 4;
+      evt_s1->d.sprite.clut = CLUT_BLUES;
       evt_s1->d.sprite.semiTrans = 1;
 
       a = b = EVT.todo_x24 * (ONE - rcos(EVT.todo_x28)) / ONE;
@@ -1757,7 +1757,7 @@ void Evtf180_SpreadForce_FX1(EvtData *evt) {
             targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
             evt_s1 = Evt_GetUnused();
             evt_s1->functionIndex = EVTF_FLASHING_UNIT_SPRITE;
-            evt_s1->d.evtf149.clut = 4;
+            evt_s1->d.evtf149.clut = CLUT_BLUES;
             evt_s1->x1.s.hi = targetSprite->x1.s.hi;
             evt_s1->z1.s.hi = targetSprite->z1.s.hi;
             pDataStoreAsEvts[EVT.iterator] = evt_s1;
@@ -1770,7 +1770,7 @@ void Evtf180_SpreadForce_FX1(EvtData *evt) {
       evt_s1 = Evt_GetUnused();
       evt_s1->functionIndex = EVTF_NOOP;
       evt_s1->d.sprite.gfxIdx = GFX_COLOR_13;
-      evt_s1->d.sprite.clut = 4;
+      evt_s1->d.sprite.clut = CLUT_BLUES;
       evt_s1->d.sprite.semiTrans = 1;
       a = EVT.todo_x24 * EVT.todo_x28 / 0x80;
 
@@ -1911,7 +1911,7 @@ void Evtf182_Fx_TBD(EvtData *evt) {
          evt_s0 = Evt_GetUnused();
          evt_s0->functionIndex = EVTF_FX_TBD_183;
          evt_s0->x1.n = unitSprite->x1.n;
-         evt_s0->y1.n = unitSprite->y1.n + 0x80;
+         evt_s0->y1.n = unitSprite->y1.n + CV(0.5);
          evt_s0->z1.n = unitSprite->z1.n;
          targetSprite = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
          evt_s0->d.evtf183.dx = targetSprite->x1.n - unitSprite->x1.n;
@@ -1933,7 +1933,7 @@ void Evtf182_Fx_TBD(EvtData *evt) {
       break;
 
    case 2:
-      if (EVT.theta <= 0x800) {
+      if (EVT.theta <= DEG(180)) {
          gCameraZoom.vz = EVT.savedZoom + 0x100 * rsin(EVT.theta) / ONE;
          EVT.theta += 0x20;
       }
@@ -1995,13 +1995,13 @@ void Evtf183_Fx_TBD(EvtData *evt) {
          evt_s0->functionIndex = EVTF_FX_TBD_119;
          evt_s0->d.evtf119.type = 0;
          evt_s0->d.evtf119.boxIdx = 3;
-         evt_s0->d.evtf119.clut = 4;
+         evt_s0->d.evtf119.clut = CLUT_BLUES;
          evt_s0->d.evtf119.semiTrans = 0;
          evt_s0->d.evtf119.once = 1;
          evt_s0->d.evtf119.radius = 0;
          evt_s0->x1.n = evt->x1.n + EVT.dx;
          evt_s0->z1.n = evt->z1.n + EVT.dz;
-         evt_s0->y1.n = evt->y1.n + EVT.dy + 0xd0;
+         evt_s0->y1.n = evt->y1.n + EVT.dy + CV(0.8125);
       } else if (EVT.timer == 65) {
          evt_s0->functionIndex = EVTF_NULL;
          evt->functionIndex = EVTF_NULL;
@@ -2031,7 +2031,7 @@ void Evtf184_Avalanche_FX1(EvtData *evt) {
       boulder->functionIndex = EVTF_AVALANCHE_BOULDER;
       boulder->x1.n = evt->x1.n;
       boulder->z1.n = evt->z1.n;
-      boulder->y1.n = evt->y1.n + 0x300;
+      boulder->y1.n = evt->y1.n + CV(3.0);
       boulder->d.evtf211.todo_x24 = 0x180;
       boulder->d.evtf211.todo_x4c = 0;
       boulder->d.evtf211.rotY = 0;
@@ -2087,7 +2087,7 @@ void Evtf184_Avalanche_FX1(EvtData *evt) {
       boulder->d.evtf211.rotX += 3;
       boulder->x1.n = evt->x1.n;
       boulder->z1.n = evt->z1.n;
-      boulder->y1.n = evt->y1.n + 0x300;
+      boulder->y1.n = evt->y1.n + CV(3.0);
 
       EVT.timer++;
       if (EVT.timer == 80) {
@@ -2128,10 +2128,10 @@ void Evtf184_Avalanche_FX1(EvtData *evt) {
       boulder->d.evtf211.rotX += 3;
       boulder->x1.n = evt->x1.n;
       boulder->z1.n = evt->z1.n;
-      boulder->y1.n = evt->y1.n + 0x300 + EVT.todo_x26 * 0x20;
+      boulder->y1.n = evt->y1.n + CV(3.0) + EVT.todo_x26 * 0x20;
 
-      gCameraRotation.vx += (0x400 - gCameraRotation.vx) >> 5;
-      gCameraRotation.vy += 0x10;
+      gCameraRotation.vx += (DEG(90) - gCameraRotation.vx) >> 5;
+      gCameraRotation.vy += DEG(1.40625);
       gCameraPos.vx = -(boulder->x1.n >> 3);
       gCameraPos.vz = -(boulder->z1.n >> 3);
       gCameraPos.vy = boulder->y1.n >> 3;
@@ -2167,7 +2167,7 @@ void Evtf184_Avalanche_FX1(EvtData *evt) {
       gCameraPos.vx = -(boulder->x1.n >> 3);
       gCameraPos.vz = -(boulder->z1.n >> 3);
       gCameraPos.vy = boulder->y1.n >> 3;
-      gCameraRotation.vy += 0x10;
+      gCameraRotation.vy += DEG(1.40625);
 
       EVT.todo_x2c--;
       if (EVT.todo_x2c == -1) {
@@ -2210,20 +2210,20 @@ void Evtf185_Avalanche_Rock(EvtData *evt) {
       evt_s0 = EVT.sprite;
       evt_s0->d.sprite.animInitialized = 0;
       EVT.height = 0;
-      EVT.theta = rand() % ANGLE_360_DEGREES;
+      EVT.theta = rand() % DEG(360);
       EVT.velocity = rand() % 0x3c + 0x32;
       evt->state++;
       break;
 
    case 2:
       evt_s0 = EVT.sprite;
-      evt_s0->x1.n = evt->x1.n + 0x60 * rcos(EVT.theta) / ONE;
-      evt_s0->z1.n = evt->z1.n + 0x60 * rsin(EVT.theta) / ONE;
+      evt_s0->x1.n = evt->x1.n + CV(0.375) * rcos(EVT.theta) / ONE;
+      evt_s0->z1.n = evt->z1.n + CV(0.375) * rsin(EVT.theta) / ONE;
       evt_s0->y1.n = evt->y1.n + EVT.height;
       UpdateEvtAnimation(evt_s0);
       AddEvtPrim6(gGraphicsPtr->ot, evt_s0, 0);
       EVT.height += EVT.velocity;
-      if (EVT.height >= 0x300) {
+      if (EVT.height >= CV(3.0)) {
          evt->state = 1;
       }
       break;
@@ -2260,7 +2260,7 @@ void Evtf186_Fx_TBD(EvtData *evt) {
       evt->y1.n = unitSprite->y1.n;
 
       fx = CreatePositionedEvt(evt, EVTF_FX_TBD_140 + EVT.fxType);
-      fx->d.evtf140.clut = 3;
+      fx->d.evtf140.clut = CLUT_REDS;
 
       fx = Evt_GetUnused();
       fx->functionIndex = EVTF_BOUNCE_ZOOM;
@@ -2291,13 +2291,13 @@ void Evtf190_Fx_TBD(EvtData *evt) {
       arrow = Evt_GetUnused();
       arrow->functionIndex = EVTF_MAGIC_ARROW_ARROW;
       arrow->x1.n = evt->x1.n;
-      arrow->y1.n = evt->y1.n + 0x40;
+      arrow->y1.n = evt->y1.n + CV(0.25);
       arrow->z1.n = evt->z1.n;
 
       targetSprite = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
       arrow->d.evtf191.dx = targetSprite->x1.n - evt->x1.n;
       arrow->d.evtf191.dz = targetSprite->z1.n - evt->z1.n;
-      arrow->d.evtf191.dy = (targetSprite->y1.n - evt->y1.n) + 0x40;
+      arrow->d.evtf191.dy = (targetSprite->y1.n - evt->y1.n) + CV(0.25);
 
       evt->state3++;
       if (evt->state3 == 17) {
@@ -2342,12 +2342,12 @@ void Evtf199_MagicArrow_FX1(EvtData *evt) {
          arrow = Evt_GetUnused();
          arrow->functionIndex = EVTF_MAGIC_ARROW_ARROW;
          arrow->x1.n = casterSprite->x1.n;
-         arrow->y1.n = casterSprite->y1.n + 0x40;
+         arrow->y1.n = casterSprite->y1.n + CV(0.25);
          arrow->z1.n = casterSprite->z1.n;
          targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
          arrow->d.evtf191.dx = targetSprite->x1.n - casterSprite->x1.n;
          arrow->d.evtf191.dz = targetSprite->z1.n - casterSprite->z1.n;
-         arrow->d.evtf191.dy = (targetSprite->y1.n - casterSprite->y1.n) + 0x40;
+         arrow->d.evtf191.dy = (targetSprite->y1.n - casterSprite->y1.n) + CV(0.25);
          p++;
       }
 
@@ -2389,8 +2389,8 @@ void Evtf191_MagicArrow_Arrow(EvtData *evt) {
 
    switch (evt->state) {
    case 0:
-      if (EVT.clut_unused == 0) {
-         EVT.clut_unused = 3;
+      if (EVT.clut_unused == CLUT_NULL) {
+         EVT.clut_unused = CLUT_REDS;
       }
       EVT.todo_x26 = 0x280 - rand() % 0x500;
       EVT.todo_x28 = 0x180 + rand() % 0x180;
