@@ -363,8 +363,8 @@ void AddEvtPrim3(u32 *ot, EvtData *evt) {
             poly->clut = gClutIds[evt->d.sprite.clut];
          }
 
-         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-                 gGfxSubTextures[gfx].h);
+         setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+                 gGfxSubTextures[gfx][3]);
          RotTransPers4(&quad[0], &quad[1], &quad[2], &quad[3], &poly->x0, &poly->x1, &poly->x2,
                        &poly->x3, &p, &flag);
          setRGB0(poly, 0x80, 0x80, 0x80);
@@ -414,8 +414,8 @@ void AddEvtPrim4(u32 *ot, EvtData *evt) {
          poly->clut = gClutIds[evt->d.sprite.clut];
       }
 
-      setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-              gGfxSubTextures[gfx].h);
+      setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+              gGfxSubTextures[gfx][3]);
       otz = RotAverage4(&quad[0], &quad[1], &quad[2], &quad[3], &poly->x0, &poly->x1, &poly->x2,
                         &poly->x3, &p, &flag);
       otIdx = OT_SIZE - otz + evt->d.sprite.otOfs;
@@ -474,8 +474,8 @@ void AddEvtPrim5(u32 *ot, EvtData *evt) {
             poly->clut = gClutIds[evt->d.sprite.clut];
          }
 
-         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-                 gGfxSubTextures[gfx].h);
+         setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+                 gGfxSubTextures[gfx][3]);
          RotTransPers4(&quad[0], &quad[1], &quad[2], &quad[3], &poly->x0, &poly->x1, &poly->x2,
                        &poly->x3, &p, &flag);
          setRGB0(poly, 0x80, 0x80, 0x80);
@@ -537,8 +537,8 @@ void AddEvtPrim6(u32 *ot, EvtData *evt, s32 useMapElevation) {
             poly->clut = gClutIds[evt->d.sprite.clut];
          }
 
-         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-                 gGfxSubTextures[gfx].h);
+         setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+                 gGfxSubTextures[gfx][3]);
          quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
          RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
                        &poly->x2, &poly->x3, &p, &flag);
@@ -605,8 +605,8 @@ void AddEvtPrim7(u32 *ot, EvtData *evt, s32 useMapElevation) {
             poly->clut = gClutIds[evt->d.sprite.clut];
          }
 
-         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-                 gGfxSubTextures[gfx].h);
+         setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+                 gGfxSubTextures[gfx][3]);
          quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
          RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
                        &poly->x2, &poly->x3, &p, &flag);
@@ -674,8 +674,8 @@ void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
             poly->clut = gClutIds[evt->d.sprite.clut];
          }
 
-         setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-                 gGfxSubTextures[gfx].h);
+         setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+                 gGfxSubTextures[gfx][3]);
          quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
 
          y = -(*quadp)[0].vy;
@@ -1012,8 +1012,8 @@ void AddEvtPrim_Gui(u32 *ot, EvtData *evt) {
          poly->clut = gClutIds[evt->d.sprite.clut];
       }
 
-      setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-              gGfxSubTextures[gfx].h);
+      setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+              gGfxSubTextures[gfx][3]);
 
       poly->x0 = evt->x1.n;
       poly->x1 = evt->x3.n;
@@ -1060,8 +1060,8 @@ void AddEvtPrim2(u32 *ot, EvtData *evt) {
          poly->clut = gClutIds[evt->d.sprite2.clut];
       }
 
-      setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-              gGfxSubTextures[gfx].h);
+      setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+              gGfxSubTextures[gfx][3]);
 
       poly->x0 = evt->d.sprite2.coords[0].x;
       poly->x1 = evt->d.sprite2.coords[1].x;
@@ -1106,8 +1106,8 @@ void AddEvtPrim_Panorama(u32 *ot, EvtData *evt) {
       poly->clut = gClutIds[evt->d.sprite.clut];
    }
 
-   setUVWH(poly, gGfxSubTextures[gfx].x, gGfxSubTextures[gfx].y, gGfxSubTextures[gfx].w,
-           gGfxSubTextures[gfx].h);
+   setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+           gGfxSubTextures[gfx][3]);
 
    poly->x0 = evt->x1.n;
    poly->x1 = evt->x3.n;

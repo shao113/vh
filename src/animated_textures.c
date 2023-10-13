@@ -55,11 +55,11 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
          break;
       }
 
-      gGfxSubTextures[GFX_MAP_TEXTURE_51].y--;
-      if (gGfxSubTextures[GFX_MAP_TEXTURE_51].y <= 48) {
-         gGfxSubTextures[GFX_MAP_TEXTURE_51].y = 64;
+      gGfxSubTextures[GFX_MAP_TEXTURE_51][1]--;
+      if (gGfxSubTextures[GFX_MAP_TEXTURE_51][1] <= 48) {
+         gGfxSubTextures[GFX_MAP_TEXTURE_51][1] = 64;
       }
-      gGfxSubTextures[GFX_MAP_TEXTURE_52].y = gGfxSubTextures[GFX_MAP_TEXTURE_51].y;
+      gGfxSubTextures[GFX_MAP_TEXTURE_52][1] = gGfxSubTextures[GFX_MAP_TEXTURE_51][1];
 
    } else if (evt->functionIndex == EVTF_MAP_OBJECT_WATER_2) {
       rect.x = 332;
@@ -144,9 +144,9 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
 }
 
 void Evtf449_MapObject_FlowingWater(EvtData *evt) {
-   gGfxSubTextures[GFX_MAP_TEXTURE_5].y++;
-   if (gGfxSubTextures[GFX_MAP_TEXTURE_5].y >= 16) {
-      gGfxSubTextures[GFX_MAP_TEXTURE_5].y = 0;
+   gGfxSubTextures[GFX_MAP_TEXTURE_5][1]++;
+   if (gGfxSubTextures[GFX_MAP_TEXTURE_5][1] >= 16) {
+      gGfxSubTextures[GFX_MAP_TEXTURE_5][1] = 0;
    }
 }
 
@@ -156,30 +156,30 @@ void Evtf568_MapObject_Rail(EvtData *evt) {
 
    gLightRotation.vy = GetLightRotY() + 0xc0;
 
-   gGfxSubTextures[GFX_MAP_TEXTURE_7].y += 8;
-   if (gGfxSubTextures[GFX_MAP_TEXTURE_7].y >= 32) {
-      gGfxSubTextures[GFX_MAP_TEXTURE_7].y = 0;
+   gGfxSubTextures[GFX_MAP_TEXTURE_7][1] += 8;
+   if (gGfxSubTextures[GFX_MAP_TEXTURE_7][1] >= 32) {
+      gGfxSubTextures[GFX_MAP_TEXTURE_7][1] = 0;
    }
 
-   gGfxSubTextures[GFX_MAP_TEXTURE_23].y += 8;
-   if (gGfxSubTextures[GFX_MAP_TEXTURE_23].y >= 48) {
-      gGfxSubTextures[GFX_MAP_TEXTURE_23].y = 16;
+   gGfxSubTextures[GFX_MAP_TEXTURE_23][1] += 8;
+   if (gGfxSubTextures[GFX_MAP_TEXTURE_23][1] >= 48) {
+      gGfxSubTextures[GFX_MAP_TEXTURE_23][1] = 16;
    }
 
    for (i = 8; i < 19; i++) {
-      gGfxSubTextures[GFX_MAP_TEXTURES_OFS + i].y = gGfxSubTextures[GFX_MAP_TEXTURE_7].y;
+      gGfxSubTextures[GFX_MAP_TEXTURES_OFS + i][1] = gGfxSubTextures[GFX_MAP_TEXTURE_7][1];
    }
    for (i = 24; i < 35; i++) {
-      gGfxSubTextures[GFX_MAP_TEXTURES_OFS + i].y = gGfxSubTextures[GFX_MAP_TEXTURE_23].y;
+      gGfxSubTextures[GFX_MAP_TEXTURES_OFS + i][1] = gGfxSubTextures[GFX_MAP_TEXTURE_23][1];
    }
 
    switch (evt->mem) {
    case 0:
-      gGfxSubTextures[GFX_MAP_TEXTURE_90].x = 224;
+      gGfxSubTextures[GFX_MAP_TEXTURE_90][0] = 224;
       evt->mem++;
       break;
    case 1:
-      gGfxSubTextures[GFX_MAP_TEXTURE_90].x = 240;
+      gGfxSubTextures[GFX_MAP_TEXTURE_90][0] = 240;
       evt->mem = 0;
       break;
    }
@@ -191,7 +191,7 @@ void Evtf411_MapObject_VileBog(EvtData *evt) {
    case 4:
    case 8:
    case 12:
-      gGfxSubTextures[GFX_MAP_TEXTURE_21].x = evt->state2 * 16 + 80;
+      gGfxSubTextures[GFX_MAP_TEXTURE_21][0] = evt->state2 * 16 + 80;
       evt->state2++;
       break;
    case 15:
@@ -213,11 +213,11 @@ void Evtf569_572_MapObject_Lava(EvtData *evt) {
    case 18:
    case 21:
       if (evt->functionIndex == EVTF_MAP_OBJECT_LAVA_2) {
-         gGfxSubTextures[GFX_MAP_TEXTURE_198].x = evt->state2 * 16 + 48;
+         gGfxSubTextures[GFX_MAP_TEXTURE_198][0] = evt->state2 * 16 + 48;
       } else {
-         gGfxSubTextures[GFX_MAP_TEXTURE_4].x = evt->state2 * 16 + 16;
+         gGfxSubTextures[GFX_MAP_TEXTURE_4][0] = evt->state2 * 16 + 16;
          // shadowed area
-         gGfxSubTextures[GFX_MAP_TEXTURE_128].x = evt->state2 * 16 + 112;
+         gGfxSubTextures[GFX_MAP_TEXTURE_128][0] = evt->state2 * 16 + 112;
       }
       evt->state2++;
       break;
@@ -230,8 +230,8 @@ void Evtf569_572_MapObject_Lava(EvtData *evt) {
 }
 
 void Evtf042_MapObject_FlowingSand(EvtData *evt) {
-   gGfxSubTextures[GFX_MAP_TEXTURE_1].y--;
-   if (gGfxSubTextures[GFX_MAP_TEXTURE_1].y == 0) {
-      gGfxSubTextures[GFX_MAP_TEXTURE_1].y = 16;
+   gGfxSubTextures[GFX_MAP_TEXTURE_1][1]--;
+   if (gGfxSubTextures[GFX_MAP_TEXTURE_1][1] == 0) {
+      gGfxSubTextures[GFX_MAP_TEXTURE_1][1] = 16;
    }
 }

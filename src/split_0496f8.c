@@ -1255,10 +1255,10 @@ void LoadMapTextures(void) {
    pFileData = &gScratch3_80180210[gState.mapNum * 1797];
 
    for (i = GFX_MAP_TEXTURES_OFS; i < GFX_MAP_TEXTURES_OFS + NUM_TEXTURES; i++) {
-      gGfxSubTextures[i].x = *pFileData++;
-      gGfxSubTextures[i].y = *pFileData++;
-      gGfxSubTextures[i].w = *pFileData++;
-      gGfxSubTextures[i].h = *pFileData++;
+      gGfxSubTextures[i][0] = *pFileData++;
+      gGfxSubTextures[i][1] = *pFileData++;
+      gGfxSubTextures[i][2] = *pFileData++;
+      gGfxSubTextures[i][3] = *pFileData++;
    }
 
    for (i = GFX_MAP_TEXTURES_OFS; i < GFX_MAP_TEXTURES_OFS + NUM_TEXTURES; i++) {

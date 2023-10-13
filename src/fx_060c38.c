@@ -1318,10 +1318,12 @@ void Evtf189_IceStorm_FX1(EvtData *evt) {
 
       for (i = 0; i < 4; i++) {
          for (j = 0; j < 4; j++) {
-            gGfxSubTextures[GFX_TILED_ICE_DYN_1].x = 0x80 + ((i * 4 + j) * 2 + EVT.todo_x5c) % 0x20;
-            gGfxSubTextures[GFX_TILED_ICE_DYN_1].y = 0x40 + ((i * 4 + j) * 2 + EVT.todo_x5c) % 0x20;
-            gGfxSubTextures[GFX_TILED_ICE_DYN_1].w = 2;
-            gGfxSubTextures[GFX_TILED_ICE_DYN_1].h = 31;
+            gGfxSubTextures[GFX_TILED_ICE_DYN_1][0] =
+                0x80 + ((i * 4 + j) * 2 + EVT.todo_x5c) % 0x20;
+            gGfxSubTextures[GFX_TILED_ICE_DYN_1][1] =
+                0x40 + ((i * 4 + j) * 2 + EVT.todo_x5c) % 0x20;
+            gGfxSubTextures[GFX_TILED_ICE_DYN_1][2] = 2;
+            gGfxSubTextures[GFX_TILED_ICE_DYN_1][3] = 31;
 
             evt_s1->d.sprite.coords[0].x = evt->x1.n + b * rcos(a * 0x40 + j * d) / ONE;
             evt_s1->d.sprite.coords[0].z = evt->z1.n + b * rsin(a * 0x40 + j * d) / ONE;
@@ -1664,8 +1666,8 @@ void Evtf178_ThunderFlash_FX1(EvtData *evt) {
       SetSemiTrans(poly, 1);
       poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+              gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
       setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
@@ -1686,8 +1688,8 @@ void Evtf178_ThunderFlash_FX1(EvtData *evt) {
       SetSemiTrans(poly, 1);
       poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+              gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
       setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
@@ -1831,8 +1833,8 @@ void Evtf180_SpreadForce_FX1(EvtData *evt) {
             SetSemiTrans(poly, 1);
             poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
             poly->clut = gGfxClutIds[GFX_COLOR_15];
-            setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-                    gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+            setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+                    gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
             setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
             setRGB0(poly, a, a, a);
             AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
@@ -1867,8 +1869,8 @@ void Evtf180_SpreadForce_FX1(EvtData *evt) {
       SetSemiTrans(poly, 1);
       poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+              gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
       setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);

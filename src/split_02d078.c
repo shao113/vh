@@ -483,8 +483,8 @@ void Evtf008_BattlePortrait(EvtData *evt) {
          portraitNum -= 25;
       }
 
-      gGfxSubTextures[gfx].x = (portraitNum % 5) * 48;
-      gGfxSubTextures[gfx].y = (portraitNum / 5) * 48;
+      gGfxSubTextures[gfx][0] = (portraitNum % 5) * 48;
+      gGfxSubTextures[gfx][1] = (portraitNum / 5) * 48;
       break;
    }
 
@@ -587,18 +587,18 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
       gfx -= 3;
 
       // Mouth overlays
-      gGfxSubTextures[gfx + 1].x = (portrait_s16 % 5) * 48;
-      gGfxSubTextures[gfx + 2].x = (portrait_s16 % 5) * 48 + 16;
+      gGfxSubTextures[gfx + 1][0] = (portrait_s16 % 5) * 48;
+      gGfxSubTextures[gfx + 2][0] = (portrait_s16 % 5) * 48 + 16;
 
       // Eye overlay
-      gGfxSubTextures[gfx + 3].x = (portrait_s16 % 5) * 48 + 32;
+      gGfxSubTextures[gfx + 3][0] = (portrait_s16 % 5) * 48 + 32;
 
       if (portrait_s16 >= 25) {
          portrait_s16 -= 25;
       }
 
-      gGfxSubTextures[gfx].x = (portrait_s16 % 5) * 48;
-      gGfxSubTextures[gfx].y = (portrait_s16 / 5) * 48;
+      gGfxSubTextures[gfx][0] = (portrait_s16 % 5) * 48;
+      gGfxSubTextures[gfx][1] = (portrait_s16 / 5) * 48;
 
       faceSprite = Evt_GetUnused();
       faceSprite->functionIndex = EVTF_NOOP;
@@ -851,8 +851,8 @@ void Evtf447_UnitPortrait(EvtData *evt) {
          portraitNum -= 25;
       }
 
-      gGfxSubTextures[GFX_PORTRAIT_B_FACE].x = (portraitNum % 5) * 48;
-      gGfxSubTextures[GFX_PORTRAIT_B_FACE].y = (portraitNum / 5) * 48;
+      gGfxSubTextures[GFX_PORTRAIT_B_FACE][0] = (portraitNum % 5) * 48;
+      gGfxSubTextures[GFX_PORTRAIT_B_FACE][1] = (portraitNum / 5) * 48;
       break;
 
    case 99:
@@ -903,8 +903,8 @@ void Evtf575_StatusPortrait(EvtData *evt) {
          portraitNum -= 25;
       }
 
-      gGfxSubTextures[GFX_PORTRAIT_B_FACE].x = (portraitNum % 5) * 48;
-      gGfxSubTextures[GFX_PORTRAIT_B_FACE].y = (portraitNum / 5) * 48;
+      gGfxSubTextures[GFX_PORTRAIT_B_FACE][0] = (portraitNum % 5) * 48;
+      gGfxSubTextures[GFX_PORTRAIT_B_FACE][1] = (portraitNum / 5) * 48;
 
       evt->state++;
       break;

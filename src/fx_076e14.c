@@ -440,10 +440,10 @@ void Evtf384_Fx_TBD(EvtData *evt) {
       evt->state2 = 0;
       evt->state3 = 0x20;
       evt->state++;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].x = gGfxSubTextures[GFX_SKULL].x;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].y = gGfxSubTextures[GFX_SKULL].y;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].w = gGfxSubTextures[GFX_SKULL].w;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].h = gGfxSubTextures[GFX_SKULL].h - 0x10;
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][0] = gGfxSubTextures[GFX_SKULL][0];
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = gGfxSubTextures[GFX_SKULL][1];
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][2] = gGfxSubTextures[GFX_SKULL][2];
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][3] = gGfxSubTextures[GFX_SKULL][3] - 0x10;
       gGfxTPageIds[GFX_TILED_RED_SPARKLES_DYN_1] = gGfxTPageIds[GFX_SKULL];
       gQuad_800fe63c[0].vx = -0x10;
       gQuad_800fe63c[0].vy = -0x10;
@@ -465,10 +465,11 @@ void Evtf384_Fx_TBD(EvtData *evt) {
       gQuad_800fe63c[2].vy = 0x10 - evt->state3;
       gQuad_800fe63c[3].vx = 0x10;
       gQuad_800fe63c[3].vy = 0x10 - evt->state3;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].x = gGfxSubTextures[GFX_SKULL].x;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].y = gGfxSubTextures[GFX_SKULL].y;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].w = gGfxSubTextures[GFX_SKULL].w;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].h = gGfxSubTextures[GFX_SKULL].h - evt->state3;
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][0] = gGfxSubTextures[GFX_SKULL][0];
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = gGfxSubTextures[GFX_SKULL][1];
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][2] = gGfxSubTextures[GFX_SKULL][2];
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][3] =
+          gGfxSubTextures[GFX_SKULL][3] - evt->state3;
       sprite->d.sprite.boxIdx = 7;
       sprite->d.sprite.gfxIdx = GFX_TILED_RED_SPARKLES_DYN_1;
       sprite->d.sprite.clut = CLUT_2;
@@ -484,11 +485,11 @@ void Evtf384_Fx_TBD(EvtData *evt) {
       gQuad_800fe63c[2].vy = 0x10;
       gQuad_800fe63c[3].vx = 0x10;
       gQuad_800fe63c[3].vy = 0x10;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].x = gGfxSubTextures[GFX_SKULL].x;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].y =
-          gGfxSubTextures[GFX_SKULL].y + (0x20 - evt->state3);
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].w = gGfxSubTextures[GFX_SKULL].w;
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].h = 0;
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][0] = gGfxSubTextures[GFX_SKULL][0];
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] =
+          gGfxSubTextures[GFX_SKULL][1] + (0x20 - evt->state3);
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][2] = gGfxSubTextures[GFX_SKULL][2];
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][3] = 0;
       AddEvtPrim6(gGraphicsPtr->ot, sprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       poly->y3 = 0xf0;

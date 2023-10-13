@@ -278,12 +278,12 @@ void DrawWindow(s16 windowId, s16 x, s16 y, s16 width, s16 height, s16 dispX, s1
          gGlyphStripGroup_800f0bd4[i] = 0;
       }
 
-      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId].x = x;
-      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId].y = y;
-      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId].w = width * 8;
-      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId].h = yPadding + height * 9;
-      gGfxSubTextures[GFX_WINDOW_TBD_707].x = x;
-      gGfxSubTextures[GFX_WINDOW_TBD_707].y = y;
+      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId][0] = x;
+      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId][1] = y;
+      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId][2] = width * 8;
+      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId][3] = yPadding + height * 9;
+      gGfxSubTextures[GFX_WINDOW_TBD_707][0] = x;
+      gGfxSubTextures[GFX_WINDOW_TBD_707][1] = y;
    } else {
       // usingMultipleTPages:
       width++;
@@ -646,20 +646,20 @@ void DrawWindow(s16 windowId, s16 x, s16 y, s16 width, s16 height, s16 dispX, s1
          gGlyphStripGroup_800f0bf0[i + 4] = 0;
       }
 
-      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId].x = 0;
-      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId].y = y;
-      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId].w = (maxColumnsPerTPage - 1) * 8;
-      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId].h = yPadding + height * 9;
+      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId][0] = 0;
+      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId][1] = y;
+      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId][2] = (maxColumnsPerTPage - 1) * 8;
+      gGfxSubTextures[GFX_WINDOW_TBD_657 + windowId][3] = yPadding + height * 9;
 
-      gGfxSubTextures[GFX_WINDOW_TBD_658 + windowId].x = 0;
-      gGfxSubTextures[GFX_WINDOW_TBD_658 + windowId].y = y;
-      gGfxSubTextures[GFX_WINDOW_TBD_658 + windowId].w = width * 8;
-      gGfxSubTextures[GFX_WINDOW_TBD_658 + windowId].h = yPadding + height * 9;
+      gGfxSubTextures[GFX_WINDOW_TBD_658 + windowId][0] = 0;
+      gGfxSubTextures[GFX_WINDOW_TBD_658 + windowId][1] = y;
+      gGfxSubTextures[GFX_WINDOW_TBD_658 + windowId][2] = width * 8;
+      gGfxSubTextures[GFX_WINDOW_TBD_658 + windowId][3] = yPadding + height * 9;
 
-      gGfxSubTextures[GFX_WINDOW_TBD_707].x = 0;
-      gGfxSubTextures[GFX_WINDOW_TBD_707].y = y;
-      gGfxSubTextures[GFX_WINDOW_TBD_708].x = 0;
-      gGfxSubTextures[GFX_WINDOW_TBD_708].y = y;
+      gGfxSubTextures[GFX_WINDOW_TBD_707][0] = 0;
+      gGfxSubTextures[GFX_WINDOW_TBD_707][1] = y;
+      gGfxSubTextures[GFX_WINDOW_TBD_708][0] = 0;
+      gGfxSubTextures[GFX_WINDOW_TBD_708][1] = y;
    }
 
    if (usingMultipleTPages) {
@@ -1245,9 +1245,9 @@ void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHig
    }
 
    window->d.evtf004.halfWidth =
-       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.evtf004.windowId].w / 2;
+       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.evtf004.windowId][2] / 2;
    window->d.evtf004.halfHeight =
-       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.evtf004.windowId].h / 2;
+       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.evtf004.windowId][3] / 2;
 }
 
 void CloseWindow(s32 windowId) {
@@ -1716,13 +1716,15 @@ void Evtf004_005_408_Window(EvtData *evt) {
       highlight->x1.n = window->d.sprite2.coords[0].x;
       highlight->x3.n = window->d.sprite2.coords[1].x;
 
-      gGfxSubTextures[GFX_WINDOW_TBD_657].x = gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].x;
-      gGfxSubTextures[GFX_WINDOW_TBD_657].w = gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].w;
+      gGfxSubTextures[GFX_WINDOW_TBD_657][0] =
+          gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId][0];
+      gGfxSubTextures[GFX_WINDOW_TBD_657][2] =
+          gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId][2];
       gGfxTPageCells[GFX_WINDOW_TBD_657] = gGfxTPageCells[GFX_WINDOW_TBD_657 + EVT.windowId];
       gGfxTPageIds[GFX_WINDOW_TBD_657] = gGfxTPageIds[GFX_WINDOW_TBD_657 + EVT.windowId];
-      gGfxSubTextures[GFX_WINDOW_TBD_657].y =
-          (EVT.todo_x2c >> 16) + gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId].y;
-      gGfxSubTextures[GFX_WINDOW_TBD_657].h = EVT.highlightHeight;
+      gGfxSubTextures[GFX_WINDOW_TBD_657][1] =
+          (EVT.todo_x2c >> 16) + gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId][1];
+      gGfxSubTextures[GFX_WINDOW_TBD_657][3] = EVT.highlightHeight;
       if (EVT.windowId == gWindowActiveIdx) {
          highlight->d.sprite.clut = CLUT_NULL;
       } else {
@@ -1827,8 +1829,8 @@ void DrawGlyphStripGroup(u8 *group, s16 gfxIdx) {
       x += 448;
    }
 
-   x += gGfxSubTextures[gfxIdx].x >> 2;
-   y += gGfxSubTextures[gfxIdx].y;
+   x += gGfxSubTextures[gfxIdx][0] >> 2;
+   y += gGfxSubTextures[gfxIdx][1];
 
    first = *group++;
    current = *group++;

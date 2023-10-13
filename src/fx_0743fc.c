@@ -204,7 +204,7 @@ void Evtf310_LifeOrb_Beam(EvtData *evt) {
 
    // fallthrough
    case 1:
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].y = 160 - evt->state2 % 0x20;
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = 160 - evt->state2 % 0x20;
       sprite = EVT.sprite;
 
       for (i = 0; i < 8; i++) {
@@ -739,7 +739,7 @@ void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
          cylinder->color.b += (0x40 - cylinder->color.b) >> 3;
          cylinder->color.r += (0x40 - cylinder->color.r) >> 3;
          cylinder->color.g += (0x40 - cylinder->color.g) >> 3;
-         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].y = -0x60 - evt->state2 * 8 % 0x20;
+         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - evt->state2 * 8 % 0x20;
          RenderCylinder(cylinder);
 
          gLightColor.r -= (gLightColor.r - 0x10) >> 4;
@@ -767,7 +767,7 @@ void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
          cylinder->color.b += (0xff - cylinder->color.b) >> 3;
          cylinder->color.r += (0xff - cylinder->color.r) >> 3;
          cylinder->color.g += (0xff - cylinder->color.g) >> 3;
-         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].y = -0x60 - evt->state2 * 8 % 0x20;
+         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - evt->state2 * 8 % 0x20;
          cylinder->clut = 3 + evt->state2 % 3;
          RenderCylinder(cylinder);
          if (--evt->state2 <= 0) {
@@ -877,12 +877,12 @@ void Evtf326_Fx_TBD(EvtData *evt) {
       dsCylinder->color.b = 0x40;
       RenderCylinder(dsCylinder);
 
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].y = -0x60 - evt->state2 * 16 % 0x20;
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - evt->state2 * 16 % 0x20;
       sprite = EVT.sprite;
 
       for (i = 0; i < 16; i++) {
          radius = EVT.radius;
-         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1].y = -0x60 - evt->state2 * i % 0x20;
+         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - evt->state2 * i % 0x20;
 
          sprite->d.sprite.coords[0].x = sprite->d.sprite.coords[2].x =
              evt->x1.n + (radius * rcos(i * 0x100) >> 12);

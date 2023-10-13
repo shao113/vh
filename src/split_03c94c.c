@@ -2071,8 +2071,7 @@ void Evtf409_EventEntity(EvtData *evt) {
          // Spawn an arbitrary evt
          evt1 = Evt_GetUnused();
          evt1->functionIndex = argument;
-         // todo replace?
-         evt1->d.evtf017.sprite = sprite;
+         evt1->d.entitySpawn.entitySpriteParam = sprite;
          evt->state3 = 1;
          goto HandleRunState1;
 

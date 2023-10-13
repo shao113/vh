@@ -327,10 +327,10 @@ void Evtf019_Compass(EvtData *evt) {
       TransMatrix(&gCameraMatrix, &compassOffset);
       SetTransMatrix(&gCameraMatrix);
 
-      x = gGfxSubTextures[GFX_COMPASS].x;
-      y = gGfxSubTextures[GFX_COMPASS].y;
-      w = gGfxSubTextures[GFX_COMPASS].w;
-      h = gGfxSubTextures[GFX_COMPASS].h;
+      x = gGfxSubTextures[GFX_COMPASS][0];
+      y = gGfxSubTextures[GFX_COMPASS][1];
+      w = gGfxSubTextures[GFX_COMPASS][2];
+      h = gGfxSubTextures[GFX_COMPASS][3];
 
       compassPoly = &gGraphicsPtr->quads[gQuadIndex++];
       shadowPoly = &gGraphicsPtr->quads[gQuadIndex++];
@@ -367,10 +367,10 @@ void Evtf019_Compass(EvtData *evt) {
          compassPoly->clut = clut;
          compassPoly->tpage = tpage;
 
-         x = gGfxSubTextures[gfx].x;
-         y = gGfxSubTextures[gfx].y;
-         w = gGfxSubTextures[gfx].w;
-         h = gGfxSubTextures[gfx].h;
+         x = gGfxSubTextures[gfx][0];
+         y = gGfxSubTextures[gfx][1];
+         w = gGfxSubTextures[gfx][2];
+         h = gGfxSubTextures[gfx][3];
          setUVWH(compassPoly, x, y, w, h);
 
          RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3],

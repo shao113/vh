@@ -165,6 +165,10 @@ typedef enum GfxIdx {
    //? I'm thinking the extra copies are allotted for dynamic scaling/scrolling texture effects
    GFX_TILED_CLOUDS = 157,
    GFX_TILED_TBD_162 = 162,
+   GFX_TILED_DYN_163 = 163,
+   GFX_TILED_DYN_164 = 164,
+   GFX_TILED_DYN_165 = 165,
+   GFX_TILED_DYN_166 = 166,
    GFX_TILED_VEINS = 167,
    GFX_TILED_LINES = 172,
    GFX_TILED_FLAMES = 182,
@@ -293,6 +297,7 @@ typedef enum GfxIdx {
    GFX_MAP_TEXTURE_7 = 407,
    GFX_MAP_TEXTURE_8 = 408,
    GFX_MAP_TEXTURE_12 = 412,
+   GFX_MAP_TEXTURE_14 = 414,
    GFX_MAP_TEXTURE_18 = 418,
    GFX_MAP_TEXTURE_19 = 419,
    GFX_MAP_TEXTURE_21 = 421,
@@ -313,10 +318,17 @@ typedef enum GfxIdx {
    GFX_MAP_TEXTURE_89 = 489,
    GFX_MAP_TEXTURE_90 = 490,
    GFX_MAP_TEXTURE_128 = 528,
+   GFX_MAP_TEXTURE_153 = 553,
+   GFX_MAP_TEXTURE_166 = 566,
+   GFX_MAP_TEXTURE_167 = 567,
+   GFX_MAP_TEXTURE_184 = 584,
+   GFX_MAP_TEXTURE_188 = 588,
+   GFX_MAP_TEXTURE_192 = 592,
    GFX_MAP_TEXTURE_198 = 598,
    GFX_MAP_TEXTURE_206 = 606,
    GFX_MAP_TEXTURE_207 = 607,
    GFX_MAP_TEXTURE_212 = 612,
+   GFX_MAP_TEXTURE_213 = 613,
    GFX_MAP_TEXTURE_229 = 629,
    GFX_MAP_TEXTURE_232 = 632,
    GFX_MAP_TEXTURE_233 = 633,
@@ -415,6 +427,7 @@ typedef struct Graphics {
 
 typedef SVECTOR Quad[4];
 
+// Usages of this type might need to be replaced w/ u8[4] to match. Union didn't seem to help.
 typedef struct TextureWindow {
    u8 x, y, w, h;
 } TextureWindow;
@@ -558,10 +571,21 @@ typedef struct Cylinder {
    s16 theta;
 } Cylinder;
 
+typedef struct Camera {
+   s16 rotX;
+   s16 rotY;
+   s16 rotZ;
+   s16 zoom;
+   s16 posX;
+   s16 posY;
+   s16 posZ;
+} Camera;
+
 extern Graphics gGraphicBuffers[2];
 extern Graphics *gGraphicsPtr;
 extern SVECTOR gLightRotation;
 extern CVECTOR gLightColor;
+extern CVECTOR gSideLightColor[26];
 extern MATRIX gCameraMatrix;
 extern SVECTOR gCameraPos;
 extern SVECTOR gCameraRotation;
@@ -596,7 +620,8 @@ extern TextureWindow gTexwWideSpriteSetFrames[10];
 extern s16 gGfxClutIds[GFX_CT];
 extern s16 gGfxTPageIds[GFX_CT];
 extern s16 gGfxTPageCells[GFX_CT];
-extern TextureWindow gGfxSubTextures[GFX_CT];
+// extern TextureWindow gGfxSubTextures[GFX_CT];
+extern u8 gGfxSubTextures[GFX_CT][4]; // (x, y, w, h)
 // extern u16 gTPageIds[4][32];
 extern s16 gTPageIds[128];
 

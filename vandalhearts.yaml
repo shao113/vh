@@ -91,8 +91,11 @@ segments:
     - [0x005324, .rdata, fx_0743fc]            # 0x80014b24
     - [0x005338, .rdata, fx_076e14]            # 0x80014b38
     - [0x005384, .rdata, fx_07851c]            # 0x80014b84
-    - [0x005410, .rdata, fx_084024]            # 0x80014c10
-    - [0x005430, rdata]                        #
+    - [0x005410, .rdata, fx_080b4c]            # 0x80014c10
+    - [0x005430, .rdata, map_effects_0852e8]   # 0x80014c30
+    - [0x005454, .rdata, map_effects_0861c8]   # 0x80014c54
+    - [0x005500, .rdata, map_effects_089050]   # 0x80014d00
+    - [0x005588, rdata]                        #
 
     - [0x006580, .rdata, audio]                # 0x80015d80 
     - [0x0069b0, bin]                          # 0x800161b0 end of audio jtbls
@@ -142,8 +145,11 @@ segments:
     - [0x0743fc, c, fx_0743fc]                 # 0x80083bfc Evtf327_HealingCircle_FX2 ...
     - [0x076e14, c, fx_076e14]                 # 0x80086614 Evtf330_MagicRestoration_FX1 ...
     - [0x07851c, c, fx_07851c]                 # 0x80087d1c Evtf284_Fx_TBD ...
-    - [0x084024, c, fx_084024]                 # 0x80093824 Evtf087_Map20_Scn30_ArrowSpawner ...
-    - [0x0858e8, bin]
+    - [0x080b4c, c, fx_080b4c]                 # 0x8009034c Evtf306_791_792_793_Healing_FX2 ...
+    - [0x0852e8, c, map_effects_0852e8]        # 0x80094ae8 InEventScene ...
+    - [0x0861c8, c, map_effects_0861c8]        # 0x800959c8 Map13_RemoveBridgeSection ...
+    - [0x089050, c, map_effects_089050]        # 0x80098850 Map17_LowerFloodgate ...
+    - [0x08a378, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
     - [0x0b0480, bin]
@@ -186,8 +192,10 @@ segments:
     - [0x0efb44, .data, fx_070604]             # 0x800ff344 (TODO: re-merge)
     - [0x0efdd0, .data, fx_076e14]             # 0x800ff5d0
     - [0x0efdf8, .data, fx_07851c]             # 0x800ff5f8
-    - [0x0f0208, .data, fx_084024]             # 0x800ffa08
-    - [0x0f0550, data]
+    - [0x0f00cc, .data, fx_080b4c]             # 0x800ff8cc
+    - [0x0f0550, .data, map_effects_0861c8]    # 0x800ffd50
+    - [0x0f0cf4, .data, map_effects_089050]    # 0x801004f4
+    - [0x0f0d14, data]
   
     - [0x0f76ec, .data, audio]                 # 0x80106eec
     - [0x0f91d0, data]                         # 0x801089d0 lib data
@@ -210,8 +218,9 @@ segments:
     - [0x113748, .sdata, fx_06e9c4]            # 0x80122f48
     - [0x113758, .sdata, fx_076e14]            # 0x80122f58
     - [0x11375c, .sdata, fx_07851c]            # 0x80122f5c
-    - [0x113784, .sdata, fx_084024]            # 0x80122f84
-    - [0x11378c, sdata]
+    - [0x11377c, .sdata, fx_080b4c]            # 0x80122f7c
+    - [0x11378c, .sdata, map_effects_0861c8]   # 0x80122f8c
+    - [0x113794, sdata]
 
     # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses
     # set through symbol_addrs to override the assembler's placement

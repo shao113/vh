@@ -52,8 +52,8 @@ typedef union MapUnit {
 typedef struct MapTileModel {
    SVECTOR vertices[22];
    s16 gfx[18];
-   s8 faces[18][4];
-   s8 shades[18]; // TBD
+   u8 faces[18][4];
+   u8 shades[18]; // TBD
    u8 faceCt;
    u8 height;
 } MapTileModel;
@@ -66,6 +66,13 @@ typedef enum PathStep {
    PATH_STEP_EAST = 0x4,
    PATH_STEP_INVALID = 0xff
 } PathStep;
+
+typedef enum GridColor {
+   GRID_COLOR_NONE = 0,
+   GRID_COLOR_BLUE = 1,
+   GRID_COLOR_RED = 2,
+   GRID_COLOR_YELLOW = 3
+} GridColor;
 
 typedef struct ImpededStep {
    u8 z;

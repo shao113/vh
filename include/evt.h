@@ -68,6 +68,8 @@ typedef enum EvtFunctionIdx {
    EVTF_SLAY_FX3 = 79,
    EVTF_ROMAN_FIRE_FLAME = 81,
    EVTF_AVALANCHE_DUST_CLOUD = 84,
+   EVTF_MAP13_EXPLOSION_PILLAR = 85,
+   EVTF_MAP15_HULL_SPLASH = 86,
    EVTF_DAGGER_STORM_FX2 = 90,
    EVTF_DAGGER_STORM_DAGGER = 91,
    EVTF_MOOD_RING_RING = 95,
@@ -156,12 +158,16 @@ typedef enum EvtFunctionIdx {
    EVTF_BLUE_ITEM_SPARKLE = 292,
    EVTF_REVEAL_HIDDEN_ITEM = 294,
    EVTF_SMOKE = 295,
+   EVTF_MAP17_SPRAY_PARTICLE = 296,
+   EVTF_SPLASH_DROPLETS = 297,
    EVTF_SPLASH_WITH_DROPLETS = 298,
+   EVTF_MAP15_OCEAN = 299,
    EVTF_MAP32_SMOKESTACK = 300,
    EVTF_MAP32_SMOKESTACK_PARTICLE = 301,
    EVTF_CHIMNEY_SMOKE = 302,
    EVTF_EXTRA_HEALING_FX2 = 306, // + Hyper Healing
    EVTF_EVIL_STREAM_FX3 = 307,
+   EVTF_EXPLOSION = 309,
    EVTF_LIFE_ORB_BEAM = 310,
    EVTF_BUBBLE_SWIRL_BUBBLE = 312,
    EVTF_INWARD_RAY = 314,
@@ -177,6 +183,7 @@ typedef enum EvtFunctionIdx {
    EVTF_FILE_SAVE_DIALOG_IBS = 342,
    EVTF_ROMAN_FIRE_FX2 = 344,
    EVTF_ROMAN_FIRE_FX3 = 345,
+   EVTF_BUTTON_DEPRESS = 346,
    EVTF_MAP26 = 347,
    EVTF_RUBBLE = 349,
    EVTF_MAP29 = 352,
@@ -185,8 +192,10 @@ typedef enum EvtFunctionIdx {
    EVTF_FILE_LOAD_DIALOG_360 = 360,
    EVTF_MAP13_BRIDGE_EXPLOSION_IN_SCENE = 361,
    EVTF_DRAWBRIDGE_BUTTON = 362,
+   EVTF_MAP15_PLANK = 364,
    EVTF_MAP17_FLOODGATE = 365,
    EVTF_MAP17_BUTTON = 366,
+   EVTF_MAP17_DRAINING_WATER = 368,
    EVTF_SCREEN_EFFECT = 369,
    EVTF_MAGE_OIL_FX2 = 370,
    EVTF_RESTORE_8_MP_UNK_FX2 = 371,
@@ -289,6 +298,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP32_CAR_RELEASE = 650,
    EVTF_MAP33 = 651,
    EVTF_MAP35_BUTTON = 652,
+   EVTF_EXPLODING_TILE = 653,
    EVTF_MAP39 = 656,
    EVTF_MAP38_FLOODGATE = 657,
    EVTF_FLAME = 661,
@@ -323,6 +333,7 @@ typedef enum EvtFunctionIdx {
    EVTF_WYRMFANG_FLAMES_CW = 747,
    EVTF_WYRMFANG_FLAMES_CCW = 748,
    EVTF_WYRMFANG_FLAME = 749,
+   EVTF_MAP15_PIRATE_STAND_IN = 755,
    EVTF_PUSHED_OBJECT_SPLASH = 757,
    EVTF_ROCK_SPURT_PARTICLE = 759,
    EVTF_ELITE_MELEE_SPARKLES = 760,
@@ -393,6 +404,7 @@ typedef union EvtData_DataStore {
    struct EvtData *evts[15];
    void *pointers[15];
    Cylinder cylinder;
+   SVECTOR svectors[7];
 } EvtData_DataStore;
 
 /* Battle - Actions */
@@ -856,6 +868,19 @@ typedef struct EvtData_087 {
    /* :0x2A */ u8 unk_0x2A[50];
    /* :0x5C */ struct EvtData *entitySprite;
 } EvtData_087;
+
+/* Map 15 - Scene 17 - Cinematic */
+typedef struct EvtData_089 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ Camera camera;
+   /* :0x36 */ u8 unk_0x36[26];
+   /* :0x50 */ struct EvtData *focus;
+   /* :0x54 */ struct EvtData *ocean;
+   /* :0x58 */ s16 dstRotY;
+   /* :0x5A */ u8 unk_0x5A[2];
+   /* :0x5C */ struct EvtData *plank;
+} EvtData_089;
 
 /* Dagger Storm - FX2 */
 typedef struct EvtData_090 {
@@ -2040,6 +2065,20 @@ typedef struct EvtData_287 {
    /* :0x5C */ struct EvtData *unitSprite;
 } EvtData_287;
 
+/* Map 13 - Bridge Explosion (Battle) */
+typedef struct EvtData_288 {
+   /* :0x24 */ s16 currentX;
+   /* :0x26 */ u8 unk_0x26[6];
+   /* :0x2C */ s16 dstRotY_unused;
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ Camera camera;
+   /* :0x3E */ u8 unk_0x3E[22];
+   /* :0x54 */ s16 hitPlayerUnit;
+   /* :0x56 */ u8 unk_0x56[6];
+   /* :0x5C */ s16 iterator;
+   /* :0x5E */ u8 unk_0x5E[2];
+} EvtData_288;
+
 /* Reveal Item */
 typedef struct EvtData_290_294_761 {
    /* :0x24 */ s16 timer;
@@ -2263,12 +2302,41 @@ typedef struct EvtData_348 {
    /* :0x5C */ struct EvtData *dataStore; // cylinder
 } EvtData_348;
 
+/* Map 13 - Bridge Explosion (Scene) */
+typedef struct EvtData_361 {
+   /* :0x24 */ s16 currentX;
+   /* :0x26 */ u8 unk_0x26[58];
+} EvtData_361;
+
 /* Wyrmfang - FX1 */
 typedef struct EvtData_363 {
    /* :0x24 */ u8 unk_0x24[52];
    /* :0x58 */ struct EvtData *ccwFlames;
    /* :0x5C */ struct EvtData *cwFlames;
 } EvtData_363;
+
+/* Map 17 - Floodgate */
+typedef struct EvtData_365 {
+   /* :0x24 */ s16 dstCamRotY;
+   /* :0x26 */ u8 unk_0x26[6];
+   /* :0x2C */ s16 face1Init;
+   /* :0x2E */ s16 face2Init;
+   /* :0x30 */ s16 face3Init;
+   /* :0x32 */ u8 unk_0x32[2];
+   /* :0x34 */ s16 face1Curr;
+   /* :0x36 */ s16 face2Curr;
+   /* :0x38 */ s16 face3Curr;
+   /* :0x3A */ u8 unk_0x3A[38];
+} EvtData_365;
+
+/* Map 17 - Button */
+typedef struct EvtData_366 {
+   /* :0x24 */ s16 unused_0x24;
+   /* :0x26 */ u8 unk_0x26[6];
+   /* :0x2C */ Camera camera;
+   /* :0x3A */ u8 unk_0x3A[34];
+   /* :0x5C */ struct EvtData *buttonDepress;
+} EvtData_366;
 
 /* Screen Effect (Incomplete) */
 typedef struct EvtData_369 {
@@ -2442,6 +2510,14 @@ typedef struct EvtData_396 {
    /* :0x54 */ s32 length;
    /* :0x58 */ struct EvtData *links[2];
 } EvtData_396;
+
+/* Map 11 */
+typedef struct EvtData_399 {
+   /* :0x24 */ s16 dstRotY;
+   /* :0x26 */ u8 unk_0x26[6];
+   /* :0x2C */ Camera camera;
+   /* :0x3A */ u8 unk_0x3A[38];
+} EvtData_399;
 
 /* AI - TBD */
 typedef struct EvtData_400 {
@@ -2747,6 +2823,19 @@ typedef struct EvtData_597 {
    /* :0x25 */ u8 unk_0x25[59];
 } EvtData_597;
 
+/* Exploding Tile */
+typedef struct EvtData_653 {
+   /* :0x24 */ SVECTOR translation;
+   /* :0x2C */ SVECTOR rotation;
+   /* :0x34 */ u8 unk_0x34[8];
+   /* :0x3C */ SVECTOR todo_x3c;
+   /* :0x44 */ u8 unk_0x44[16];
+   /* :0x54 */ s16 riverVelocity;
+   /* :0x56 */ u8 unk_0x56[2];
+   /* :0x58 */ struct MapTileModel *tileModel;
+   /* :0x5C */ struct MapTileModel *tileModel_unused;
+} EvtData_653;
+
 /* Leena's Forcefield */
 typedef struct EvtData_675 {
    /* :0x24 */ struct EvtData *targetSprite;
@@ -2837,6 +2926,13 @@ typedef struct EvtData_MapObject {
    /* :0x38 */ void *animData;
    /* :0x3C */ u8 unk_0x3C[36];
 } EvtData_MapObject;
+
+/* Entity Spawn - Generic */
+// When an event entity spawns an object, it passes it the entity's sprite
+typedef struct EvtData_EntitySpawn {
+   /* :0x24 */ struct EvtData *entitySpriteParam;
+   /* :0x28 */ u8 unk_0x28[56];
+} EvtData_EntitySpawn;
 
 typedef struct EvtData_Unk_8006183c {
    /* :0x24 */ s16 clut;
@@ -2964,6 +3060,7 @@ typedef struct EvtData {
       EvtData_080 evtf080;         /* Roman Fire - FX1 */
       EvtData_082 evtf082;         /* FX - TBD */
       EvtData_087 evtf087;         /* Map 20 - Scene 30 - Arrow Spawner */
+      EvtData_089 evtf089;         /* Map 15 - Scene 17 - Cinematic */
       EvtData_090 evtf090;         /* Dagger Storm - FX2 */
       EvtData_091 evtf091;         /* Dagger Storm - Dagger */
       EvtData_094 evtf094;         /* Mood Ring - FX1 */
@@ -3066,6 +3163,7 @@ typedef struct EvtData {
       EvtData_283 evtf283;         /* Dark Hurricane - Cloud */
       EvtData_284 evtf284;         /* FX - TBD */
       EvtData_287 evtf287;         /* FX - TBD */
+      EvtData_288 evtf288;         /* Map 13 - Bridge Explosion (Battle) */
       EvtData_290_294_761 evtf290; /* Reveal Chest Item */
       EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_292 evtf292;         /* Blue Item Sparkles */
@@ -3090,7 +3188,10 @@ typedef struct EvtData {
       EvtData_335_336 evtf336;     /* Salamander - Segment */
       EvtData_132_Etc evtf344;     /* Roman Fire - FX2 / FX3 */
       EvtData_348 evtf348;         /* FX - TBD */
+      EvtData_361 evtf361;         /* Map 13 - Bridge Explosion (Scene) */
       EvtData_363 evtf363;         /* Wyrmfang - FX1 */
+      EvtData_365 evtf365;         /* Map 17 - Floodgate */
+      EvtData_366 evtf366;         /* Map 17 - Button */
       EvtData_369 evtf369;         /* Screen Effect */
       EvtData_377 evtf377;         /* FX - TBD */
       EvtData_378 evtf378;         /* Phase Shift - FX1 */
@@ -3104,6 +3205,7 @@ typedef struct EvtData {
       EvtData_392 evtf392;         /* FX - TBD */
       EvtData_394 evtf394;         /* Dynamo Hum - FX1 */
       EvtData_395 evtf395;         /* Dynamo Hum - Electric Orb */
+      EvtData_399 evtf399;         /* Map 11 */
       EvtData_396 evtf396;         /* Dynamo Hum - Orb Electricity */
       EvtData_400 evtf400;         /* AI - TBD */
       EvtData_401 evtf401;         /* AI - TBD */
@@ -3139,6 +3241,7 @@ typedef struct EvtData {
       EvtData_593 evtf593;         /* Battle - Results - Unit (Reward or Penalty) */
       EvtData_595 evtf595;         /* Status Window Manager */
       EvtData_597 evtf597;         /* Battle - Intro */
+      EvtData_653 evtf653;         /* Exploding Tile */
       EvtData_675 evtf675;         /* Leena's Forcefield */
       EvtData_681 evtf681;         /* Stat Buff FX */
       EvtData_692 evtf692;         /* Campfire */
@@ -3152,6 +3255,7 @@ typedef struct EvtData {
       EvtData_133_Etc evtf802;     /* FX - TBD */
       EvtData_133_Etc evtf803;     /* FX - TBD */
       EvtData_MapObject mapObj;    /* Map Object - Generic */
+      EvtData_EntitySpawn entitySpawn;
       EvtData_Unk_8006183c evtfUnk8006183c;
       EvtData_Unk_80080924 evtfUnk80080924;
       EvtData_Unk_80087b58 evtfUnk80087b58;

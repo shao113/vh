@@ -56,7 +56,10 @@ void Evtf081_RomanFire_Flame(EvtData *);
 void Evtf082_Fx_TBD(EvtData *);
 void Evtf083_Fx_TBD(EvtData *);
 void Evtf084_Avalanche_DustCloud(EvtData *);
+void Evtf085_Map13_ExplosionPillar(EvtData *);
+void Evtf086_Map15_HullSplash(EvtData *);
 void Evtf087_Map20_Scn30_ArrowSpawner(EvtData *);
+void Evtf089_Map15_Scn17_Cinematic(EvtData *);
 void Evtf090_DaggerStorm_FX2(EvtData *);
 void Evtf091_DaggerStorm_Dagger(EvtData *);
 void Evtf092_DaggerStorm_FX1(EvtData *);
@@ -192,12 +195,17 @@ void Evtf284_Fx_TBD(EvtData *);
 void Evtf285_CastingFx(EvtData *);
 void Evtf286_Fx_TBD(EvtData *);
 void Evtf287_Fx_TBD(EvtData *);
+void Evtf288_Map13_BridgeExplosion_Battle(EvtData *);
 void Evtf289_ChimneySmokeRing(EvtData *);
 void Evtf290_294_761_RevealItem(EvtData *);
 void Evtf291_ChestImpact(EvtData *);
 void Evtf292_BlueItemSparkle(EvtData *);
 void Evtf293_Fx_TBD(EvtData *);
 void Evtf295_Smoke(EvtData *);
+void Evtf296_Map17_SprayParticle(EvtData *);
+void Evtf297_SplashDroplets(EvtData *);
+void Evtf298_SplashWithDroplets(EvtData *);
+void Evtf299_Map15_Ocean(EvtData *);
 void Evtf300_Map32_Smokestack(EvtData *);
 void Evtf301_Map32_SmokestackParticle(EvtData *);
 void Evtf302_ChimneySmoke(EvtData *);
@@ -229,7 +237,12 @@ void Evtf339_349_Rubble(EvtData *);
 void Evtf344_345_RomanFire_FX2_FX3(EvtData *);
 void Evtf348_Fx_TBD(EvtData *);
 void Evtf359_PhaseShift_MapScaler(EvtData *);
+void Evtf361_Map13_BridgeExplosion_Scene(EvtData *);
 void Evtf363_Wyrmfang_FX1(EvtData *);
+void Evtf364_Map15_Plank(EvtData *);
+void Evtf365_Map17_Floodgate(EvtData *);
+void Evtf366_Map17_Button(EvtData *);
+void Evtf368_Map17_DrainingWater(EvtData *);
 void Evtf375_FlameBreath_Particle(EvtData *);
 void Evtf377_Fx_TBD(EvtData *);
 void Evtf378_PhaseShift_FX1(EvtData *);
@@ -250,6 +263,7 @@ void Evtf395_DynamoHum_ElectricOrb(EvtData *);
 void Evtf396_DynamoHum_OrbElectricity(EvtData *);
 void Evtf397_Fx_TBD(EvtData *);
 void Evtf398_Fx_TBD(EvtData *);
+void Evtf399_Map11(EvtData *);
 void Evtf400_AI_TBD(EvtData *);
 void Evtf401_AI_TBD(EvtData *);
 void Evtf402_AI_TBD(EvtData *);
@@ -426,6 +440,8 @@ void Evtf739_Particle(EvtData *);
 void Evtf740_RemoveParalysis_Sparkles(EvtData *);
 void Evtf747_748_Wyrmfang_Flames(EvtData *);
 void Evtf749_Wyrmfang_Flame(EvtData *);
+void Evtf753_IncrementMapState0(EvtData *);
+void Evtf755_Map15_PirateStandIn(EvtData *);
 void Evtf757_PushedObjectSplash(EvtData *);
 void Evtf759_RockSpurtParticle(EvtData *);
 void Evtf760_EliteMeleeSparkles(EvtData *);
@@ -531,11 +547,11 @@ EvtFunction gEvtFunctionPointers[804] = {
     [82] = Evtf082_Fx_TBD,
     [83] = Evtf083_Fx_TBD,
     [84] = Evtf084_Avalanche_DustCloud,
-    [85] = (EvtFunction)0x80096824,
-    [86] = (EvtFunction)0x800984f0,
+    [85] = Evtf085_Map13_ExplosionPillar,
+    [86] = Evtf086_Map15_HullSplash,
     [87] = Evtf087_Map20_Scn30_ArrowSpawner,
     [88] = (EvtFunction)0x800abe78,
-    [89] = (EvtFunction)0x80096d7c,
+    [89] = Evtf089_Map15_Scn17_Cinematic,
     [90] = Evtf090_DaggerStorm_FX2,
     [91] = Evtf091_DaggerStorm_Dagger,
     [92] = Evtf092_DaggerStorm_FX1,
@@ -734,7 +750,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [285] = Evtf285_CastingFx,
     [286] = Evtf286_Fx_TBD,
     [287] = Evtf287_Fx_TBD,
-    [288] = (EvtFunction)0x80096030,
+    [288] = Evtf288_Map13_BridgeExplosion_Battle,
     [289] = Evtf289_ChimneySmokeRing,
     [290] = Evtf290_294_761_RevealItem,
     [291] = Evtf291_ChestImpact,
@@ -742,10 +758,10 @@ EvtFunction gEvtFunctionPointers[804] = {
     [293] = Evtf293_Fx_TBD,
     [294] = Evtf290_294_761_RevealItem,
     [295] = Evtf295_Smoke,
-    [296] = (EvtFunction)0x80098bac,
-    [297] = (EvtFunction)0x800968e8,
-    [298] = (EvtFunction)0x800969e4,
-    [299] = (EvtFunction)0x80097c94,
+    [296] = Evtf296_Map17_SprayParticle,
+    [297] = Evtf297_SplashDroplets,
+    [298] = Evtf298_SplashWithDroplets,
+    [299] = Evtf299_Map15_Ocean,
     [300] = Evtf300_Map32_Smokestack,
     [301] = Evtf301_Map32_SmokestackParticle,
     [302] = Evtf302_ChimneySmoke,
@@ -807,14 +823,14 @@ EvtFunction gEvtFunctionPointers[804] = {
     [358] = (EvtFunction)0x80099b78,
     [359] = Evtf359_PhaseShift_MapScaler,
     [360] = (EvtFunction)0x800b40d4,
-    [361] = (EvtFunction)0x80095d08,
+    [361] = Evtf361_Map13_BridgeExplosion_Scene,
     [362] = (EvtFunction)0x8009aca8,
     [363] = Evtf363_Wyrmfang_FX1,
-    [364] = (EvtFunction)0x80097eb4,
-    [365] = (EvtFunction)0x80098dcc,
-    [366] = (EvtFunction)0x80098938,
+    [364] = Evtf364_Map15_Plank,
+    [365] = Evtf365_Map17_Floodgate,
+    [366] = Evtf366_Map17_Button,
     [367] = (EvtFunction)0x800b40d4,
-    [368] = (EvtFunction)0x8009979c,
+    [368] = Evtf368_Map17_DrainingWater,
     [369] = (EvtFunction)0x800a8b14,
     [370] = Evtf322_370_371_372_MagicRestoration_FX2,
     [371] = Evtf322_370_371_372_MagicRestoration_FX2,
@@ -845,7 +861,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [396] = Evtf396_DynamoHum_OrbElectricity,
     [397] = Evtf397_Fx_TBD,
     [398] = Evtf398_Fx_TBD,
-    [399] = (EvtFunction)0x80095600,
+    [399] = Evtf399_Map11,
     [400] = Evtf400_AI_TBD,
     [401] = Evtf401_AI_TBD,
     [402] = Evtf402_AI_TBD,
@@ -1199,9 +1215,9 @@ EvtFunction gEvtFunctionPointers[804] = {
     [750] = (EvtFunction)0x800a0e14,
     [751] = (EvtFunction)0x800a0e14,
     [752] = (EvtFunction)0x8009d3ac,
-    [753] = (EvtFunction)0x800959a8,
+    [753] = Evtf753_IncrementMapState0,
     [754] = (EvtFunction)0x800a4fb8,
-    [755] = (EvtFunction)0x800985e8,
+    [755] = Evtf755_Map15_PirateStandIn,
     [756] = (EvtFunction)0x800b1710,
     [757] = Evtf757_PushedObjectSplash,
     [758] = (EvtFunction)0x800b28dc,

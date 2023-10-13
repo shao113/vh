@@ -318,8 +318,8 @@ void Evtf072_FadeFromWhite(EvtData *evt) {
       SetSemiTrans(poly, 1);
       poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+              gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
       setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
@@ -351,8 +351,8 @@ void Evtf073_FadeToWhite(EvtData *evt) {
       SetSemiTrans(poly, 1);
       poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+              gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
       setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
@@ -385,8 +385,8 @@ void Evtf070_FadeFromBlack(EvtData *evt) {
       SetSemiTrans(poly, 1);
       poly->tpage = gTPageIds[64 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+              gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
       setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 2], poly);
@@ -418,8 +418,8 @@ void Evtf071_FadeToBlack(EvtData *evt) {
       SetSemiTrans(poly, 1);
       poly->tpage = gTPageIds[64 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+              gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
       setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 2], poly);

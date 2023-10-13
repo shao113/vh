@@ -666,8 +666,8 @@ void Evtf222_Fx_TBD(EvtData *evt) {
          SetSemiTrans(poly, 1);
          poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
          poly->clut = gGfxClutIds[GFX_COLOR_15];
-         setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-                 gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+         setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+                 gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
          setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
          setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
          AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
@@ -688,8 +688,8 @@ void Evtf222_Fx_TBD(EvtData *evt) {
       SetSemiTrans(poly, 1);
       poly->tpage = gTPageIds[32 + gGfxTPageCells[GFX_COLOR_15]];
       poly->clut = gGfxClutIds[GFX_COLOR_15];
-      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15].x, gGfxSubTextures[GFX_COLOR_15].y,
-              gGfxSubTextures[GFX_COLOR_15].w, gGfxSubTextures[GFX_COLOR_15].h);
+      setUVWH(poly, gGfxSubTextures[GFX_COLOR_15][0], gGfxSubTextures[GFX_COLOR_15][1],
+              gGfxSubTextures[GFX_COLOR_15][2], gGfxSubTextures[GFX_COLOR_15][3]);
       setXYWH(poly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setRGB0(poly, EVT.fade, EVT.fade, EVT.fade);
       AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], poly);
@@ -1362,10 +1362,10 @@ void Evtf192_PerfectGuard_FX2(EvtData *evt) {
       evt_s2->functionIndex = EVTF_NOOP;
       evt_s2->d.sprite.semiTrans = 2;
 
-      gGfxSubTextures[GFX_TILED_DIAMONDS_DYN_1].x = EVT.todo_x5c % 0x20;
-      gGfxSubTextures[GFX_TILED_DIAMONDS_DYN_1].y = 0x80 + EVT.todo_x5c % 0x20;
-      gGfxSubTextures[GFX_TILED_DIAMONDS_DYN_1].w = 0x20;
-      gGfxSubTextures[GFX_TILED_DIAMONDS_DYN_1].h = 0x20;
+      gGfxSubTextures[GFX_TILED_DIAMONDS_DYN_1][0] = EVT.todo_x5c % 0x20;
+      gGfxSubTextures[GFX_TILED_DIAMONDS_DYN_1][1] = 0x80 + EVT.todo_x5c % 0x20;
+      gGfxSubTextures[GFX_TILED_DIAMONDS_DYN_1][2] = 0x20;
+      gGfxSubTextures[GFX_TILED_DIAMONDS_DYN_1][3] = 0x20;
       EVT.todo_x5c++;
 
       // 1 //
