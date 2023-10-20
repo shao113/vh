@@ -209,6 +209,8 @@ void Evtf299_Map15_Ocean(EvtData *);
 void Evtf300_Map32_Smokestack(EvtData *);
 void Evtf301_Map32_SmokestackParticle(EvtData *);
 void Evtf302_ChimneySmoke(EvtData *);
+void Evtf303_Map31_Scn61_XenoFlames(EvtData *);
+void Evtf304_661_Flame(EvtData *);
 void Evtf306_791_792_793_Healing_FX2(EvtData *);
 void Evtf307_324_EvilStream_FX2_FX3(EvtData *);
 void Evtf309_Explosion(EvtData *);
@@ -235,9 +237,17 @@ void Evtf336_Salamander_Segment(EvtData *);
 void Evtf337_DaggerStorm_BloodSplatter(EvtData *);
 void Evtf339_349_Rubble(EvtData *);
 void Evtf344_345_RomanFire_FX2_FX3(EvtData *);
+void Evtf346_ButtonDepress(EvtData *);
+void Evtf347_Map26(EvtData *);
 void Evtf348_Fx_TBD(EvtData *);
+void Evtf352_Map29(EvtData *);
+void Evtf354_Map19_DebugElevators(EvtData *);
+void Evtf355_356_Map19_Elevator(EvtData *);
+void Evtf357_Map19(EvtData *);
+void Evtf358_Map19_Elevator(EvtData *);
 void Evtf359_PhaseShift_MapScaler(EvtData *);
 void Evtf361_Map13_BridgeExplosion_Scene(EvtData *);
+void Evtf362_DrawbridgeButton(EvtData *);
 void Evtf363_Wyrmfang_FX1(EvtData *);
 void Evtf364_Map15_Plank(EvtData *);
 void Evtf365_Map17_Floodgate(EvtData *);
@@ -422,6 +432,15 @@ void Evtf595_StatusWindow(EvtData *);
 void Evtf596_StatusWindowMgr(EvtData *);
 void Evtf597_BattleIntro(EvtData *);
 void Evtf598_WorldActions(EvtData *);
+void Evtf662_Map28_OpenDoor(EvtData *);
+void Evtf663_Map28_Button(EvtData *);
+void Evtf664_Map27_OpenCellDoor(EvtData *);
+void Evtf665_Map27_Buttons(EvtData *);
+void Evtf666_Map14_LowerSandMound(EvtData *);
+void Evtf667_Map14_LowerSandTile(EvtData *);
+void Evtf668_Map14_RaiseSandMound(EvtData *);
+void Evtf669_Map14_RaiseSandTile(EvtData *);
+void Evtf670_Map14_Sand(EvtData *);
 void Evtf675_LeenaForcefield(EvtData *);
 void Evtf676_687_Rainfall(EvtData *);
 void Evtf677_RainfallDrop(EvtData *);
@@ -429,6 +448,7 @@ void Evtf678_Ripple(EvtData *);
 void Evtf681_StatBuffFx(EvtData *);
 void Evtf685_RockSpurt(EvtData *);
 void Evtf692_Campfire(EvtData *);
+void Evtf708_709_Map14_Unused(EvtData *);
 void Evtf710_Particle(EvtData *);
 void Evtf711_712_Noop(EvtData *);
 void Evtf715_to_718_Spellbind_FX2_FX3(EvtData *);
@@ -440,6 +460,7 @@ void Evtf739_Particle(EvtData *);
 void Evtf740_RemoveParalysis_Sparkles(EvtData *);
 void Evtf747_748_Wyrmfang_Flames(EvtData *);
 void Evtf749_Wyrmfang_Flame(EvtData *);
+void Evtf752_Map14_Scn15_SandMoundSpawner(EvtData *);
 void Evtf753_IncrementMapState0(EvtData *);
 void Evtf755_Map15_PirateStandIn(EvtData *);
 void Evtf757_PushedObjectSplash(EvtData *);
@@ -765,8 +786,8 @@ EvtFunction gEvtFunctionPointers[804] = {
     [300] = Evtf300_Map32_Smokestack,
     [301] = Evtf301_Map32_SmokestackParticle,
     [302] = Evtf302_ChimneySmoke,
-    [303] = (EvtFunction)0x8009eb3c,
-    [304] = (EvtFunction)0x8009e760,
+    [303] = Evtf303_Map31_Scn61_XenoFlames,
+    [304] = Evtf304_661_Flame,
     [305] = (EvtFunction)0x800ac540,
     [306] = Evtf306_791_792_793_Healing_FX2,
     [307] = Evtf307_324_EvilStream_FX2_FX3,
@@ -808,23 +829,23 @@ EvtFunction gEvtFunctionPointers[804] = {
     [343] = (EvtFunction)0x800b40d4,
     [344] = Evtf344_345_RomanFire_FX2_FX3,
     [345] = Evtf344_345_RomanFire_FX2_FX3,
-    [346] = (EvtFunction)0x8009ba14,
-    [347] = (EvtFunction)0x8009bccc,
+    [346] = Evtf346_ButtonDepress,
+    [347] = Evtf347_Map26,
     [348] = Evtf348_Fx_TBD,
     [349] = Evtf339_349_Rubble,
     [350] = Evtf250_350_LoadEvent16,
     [351] = (EvtFunction)0x800a78c8,
-    [352] = (EvtFunction)0x8009be80,
+    [352] = Evtf352_Map29,
     [353] = (EvtFunction)0x800b2db8,
-    [354] = (EvtFunction)0x8009a718,
-    [355] = (EvtFunction)0x80099f38,
-    [356] = (EvtFunction)0x80099f38,
-    [357] = (EvtFunction)0x8009a474,
-    [358] = (EvtFunction)0x80099b78,
+    [354] = Evtf354_Map19_DebugElevators,
+    [355] = Evtf355_356_Map19_Elevator,
+    [356] = Evtf355_356_Map19_Elevator,
+    [357] = Evtf357_Map19,
+    [358] = Evtf358_Map19_Elevator,
     [359] = Evtf359_PhaseShift_MapScaler,
     [360] = (EvtFunction)0x800b40d4,
     [361] = Evtf361_Map13_BridgeExplosion_Scene,
-    [362] = (EvtFunction)0x8009aca8,
+    [362] = Evtf362_DrawbridgeButton,
     [363] = Evtf363_Wyrmfang_FX1,
     [364] = Evtf364_Map15_Plank,
     [365] = Evtf365_Map17_Floodgate,
@@ -1123,16 +1144,16 @@ EvtFunction gEvtFunctionPointers[804] = {
     [658] = (EvtFunction)0x800a3510,
     [659] = (EvtFunction)0x800a3e70,
     [660] = (EvtFunction)NULL,
-    [661] = (EvtFunction)0x8009e760,
-    [662] = (EvtFunction)0x8009df44,
-    [663] = (EvtFunction)0x8009e4bc,
-    [664] = (EvtFunction)0x8009d6bc,
-    [665] = (EvtFunction)0x8009da80,
-    [666] = (EvtFunction)0x8009caac,
-    [667] = (EvtFunction)0x8009c038,
-    [668] = (EvtFunction)0x8009c674,
-    [669] = (EvtFunction)0x8009c25c,
-    [670] = (EvtFunction)0x8009d008,
+    [661] = Evtf304_661_Flame,
+    [662] = Evtf662_Map28_OpenDoor,
+    [663] = Evtf663_Map28_Button,
+    [664] = Evtf664_Map27_OpenCellDoor,
+    [665] = Evtf665_Map27_Buttons,
+    [666] = Evtf666_Map14_LowerSandMound,
+    [667] = Evtf667_Map14_LowerSandTile,
+    [668] = Evtf668_Map14_RaiseSandMound,
+    [669] = Evtf669_Map14_RaiseSandTile,
+    [670] = Evtf670_Map14_Sand,
     [671] = (EvtFunction)NULL,
     [672] = (EvtFunction)0x800a43d4,
     [673] = (EvtFunction)0x8009ed24,
@@ -1170,8 +1191,8 @@ EvtFunction gEvtFunctionPointers[804] = {
     [705] = (EvtFunction)0x800af520,
     [706] = (EvtFunction)NULL,
     [707] = (EvtFunction)0x800afc68,
-    [708] = (EvtFunction)0x8009d320,
-    [709] = (EvtFunction)0x8009d320,
+    [708] = Evtf708_709_Map14_Unused,
+    [709] = Evtf708_709_Map14_Unused,
     [710] = Evtf710_Particle,
     [711] = Evtf711_712_Noop,
     [712] = Evtf711_712_Noop,
@@ -1214,7 +1235,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [749] = Evtf749_Wyrmfang_Flame,
     [750] = (EvtFunction)0x800a0e14,
     [751] = (EvtFunction)0x800a0e14,
-    [752] = (EvtFunction)0x8009d3ac,
+    [752] = Evtf752_Map14_Scn15_SandMoundSpawner,
     [753] = Evtf753_IncrementMapState0,
     [754] = (EvtFunction)0x800a4fb8,
     [755] = Evtf755_Map15_PirateStandIn,

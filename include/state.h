@@ -107,7 +107,7 @@ typedef struct State {
          u8 field_0x12;
          u8 field_0x13;
       } s;
-      s8 bytes[20];
+      u8 bytes[20];
    } mapState;
 
    u8 signal;

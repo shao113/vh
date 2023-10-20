@@ -95,7 +95,11 @@ segments:
     - [0x005430, .rdata, map_effects_0852e8]   # 0x80014c30
     - [0x005454, .rdata, map_effects_0861c8]   # 0x80014c54
     - [0x005500, .rdata, map_effects_089050]   # 0x80014d00
-    - [0x005588, rdata]                        #
+    - [0x0055ec, .rdata, map_effects_08affc]   # 0x80014dec
+    - [0x005648, .rdata, map_effects_08c158]   # 0x80014e48
+    - [0x0056fc, .rdata, map_effects_08dc10]   # 0x80014efc
+    - [0x005720, .rdata, map_effects_08e744]   # 0x80014f20
+    - [0x00579c, rdata]                        #
 
     - [0x006580, .rdata, audio]                # 0x80015d80 
     - [0x0069b0, bin]                          # 0x800161b0 end of audio jtbls
@@ -149,7 +153,11 @@ segments:
     - [0x0852e8, c, map_effects_0852e8]        # 0x80094ae8 InEventScene ...
     - [0x0861c8, c, map_effects_0861c8]        # 0x800959c8 Map13_RemoveBridgeSection ...
     - [0x089050, c, map_effects_089050]        # 0x80098850 Map17_LowerFloodgate ...
-    - [0x08a378, bin]
+    - [0x08affc, c, map_effects_08affc]        # 0x8009a7fc Map11_LowerDrawbridge ...
+    - [0x08c158, c, map_effects_08c158]        # 0x8009b958 DepressButton ...
+    - [0x08dc10, c, map_effects_08dc10]        # 0x8009d410 Map27_DepressButton ...
+    - [0x08e744, c, map_effects_08e744]        # 0x8009df44 Evtf662_Map28_OpenDoor ...
+    - [0x08f524, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
     - [0x0b0480, bin]
@@ -195,7 +203,10 @@ segments:
     - [0x0f00cc, .data, fx_080b4c]             # 0x800ff8cc
     - [0x0f0550, .data, map_effects_0861c8]    # 0x800ffd50
     - [0x0f0cf4, .data, map_effects_089050]    # 0x801004f4
-    - [0x0f0d14, data]
+    - [0x0f0d14, .data, map_effects_08affc]    # 0x80100514
+    - [0x0f10c8, .data, map_effects_08dc10]    # 0x801008c8
+    - [0x0f10d4, .data, map_effects_08e744]    # 0x801008d4
+    - [0x0f11bc, data]
   
     - [0x0f76ec, .data, audio]                 # 0x80106eec
     - [0x0f91d0, data]                         # 0x801089d0 lib data
@@ -220,7 +231,8 @@ segments:
     - [0x11375c, .sdata, fx_07851c]            # 0x80122f5c
     - [0x11377c, .sdata, fx_080b4c]            # 0x80122f7c
     - [0x11378c, .sdata, map_effects_0861c8]   # 0x80122f8c
-    - [0x113794, sdata]
+    - [0x113794, .sdata, map_effects_08dc10]   # 0x80122f94
+    - [0x1137a0, sdata]
 
     # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses
     # set through symbol_addrs to override the assembler's placement

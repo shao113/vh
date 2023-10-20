@@ -153,8 +153,8 @@ extern s16 gVolumeFadeCounter;
 extern u32 gVabSoundBufferAddr[4];
 
 /* TBD volatile? */
-extern s16 gXaReducedVolumeTarget;
-extern s16 gXaVolumeState;
+extern volatile s16 gXaReducedVolumeTarget;
+extern volatile s16 gXaVolumeState;
 extern volatile s16 gXaAdjustedVolume;
 extern volatile s16 gVolumeFadeInSpeed;
 extern volatile s16 gVolumeFadeOutSpeed;

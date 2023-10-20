@@ -92,7 +92,7 @@ void SetupMapExtras(void) {
 
    if (gState.mapNum == 27) {
       evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP27;
+      evt->functionIndex = EVTF_MAP27_BUTTONS;
    }
 
    if (gState.mapNum == 28) {

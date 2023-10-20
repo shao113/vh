@@ -165,6 +165,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP32_SMOKESTACK = 300,
    EVTF_MAP32_SMOKESTACK_PARTICLE = 301,
    EVTF_CHIMNEY_SMOKE = 302,
+   EVTF_MAP31_SCN61_XENO_FLAME = 304,
    EVTF_EXTRA_HEALING_FX2 = 306, // + Hyper Healing
    EVTF_EVIL_STREAM_FX3 = 307,
    EVTF_EXPLOSION = 309,
@@ -187,7 +188,10 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP26 = 347,
    EVTF_RUBBLE = 349,
    EVTF_MAP29 = 352,
+   EVTF_MAP19_ELEVATOR_355 = 355,
+   EVTF_MAP19_ELEVATOR_356 = 356,
    EVTF_MAP19 = 357,
+   EVTF_MAP19_ELEVATOR = 358,
    EVTF_PHASE_SHIFT_MAP_SCALER = 359,
    EVTF_FILE_LOAD_DIALOG_360 = 360,
    EVTF_MAP13_BRIDGE_EXPLOSION_IN_SCENE = 361,
@@ -302,8 +306,14 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP39 = 656,
    EVTF_MAP38_FLOODGATE = 657,
    EVTF_FLAME = 661,
+   EVTF_MAP28_OPEN_DOOR = 662,
    EVTF_MAP28_BUTTON = 663,
-   EVTF_MAP27 = 665,
+   EVTF_MAP27_OPEN_CELL_DOOR = 664,
+   EVTF_MAP27_BUTTONS = 665,
+   EVTF_MAP14_LOWER_SAND_MOUND = 666,
+   EVTF_MAP14_LOWER_SAND_TILE = 667,
+   EVTF_MAP14_RAISE_SAND_MOUND = 668,
+   EVTF_MAP14_RAISE_SAND_TILE = 669,
    EVTF_MAP14_SAND = 670,
    EVTF_HEAVY_RAINFALL = 676,
    EVTF_RAINFALL_DROP = 677,
@@ -317,6 +327,8 @@ typedef enum EvtFunctionIdx {
    EVTF_DYNAMO_HUM_COLORED_BOLT = 700,
    EVTF_FLAMING_ROCK = 702,
    EVTF_MAP40_BARRICADE = 703,
+   EVTF_MAP14_UNUSED_708 = 708,
+   EVTF_MAP14_UNUSED_709 = 709,
    EVTF_PARTICLE_710 = 710, // Generic animated particle?
    EVTF_SPELLBIND_FX2 = 715,
    EVTF_SPELLBIND_FX3 = 716,
@@ -2095,6 +2107,25 @@ typedef struct EvtData_292 {
    /* :0x5C */ struct EvtData *sprite;
 } EvtData_292;
 
+/* Map 31 - Scene 61 - Xeno's Flames */
+typedef struct EvtData_303 {
+   /* :0x24 */ struct EvtData *entitySprite;
+   /* :0x28 */ s16 theta;
+   /* :0x2A */ u8 unk_0x2A[54];
+} EvtData_303;
+
+/* Flame */
+typedef struct EvtData_304_661 {
+   /* :0x24 */ u8 unk_0x24[13];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ u8 unk_0x32[6];
+   /* :0x38 */ void *animData;
+   /* :0x3C */ u8 unk_0x3C[28];
+   /* :0x58 */ s16 radius;
+   /* :0x5A */ s16 theta;
+   /* :0x5C */ Quad *quadp;
+} EvtData_304_661;
+
 /* Healing - FX2 */
 // TODO: Disambiguate from EvtData_100?
 // 306: Extra Healing, Hyper Healing
@@ -2293,6 +2324,20 @@ typedef struct EvtData_335_336 {
    /* :0x5C */ struct EvtData *link; // evtf334/evtf335/evtf336
 } EvtData_335_336;
 
+/* Button Depress */
+typedef struct EvtData_346 {
+   /* :0x24 */ s16 dstCamRotY;
+   /* :0x26 */ u8 unk_0x26[58];
+} EvtData_346;
+
+/* Map 26 */
+typedef struct EvtData_347 {
+   /* :0x24 */ u8 unk_0x24[8];
+   /* :0x2C */ Camera camera;
+   /* :0x3A */ u8 unk_0x3A[34];
+   /* :0x5C */ struct EvtData *buttonDepress; // evtf346
+} EvtData_347;
+
 /* FX - TBD */
 typedef struct EvtData_348 {
    /* :0x24 */ s16 todo_x24[8];
@@ -2302,11 +2347,73 @@ typedef struct EvtData_348 {
    /* :0x5C */ struct EvtData *dataStore; // cylinder
 } EvtData_348;
 
+/* Map 29 */
+typedef struct EvtData_352 {
+   /* :0x24 */ u8 unk_0x24[8];
+   /* :0x2C */ Camera camera;
+   /* :0x3A */ u8 unk_0x3A[34];
+   /* :0x5C */ struct EvtData *buttonDepress; // evtf346
+} EvtData_352;
+
+/* Map 19 - Elevator (TBD) */
+typedef struct EvtData_355_356 {
+   /* :0x24 */ union {
+      struct EvtData *elevator1Param;
+      struct {
+         s16 a;
+         s16 b;
+      } dstCamRotY;
+   } variant_0x24;
+   /* :0x28 */ struct EvtData *elevator2Param;
+   /* :0x2C */ Camera camera;
+   /* :0x3A */ u8 unk_0x3A[30];
+   /* :0x58 */ struct EvtData *elevator2;
+   /* :0x5C */ struct EvtData *elevator1;
+} EvtData_355_356;
+
+/* Map 19 */
+typedef struct EvtData_357 {
+   /* :0x24 */ u8 unk_0x24[52];
+   /* :0x58 */ struct EvtData *elevator2;
+   /* :0x5C */ struct EvtData *elevator1;
+} EvtData_357;
+
+/* Map 19 - Elevator (TBD) */
+typedef struct EvtData_358 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 todo_x2c;
+   /* :0x2E */ s16 todo_x2e;
+   /* :0x30 */ s16 todo_x30;
+   /* :0x32 */ u8 unk_0x32[2];
+   /* :0x34 */ s16 todo_x34;
+   /* :0x36 */ s16 todo_x36;
+   /* :0x38 */ s16 todo_x38;
+   /* :0x3A */ u8 unk_0x3A[38];
+} EvtData_358;
+
 /* Map 13 - Bridge Explosion (Scene) */
 typedef struct EvtData_361 {
    /* :0x24 */ s16 currentX;
    /* :0x26 */ u8 unk_0x26[58];
 } EvtData_361;
+
+/* Drawbridge Button */
+typedef struct EvtData_362 {
+   /* :0x24 */ s16 timer;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ s16 gfxSetIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 battleNum; // i.e. mapNum - 9 (same as displayed in debug menu)
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ struct MapTileModel *tileModel;
+   /* :0x34 */ s16 dstCamPosY;
+   /* :0x36 */ u8 unk_0x36[2];
+   /* :0x38 */ s16 dstCamRotY;
+   /* :0x3A */ u8 unk_0x3A[38];
+} EvtData_362;
 
 /* Wyrmfang - FX1 */
 typedef struct EvtData_363 {
@@ -2836,6 +2943,43 @@ typedef struct EvtData_653 {
    /* :0x5C */ struct MapTileModel *tileModel_unused;
 } EvtData_653;
 
+/* Map 28 - Button */
+typedef struct EvtData_663 {
+   /* :0x24 */ u8 unk_0x24[12];
+   /* :0x30 */ Camera camera;
+   /* :0x3E */ u8 unk_0x3E[30];
+   /* :0x5C */ struct EvtData *child; // button or door
+} EvtData_663;
+
+/* Map 27 - Buttons */
+typedef struct EvtData_665 {
+   /* :0x24 */ s16 buttonPressed[4];
+   /* :0x2C */ u8 unk_0x2C[4];
+   /* :0x30 */ Camera camera;
+   /* :0x3E */ u8 unk_0x3E[30];
+   /* :0x5C */ struct EvtData *child; // button or door
+} EvtData_665;
+
+/* Map 14 - Lower Sand Mound */
+typedef struct EvtData_666 {
+   /* :0x24 */ s16 count;
+   /* :0x26 */ s16 offset;
+   /* :0x28 */ u8 unk_0x28[56];
+} EvtData_666;
+
+/* Map 14 - Raise Sand Mound */
+typedef struct EvtData_668 {
+   /* :0x24 */ s16 count;
+   /* :0x26 */ s16 offset;
+   /* :0x28 */ u8 unk_0x28[56];
+} EvtData_668;
+
+/* Map 14 - Sand */
+typedef struct EvtData_670 {
+   /* :0x24 */ u8 unk_0x24[56];
+   /* :0x5C */ struct EvtData *mound; // evtf666/evtf668
+} EvtData_670;
+
 /* Leena's Forcefield */
 typedef struct EvtData_675 {
    /* :0x24 */ struct EvtData *targetSprite;
@@ -3167,6 +3311,8 @@ typedef struct EvtData {
       EvtData_290_294_761 evtf290; /* Reveal Chest Item */
       EvtData_290_294_761 evtf294; /* Reveal Item */
       EvtData_292 evtf292;         /* Blue Item Sparkles */
+      EvtData_303 evtf303;         /* Map 31 - Scene 61 - Xeno's Flames */
+      EvtData_304_661 evtf304;     /* Flame */
       EvtData_306_Etc evtf306;     /* Healing - FX2 */
       EvtData_307_324 evtf307;     /* Evil Stream - FX2 / FX3 */
       EvtData_310 evtf310;         /* Life Orb - Beam */
@@ -3187,8 +3333,16 @@ typedef struct EvtData {
       EvtData_335_336 evtf335;     /* Salamander - Head */
       EvtData_335_336 evtf336;     /* Salamander - Segment */
       EvtData_132_Etc evtf344;     /* Roman Fire - FX2 / FX3 */
+      EvtData_346 evtf346;         /* Button Depress */
+      EvtData_347 evtf347;         /* Map 26 */
       EvtData_348 evtf348;         /* FX - TBD */
+      EvtData_352 evtf352;         /* Map 26 */
+      EvtData_355_356 evtf355;     /* Map 19 - Elevator (TBD) */
+      EvtData_355_356 evtf356;     /* Map 19 - Elevator (TBD) */
+      EvtData_357 evtf357;         /* Map 19 */
+      EvtData_358 evtf358;         /* Map 19 - Elevator (TBD) */
       EvtData_361 evtf361;         /* Map 13 - Bridge Explosion (Scene) */
+      EvtData_362 evtf362;         /* Drawbridge Button */
       EvtData_363 evtf363;         /* Wyrmfang - FX1 */
       EvtData_365 evtf365;         /* Map 17 - Floodgate */
       EvtData_366 evtf366;         /* Map 17 - Button */
@@ -3242,6 +3396,11 @@ typedef struct EvtData {
       EvtData_595 evtf595;         /* Status Window Manager */
       EvtData_597 evtf597;         /* Battle - Intro */
       EvtData_653 evtf653;         /* Exploding Tile */
+      EvtData_663 evtf663;         /* Map 28 - Button */
+      EvtData_665 evtf665;         /* Map 27 - Buttons */
+      EvtData_666 evtf666;         /* Map 14 - Lower Sand Mound */
+      EvtData_668 evtf668;         /* Map 14 - Raise Sand Mound */
+      EvtData_670 evtf670;         /* Map 14 - Sand */
       EvtData_675 evtf675;         /* Leena's Forcefield */
       EvtData_681 evtf681;         /* Stat Buff FX */
       EvtData_692 evtf692;         /* Campfire */

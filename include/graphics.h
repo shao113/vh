@@ -648,6 +648,7 @@ struct EvtData *GetUnitSpriteAtPosition(u8, u8);
 void ApplyMaskEffectPreset(struct EvtData *, MaskEffectPreset *);
 
 void AddEvtPrim_Gui(u32 *ot, struct EvtData *evt);
+void UpdateEvtAnimation(struct EvtData *);
 
 static inline u16 GetLightRotY() { return gLightRotation.vy; }
 static inline s32 GetCamZoom() { return gCameraZoom.vz; }
@@ -670,5 +671,9 @@ static inline void OffsetCamPosX(s32 value) { gCameraPos.vx = GetCamPosX() + val
 static inline void OffsetCamPosY(s32 value) { gCameraPos.vy = GetCamPosY() + value; }
 static inline void OffsetCamPosZ(s32 value) { gCameraPos.vz = GetCamPosZ() + value; }
 static inline void OffsetCamRotY(s32 value) { gCameraRotation.vy = GetCamRotY() + value; }
+
+void AssignFromMainCamera(Camera *);
+void AssignToMainCamera(Camera *);
+void EaseOutCamera(Camera *, s16);
 
 #endif

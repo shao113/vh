@@ -487,9 +487,9 @@ u8 ExecuteCdControl(u8 arg0, u8 *arg1, u8 *arg2) {
 }
 
 void ResetVolume(void) {
-   gCurrentVolume = 0x7F;
-   gMaxVolume = 0x7F;
-   SsSetMVol(0x7F, 0x7F);
+   gCurrentVolume = 0x7f;
+   gMaxVolume = 0x7f;
+   SsSetMVol(0x7f, 0x7f);
 }
 
 void ResetAudioState(void) {
@@ -498,7 +498,6 @@ void ResetAudioState(void) {
       gAudioJobQueue[s_audioJobIdx] = AUDIO_JOB_NULL;
    }
    gSfxSlotSustained = 0;
-   gXaAdjustedVolume = gXaMaxVolume;
    gSfxSlotToggled = 0;
    D_801801B0 = 0;
    gSeqAccessNum = 1;
@@ -520,7 +519,8 @@ void ResetAudioState(void) {
    gVolumeFadeInMode = VOLUME_FADE_IN_MODE_NONE;
    gVolumeFadePauseCounter = 0;
    gXaFadeInState = XA_FADE_IN_STATE_NONE;
-   gSfxMasterVolume = 0x7F;
+   gXaAdjustedVolume = gXaMaxVolume;
+   gSfxMasterVolume = 0x7f;
    gSeqCurrentVolume = 0x70;
    gSeqMaxVolume = 0x70;
    gVolumeFadeOutSpeed = 0;
@@ -543,13 +543,13 @@ void InitAudio(void) {
    SpuClearReverbWorkArea(SPU_REV_MODE_STUDIO_C);
    SsUtReverbOn();
    ResetVolume();
-   gXaCurrentVolume = 0x6E;
+   gXaCurrentVolume = 0x6e;
    SsSetSerialAttr(SS_SERIAL_A, SS_MIX, SS_SON);
    SetSerialVolumeFromCurveIdx(0, gXaCurrentVolume, gXaCurrentVolume);
    gXaCdControlParam.file = (CdlModeSF | CdlModeRT | CdlModeSpeed);
    ExecuteCdControl(CdlSetmode, (void *)&gXaCdControlParam, NULL);
    ResetAudioState();
-   SetReverbDepth(0x3C);
+   SetReverbDepth(0x3c);
    SpuSetTransferMode(0);
    SpuSetIRQCallback(0);
    CdReadyCallback(0);
@@ -1145,7 +1145,7 @@ void SetupVolumeFadeIn(s16 speed, u8 mode) {
          gVolumeFadeInMode = mode;
          gCurrentVolume = 0;
          SsSetMVol(0, 0);
-         gMaxVolume = 0x7F;
+         gMaxVolume = 0x7f;
       }
       break;
    }
@@ -1606,10 +1606,6 @@ void HandleXaCompletion(void) {
 }
 
 void AdjustXaVolume(void) {
-   // TBD: Better solution?
-   extern volatile s16 gXaReducedVolumeTarget;
-   extern volatile s16 gXaVolumeState;
-
    if (gXaVolumeState == 0)
       return;
 
