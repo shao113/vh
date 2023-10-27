@@ -128,6 +128,11 @@ typedef struct BVectorXZ {
    u8 z;
 } BVectorXZ;
 
+typedef struct BVectorZX {
+   u8 z;
+   u8 x;
+} BVectorZX;
+
 typedef union CoordinateValue {
    s16 n;
    struct {

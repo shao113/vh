@@ -99,7 +99,11 @@ segments:
     - [0x005648, .rdata, map_effects_08c158]   # 0x80014e48
     - [0x0056fc, .rdata, map_effects_08dc10]   # 0x80014efc
     - [0x005720, .rdata, map_effects_08e744]   # 0x80014f20
-    - [0x00579c, rdata]                        #
+    - [0x00579c, .rdata, map_effects_08f524]   # 0x80014f9c
+    - [0x005818, .rdata, map_effects_091040]   # 0x80015018
+    - [0x00584c, .rdata, map_effects_092320]   # 0x8001504c
+    - [0x005894, .rdata, map_effects_0932e8]   # 0x80015094
+    - [0x00591c, rdata]                        #
 
     - [0x006580, .rdata, audio]                # 0x80015d80 
     - [0x0069b0, bin]                          # 0x800161b0 end of audio jtbls
@@ -150,6 +154,7 @@ segments:
     - [0x076e14, c, fx_076e14]                 # 0x80086614 Evtf330_MagicRestoration_FX1 ...
     - [0x07851c, c, fx_07851c]                 # 0x80087d1c Evtf284_Fx_TBD ...
     - [0x080b4c, c, fx_080b4c]                 # 0x8009034c Evtf306_791_792_793_Healing_FX2 ...
+    # TODO: Should these be split by map number?
     - [0x0852e8, c, map_effects_0852e8]        # 0x80094ae8 InEventScene ...
     - [0x0861c8, c, map_effects_0861c8]        # 0x800959c8 Map13_RemoveBridgeSection ...
     - [0x089050, c, map_effects_089050]        # 0x80098850 Map17_LowerFloodgate ...
@@ -157,7 +162,11 @@ segments:
     - [0x08c158, c, map_effects_08c158]        # 0x8009b958 DepressButton ...
     - [0x08dc10, c, map_effects_08dc10]        # 0x8009d410 Map27_DepressButton ...
     - [0x08e744, c, map_effects_08e744]        # 0x8009df44 Evtf662_Map28_OpenDoor ...
-    - [0x08f524, bin]
+    - [0x08f524, c, map_effects_08f524]        # 0x8009ed24 Evtf673_Map32_Scn63_Cinematic ...
+    - [0x091040, c, map_effects_091040]        # 0x800a0840 Map33_SavePlatform ...
+    - [0x092320, c, map_effects_092320]        # 0x800a1b20 Map35_RemoveBridgeTile ...
+    - [0x0932e8, c, map_effects_0932e8]        # 0x800a2ae8 Evtf657_Map38_Floodgate ...
+    - [0x094b4c, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
     - [0x0b0480, bin]
@@ -206,7 +215,11 @@ segments:
     - [0x0f0d14, .data, map_effects_08affc]    # 0x80100514
     - [0x0f10c8, .data, map_effects_08dc10]    # 0x801008c8
     - [0x0f10d4, .data, map_effects_08e744]    # 0x801008d4
-    - [0x0f11bc, data]
+    - [0x0f11bc, .data, map_effects_08f524]    # 0x801009bc
+    - [0x0f1690, .data, map_effects_091040]    # 0x80100e90
+    - [0x0f169c, .data, map_effects_092320]    # 0x80100e9c
+    - [0x0f17e4, .data, map_effects_0932e8]    # 0x80100fe4
+    - [0x0f182c, data]
   
     - [0x0f76ec, .data, audio]                 # 0x80106eec
     - [0x0f91d0, data]                         # 0x801089d0 lib data
@@ -232,7 +245,8 @@ segments:
     - [0x11377c, .sdata, fx_080b4c]            # 0x80122f7c
     - [0x11378c, .sdata, map_effects_0861c8]   # 0x80122f8c
     - [0x113794, .sdata, map_effects_08dc10]   # 0x80122f94
-    - [0x1137a0, sdata]
+    - [0x1137a0, .sdata, map_effects_08f524]   # 0x80122fa0
+    - [0x1137b0, sdata]
 
     # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses
     # set through symbol_addrs to override the assembler's placement

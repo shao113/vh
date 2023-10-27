@@ -129,7 +129,7 @@ void SetupMapExtras(void) {
 
    if (gState.mapNum == 33) {
       evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP33;
+      evt->functionIndex = EVTF_MAP33_LAVA_PIT_PLATFORM;
    }
 
    if (gState.mapNum == 35) {

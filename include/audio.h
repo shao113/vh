@@ -29,7 +29,11 @@ typedef enum AudioCommand {
    AUDIO_CMD_FADE_OUT_8_4 = 33,
    AUDIO_CMD_FADE_OUT_128_1 = 48,
    AUDIO_CMD_FADE_OUT_8_1 = 49,
+   AUDIO_CMD_FADE_OUT_4_1 = 50,
+   AUDIO_CMD_FADE_OUT_2_1 = 51,
    AUDIO_CMD_FADE_OUT_128_2 = 56,
+   AUDIO_CMD_FADE_OUT_8_8 = 82,
+   AUDIO_CMD_FADE_IN_8_8 = 83,
 } AudioCommand;
 
 typedef enum AudioMode { AUDIO_MODE_MONO = 0, AUDIO_MODE_STEREO = 1 } AudioMode;

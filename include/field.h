@@ -141,5 +141,6 @@ extern HiddenItem gMapHiddenItems[BATTLE_CT][2];
 extern u8 gShowBlueMovementGrid;
 
 s16 GetTerrainElevation(s8, s8);
+void DepressButton(s32 x, s32 z);
 
 #endif

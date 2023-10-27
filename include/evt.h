@@ -157,7 +157,7 @@ typedef enum EvtFunctionIdx {
    EVTF_CHEST_IMPACT = 291,
    EVTF_BLUE_ITEM_SPARKLE = 292,
    EVTF_REVEAL_HIDDEN_ITEM = 294,
-   EVTF_SMOKE = 295,
+   EVTF_SMOKE = 295, //?
    EVTF_MAP17_SPRAY_PARTICLE = 296,
    EVTF_SPLASH_DROPLETS = 297,
    EVTF_SPLASH_WITH_DROPLETS = 298,
@@ -300,11 +300,15 @@ typedef enum EvtFunctionIdx {
    EVTF_STATUS_WINDOW_MGR = 596,
    EVTF_BATTLE_INTRO = 597,
    EVTF_MAP32_CAR_RELEASE = 650,
-   EVTF_MAP33 = 651,
+   EVTF_MAP33_LAVA_PIT_PLATFORM = 651,
    EVTF_MAP35_BUTTON = 652,
    EVTF_EXPLODING_TILE = 653,
+   EVTF_MAP38_WASH_AWAY_UNIT = 654,
+   EVTF_MAP38_RAISE_FLOODGATE = 655,
    EVTF_MAP39 = 656,
    EVTF_MAP38_FLOODGATE = 657,
+   EVTF_MAP38_FLOODWATER = 658,
+   EVTF_SPLASH = 659,
    EVTF_FLAME = 661,
    EVTF_MAP28_OPEN_DOOR = 662,
    EVTF_MAP28_BUTTON = 663,
@@ -345,6 +349,8 @@ typedef enum EvtFunctionIdx {
    EVTF_WYRMFANG_FLAMES_CW = 747,
    EVTF_WYRMFANG_FLAMES_CCW = 748,
    EVTF_WYRMFANG_FLAME = 749,
+   EVTF_MAP33_SCN65_LOWER_PLATFORM = 750,
+   EVTF_MAP33_LOWER_PLATFORM = 751,
    EVTF_MAP15_PIRATE_STAND_IN = 755,
    EVTF_PUSHED_OBJECT_SPLASH = 757,
    EVTF_ROCK_SPURT_PARTICLE = 759,
@@ -2930,18 +2936,95 @@ typedef struct EvtData_597 {
    /* :0x25 */ u8 unk_0x25[59];
 } EvtData_597;
 
+/* Map 32 - Car Release */
+typedef struct EvtData_650 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 startX;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 carIdx;
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ s16 endX;
+   /* :0x32 */ u8 unk_0x32[2];
+   /* :0x34 */ Camera camera;
+   /* :0x42 */ u8 unk_0x42[10];
+   /* :0x4C */ s16 tileX;
+   /* :0x4E */ s16 tileZ;
+   /* :0x50 */ s16 timer;
+   /* :0x52 */ u8 unk_0x52[10];
+   /* :0x5C */ s16 hasCasualties;
+   /* :0x5E */ u8 unk_0x5E[2];
+} EvtData_650;
+
+/* Map 33 - Lava Pit Platform */
+typedef struct EvtData_651 {
+   /* :0x24 */ s16 step;
+   /* :0x26 */ u8 unk_0x26[14];
+   /* :0x34 */ Camera camera;
+   /* :0x42 */ u8 unk_0x42[30];
+} EvtData_651;
+
+/* Map 35 - Button */
+typedef struct EvtData_652 {
+   /* :0x24 */ u8 unk_0x24[16];
+   /* :0x34 */ Camera camera;
+   /* :0x42 */ u8 unk_0x42[10];
+   /* :0x4C */ s16 tileX;
+   /* :0x4E */ s16 tileZ;
+   /* :0x50 */ u8 unk_0x50[4];
+   /* :0x54 */ s16 todo_x54;
+   /* :0x56 */ u8 unk_0x56[2];
+   /* :0x58 */ s16 hitPlayerUnit;
+   /* :0x5A */ s16 todo_x5a;
+   /* :0x5C */ struct EvtData *buttonDepress;
+} EvtData_652;
+
 /* Exploding Tile */
 typedef struct EvtData_653 {
    /* :0x24 */ SVECTOR translation;
    /* :0x2C */ SVECTOR rotation;
    /* :0x34 */ u8 unk_0x34[8];
-   /* :0x3C */ SVECTOR todo_x3c;
+   /* :0x3C */ SVECTOR savedTranslation;
    /* :0x44 */ u8 unk_0x44[16];
    /* :0x54 */ s16 riverVelocity;
    /* :0x56 */ u8 unk_0x56[2];
    /* :0x58 */ struct MapTileModel *tileModel;
    /* :0x5C */ struct MapTileModel *tileModel_unused;
 } EvtData_653;
+
+/* Map 38 - Wash Away Unit */
+typedef struct EvtData_654 {
+   /* :0x24 */ s16 tileX;
+   /* :0x26 */ s16 tileZ;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct EvtData *unitSprite;
+} EvtData_654;
+
+/* Map 38 - Raise Floodgate */
+typedef struct EvtData_655 {
+   /* :0x24 */ s16 waterFaceY;
+   /* :0x26 */ u8 unk_0x26[58];
+} EvtData_655;
+
+/* Map 38 - Floodgate */
+typedef struct EvtData_657 {
+   /* :0x24 */ u8 unk_0x24[16];
+   /* :0x34 */ Camera camera;
+   /* :0x42 */ u8 unk_0x42[22];
+   /* :0x58 */ struct EvtData *casualty;
+   /* :0x5C */ struct EvtData *child; // button or water
+} EvtData_657;
+
+/* Map 38 - Floodwater */
+typedef struct EvtData_658 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 theta;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 timer;
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ s16 todo_x30;
+   /* :0x32 */ u8 unk_0x32[46];
+} EvtData_658;
 
 /* Map 28 - Button */
 typedef struct EvtData_663 {
@@ -2979,6 +3062,15 @@ typedef struct EvtData_670 {
    /* :0x24 */ u8 unk_0x24[56];
    /* :0x5C */ struct EvtData *mound; // evtf666/evtf668
 } EvtData_670;
+
+/* Map 32 - Scene 63 - Cinematic */
+typedef struct EvtData_673 {
+   /* :0x24 */ Camera camera;
+   /* :0x32 */ u8 unk_0x32[10];
+   /* :0x3C */ s16 unused_0x3C;
+   /* :0x3E */ u8 unk_0x3E[30];
+   /* :0x5C */ struct EvtData *focus;
+} EvtData_673;
 
 /* Leena's Forcefield */
 typedef struct EvtData_675 {
@@ -3052,6 +3144,16 @@ typedef struct EvtData_749 {
    /* :0x4C */ struct EvtData *sprite;
    /* :0x50 */ u8 unk_0x50[16];
 } EvtData_749;
+
+/* Map 33 - Lower Platform */
+typedef struct EvtData_750_751 {
+   /* :0x24 */ union {
+      struct EvtData *entitySpriteParam;
+      s16 unk;
+   } variant_0x24;
+   /* :0x28 */ s16 ydrop;
+   /* :0x2A */ u8 unk_0x2A[54];
+} EvtData_750_751;
 
 /* Elite Melee Sparkles */
 typedef struct EvtData_760 {
@@ -3395,12 +3497,20 @@ typedef struct EvtData {
       EvtData_593 evtf593;         /* Battle - Results - Unit (Reward or Penalty) */
       EvtData_595 evtf595;         /* Status Window Manager */
       EvtData_597 evtf597;         /* Battle - Intro */
+      EvtData_650 evtf650;         /* Map 32 - Car Release */
+      EvtData_651 evtf651;         /* Map 33 - Lava Pit Platform */
+      EvtData_652 evtf652;         /* Map 35 - Button */
       EvtData_653 evtf653;         /* Exploding Tile */
+      EvtData_654 evtf654;         /* Map 38 - Wash Away Unit */
+      EvtData_655 evtf655;         /* Map 38 - Raise Floodgate */
+      EvtData_657 evtf657;         /* Map 38 - Floodgate */
+      EvtData_658 evtf658;         /* Map 38 - Floodwater */
       EvtData_663 evtf663;         /* Map 28 - Button */
       EvtData_665 evtf665;         /* Map 27 - Buttons */
       EvtData_666 evtf666;         /* Map 14 - Lower Sand Mound */
       EvtData_668 evtf668;         /* Map 14 - Raise Sand Mound */
       EvtData_670 evtf670;         /* Map 14 - Sand */
+      EvtData_673 evtf673;         /* Map 32 - Scene 63 - Cinematic */
       EvtData_675 evtf675;         /* Leena's Forcefield */
       EvtData_681 evtf681;         /* Stat Buff FX */
       EvtData_692 evtf692;         /* Campfire */
@@ -3408,6 +3518,7 @@ typedef struct EvtData {
       EvtData_733 evtf733;         /* Stat Buff Icon */
       EvtData_747_748 evtf747;     /* Wyrmfang - Flames */
       EvtData_749 evtf749;         /* Wyrmfang - Flame */
+      EvtData_750_751 evtf750;     /* Map 33 - Lower Platform */
       EvtData_760 evtf760;         /* Elite Melee Sparkles */
       EvtData_290_294_761 evtf761; /* Reveal Used Item */
       EvtData_133_Etc evtf801;     /* FX - TBD */

@@ -1,20 +1,20 @@
-BASENAME := vandalhearts
+BASENAME        := vandalhearts
 
 TOOLS_DIR       := ~/stuff
 
-ASM_DIRS    	:= asm asm/data
-C_DIRS      	:= src
-BIN_DIRS    	:= assets
+ASM_DIRS        := asm asm/data
+C_DIRS          := src
+BIN_DIRS        := assets
 
-TARGET    		:= build/$(BASENAME)
+TARGET          := build/$(BASENAME)
 
-S_FILES   		:= $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
-C_FILES     	:= $(foreach dir,$(C_DIRS),$(wildcard $(dir)/*.c))
-BIN_FILES   	:= $(foreach dir,$(BIN_DIRS),$(wildcard $(dir)/*.bin))
+S_FILES         := $(foreach dir,$(ASM_DIRS),$(wildcard $(dir)/*.s))
+C_FILES         := $(foreach dir,$(C_DIRS),$(wildcard $(dir)/*.c))
+BIN_FILES       := $(foreach dir,$(BIN_DIRS),$(wildcard $(dir)/*.bin))
 
-O_FILES     	:= $(foreach file,$(S_FILES),build/$(file).o) \
-				   $(foreach file,$(C_FILES),build/$(file).o) \
-				   $(foreach file,$(BIN_FILES),build/$(file).o)
+O_FILES         := $(foreach file,$(S_FILES),build/$(file).o)    \
+                   $(foreach file,$(C_FILES),build/$(file).o)    \
+                   $(foreach file,$(BIN_FILES),build/$(file).o)
 
 PYTHON          := python3.11
 WINE            := /usr/bin/wine
@@ -22,31 +22,32 @@ CPP             := cpp -P
 AS              := mips-elf-as -EL
 LD              := mips-elf-ld -EL
 OBJCOPY         := mips-elf-objcopy
-#CC		     	:= $(TOOLS_DIR)/wine-cc.sh
+#CC              := $(TOOLS_DIR)/wine-cc.sh
 
 # Note: cc1_v263 compiled with CFLAGS="-std=gnu89 -m32 -DBYTES_BIG_ENDIAN=0 -DTARGET_MEM_FUNCTIONS"
-CC		     	:= cc1_v263_EL
+#CC              := cc1_v263_EL
+# Update: Switched to builds provided by decompals at https://github.com/decompals/old-gcc
+CC              := cc1_v263_decompals
 
 SPLAT           := $(PYTHON) $(TOOLS_DIR)/splat/split.py
 SORT_SYM        := $(PYTHON) $(TOOLS_DIR)/sortSymbols.py > symbol_addrs.$(BASENAME).txt
 
 AS_FLAGS        := -march=r3000 -mtune=r3000 -Iinclude -G0
-D_FLAGS       	:= -Dmips -D__GNUC__=2 -D__OPTIMIZE__ -D__mips__ -D__mips -Dpsx -D__psx__ -D__psx -D_PSYQ -D__EXTENSIONS__ -D_MIPSEL -D__CHAR_UNSIGNED__ -D_LANGUAGE_C -DLANGUAGE_C
+D_FLAGS         := -Dmips -D__GNUC__=2 -D__OPTIMIZE__ -D__mips__ -D__mips -Dpsx -D__psx__ -D__psx -D_PSYQ -D__EXTENSIONS__ -D_MIPSEL -D__CHAR_UNSIGNED__ -D_LANGUAGE_C -DLANGUAGE_C
 
 OPT_FLAGS       := -O1
 GP_OPT          := -G8
 
-# Update: Removed -fno-builtin to enable generation of inline strcpy
 CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -ffunction-cse -fpcc-struct-return -fgnu-linker
-
 
 CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -Iinclude/PsyQ -nostdinc
 OBJCOPY_FLAGS   := -O binary
-LD_FLAGS    	:= --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined_syms_auto.$(BASENAME).txt -T undefined_funcs_auto.$(BASENAME).txt -T undefined_additional.txt --no-check-sections
+LD_FLAGS        := --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined_syms_auto.$(BASENAME).txt -T undefined_funcs_auto.$(BASENAME).txt -T undefined_additional.txt --no-check-sections
 
 
 
-build/src/audio.c.s: CC := cc1_v258_messyhack2
+#build/src/audio.c.s: CC := cc1_v258_messyhack2
+build/src/audio.c.s: CC := cc1_v257_decompals
 build/src/audio.c.s: OPT_FLAGS := -O2
 build/src/audio.c.s: GP_OPT := -G0
 
@@ -99,10 +100,10 @@ build/%.c.o: build/%.c.s
 # containing "nonmatchings" are from splat-generated c and can be handled by gnu assembler
 
 #temp-disable:
-	@if [[ "$$(grep -Fi nonmatchings '$<')" ]]; then \
-		$(AS) $(AS_FLAGS) -o $@ $< ;\
-	else \
-		$(TOOLS_DIR)/dosbox-assemble-all.sh $< ;\
+	@if [[ "$$(grep -Fi nonmatchings '$<')" ]]; then  \
+		$(AS) $(AS_FLAGS) -o $@ $< ;                    \
+	else                                              \
+		$(TOOLS_DIR)/dosbox-assemble-all.sh $< ;        \
 	fi
 
 # Batch assemble src files with a single dosbox launch

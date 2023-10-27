@@ -432,6 +432,15 @@ void Evtf595_StatusWindow(EvtData *);
 void Evtf596_StatusWindowMgr(EvtData *);
 void Evtf597_BattleIntro(EvtData *);
 void Evtf598_WorldActions(EvtData *);
+void Evtf650_Map32_CarRelease(EvtData *);
+void Evtf651_Map33_LavaPitPlatform(EvtData *);
+void Evtf652_Map35_Button(EvtData *);
+void Evtf653_ExplodingTile(EvtData *);
+void Evtf654_Map38_WashAwayUnit(EvtData *);
+void Evtf655_Map38_RaiseFloodgate(EvtData *);
+void Evtf657_Map38_Floodgate(EvtData *);
+void Evtf658_Map38_Floodwater(EvtData *);
+void Evtf659_Splash(EvtData *);
 void Evtf662_Map28_OpenDoor(EvtData *);
 void Evtf663_Map28_Button(EvtData *);
 void Evtf664_Map27_OpenCellDoor(EvtData *);
@@ -441,6 +450,7 @@ void Evtf667_Map14_LowerSandTile(EvtData *);
 void Evtf668_Map14_RaiseSandMound(EvtData *);
 void Evtf669_Map14_RaiseSandTile(EvtData *);
 void Evtf670_Map14_Sand(EvtData *);
+void Evtf673_Map32_Scn63_Cinematic(EvtData *);
 void Evtf675_LeenaForcefield(EvtData *);
 void Evtf676_687_Rainfall(EvtData *);
 void Evtf677_RainfallDrop(EvtData *);
@@ -448,6 +458,7 @@ void Evtf678_Ripple(EvtData *);
 void Evtf681_StatBuffFx(EvtData *);
 void Evtf685_RockSpurt(EvtData *);
 void Evtf692_Campfire(EvtData *);
+void Evtf702_FlamingRock(EvtData *);
 void Evtf708_709_Map14_Unused(EvtData *);
 void Evtf710_Particle(EvtData *);
 void Evtf711_712_Noop(EvtData *);
@@ -460,6 +471,7 @@ void Evtf739_Particle(EvtData *);
 void Evtf740_RemoveParalysis_Sparkles(EvtData *);
 void Evtf747_748_Wyrmfang_Flames(EvtData *);
 void Evtf749_Wyrmfang_Flame(EvtData *);
+void Evtf750_751_Map33_LowerPlatform(EvtData *);
 void Evtf752_Map14_Scn15_SandMoundSpawner(EvtData *);
 void Evtf753_IncrementMapState0(EvtData *);
 void Evtf755_Map15_PirateStandIn(EvtData *);
@@ -1133,16 +1145,16 @@ EvtFunction gEvtFunctionPointers[804] = {
     [647] = (EvtFunction)NULL,
     [648] = (EvtFunction)NULL,
     [649] = (EvtFunction)NULL,
-    [650] = (EvtFunction)0x8009f358,
-    [651] = (EvtFunction)0x800a0b2c,
-    [652] = (EvtFunction)0x800a1c6c,
-    [653] = (EvtFunction)0x800a14dc,
-    [654] = (EvtFunction)0x800a4050,
-    [655] = (EvtFunction)0x800a321c,
+    [650] = Evtf650_Map32_CarRelease,
+    [651] = Evtf651_Map33_LavaPitPlatform,
+    [652] = Evtf652_Map35_Button,
+    [653] = Evtf653_ExplodingTile,
+    [654] = Evtf654_Map38_WashAwayUnit,
+    [655] = Evtf655_Map38_RaiseFloodgate,
     [656] = (EvtFunction)0x800a5860,
-    [657] = (EvtFunction)0x800a2ae8,
-    [658] = (EvtFunction)0x800a3510,
-    [659] = (EvtFunction)0x800a3e70,
+    [657] = Evtf657_Map38_Floodgate,
+    [658] = Evtf658_Map38_Floodwater,
+    [659] = Evtf659_Splash,
     [660] = (EvtFunction)NULL,
     [661] = Evtf304_661_Flame,
     [662] = Evtf662_Map28_OpenDoor,
@@ -1156,7 +1168,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [670] = Evtf670_Map14_Sand,
     [671] = (EvtFunction)NULL,
     [672] = (EvtFunction)0x800a43d4,
-    [673] = (EvtFunction)0x8009ed24,
+    [673] = Evtf673_Map32_Scn63_Cinematic,
     [674] = (EvtFunction)0x800a9ac0,
     [675] = Evtf675_LeenaForcefield,
     [676] = Evtf676_687_Rainfall,
@@ -1185,7 +1197,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [699] = (EvtFunction)0x800af158,
     [700] = (EvtFunction)0x800af2b8,
     [701] = (EvtFunction)NULL,
-    [702] = (EvtFunction)0x800a27a8,
+    [702] = Evtf702_FlamingRock,
     [703] = (EvtFunction)0x800a6ab0,
     [704] = (EvtFunction)NULL,
     [705] = (EvtFunction)0x800af520,
@@ -1233,8 +1245,8 @@ EvtFunction gEvtFunctionPointers[804] = {
     [747] = Evtf747_748_Wyrmfang_Flames,
     [748] = Evtf747_748_Wyrmfang_Flames,
     [749] = Evtf749_Wyrmfang_Flame,
-    [750] = (EvtFunction)0x800a0e14,
-    [751] = (EvtFunction)0x800a0e14,
+    [750] = Evtf750_751_Map33_LowerPlatform,
+    [751] = Evtf750_751_Map33_LowerPlatform,
     [752] = Evtf752_Map14_Scn15_SandMoundSpawner,
     [753] = Evtf753_IncrementMapState0,
     [754] = (EvtFunction)0x800a4fb8,

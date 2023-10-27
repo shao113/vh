@@ -15,6 +15,7 @@
 
 typedef enum GfxIdx {
    GFX_NULL = 0,
+   GFX_TRANSPARENT = 1,
    GFX_ENEMY_CIRCLE = 2,
    GFX_PLAYER_CIRCLE = 3,
    GFX_GRAVE_MARKER = 4,
@@ -304,6 +305,7 @@ typedef enum GfxIdx {
    GFX_MAP_TEXTURE_23 = 423,
    GFX_MAP_TEXTURE_25 = 425,
    GFX_MAP_TEXTURE_28 = 428,
+   GFX_MAP_TEXTURE_34 = 434,
    GFX_MAP_TEXTURE_51 = 451,
    GFX_MAP_TEXTURE_52 = 452,
    GFX_MAP_TEXTURE_54 = 454,
@@ -648,6 +650,7 @@ struct EvtData *GetUnitSpriteAtPosition(u8, u8);
 void ApplyMaskEffectPreset(struct EvtData *, MaskEffectPreset *);
 
 void AddEvtPrim_Gui(u32 *ot, struct EvtData *evt);
+void RenderUnitSprite(u32 *ot, struct EvtData *sprite, s32 useMapElevation);
 void UpdateEvtAnimation(struct EvtData *);
 
 static inline u16 GetLightRotY() { return gLightRotation.vy; }

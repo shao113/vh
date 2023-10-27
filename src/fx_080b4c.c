@@ -1492,11 +1492,11 @@ static s16 sPoisonAnimData_800ffa38[36] = {
     2, GFX_POISON_3, 2, GFX_POISON_4, 2, GFX_POISON_5, 2, GFX_POISON_6, 2, GFX_POISON_7,
     2, GFX_POISON_8, 2, GFX_NULL,     0, GFX_NULL};
 
-static s16 sExplosionAnimData_800ffa80[26] = {
-    7, GFX_EXPLOSION_1, 2, GFX_EXPLOSION_2,  2, GFX_EXPLOSION_3,  2, GFX_EXPLOSION_4,
-    2, GFX_EXPLOSION_5, 2, GFX_EXPLOSION_6,  2, GFX_EXPLOSION_7,  2, GFX_EXPLOSION_8,
-    2, GFX_EXPLOSION_9, 2, GFX_EXPLOSION_10, 2, GFX_EXPLOSION_11, 2, GFX_NULL,
-    0, GFX_NULL};
+s16 gExplosionAnimData_800ffa80[26] = {7, GFX_EXPLOSION_1,  2, GFX_EXPLOSION_2,  2, GFX_EXPLOSION_3,
+                                       2, GFX_EXPLOSION_4,  2, GFX_EXPLOSION_5,  2, GFX_EXPLOSION_6,
+                                       2, GFX_EXPLOSION_7,  2, GFX_EXPLOSION_8,  2, GFX_EXPLOSION_9,
+                                       2, GFX_EXPLOSION_10, 2, GFX_EXPLOSION_11, 2, GFX_NULL,
+                                       0, GFX_NULL};
 
 s16 gSparkleAnimData_800ffab4[36] = {
     7, GFX_SPARKLE_1, 2, GFX_SPARKLE_2, 2, GFX_SPARKLE_3, 2, GFX_SPARKLE_4, 2, GFX_SPARKLE_5,
@@ -1521,7 +1521,7 @@ void Evtf764_to_769_ProjectileTrail(EvtData *evt) {
       break;
    case EVTF_PROJECTILE_TRAIL_EXPLOSION:
       particle->state2 = rand() % 6 + 6;
-      particle->d.sprite.animData = sExplosionAnimData_800ffa80;
+      particle->d.sprite.animData = gExplosionAnimData_800ffa80;
       break;
    case EVTF_PROJECTILE_TRAIL_SMOKE:
       particle->state2 = rand() % 4 + 6;
