@@ -256,7 +256,7 @@ s32 func_80037C28(void) {
    }
 }
 
-s32 MsgBoxFinished(void) { return gState.msgBoxFinished != 0; }
+s32 MsgBox_IsFinished(void) { return gState.msgBoxFinished != 0; }
 
 s32 PressedCircleOrX(void) {
    if ((gPadStateNewPresses & PAD_CIRCLE) || (gPadStateNewPresses & PAD_X)) {

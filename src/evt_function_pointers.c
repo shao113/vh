@@ -240,6 +240,7 @@ void Evtf344_345_RomanFire_FX2_FX3(EvtData *);
 void Evtf346_ButtonDepress(EvtData *);
 void Evtf347_Map26(EvtData *);
 void Evtf348_Fx_TBD(EvtData *);
+void Evtf351_MsgBoxText(EvtData *);
 void Evtf352_Map29(EvtData *);
 void Evtf354_Map19_DebugElevators(EvtData *);
 void Evtf355_356_Map19_Elevator(EvtData *);
@@ -438,6 +439,7 @@ void Evtf652_Map35_Button(EvtData *);
 void Evtf653_ExplodingTile(EvtData *);
 void Evtf654_Map38_WashAwayUnit(EvtData *);
 void Evtf655_Map38_RaiseFloodgate(EvtData *);
+void Evtf656_Map39(EvtData *);
 void Evtf657_Map38_Floodgate(EvtData *);
 void Evtf658_Map38_Floodwater(EvtData *);
 void Evtf659_Splash(EvtData *);
@@ -450,6 +452,7 @@ void Evtf667_Map14_LowerSandTile(EvtData *);
 void Evtf668_Map14_RaiseSandMound(EvtData *);
 void Evtf669_Map14_RaiseSandTile(EvtData *);
 void Evtf670_Map14_Sand(EvtData *);
+void Evtf672_Map39_SplashingTile(EvtData *);
 void Evtf673_Map32_Scn63_Cinematic(EvtData *);
 void Evtf675_LeenaForcefield(EvtData *);
 void Evtf676_687_Rainfall(EvtData *);
@@ -459,6 +462,7 @@ void Evtf681_StatBuffFx(EvtData *);
 void Evtf685_RockSpurt(EvtData *);
 void Evtf692_Campfire(EvtData *);
 void Evtf702_FlamingRock(EvtData *);
+void Evtf703_Map40_Barricade(EvtData *);
 void Evtf708_709_Map14_Unused(EvtData *);
 void Evtf710_Particle(EvtData *);
 void Evtf711_712_Noop(EvtData *);
@@ -467,6 +471,7 @@ void Evtf733_StatBuffIcon(EvtData *);
 void Evtf735_SparkleDust(EvtData *);
 void Evtf736_RemoveParalysis_Bubble(EvtData *);
 void Evtf737_RemoveParalysis(EvtData *);
+void Evtf738_Map40_LowerBarricade(EvtData *);
 void Evtf739_Particle(EvtData *);
 void Evtf740_RemoveParalysis_Sparkles(EvtData *);
 void Evtf747_748_Wyrmfang_Flames(EvtData *);
@@ -474,6 +479,7 @@ void Evtf749_Wyrmfang_Flame(EvtData *);
 void Evtf750_751_Map33_LowerPlatform(EvtData *);
 void Evtf752_Map14_Scn15_SandMoundSpawner(EvtData *);
 void Evtf753_IncrementMapState0(EvtData *);
+void Evtf754_Map39_Scn82(EvtData *);
 void Evtf755_Map15_PirateStandIn(EvtData *);
 void Evtf757_PushedObjectSplash(EvtData *);
 void Evtf759_RockSpurtParticle(EvtData *);
@@ -484,6 +490,7 @@ void Evtf764_to_769_ProjectileTrail(EvtData *);
 void Evtf770_to_789_ItemSpell(EvtData *);
 void Evtf790_Fx_TBD(EvtData *);
 void Evtf797_Map47_Scn14_Dusk(EvtData *);
+void Evtf798_ResetInputState(EvtData *);
 void Evtf801_Fx_TBD(EvtData *);
 void Evtf802_Fx_TBD(EvtData *);
 void Evtf803_Fx_TBD(EvtData *);
@@ -846,7 +853,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [348] = Evtf348_Fx_TBD,
     [349] = Evtf339_349_Rubble,
     [350] = Evtf250_350_LoadEvent16,
-    [351] = (EvtFunction)0x800a78c8,
+    [351] = Evtf351_MsgBoxText,
     [352] = Evtf352_Map29,
     [353] = (EvtFunction)0x800b2db8,
     [354] = Evtf354_Map19_DebugElevators,
@@ -1151,7 +1158,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [653] = Evtf653_ExplodingTile,
     [654] = Evtf654_Map38_WashAwayUnit,
     [655] = Evtf655_Map38_RaiseFloodgate,
-    [656] = (EvtFunction)0x800a5860,
+    [656] = Evtf656_Map39,
     [657] = Evtf657_Map38_Floodgate,
     [658] = Evtf658_Map38_Floodwater,
     [659] = Evtf659_Splash,
@@ -1167,7 +1174,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [669] = Evtf669_Map14_RaiseSandTile,
     [670] = Evtf670_Map14_Sand,
     [671] = (EvtFunction)NULL,
-    [672] = (EvtFunction)0x800a43d4,
+    [672] = Evtf672_Map39_SplashingTile,
     [673] = Evtf673_Map32_Scn63_Cinematic,
     [674] = (EvtFunction)0x800a9ac0,
     [675] = Evtf675_LeenaForcefield,
@@ -1198,7 +1205,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [700] = (EvtFunction)0x800af2b8,
     [701] = (EvtFunction)NULL,
     [702] = Evtf702_FlamingRock,
-    [703] = (EvtFunction)0x800a6ab0,
+    [703] = Evtf703_Map40_Barricade,
     [704] = (EvtFunction)NULL,
     [705] = (EvtFunction)0x800af520,
     [706] = (EvtFunction)NULL,
@@ -1233,7 +1240,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [735] = Evtf735_SparkleDust,
     [736] = Evtf736_RemoveParalysis_Bubble,
     [737] = Evtf737_RemoveParalysis,
-    [738] = (EvtFunction)0x800a6b70,
+    [738] = Evtf738_Map40_LowerBarricade,
     [739] = Evtf739_Particle,
     [740] = Evtf740_RemoveParalysis_Sparkles,
     [741] = (EvtFunction)0x800b0cd0,
@@ -1249,7 +1256,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [751] = Evtf750_751_Map33_LowerPlatform,
     [752] = Evtf752_Map14_Scn15_SandMoundSpawner,
     [753] = Evtf753_IncrementMapState0,
-    [754] = (EvtFunction)0x800a4fb8,
+    [754] = Evtf754_Map39_Scn82,
     [755] = Evtf755_Map15_PirateStandIn,
     [756] = (EvtFunction)0x800b1710,
     [757] = Evtf757_PushedObjectSplash,
@@ -1293,7 +1300,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [795] = (EvtFunction)0x800a9408,
     [796] = (EvtFunction)0x800b53e0,
     [797] = Evtf797_Map47_Scn14_Dusk,
-    [798] = (EvtFunction)0x800a8ae4,
+    [798] = Evtf798_ResetInputState,
     [799] = Evtf132_Etc_Fx_TBD,
     [800] = Evtf132_Etc_Fx_TBD,
     [801] = Evtf801_Fx_TBD,

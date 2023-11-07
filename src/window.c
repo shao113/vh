@@ -16,7 +16,7 @@ void Evtf002_MenuChoice(EvtData *);
 void Evtf004_005_408_Window(EvtData *);
 void DrawGlyphStrip(u8 *, s16, s16, u8);
 void ClearGlyphStripBottom(u8 *, s16, s16);
-u16 DrawEmbossedSjisChar(u16, s32, s32, s32, s32);
+u16 DrawEmbossedSjisGlyph(u16, s32, s32, s32, s32);
 void Evtf422_LowerMsgBoxTail(EvtData *);
 void Evtf421_UpperMsgBoxTail(EvtData *);
 void Evtf573_BattleItemsList(EvtData *);
@@ -1853,8 +1853,8 @@ void DrawGlyphStripGroup(u8 *group, s16 gfxIdx) {
    DrawSync(0);
 }
 
-u16 DrawEmbossedSjisChar(u16 sjis, s32 x, s32 y, s32 fgc, s32 bgc) {
-   extern u32 s_embossedCharData[34];
+u16 DrawEmbossedSjisGlyph(u16 sjis, s32 x, s32 y, s32 fgc, s32 bgc) {
+   extern u32 s_embossedGlyphData[34];
 
    s32 i, j;
    u8 bits;
@@ -1869,7 +1869,7 @@ u16 DrawEmbossedSjisChar(u16 sjis, s32 x, s32 y, s32 fgc, s32 bgc) {
    }
 
    for (i = 0; i < 34; i++) {
-      s_embossedCharData[i] = 0;
+      s_embossedGlyphData[i] = 0;
    }
 
    for (i = 0; i < 30; i++, p++) {
@@ -1895,26 +1895,26 @@ u16 DrawEmbossedSjisChar(u16 sjis, s32 x, s32 y, s32 fgc, s32 bgc) {
          mask |= 0xf;
       }
 
-      s_embossedCharData[i] |= bg << 4;
-      s_embossedCharData[i + 2] |= bg;
-      s_embossedCharData[i + 2] |= (bg << 4);
+      s_embossedGlyphData[i] |= bg << 4;
+      s_embossedGlyphData[i + 2] |= bg;
+      s_embossedGlyphData[i + 2] |= (bg << 4);
 
       if ((bg >> 28) && !(i & 1)) {
-         s_embossedCharData[i + 1] |= bgc;
-         s_embossedCharData[i + 3] |= bgc;
+         s_embossedGlyphData[i + 1] |= bgc;
+         s_embossedGlyphData[i + 3] |= bgc;
       }
 
-      s_embossedCharData[i] &= ~mask;
-      s_embossedCharData[i] |= fg;
+      s_embossedGlyphData[i] &= ~mask;
+      s_embossedGlyphData[i] |= fg;
    }
 
-   s_embossedCharData[32] = s_embossedCharData[33] = 0;
+   s_embossedGlyphData[32] = s_embossedGlyphData[33] = 0;
 
    rect.x = x;
    rect.y = y;
    rect.w = 16 >> 2;
    rect.h = 16;
-   LoadImage(&rect, s_embossedCharData);
+   LoadImage(&rect, s_embossedGlyphData);
    DrawSync(0);
    return GetTPage(0, 0, x, y);
 }

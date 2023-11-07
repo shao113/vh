@@ -178,7 +178,7 @@ void SetupTownMsgBox(s16 portraitId, u8 lower) {
 void func_80044364(s16 textPtrIdx, s8 param_2) {
    gState.msgBoxFinished = 0;
    gState.field_0x31d = 0;
-   SetMsgBoxText(param_2 + 3, textPtrIdx, 0x80);
+   MsgBox_SetText(param_2 + 3, textPtrIdx, 0x80);
 }
 
 void func_800443A8(void) {

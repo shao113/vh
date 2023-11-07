@@ -8,7 +8,7 @@
 #include "graphics.h"
 #include "audio.h"
 
-void ShowMsgBoxForSprite(EvtData *sprite, u8 lower, u8 omitTail) {
+void MsgBox_ShowForSprite(EvtData *sprite, u8 lower, u8 omitTail) {
    EvtData *tail;
 
    if (!lower) {
@@ -32,7 +32,7 @@ void ShowMsgBoxForSprite(EvtData *sprite, u8 lower, u8 omitTail) {
    }
 }
 
-void SetMsgBoxPortrait(s16 portraitId, u8 lower) {
+void MsgBox_SetPortrait(s16 portraitId, u8 lower) {
    s32 i;
    EvtData *evt1;
 
@@ -66,7 +66,7 @@ void SetMsgBoxPortrait(s16 portraitId, u8 lower) {
    }
 }
 
-void CloseMsgBox(u8 lower) {
+void MsgBox_Close(u8 lower) {
    s32 i;
    EvtData *evt1;
 
@@ -632,25 +632,25 @@ void Evtf014_BattleUnit(EvtData *evt) {
          break;
 
       case 1:
-         ShowMsgBoxForSprite(sprite, 0, 0);
-         SetMsgBoxPortrait(PORTRAIT_KIRA_ANGRY, 0);
-         SetMsgBoxText(1, 0x14, 0x100);
+         MsgBox_ShowForSprite(sprite, 0, 0);
+         MsgBox_SetPortrait(PORTRAIT_KIRA_ANGRY, 0);
+         MsgBox_SetText(1, 0x14, 0x100);
          evt->state2++;
          break;
 
       case 2:
          if (gState.msgBoxFinished) {
-            ShowMsgBoxForSprite(sprite, 1, 1);
-            SetMsgBoxPortrait(PORTRAIT_ASH, 1);
-            SetMsgBoxText(2, 0x15, 0x100);
+            MsgBox_ShowForSprite(sprite, 1, 1);
+            MsgBox_SetPortrait(PORTRAIT_ASH, 1);
+            MsgBox_SetText(2, 0x15, 0x100);
             evt->state2++;
          }
          break;
 
       case 3:
          if (gState.msgBoxFinished) {
-            CloseMsgBox(0);
-            CloseMsgBox(1);
+            MsgBox_Close(0);
+            MsgBox_Close(1);
             evt->state2++;
          }
          break;
@@ -888,17 +888,17 @@ void Evtf014_BattleUnit(EvtData *evt) {
       case 1:
          evt->state2 = 99;
          if (unit->unitType == UNIT_TYPE_MAGE_TOWER) {
-            ShowMsgBoxForSprite(sprite, 1, 1);
+            MsgBox_ShowForSprite(sprite, 1, 1);
             if (gState.mapState.s.field_0x13 < 2) {
-               SetMsgBoxPortrait(PORTRAIT_ASH_UPSET, 1);
+               MsgBox_SetPortrait(PORTRAIT_ASH_UPSET, 1);
             } else {
-               SetMsgBoxPortrait(PORTRAIT_ASH_ANGRY, 1);
+               MsgBox_SetPortrait(PORTRAIT_ASH_ANGRY, 1);
             }
-            SetMsgBoxText(2, gState.mapState.s.field_0x13 + 15, 0x100);
+            MsgBox_SetText(2, gState.mapState.s.field_0x13 + 15, 0x100);
             gState.mapState.s.field_0x13++;
             evt->state2 = 98;
          } else {
-            ShowMsgBoxForSprite(sprite, 0, 0);
+            MsgBox_ShowForSprite(sprite, 0, 0);
             if (unit->name <= UNIT_END_OF_PARTY) {
                i_s0 = (unit->name - 1) * 7 + 2;
                textPtrIdx = unit->name;
@@ -1031,30 +1031,30 @@ void Evtf014_BattleUnit(EvtData *evt) {
                textPtrIdx = 13;
                evt->state2 = 6;
             }
-            SetMsgBoxPortrait(i_s0, 0);
-            SetMsgBoxText(1, textPtrIdx, 0x100);
+            MsgBox_SetPortrait(i_s0, 0);
+            MsgBox_SetText(1, textPtrIdx, 0x100);
             gState.msgBoxFinished = 0;
          }
          break;
 
       case 2:
          if (gState.msgBoxFinished) {
-            ShowMsgBoxForSprite(sprite, 1, 1);
+            MsgBox_ShowForSprite(sprite, 1, 1);
             CloseWindow(0x38);
-            SetMsgBoxPortrait(PORTRAIT_ASH_UPSET, 1);
+            MsgBox_SetPortrait(PORTRAIT_ASH_UPSET, 1);
             textPtrIdx = 14;
-            SetMsgBoxText(2, textPtrIdx, 0x100);
+            MsgBox_SetText(2, textPtrIdx, 0x100);
             evt->state2 = 98;
          }
          break;
 
       case 3:
          if (gState.msgBoxFinished) {
-            ShowMsgBoxForSprite(sprite, 1, 1);
-            SetMsgBoxPortrait(PORTRAIT_ASH_UPSET, 1);
+            MsgBox_ShowForSprite(sprite, 1, 1);
+            MsgBox_SetPortrait(PORTRAIT_ASH_UPSET, 1);
             CloseWindow(0x38);
             textPtrIdx = 15;
-            SetMsgBoxText(2, textPtrIdx, 0x100);
+            MsgBox_SetText(2, textPtrIdx, 0x100);
             evt->state2 = 98;
          }
          break;
@@ -1062,10 +1062,10 @@ void Evtf014_BattleUnit(EvtData *evt) {
       case 4:
          if (gState.msgBoxFinished) {
             CloseWindow(0x38);
-            ShowMsgBoxForSprite(sprite, 1, 1);
-            SetMsgBoxPortrait(PORTRAIT_SABINA, 1);
+            MsgBox_ShowForSprite(sprite, 1, 1);
+            MsgBox_SetPortrait(PORTRAIT_SABINA, 1);
             textPtrIdx = 17;
-            SetMsgBoxText(2, textPtrIdx, 0x100);
+            MsgBox_SetText(2, textPtrIdx, 0x100);
             evt->state2 = 98;
          }
          break;
@@ -1073,20 +1073,20 @@ void Evtf014_BattleUnit(EvtData *evt) {
       case 5:
          if (gState.msgBoxFinished) {
             CloseWindow(0x38);
-            ShowMsgBoxForSprite(sprite, 1, 1);
-            SetMsgBoxPortrait(PORTRAIT_KANE_ANGRY, 1);
+            MsgBox_ShowForSprite(sprite, 1, 1);
+            MsgBox_SetPortrait(PORTRAIT_KANE_ANGRY, 1);
             textPtrIdx = 19;
-            SetMsgBoxText(2, textPtrIdx, 0x100);
+            MsgBox_SetText(2, textPtrIdx, 0x100);
             evt->state2 = 98;
          }
          break;
 
       case 6:
          if (gState.msgBoxFinished) {
-            ShowMsgBoxForSprite(sprite, 1, 1);
-            SetMsgBoxPortrait(PORTRAIT_ASH_UPSET, 1);
+            MsgBox_ShowForSprite(sprite, 1, 1);
+            MsgBox_SetPortrait(PORTRAIT_ASH_UPSET, 1);
             textPtrIdx = 14;
-            SetMsgBoxText(2, textPtrIdx, 0x100);
+            MsgBox_SetText(2, textPtrIdx, 0x100);
             evt->state2 = 98;
          }
          break;
@@ -1094,7 +1094,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
       case 7:
          if (gState.msgBoxFinished) {
             PerformAudioCommand(AUDIO_CMD_PLAY_XA(134));
-            CloseMsgBox(0);
+            MsgBox_Close(0);
             EVT.timer = 90;
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_TBD_732;
@@ -1132,7 +1132,7 @@ void Evtf014_BattleUnit(EvtData *evt) {
 
       case 96:
          if (gState.msgBoxFinished) {
-            CloseMsgBox(0);
+            MsgBox_Close(0);
             OBJ_TARGET_TILE_STATE(sprite).action = TA_NONE;
             unit->name = UNIT_NULL;
             gSignal3 = 1;
@@ -1144,8 +1144,8 @@ void Evtf014_BattleUnit(EvtData *evt) {
       case 98:
          if (gState.msgBoxFinished) {
             PerformAudioCommand(AUDIO_CMD_PLAY_SFX(232));
-            CloseMsgBox(0);
-            CloseMsgBox(1);
+            MsgBox_Close(0);
+            MsgBox_Close(1);
             evt1 = Evt_GetUnused();
             evt1->functionIndex = EVTF_STRETCH_WARP_SPRITE;
             evt1->x1.n = sprite->x1.n;
@@ -2076,24 +2076,24 @@ void Evtf409_EventEntity(EvtData *evt) {
          goto HandleRunState1;
 
       case 0x1e:
-         ShowMsgBoxForSprite(sprite, argument, 0);
+         MsgBox_ShowForSprite(sprite, argument, 0);
          evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x1f:
-         CloseMsgBox(argument);
+         MsgBox_Close(argument);
          evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x20:
-         SetMsgBoxText(1, argument, 0x100);
+         MsgBox_SetText(1, argument, 0x100);
          gState.msgBoxFinished = 0;
          gState.field_0x31d = 0;
          evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x21:
-         SetMsgBoxText(2, argument, 0x100);
+         MsgBox_SetText(2, argument, 0x100);
          gState.msgBoxFinished = 0;
          gState.field_0x31d = 0;
          evt->state3 = 1;
@@ -2210,7 +2210,7 @@ void Evtf409_EventEntity(EvtData *evt) {
 
       case 0x31:
       case 0x32:
-         SetMsgBoxPortrait(argument, evt->mem == 0x32);
+         MsgBox_SetPortrait(argument, evt->mem == 0x32);
          evt->state3 = 1;
          goto HandleRunState1;
 
@@ -2317,7 +2317,7 @@ void Evtf409_EventEntity(EvtData *evt) {
          goto HandleRunState1;
 
       case 0x42:
-         ShowMsgBoxForSprite(sprite, argument, 1);
+         MsgBox_ShowForSprite(sprite, argument, 1);
          evt->state3 = 1;
          goto HandleRunState1;
 
@@ -2636,7 +2636,7 @@ void Evtf409_EventEntity(EvtData *evt) {
          goto HandleRunState1;
 
       case 0x7a:
-         SetMsgBoxText2(1, argument, 0x100);
+         MsgBox_SetText2(1, argument, 0x100);
          gState.msgBoxFinished = 0;
          gState.field_0x31d = 0;
          evt->state3 = 1;

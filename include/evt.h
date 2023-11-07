@@ -187,6 +187,7 @@ typedef enum EvtFunctionIdx {
    EVTF_BUTTON_DEPRESS = 346,
    EVTF_MAP26 = 347,
    EVTF_RUBBLE = 349,
+   EVTF_MSGBOX_TEXT = 351,
    EVTF_MAP29 = 352,
    EVTF_MAP19_ELEVATOR_355 = 355,
    EVTF_MAP19_ELEVATOR_356 = 356,
@@ -319,6 +320,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP14_RAISE_SAND_MOUND = 668,
    EVTF_MAP14_RAISE_SAND_TILE = 669,
    EVTF_MAP14_SAND = 670,
+   EVTF_MAP39_SPLASHING_TILE = 672,
    EVTF_HEAVY_RAINFALL = 676,
    EVTF_RAINFALL_DROP = 677,
    EVTF_RIPPLE = 678,
@@ -343,6 +345,7 @@ typedef enum EvtFunctionIdx {
    EVTF_SPARKLE_DUST = 735,
    EVTF_REMOVE_PARALYSIS_BUBBLE = 736,
    EVTF_REMOVE_PARALYSIS = 737,
+   EVTF_MAP40_LOWER_BARRICADE = 738,
    EVTF_PARTICLE_739 = 739,
    EVTF_REMOVE_PARALYSIS_SPARKLES = 740,
    EVTF_ENTITY_BLOCKING = 746,
@@ -2353,6 +2356,31 @@ typedef struct EvtData_348 {
    /* :0x5C */ struct EvtData *dataStore; // cylinder
 } EvtData_348;
 
+/* MsgBox Text */
+typedef struct EvtData_351 {
+   /* :0x24 */ s16 maxCharsPerLine;
+   /* :0x26 */ s16 lineSpacing;
+   /* :0x28 */ s16 maxRows;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 textSpeedAccum;
+   /* :0x2E */ s16 textSpeed;
+   /* :0x30 */ s16 type;
+   /* :0x32 */ s16 textPtrIdx;
+   /* :0x34 */ s16 pregapChars;
+   /* :0x36 */ u8 unk_0x36[2];
+   /* :0x38 */ s16 readingFromStringTable;
+   /* :0x3A */ s16 indentChars;
+   /* :0x3C */ RECT rect;
+   /* :0x44 */ s8 todo_x44;
+   /* :0x45 */ s8 todo_x45;
+   /* :0x46 */ u8 unk_0x46[2];
+   /* :0x48 */ s16 todo_x48;
+   /* :0x4A */ u8 unk_0x4A[10];
+   /* :0x54 */ u8 *textResumePtr;
+   /* :0x58 */ struct EvtData *buttonIcon;
+   /* :0x5C */ u8 *textPtr;
+} EvtData_351;
+
 /* Map 29 */
 typedef struct EvtData_352 {
    /* :0x24 */ u8 unk_0x24[8];
@@ -3006,6 +3034,13 @@ typedef struct EvtData_655 {
    /* :0x26 */ u8 unk_0x26[58];
 } EvtData_655;
 
+/* Map 39 */
+typedef struct EvtData_656 {
+   /* :0x24 */ u8 unk_0x24[16];
+   /* :0x34 */ Camera camera;
+   /* :0x42 */ u8 unk_0x42[30];
+} EvtData_656;
+
 /* Map 38 - Floodgate */
 typedef struct EvtData_657 {
    /* :0x24 */ u8 unk_0x24[16];
@@ -3062,6 +3097,12 @@ typedef struct EvtData_670 {
    /* :0x24 */ u8 unk_0x24[56];
    /* :0x5C */ struct EvtData *mound; // evtf666/evtf668
 } EvtData_670;
+
+/* Map 39 - Splashing Tile */
+typedef struct EvtData_672 {
+   /* :0x24 */ u8 unk_0x24[56];
+   /* :0x5C */ struct MapTileModel *tileModel;
+} EvtData_672;
 
 /* Map 32 - Scene 63 - Cinematic */
 typedef struct EvtData_673 {
@@ -3154,6 +3195,14 @@ typedef struct EvtData_750_751 {
    /* :0x28 */ s16 ydrop;
    /* :0x2A */ u8 unk_0x2A[54];
 } EvtData_750_751;
+
+/* Map 39 - Scene 82 */
+typedef struct EvtData_754 {
+   /* :0x24 */ u8 unk_0x24[16];
+   /* :0x34 */ Camera camera;
+   /* :0x42 */ u8 unk_0x42[26];
+   /* :0x5C */ struct EvtData *focus;
+} EvtData_754;
 
 /* Elite Melee Sparkles */
 typedef struct EvtData_760 {
@@ -3438,6 +3487,7 @@ typedef struct EvtData {
       EvtData_346 evtf346;         /* Button Depress */
       EvtData_347 evtf347;         /* Map 26 */
       EvtData_348 evtf348;         /* FX - TBD */
+      EvtData_351 evtf351;         /* MsgBox Text */
       EvtData_352 evtf352;         /* Map 26 */
       EvtData_355_356 evtf355;     /* Map 19 - Elevator (TBD) */
       EvtData_355_356 evtf356;     /* Map 19 - Elevator (TBD) */
@@ -3503,6 +3553,7 @@ typedef struct EvtData {
       EvtData_653 evtf653;         /* Exploding Tile */
       EvtData_654 evtf654;         /* Map 38 - Wash Away Unit */
       EvtData_655 evtf655;         /* Map 38 - Raise Floodgate */
+      EvtData_656 evtf656;         /* Map 39 */
       EvtData_657 evtf657;         /* Map 38 - Floodgate */
       EvtData_658 evtf658;         /* Map 38 - Floodwater */
       EvtData_663 evtf663;         /* Map 28 - Button */
@@ -3510,6 +3561,7 @@ typedef struct EvtData {
       EvtData_666 evtf666;         /* Map 14 - Lower Sand Mound */
       EvtData_668 evtf668;         /* Map 14 - Raise Sand Mound */
       EvtData_670 evtf670;         /* Map 14 - Sand */
+      EvtData_672 evtf672;         /* Map 39 - Splashing Tile */
       EvtData_673 evtf673;         /* Map 32 - Scene 63 - Cinematic */
       EvtData_675 evtf675;         /* Leena's Forcefield */
       EvtData_681 evtf681;         /* Stat Buff FX */
@@ -3519,6 +3571,7 @@ typedef struct EvtData {
       EvtData_747_748 evtf747;     /* Wyrmfang - Flames */
       EvtData_749 evtf749;         /* Wyrmfang - Flame */
       EvtData_750_751 evtf750;     /* Map 33 - Lower Platform */
+      EvtData_754 evtf754;         /* Map 39 - Scene 82 */
       EvtData_760 evtf760;         /* Elite Melee Sparkles */
       EvtData_290_294_761 evtf761; /* Reveal Used Item */
       EvtData_133_Etc evtf801;     /* FX - TBD */

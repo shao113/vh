@@ -1578,15 +1578,15 @@ void Evtf586_BattleMsgBox(EvtData *evt) {
    case 1:
       if (--EVT.timer == 0) {
          sprite = FindUnitSpriteByNameIdx(EVT.nameIdx);
-         ShowMsgBoxForSprite(sprite, 0, EVT.omitTail);
-         SetMsgBoxPortrait(EVT.portrait, 0);
-         SetMsgBoxText(1, EVT.textIdx, 0x100);
+         MsgBox_ShowForSprite(sprite, 0, EVT.omitTail);
+         MsgBox_SetPortrait(EVT.portrait, 0);
+         MsgBox_SetText(1, EVT.textIdx, 0x100);
          evt->state++;
       }
       break;
    case 2:
       if (gState.msgBoxFinished) {
-         CloseMsgBox(0);
+         MsgBox_Close(0);
          gState.msgFinished = 1;
          evt->functionIndex = EVTF_NULL;
          return;

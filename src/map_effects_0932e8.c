@@ -287,9 +287,7 @@ void Map38_SetWater(void) {
 #undef EVTF
 #define EVTF 658
 void Evtf658_Map38_Floodwater(EvtData *evt) {
-
-   // FIXME: Fake match (forced register)
-   // (Probably need to fiddle with temps/reuse. No luck w/ permuter after 500k iterations.)
+   // FIXME: Fake match (do-while)
 
    Quad quad = {
        {-128, 0, -128, 0},
@@ -461,11 +459,11 @@ void Evtf658_Map38_Floodwater(EvtData *evt) {
             evt_s2->d.sprite.coords[3].z = i * CV(1.0) + (u8)evt->z1.s.lo;
             evt_s2->d.sprite.semiTrans = 1;
 
-            {
-               register s32 iVar7 asm("v1");
+            do {
                iVar7 = evt->mem * 3;
-               evt_s2->d.sprite.otOfs = iVar7 - 5;
-            }
+               iVar7 -= 5;
+               evt_s2->d.sprite.otOfs = iVar7;
+            } while (0);
 
             for (k = 0; k < evt->mem; k++) {
                evt_s2->d.sprite.gfxIdx = GFX_MAP_TEXTURE_52;
@@ -486,7 +484,7 @@ void Evtf658_Map38_Floodwater(EvtData *evt) {
          evt_s2->functionIndex = EVTF_NULL;
       }
       if (++evt->state3 >= 128) {
-         evt->state3 = 0x80;
+         evt->state3 = 128;
       }
       if (evt->state == 4) {
          Map38_SetWater();
