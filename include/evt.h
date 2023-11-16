@@ -2017,6 +2017,16 @@ typedef struct EvtData_272 {
    /* :0x5C */ struct EvtData *unitSprite;
 } EvtData_272;
 
+/* Zoom - TBD */
+typedef struct EvtData_277 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ s16 dstZoom;
+   /* :0x2A */ u8 unk_0x2A[14];
+   /* :0x38 */ s16 smoothness;
+   /* :0x3A */ u8 unk_0x3A[38];
+} EvtData_277;
+
 /* Faint Sparkles */
 typedef struct EvtData_278 {
    /* :0x24 */ struct EvtData *targetSprite;
@@ -2032,7 +2042,7 @@ typedef struct EvtData_279 {
    /* :0x28 */ u8 unk_0x28[2];
    /* :0x2A */ s16 dstZoom;
    /* :0x2C */ s16 dstCamRotX;
-   /* :0x2E */ s16 todo_x2e;
+   /* :0x2E */ s16 delayType;
    /* :0x30 */ u8 unk_0x30[8];
    /* :0x38 */ s16 dstCamRotY;
    /* :0x3A */ s16 timer;
@@ -2482,10 +2492,12 @@ typedef struct EvtData_366 {
 /* Screen Effect (Incomplete) */
 typedef struct EvtData_369 {
    /* :0x24 */ u8 unk_0x24[4];
-   /* :0x28 */ s16 todo_x28;
+   /* :0x28 */ s16 speed;
    /* :0x2A */ u8 unk_0x2A[2];
-   /* :0x2C */ s16 todo_x2c;
-   /* :0x2E */ u8 unk_0x2E[6];
+   /* :0x2C */ s16 intensity;
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ s16 unused_0x30;
+   /* :0x32 */ u8 unk_0x32[2];
    /* :0x34 */ s16 otOfs;
    /* :0x36 */ u8 unk_0x36[2];
    /* :0x38 */ CVECTOR color;
@@ -3210,6 +3222,16 @@ typedef struct EvtData_760 {
    /* :0x5C */ struct EvtData *unitSprite;
 } EvtData_760;
 
+/* Event Fade */
+typedef struct EvtData_795 {
+   /* :0x24 */ s16 fade;
+   /* :0x26 */ u8 unk_0x26[14];
+   /* :0x34 */ s16 delta;
+   /* :0x36 */ u8 unk_0x36[14];
+   /* :0x44 */ s16 max;
+   /* :0x46 */ u8 unk_0x46[26];
+} EvtData_795;
+
 /* Map Object - Generic */
 typedef struct EvtData_MapObject {
    /* :0x24 */ s16 param;
@@ -3451,6 +3473,7 @@ typedef struct EvtData {
       EvtData_225 evtf225;         /* Thunder Ball - Initial Orb */
       EvtData_226 evtf226;         /* Thunder Ball - Child Orb */
       EvtData_272 evtf272;         /* Stat Raised */
+      EvtData_277 evtf277;         /* Zoom - TBD */
       EvtData_278 evtf278;         /* Faint Sparkles */
       EvtData_279 evtf279;         /* Ice Storm - Camera */
       EvtData_280 evtf280;         /* Dark Hurricane - Target */
@@ -3574,6 +3597,7 @@ typedef struct EvtData {
       EvtData_754 evtf754;         /* Map 39 - Scene 82 */
       EvtData_760 evtf760;         /* Elite Melee Sparkles */
       EvtData_290_294_761 evtf761; /* Reveal Used Item */
+      EvtData_795 evtf795;         /* Event Fade */
       EvtData_133_Etc evtf801;     /* FX - TBD */
       EvtData_133_Etc evtf802;     /* FX - TBD */
       EvtData_133_Etc evtf803;     /* FX - TBD */

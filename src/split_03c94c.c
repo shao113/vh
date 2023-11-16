@@ -2608,25 +2608,25 @@ void Evtf409_EventEntity(EvtData *evt) {
 
       case 0x75:
          // Set up fade
-         func_800A93C8(1, argument);
+         Event_FadeOutScreen(1, argument);
          evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x76:
          // Set up fade
-         func_800A93E8(1, argument);
+         Event_FadeInScreen(1, argument);
          evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x77:
          // Set up fade
-         func_800A93C8(2, argument);
+         Event_FadeOutScreen(2, argument);
          evt->state3 = 1;
          goto HandleRunState1;
 
       case 0x78:
          // Set up fade
-         func_800A93E8(2, argument);
+         Event_FadeInScreen(2, argument);
          evt->state3 = 1;
          goto HandleRunState1;
 

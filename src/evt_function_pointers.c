@@ -187,7 +187,9 @@ void Evtf267_LoadEvent62(EvtData *);
 void Evtf268_LoadEvent67(EvtData *);
 void Evtf272_StatRaised(EvtData *);
 void Evtf274_Noop(EvtData *);
+void Evtf277_Zoom(EvtData *);
 void Evtf278_FaintSparkles(EvtData *);
+void Evtf279_IceStorm_Camera(EvtData *);
 void Evtf280_DarkHurricane_Target(EvtData *);
 void Evtf281_282_DarkHurricane_FX2_FX3(EvtData *);
 void Evtf283_DarkHurricane_Cloud(EvtData *);
@@ -220,6 +222,7 @@ void Evtf312_BubbleSwirl_Bubble(EvtData *);
 void Evtf313_LifeOrb_FX1(EvtData *);
 void Evtf314_InwardRay(EvtData *);
 void Evtf315_VerticalRay(EvtData *);
+void Evtf316_Noop(EvtData *);
 void Evtf317_338_Avalanche_FX2_FX3(EvtData *);
 void Evtf321_Fx_TBD(EvtData *);
 void Evtf322_370_371_372_MagicRestoration_FX2(EvtData *);
@@ -254,6 +257,7 @@ void Evtf364_Map15_Plank(EvtData *);
 void Evtf365_Map17_Floodgate(EvtData *);
 void Evtf366_Map17_Button(EvtData *);
 void Evtf368_Map17_DrainingWater(EvtData *);
+void Evtf369_ScreenEffect(EvtData *);
 void Evtf375_FlameBreath_Particle(EvtData *);
 void Evtf377_Fx_TBD(EvtData *);
 void Evtf378_PhaseShift_FX1(EvtData *);
@@ -265,9 +269,11 @@ void Evtf383_Sparkle(EvtData *);
 void Evtf384_Fx_TBD(EvtData *);
 void Evtf385_RevealMimic(EvtData *);
 void Evtf386_HealingSparkle(EvtData *);
+void Evtf387_FullscreenImage(EvtData *);
 void Evtf388_DarkHurricane_FX1(EvtData *);
 void Evtf389_DarkHurricane_Vortex(EvtData *);
 void Evtf390_DarkHurricane_VortexLayer(EvtData *);
+void Evtf391(EvtData *);
 void Evtf392_Fx_TBD(EvtData *);
 void Evtf394_DynamoHum_FX1(EvtData *);
 void Evtf395_DynamoHum_ElectricOrb(EvtData *);
@@ -454,12 +460,14 @@ void Evtf669_Map14_RaiseSandTile(EvtData *);
 void Evtf670_Map14_Sand(EvtData *);
 void Evtf672_Map39_SplashingTile(EvtData *);
 void Evtf673_Map32_Scn63_Cinematic(EvtData *);
+void Evtf674_DebugSounds(EvtData *);
 void Evtf675_LeenaForcefield(EvtData *);
 void Evtf676_687_Rainfall(EvtData *);
 void Evtf677_RainfallDrop(EvtData *);
 void Evtf678_Ripple(EvtData *);
 void Evtf681_StatBuffFx(EvtData *);
 void Evtf685_RockSpurt(EvtData *);
+void Evtf688_Noop(EvtData *);
 void Evtf692_Campfire(EvtData *);
 void Evtf702_FlamingRock(EvtData *);
 void Evtf703_Map40_Barricade(EvtData *);
@@ -489,6 +497,7 @@ void Evtf763_BoulderRubble(EvtData *);
 void Evtf764_to_769_ProjectileTrail(EvtData *);
 void Evtf770_to_789_ItemSpell(EvtData *);
 void Evtf790_Fx_TBD(EvtData *);
+void Evtf795_EventFade(EvtData *);
 void Evtf797_Map47_Scn14_Dusk(EvtData *);
 void Evtf798_ResetInputState(EvtData *);
 void Evtf801_Fx_TBD(EvtData *);
@@ -779,9 +788,9 @@ EvtFunction gEvtFunctionPointers[804] = {
     [274] = Evtf274_Noop,
     [275] = (EvtFunction)0x800aaccc,
     [276] = (EvtFunction)0x800aaa0c,
-    [277] = (EvtFunction)0x800aa0bc,
+    [277] = Evtf277_Zoom,
     [278] = Evtf278_FaintSparkles,
-    [279] = (EvtFunction)0x800aa160,
+    [279] = Evtf279_IceStorm_Camera,
     [280] = Evtf280_DarkHurricane_Target,
     [281] = Evtf281_282_DarkHurricane_FX2_FX3,
     [282] = Evtf281_282_DarkHurricane_FX2_FX3,
@@ -818,7 +827,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [313] = Evtf313_LifeOrb_FX1,
     [314] = Evtf314_InwardRay,
     [315] = Evtf315_VerticalRay,
-    [316] = (EvtFunction)0x800a9350,
+    [316] = Evtf316_Noop,
     [317] = Evtf317_338_Avalanche_FX2_FX3,
     [318] = (EvtFunction)0x800acd90,
     [319] = (EvtFunction)0x800acef4,
@@ -871,7 +880,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [366] = Evtf366_Map17_Button,
     [367] = (EvtFunction)0x800b40d4,
     [368] = Evtf368_Map17_DrainingWater,
-    [369] = (EvtFunction)0x800a8b14,
+    [369] = Evtf369_ScreenEffect,
     [370] = Evtf322_370_371_372_MagicRestoration_FX2,
     [371] = Evtf322_370_371_372_MagicRestoration_FX2,
     [372] = Evtf322_370_371_372_MagicRestoration_FX2,
@@ -889,11 +898,11 @@ EvtFunction gEvtFunctionPointers[804] = {
     [384] = Evtf384_Fx_TBD,
     [385] = Evtf385_RevealMimic,
     [386] = Evtf386_HealingSparkle,
-    [387] = (EvtFunction)0x800a9700,
+    [387] = Evtf387_FullscreenImage,
     [388] = Evtf388_DarkHurricane_FX1,
     [389] = Evtf389_DarkHurricane_Vortex,
     [390] = Evtf390_DarkHurricane_VortexLayer,
-    [391] = (EvtFunction)0x800a9a68,
+    [391] = Evtf391,
     [392] = Evtf392_Fx_TBD,
     [393] = (EvtFunction)0x800aa670,
     [394] = Evtf394_DynamoHum_FX1,
@@ -1176,7 +1185,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [671] = (EvtFunction)NULL,
     [672] = Evtf672_Map39_SplashingTile,
     [673] = Evtf673_Map32_Scn63_Cinematic,
-    [674] = (EvtFunction)0x800a9ac0,
+    [674] = Evtf674_DebugSounds,
     [675] = Evtf675_LeenaForcefield,
     [676] = Evtf676_687_Rainfall,
     [677] = Evtf677_RainfallDrop,
@@ -1190,7 +1199,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [685] = Evtf685_RockSpurt,
     [686] = Evtf206_686_BloodSpurtParticle,
     [687] = Evtf676_687_Rainfall,
-    [688] = (EvtFunction)0x800aa0b4,
+    [688] = Evtf688_Noop,
     [689] = (EvtFunction)0x800ae00c,
     [690] = (EvtFunction)0x800ac8e0,
     [691] = (EvtFunction)0x800acab4,
@@ -1297,7 +1306,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [792] = Evtf306_791_792_793_Healing_FX2,
     [793] = Evtf306_791_792_793_Healing_FX2,
     [794] = (EvtFunction)0x800b1320,
-    [795] = (EvtFunction)0x800a9408,
+    [795] = Evtf795_EventFade,
     [796] = (EvtFunction)0x800b53e0,
     [797] = Evtf797_Map47_Scn14_Dusk,
     [798] = Evtf798_ResetInputState,

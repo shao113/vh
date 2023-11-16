@@ -133,7 +133,6 @@ extern u8 gLevelDisparityBonus[160];
 s32 CountUnitsOfType(s16);
 s32 CountUnitsOfTeam(s16);
 
-void QueueImpededStep(s16, s16, s32, s32 *, s16, u8);
 void PlotPathBackToUnit(s32, s32);
 void PopulateMeleeAttackGridInDir(s16, s16, s16, s16, s32);
 void PopulateMeleeAttackGrid(s16, s16, s32, u8);

@@ -1116,7 +1116,7 @@ void BigIntDivide(BigInt dividend, BigInt quotient, u16 divisor) {
    }
 }
 
-void func_8002ADCC(s16 z, s16 x, s32 fieldSize, s32 whichGrid) {
+void func_8002ADCC(s16 z, s16 x, s32 fieldSize, s32 gridNum) {
    PathGridRow *pGrid;
    s32 push_t0;
    s32 pop_t1;
@@ -1128,7 +1128,7 @@ void func_8002ADCC(s16 z, s16 x, s32 fieldSize, s32 whichGrid) {
 
    if (z >= gMapMinZ && z <= gMapMaxZ && x >= gMapMinX && x <= gMapMaxX) {
 
-      switch (whichGrid) {
+      switch (gridNum) {
       case 0:
          pGrid = &gPathGrid0[1];
          break;
@@ -1254,3 +1254,257 @@ void RevertAirmanAdjustments(void) {
       }
    }
 }
+
+/*
+void func_8002B3A8(s16 z, s16 x, s32 range, s32 gridNum) {
+   extern void func_8002C108(s16, s16, s16, s32 *, s16, s16);
+   u8 local_48;
+   PathGridRow *pGrid;
+   u8 buffer[600];
+   u8 team;
+   s32 i, j;
+   u8 stepType;
+   s32 terrainCost;
+   UnitStatus *unit;
+   s32 rem;
+   s32 count;
+   s32 elevationCost;
+   s32 pushIdx;
+   s32 popIdx;
+   s16 diff;
+
+   pushIdx = 0;
+   popIdx = 300;
+   count = 0;
+
+   switch (gridNum) {
+   case 0:
+      pGrid = &gPathGrid0[1];
+      break;
+   case 1:
+      pGrid = &gPathGrid1[1];
+      break;
+   case 2:
+      pGrid = &gPathGrid2[1];
+      break;
+   case 3:
+      pGrid = &gPathGrid3[1];
+      break;
+   case 4:
+      pGrid = &gPathGrid4[1];
+      break;
+   case 5:
+      pGrid = &gPathGrid5[1];
+      break;
+   case 6:
+      pGrid = &gPathGrid6[1];
+      break;
+   }
+
+   rem = range; //@2ba4: s6=s8
+
+   local_48 = 0;
+   unit = &gUnits[gMapUnitsPtr[z][x].s.unitIdx];
+   stepType = unit->step;
+   team = gMapUnitsPtr[z][x].s.team;
+
+   for (i = 0; i < 5; i++) {
+      for (j = 0; j < 200; j++) {
+         gImpededSteps[i][j] = PATH_STEP_INVALID;
+      }
+   }
+
+   for (i = 0; i < 5; i++) {
+      gImpededStepsQueue[i] = &gImpededSteps[i][0];
+   }
+   if (z < gMapMinZ || z > gMapMaxZ || x < gMapMinX || x > gMapMaxX) {
+      return;
+   }
+
+   if (range == 0) {
+      pGrid[z][x] = 1;
+      return;
+   }
+
+   rem--;
+   buffer[pushIdx++] = PATH_STEP_INVALID;
+   pushIdx++; // 2
+
+   buffer[popIdx++] = PATH_STEP_INVALID;
+   popIdx++; // 302
+   ClearGrid(gridNum);
+
+   if (unit->class == CLASS_AIRMAN) {
+      ApplyAirmanAdjustments(team);
+   }
+   pGrid[z][x] = 1;
+   //@2dac
+
+   while (1) {
+      //@2dc8
+      while (1) {
+         while (z != PATH_STEP_INVALID) {
+            // inner: // wtf
+#pragma region "[z-1][x]"
+            terrainCost = gTravelTerrainCost[stepType][gTerrainPtr[z - 1][x].s.terrain];
+            diff = gTerrainPtr[z - 1][x].s.elevation - gTerrainPtr[z][x].s.elevation;
+            if (diff < 0) {
+               elevationCost = gTravelDescentCost[stepType][-diff];
+            } else {
+               elevationCost = gTravelAscentCost[stepType][diff];
+            }
+
+            if (gMapUnitsPtr[z - 1][x].s.team == 0 || gMapUnitsPtr[z - 1][x].s.team == team) {
+               if (gTerrainPtr[z - 1][x].s.terrain >= 0 && pGrid[z - 1][x] == PATH_STEP_UNSET) {
+                  if (terrainCost == 0 && elevationCost == 0) {
+                     pGrid[z - 1][x] = range - rem; //@2f4c: v0=s8-s6
+                     if (rem != 0) {
+                        buffer[pushIdx++] = z - 1;
+                        buffer[pushIdx++] = x;
+                     }
+                  } else {
+                     func_8002C108(z - 1, x, rem, &count, terrainCost + elevationCost, range);
+                  }
+               }
+            }
+#pragma endregion
+
+#pragma region "[z+1][x]"
+            terrainCost = gTravelTerrainCost[stepType][gTerrainPtr[z + 1][x].s.terrain];
+            diff = gTerrainPtr[z + 1][x].s.elevation - gTerrainPtr[z][x].s.elevation;
+            if (diff < 0) {
+               elevationCost = gTravelDescentCost[stepType][-diff];
+            } else {
+               elevationCost = gTravelAscentCost[stepType][diff];
+            }
+
+            if (gMapUnitsPtr[z + 1][x].s.team == 0 || gMapUnitsPtr[z + 1][x].s.team == team) {
+               if (gTerrainPtr[z + 1][x].s.terrain >= 0 && pGrid[z + 1][x] == PATH_STEP_UNSET) {
+                  if (terrainCost == 0 && elevationCost == 0) {
+                     pGrid[z + 1][x] = range - rem;
+                     if (rem != 0) {
+                        buffer[pushIdx++] = z + 1;
+                        buffer[pushIdx++] = x;
+                     }
+                  } else {
+                     func_8002C108(z + 1, x, rem, &count, terrainCost + elevationCost, range);
+                  }
+               }
+            }
+#pragma endregion
+
+#pragma region "[z][x-1]"
+            terrainCost = gTravelTerrainCost[stepType][gTerrainPtr[z][x - 1].s.terrain];
+            diff = gTerrainPtr[z][x - 1].s.elevation - gTerrainPtr[z][x].s.elevation;
+            if (diff < 0) {
+               elevationCost = gTravelDescentCost[stepType][-diff];
+            } else {
+               elevationCost = gTravelAscentCost[stepType][diff];
+            }
+
+            if (gMapUnitsPtr[z][x - 1].s.team == 0 || gMapUnitsPtr[z][x - 1].s.team == team) {
+               if (gTerrainPtr[z][x - 1].s.terrain >= 0 && pGrid[z][x - 1] == PATH_STEP_UNSET) {
+                  if (terrainCost == 0 && elevationCost == 0) {
+                     pGrid[z][x - 1] = range - rem;
+                     if (rem != 0) {
+                        buffer[pushIdx++] = z;
+                        buffer[pushIdx++] = x - 1;
+                     }
+                  } else {
+                     func_8002C108(z, x - 1, rem, &count, terrainCost + elevationCost, range);
+                  }
+               }
+            }
+#pragma endregion
+
+#pragma region "[z][x+1]"
+            terrainCost = gTravelTerrainCost[stepType][gTerrainPtr[z][x + 1].s.terrain];
+            diff = gTerrainPtr[z][x + 1].s.elevation - gTerrainPtr[z][x].s.elevation;
+            if (diff < 0) {
+               elevationCost = gTravelDescentCost[stepType][-diff];
+            } else {
+               elevationCost = gTravelAscentCost[stepType][diff];
+            }
+
+            if (gMapUnitsPtr[z][x + 1].s.team == 0 || gMapUnitsPtr[z][x + 1].s.team == team) {
+               if (gTerrainPtr[z][x + 1].s.terrain >= 0 && pGrid[z][x + 1] == PATH_STEP_UNSET) {
+                  if (terrainCost == 0 && elevationCost == 0) {
+                     pGrid[z][x + 1] = range - rem;
+                     if (rem != 0) {
+                        buffer[pushIdx++] = z;
+                        buffer[pushIdx++] = x + 1;
+                     }
+                  } else {
+                     func_8002C108(z, x + 1, rem, &count, terrainCost + elevationCost, range);
+                  }
+               }
+            }
+#pragma endregion
+
+            popIdx -= 2; // s4
+            z = buffer[popIdx + 0];
+            x = buffer[popIdx + 1];
+         }
+
+         popIdx += 2;
+         i = popIdx;
+         popIdx = pushIdx;
+         pushIdx = i;
+
+         i = 0;
+         while (gImpededStepsQueue[0][i + 0] != PATH_STEP_INVALID) {
+            z = gImpededStepsQueue[0][i + 0]; //.z
+            x = gImpededStepsQueue[0][i + 1]; //.x
+            if (pGrid[z][x] == PATH_STEP_UNSET) {
+               pGrid[z][x] = gImpededStepsQueue[0][i + 2]; //.step
+               if (gImpededStepsQueue[0][i + 3] != 0) {    //.rem
+                  buffer[popIdx++] = z;
+                  buffer[popIdx++] = x;
+               }
+            }
+            gImpededStepsQueue[0][i] = PATH_STEP_INVALID;
+            count--;
+            i += 4;
+         }
+
+         popIdx -= 2;
+         // popIdx--; popIdx--;
+         z = buffer[popIdx + 0];
+         x = buffer[popIdx + 1];
+
+         rem--;
+         local_48++;
+         if (local_48 == 5) {
+            local_48 = 0;
+         }
+         j = local_48;
+
+         for (i = 0; i < 5; i++) {
+            if (i + j == 5) {
+               j -= 5;
+            }
+            gImpededStepsQueue[i] = &gImpededSteps[i + j][0];
+         }
+
+         if (count != 0) {
+            continue;
+         }
+         if (z != PATH_STEP_INVALID) {
+            continue;
+         }
+
+         if (unit->class == CLASS_AIRMAN) {
+            RevertAirmanAdjustments();
+            for (i = gMapMinZ; i <= gMapMaxZ; i++) {
+               for (j = gMapMinX; j <= gMapMaxX; j++) {
+                  if (gTerrainPtr[i][j].s.terrain == TERRAIN_OBSTACLE) {
+                     pGrid[i][j] = PATH_STEP_UNSET;
+                  }
+               }
+            }
+         }
+         return;
+      }
+   }
+}
+*/

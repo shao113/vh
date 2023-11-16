@@ -60,7 +60,7 @@ segments:
     - [0x001ea0, .rdata, battle_013b94]        # 0x800116a0
     - [0x0023c8, .rdata, battle_0190dc]        # 0x80011bc8
     - [0x002424, rdata]                        # TODO: PathGrid stuff
-    - [0x0024d8, .rdata, battle_01f360]        # 0x80011cd8
+    - [0x002448, .rdata, battle_01c908]        # 0x80011c48
     - [0x002584, .rdata, battle_0201b8]        # 0x80011d84
     - [0x0030f4, .rdata, split_027dd4]         # 0x800128f4
     - [0x0033ec, .rdata, evt]                  # 0x80012bec
@@ -105,7 +105,8 @@ segments:
     - [0x005894, .rdata, map_effects_0932e8]   # 0x80015094
     - [0x00591c, .rdata, map_effects_094b4c]   # 0x8001511c
     - [0x0059c8, .rdata, text]                 # 0x800151c8
-    - [0x005e48, rdata]                        #
+    - [0x005e48, .rdata, screen_effects]       # 0x80015648
+    - [0x005e94, rdata]                        #
 
     - [0x006580, .rdata, audio]                # 0x80015d80 
     - [0x0069b0, bin]                          # 0x800161b0 end of audio jtbls
@@ -119,8 +120,8 @@ segments:
     - [0x012dcc, c, battle_012dcc]             # 0x800225cc Evtf027_TargetingSpell
     - [0x013b94, c, battle_013b94]             # 0x80023394 ClearBattlePortraits ...
     - [0x0190dc, c, battle_0190dc]             # 0x800288dc EmbedIntAsSjis ...
-    - [0x01bba8, bin]                          # TODO: PathGrid stuff
-    - [0x01f360, c, battle_01f360]             # 0x8002eb60 QueueImpededStep ...
+    - [0x01bba8, bin]                          # 0x8002b3a8
+    - [0x01c908, c, battle_01c908]             # 0x8002c108 func_8002C108 ...
     - [0x0201b8, c, battle_0201b8]             # 0x8002f9b8 ShowReceivedItemDialog ...
     - [0x027dd4, c, split_027dd4]              # 0x800375d4 SaveItemIcons ...
     - [0x028814, c, evt]                       # 0x80038014 Evtf581_AudioCommand ...
@@ -170,7 +171,9 @@ segments:
     - [0x0932e8, c, map_effects_0932e8]        # 0x800a2ae8 Evtf657_Map38_Floodgate ...
     - [0x094b4c, c, map_effects_094b4c]        # 0x800a434c GetIdxOfHighestVtx ...
     - [0x097888, c, text]                      # 0x800a7088 CopySjisString ...
-    - [0x0992fc, bin]
+    - [0x0992fc, c, screen_effects]            # 0x800a8afc SetScreenEffectOrdering ...
+    - [0x09a268, c, split_09a268]              # 0x800a9a68 Evtf391 ...
+    - [0x09ae70, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
     - [0x0b0480, bin]
@@ -225,6 +228,8 @@ segments:
     - [0x0f17e4, .data, map_effects_0932e8]    # 0x80100fe4
     - [0x0f182c, .data, text]                  # 0x8010102c
     - [0x0f1f64, data]
+    - [0x0f2020, .data, split_09a268]          # 0x80101820
+    - [0x0f2038, data]
   
     - [0x0f76ec, .data, audio]                 # 0x80106eec
     - [0x0f91d0, data]                         # 0x801089d0 lib data
@@ -252,7 +257,8 @@ segments:
     - [0x113794, .sdata, map_effects_08dc10]   # 0x80122f94
     - [0x1137a0, .sdata, map_effects_08f524]   # 0x80122fa0
     - [0x1137b0, .sdata, text]                 # 0x80122fb0
-    - [0x113898, sdata]
+    - [0x113898, .sdata, split_09a268]
+    - [0x11389c, sdata]
 
     # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses
     # set through symbol_addrs to override the assembler's placement

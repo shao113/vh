@@ -859,8 +859,8 @@ void DrawSjisText_Internal(s32 x, s32 y, s32 maxCharsPerLine, s32 lineSpacing, s
             p = gStringTable[parsedInt];
             continue;
          }
-         // Double # indicates escaped #; the U/D cases block fall-through, so using goto instead
-         goto DrawGlyph;
+         // Double # indicates escaped #; break to handle outside switch
+         break;
 
       case 'U':
          p++;
@@ -871,37 +871,34 @@ void DrawSjisText_Internal(s32 x, s32 y, s32 maxCharsPerLine, s32 lineSpacing, s
          p++;
          unk_s3 = 2;
          continue;
+      }
 
-      default:
-      DrawGlyph:
-         pad = 0;
-         if (gapType != 0) {
-            if (column * (12 >> 2) + x > 573) {
-               pad = 2;
-            } else {
-               pad = 0;
-            }
+      pad = 0;
+      if (gapType != 0) {
+         if (column * (12 >> 2) + x > 573) {
+            pad = 2;
          } else {
-            if (column * (12 >> 2) + x > 571) {
-               pad = 4;
+            pad = 0;
+         }
+      } else {
+         if (column * (12 >> 2) + x > 571) {
+            pad = 4;
+         }
+      }
+      sjis = (p[0] << 8) | p[1];
+      DrawSjisGlyph(sjis, column * (12 >> 2) + x + pad, rowY + y, color);
+      p += 2;
+      column++;
+      if (column >= maxCharsPerLine) {
+         column = 0;
+         if (unk_s3 == 0) {
+            rowY += rowHeight;
+         } else if (unk_s3 >= 0) {
+            if (unk_s3 < 3) {
+               rowY += (lineSpacing + 8);
+               unk_s3 = 0;
             }
          }
-         sjis = (p[0] << 8) | p[1];
-         DrawSjisGlyph(sjis, column * (12 >> 2) + x + pad, rowY + y, color);
-         p += 2;
-         column++;
-         if (column >= maxCharsPerLine) {
-            column = 0;
-            if (unk_s3 == 0) {
-               rowY += rowHeight;
-            } else if (unk_s3 >= 0) {
-               if (unk_s3 < 3) {
-                  rowY += (lineSpacing + 8);
-                  unk_s3 = 0;
-               }
-            }
-         }
-         continue;
       }
    }
 }

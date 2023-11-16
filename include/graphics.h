@@ -557,8 +557,8 @@ typedef struct PortraitsDb {
 typedef struct MaskEffectPreset {
    s16 srcGfxIdx;
    s16 dstGfxIdx;
-   s8 width;
-   s8 height;
+   u8 width;
+   u8 height;
    s16 semiTrans;
    s16 clut;
    CVECTOR color;

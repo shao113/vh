@@ -74,12 +74,12 @@ typedef enum GridColor {
    GRID_COLOR_YELLOW = 3
 } GridColor;
 
-typedef struct ImpededStep {
+/*typedef struct ImpededStep {
    u8 z;
    u8 x;
    u8 step;
    u8 rem;
-} ImpededStep;
+} ImpededStep;*/
 
 typedef struct HiddenItem {
    u8 z;
@@ -112,12 +112,14 @@ extern PathGridRow *gPathGrid5_Ptr;
 extern PathGridRow *gPathGrid6_Ptr;
 extern PathGridRow *gCrateGrid_Ptr;
 
-extern ImpededStep gImpededSteps[5][50];
-extern ImpededStep *gImpededStepsQueue[5];
-extern s8 gTravelTerrainImped[14][11]; // [stepping-type][terrain-type]
-extern s8 gTravelAscentImped[14][20];  // [stepping-type][elevation-diff]
-extern s8 gTravelDescentImped[14][20];
-extern s8 gTravelRange[14];
+// extern ImpededStep gImpededSteps[5][50];
+// extern ImpededStep *gImpededStepsQueue[5];
+extern u8 gImpededSteps[5][200];
+extern u8 *gImpededStepsQueue[5];
+extern u8 gTravelTerrainCost[14][11]; // [stepping-type][terrain-type]
+extern u8 gTravelAscentCost[14][20];  // [stepping-type][elevation-diff]
+extern u8 gTravelDescentCost[14][20];
+extern u8 gTravelRange[14];
 extern u8 gPathBackToUnit[300];
 
 extern s16 gTerrainBonus[];
