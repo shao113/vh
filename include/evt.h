@@ -26,6 +26,7 @@ typedef enum EvtFunctionIdx {
    EVTF_LOGO = 6,
    EVTF_APPLY_POISON = 7,
    EVTF_BATTLE_PORTRAIT = 8,
+   EVTF_ITEM_ICON_MGR = 9,
    EVTF_BATTLE_MGR = 13,
    EVTF_BATTLE_UNIT = 14,
    EVTF_TARGETING_ATTACK = 15,
@@ -228,6 +229,7 @@ typedef enum EvtFunctionIdx {
    EVTF_AI_TBD_403 = 403,
    EVTF_AI_TBD_404 = 404,
    EVTF_PANORAMA = 405,
+   EVTF_SHOP_OR_DEPOT = 406,
    EVTF_NOOP_407 = 407,
    EVTF_CLOSED_WINDOW = 408,
    EVTF_EVENT_ENTITY = 409,
@@ -262,6 +264,7 @@ typedef enum EvtFunctionIdx {
    EVTF_EVALUATE_BATTLE_28 = 444,
    EVTF_EVALUATE_BATTLE_29 = 445,
    EVTF_BATTLE_VICTORY_PARTICLE = 446,
+   EVTF_UNIT_PORTRAIT = 447,
    EVTF_MAP_OBJECT_FLOWING_WATER = 449,
    EVTF_EVALUATE_BATTLE_32 = 552,
    EVTF_EVALUATE_BATTLE_33 = 553,
@@ -285,6 +288,8 @@ typedef enum EvtFunctionIdx {
    EVTF_DISPLAY_ICON = 574,
    EVTF_STATUS_PORTRAIT = 575,
    EVTF_TAVERN = 576,
+   EVTF_DYNAMIC_ICON = 577,
+   EVTF_DOJO = 578,
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
    EVTF_BATTLE_PLAYER_EVENT = 585,
@@ -493,6 +498,12 @@ typedef struct EvtData_008 {
    /* :0x30 */ s16 portraitId;
    /* :0x32 */ u8 unk_0x32[46];
 } EvtData_008;
+
+/* Item Icon Manager */
+typedef struct EvtData_009 {
+   /* :0x24 */ u8 unk_0x24[56];
+   /* :0x5C */ struct EvtData *shopOrDepot; // evtf406
+} EvtData_009;
 
 /* Battle Manager */
 typedef struct EvtData_013 {
@@ -2704,6 +2715,35 @@ typedef struct EvtData_405 {
    /* :0x2C */ u8 unk_0x2C[52];
 } EvtData_405;
 
+/* Shop or Depot */
+typedef struct EvtData_406 {
+   /* :0x24 */ s8 shopId;
+   /* :0x25 */ s8 category;
+   /* :0x26 */ s8 shopRows;
+   /* :0x27 */ s8 shopTop;
+   /* :0x28 */ s8 shopNeedsRedraw;
+   /* :0x29 */ s8 goldTimer;
+   /* :0x2A */ s8 itemToPurchase;
+   /* :0x2B */ s8 partyIdx1;
+   /* :0x2C */ s8 partyNeedsRedraw;
+   /* :0x2D */ s8 formerEquipment;
+   /* :0x2E */ s8 partyRows;
+   /* :0x2F */ s8 partyTop;
+   /* :0x30 */ s8 selectionModified;
+   /* :0x31 */ s8 item;
+   /* :0x32 */ s8 partyIdx2;
+   /* :0x33 */ s8 itemIdx; // idx of PartyMember.items to sell
+   /* :0x34 */ s8 depotNeedsRedraw;
+   /* :0x35 */ s8 depotCategory;
+   /* :0x36 */ s16 depotTop;
+   /* :0x38 */ s8 partyChoice;
+   /* :0x39 */ u8 unk_0x39[31];
+   /* :0x58 */ s8 exitTimer;
+   /* :0x59 */ u8 unk_0x59[3];
+   /* :0x5C */ s8 goldState;
+   /* :0x5D */ u8 unk_0x5D[3];
+} EvtData_406;
+
 /* Event Entity */
 typedef struct EvtData_409 {
    /* :0x24 */ u8 unk_0x24[3];
@@ -2882,6 +2922,15 @@ typedef struct EvtData_576 {
    /* :0x4C */ s8 timer;
    /* :0x4D */ u8 unk_0x4D[19];
 } EvtData_576;
+
+/* Dynamic Icon */
+typedef struct EvtData_577 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[18];
+   /* :0x3C */ s16 idx;
+   /* :0x3E */ u8 unk_0x3E[34];
+} EvtData_577;
 
 /* Audio Command */
 typedef struct EvtData_581 {
@@ -3334,8 +3383,10 @@ typedef struct EvtData {
       EvtData_DataStore dataStore;
       EvtData_003 evtf003;         /* Battle - Actions */
       EvtData_004_005_408 evtf004; /* Window */
+      EvtData_004_005_408 evtf005; /* Window */
       EvtData_007 evtf007;         /* Apply Poison */
       EvtData_008 evtf008;         /* Battle Portrait */
+      EvtData_009 evtf009;         /* Item Icon Manager */
       EvtData_013 evtf013;         /* Battle Manager */
       EvtData_014 evtf014;         /* Battle Unit */
       EvtData_016 evtf016;         /* Choose Done Direction */
@@ -3542,6 +3593,7 @@ typedef struct EvtData {
       EvtData_402_Etc evtf403;     /* AI - TBD */
       EvtData_402_Etc evtf404;     /* AI - TBD */
       EvtData_405 evtf405;         /* Panorama */
+      EvtData_406 evtf406;         /* Shop or Depot */
       EvtData_409 evtf409;         /* Event Entity */
       EvtData_410 evtf410;         /* Camera - Event Zoom */
       EvtData_413 evtf413;         /* MsgBox Portrait */
@@ -3559,6 +3611,7 @@ typedef struct EvtData {
       EvtData_573 evtf573;         /* Battle Items List */
       EvtData_575 evtf575;         /* Status Portrait */
       EvtData_576 evtf576;         /* Tavern */
+      EvtData_577 evtf577;         /* Dynamic Icon */
       EvtData_581 evtf581;         /* Audio Command */
       EvtData_585 evtf585;         /* Battle - Player Event */
       EvtData_586 evtf586;         /* Battle - MsgBox */

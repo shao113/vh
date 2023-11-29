@@ -272,6 +272,22 @@ segments:
     #- [0x115704, bin]
     #- [0x16d7bc, .bss, card]
     
-    #- [0x1d5ac4, bin] # 0x801e52c4 (More functions)
-  - [0x1d4e90, bin] #0x801e4690
+  - type: code
+    start: 0x1d4e90
+    vram: 0x801e4690
+    subalign: 4
+    subsegments:
+    - [0x1d4e90, .rdata, supplies]             # 0x801e4690
+    - [0x1d5114, rdata]                        #
+
+    - [0x1d5ac4, c, supplies]                  # 0x801e52c4 RenderScrollIndicator ...
+    - [0x1ddee8, c, dojo]                      # 0x801ed6e8 Dojo_DisplayUnitPreview ...
+    - [0x1de354, bin]                          # 
+
+    - [0x1e6f78, .data, supplies]              # 0x801f6778
+    - [0x1e7234, .data, dojo]                  # 0x801f6a34 
+    - [0x1e743c, data]                         # 
+
+    - [0x1e7540, bin]                          # 0x801f6d40 (.bss?)
+
   - [0x1e7800] # TBD end of file

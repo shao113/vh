@@ -555,6 +555,37 @@ enum {
 
 enum { AILMENT_POISON = 0, AILMENT_PARAYLYZE = 1 };
 
+typedef enum InventoryCategory {
+   INVENTORY_WEAPON = 0,
+   INVENTORY_ARMOR = 1,
+   INVENTORY_ITEM = 2,
+} InventoryCategory;
+
+typedef enum InventorySlot {
+   INVENTORY_SLOT_WEAPON = 0,
+   INVENTORY_SLOT_HELMET = 1,
+   INVENTORY_SLOT_ARMOR = 2,
+   INVENTORY_SLOT_ITEM1 = 3,
+   INVENTORY_SLOT_ITEM2 = 4,
+} InventorySlot;
+
+typedef enum EquipmentType {
+   EQUIPMENT_TYPE_SWORD = 0,
+   EQUIPMENT_TYPE_BOW = 1,
+   EQUIPMENT_TYPE_STAFF = 2,
+   EQUIPMENT_TYPE_AXE = 3,
+   EQUIPMENT_TYPE_SPEAR = 4,
+   EQUIPMENT_TYPE_CLAWS = 5,
+   EQUIPMENT_TYPE_V_HEART = 6,
+   EQUIPMENT_TYPE_HELM = 7,
+   EQUIPMENT_TYPE_BAND = 8,
+   EQUIPMENT_TYPE_V_HELM = 9,
+   EQUIPMENT_TYPE_ARMOR = 10,
+   EQUIPMENT_TYPE_ROBE = 11,
+   EQUIPMENT_TYPE_V_ARMOR = 12,
+   EQUIPMENT_TYPE_ITEM = 13,
+} EquipmentType;
+
 extern s8 gCharacterNames[35][7];
 extern s8 gUnitTypeNames[86][11];
 extern s8 gItemNames[139][13];
@@ -582,7 +613,7 @@ extern u8 gInitialLevels[8][12];
 extern u8 gPartyDefaultLevels[PARTY_CT][BATTLE_CT];
 extern void *gUnitDataPtr;
 extern s16 gCurrentUnitSet[20];
-extern s16 gSceneUnitSets[100][20];
+extern s16 gSceneUnitSets[105][20];
 extern s32 gPartyUnitIds[PARTY_CT][2][3];
 
 extern s16 gUnitPortraitIds[UNIT_CT];

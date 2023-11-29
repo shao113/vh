@@ -179,7 +179,7 @@ s32 Evtf598_WorldActions(EvtData *evt) {
       if (gWindowChoice.raw == 0x3402) {
          s_menuMem_worldActions_801232a8 = 1;
          gState.prevState = gState.primary;
-         s_newState_801232a0 = STATE_21;
+         s_newState_801232a0 = STATE_DEPOT;
          evt->state = 100;
          evt->state2 = 0;
          break;

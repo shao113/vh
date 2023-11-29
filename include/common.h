@@ -165,6 +165,7 @@ extern u8 gSignal5;
 
 extern s8 gText[];
 extern s8 *gTextPointers[101];
+extern u8 *gStringTable[100];
 
 s32 BigIntCompare(BigInt, BigInt);
 void BigIntAdd(BigInt, BigInt);

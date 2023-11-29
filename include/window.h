@@ -26,7 +26,7 @@ extern WindowChoice gWindowChoice;
 extern WindowChoice gWindowActivatedChoice;
 
 s32 WindowIsOffScreen(struct EvtData *);
-void DrawSmallEquipmentWindow(u8);
+// void DrawSmallEquipmentWindow(u8);
 void DrawWindow(s16, s16, s16, s16, s16, s16, s16, u8, u8);
 s32 StringToGlyphs(u8 *, u8 *);
 void UpdateSkillStatusWindow(struct UnitStatus *);
@@ -36,7 +36,7 @@ void UpdateUnitInfoWindow(struct UnitStatus *);
 void DisplayBasicWindow(s32);
 void DisplayBasicWindowWithSetChoice(s32, s32);
 void DisplayCustomWindow(s32, u8, u8, u8, u8, u8);
-void DisplayCustomWindowWithSetChoice(s32, u8, u8, u8, u8, u8, u8);
+// void DisplayCustomWindowWithSetChoice(s32, u8, u8, u8, u8, u8, u8);
 void CloseWindow(s32);
 s32 GetWindowChoice(s32);
 s32 GetWindowChoice2(s32);

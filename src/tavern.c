@@ -161,7 +161,7 @@ void SetupTownMsgBox(s16 portraitId, u8 lower) {
       windowId = 0x43;
    }
 
-   if (gState.primary == STATE_5) {
+   if (gState.primary == STATE_SHOP) {
       windowId = 0x34;
    }
 

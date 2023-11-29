@@ -4,13 +4,15 @@
 #include "common.h"
 
 typedef enum PrimaryState {
+   STATE_0 = 0,
    STATE_1 = 1,
    STATE_3 = 3,
    STATE_4 = 4,
-   STATE_5 = 5,
+   STATE_SHOP = 5,
    STATE_6 = 6,
    STATE_7 = 7,
    STATE_TAVERN = 8,
+   STATE_9 = 9,
    STATE_MOVIE = 10,
    STATE_12 = 12,
    STATE_FINISH_CHAPTER = 13,
@@ -21,7 +23,7 @@ typedef enum PrimaryState {
    STATE_18 = 18,
    STATE_19 = 19,
    STATE_20 = 20,
-   STATE_21 = 21,
+   STATE_DEPOT = 21,
    STATE_FILE_SAVE_SCREEN = 22,
    STATE_LOAD_IN_BATTLE_SAVE = 23,
    STATE_FILE_LOAD_SCREEN = 24,
@@ -41,7 +43,7 @@ typedef enum PrimaryState {
 typedef enum CameraMode { CAMERA_MODE_DYNAMIC = 0, CAMERA_MODE_FIXED = 1 } CameraMode;
 
 typedef struct DynamicIcon {
-   u16 gfxIdx;
+   s16 gfxIdx;
    s16 x;
    s16 y;
 } DynamicIcon;

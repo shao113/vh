@@ -40,7 +40,7 @@ void UpdateState(void) {
    EvtData *evt;
 
    switch (gState.primary) {
-   case 0:
+   case STATE_0:
       gState.suppressLoadingScreen = 1;
       gUnitDataPtr = gScratch3_80180210 + 0x2db80;
       gRegularSaveDataPtr = gScratch1_801317c0 + 0x5000;
@@ -59,51 +59,51 @@ void UpdateState(void) {
       FinishLoadingVab();
       SwapInCodeFromVram();
       gState.primary++;
-   case 1:
+   case STATE_1:
       gState.field_0x96 = 0;
       gUnitDataPtr = gScratch3_80180210 + 0x2db80;
       ClearPortraitSet();
       State_Init();
       break;
-   case 3:
+   case STATE_3:
    case STATE_LOAD_IN_BATTLE_SAVE:
-   case 0x1b:
-   case 0x1e:
-   case 0x1f:
+   case STATE_27:
+   case STATE_30:
+   case STATE_31:
       State_Battle();
       break;
-   case 4:
-   case 0x10:
-   case 0x11:
-   case 0x19:
+   case STATE_4:
+   case STATE_16:
+   case STATE_17:
+   case STATE_25:
       State_EventScene();
       break;
-   case 5:
-   case 0x15:
-      State_Shop();
+   case STATE_SHOP:
+   case STATE_DEPOT:
+      State_ShopOrDepot();
       break;
-   case 6:
-   case 0x1c:
+   case STATE_6:
+   case STATE_28:
       State_WorldMap();
       break;
-   case 7:
-   case 0x14:
+   case STATE_7:
+   case STATE_20:
       State_Town();
       break;
    case STATE_TAVERN:
       State_Tavern();
       break;
-   case 9:
-   case 0x1d:
+   case STATE_9:
+   case STATE_29:
       State_Dojo();
       break;
    case STATE_MOVIE:
       State_Movie();
       break;
-   case 0xc:
-   case 0x12:
-   case 0x13:
-   case 0x1a:
+   case STATE_12:
+   case STATE_18:
+   case STATE_19:
+   case STATE_26:
       State_SetupScene();
       break;
    case STATE_FINISH_CHAPTER:

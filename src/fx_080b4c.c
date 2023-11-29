@@ -65,7 +65,7 @@ void Evtf306_791_792_793_Healing_FX2(EvtData *evt) {
          break;
       }
 
-      ApplyMaskEffectPreset(unitSprite, &maskEffect);
+      RenderMaskEffect(unitSprite, &maskEffect);
 
       evt_s0 = Evt_GetUnused();
       CopyEvtData(unitSprite, evt_s0);

@@ -154,7 +154,7 @@ void Evtf322_370_371_372_MagicRestoration_FX2(EvtData *evt) {
       fade = evt->state2 << 1;
       maskEffect.color.r = maskEffect.color.g = maskEffect.color.b = fade;
       maskEffect.clut = CLUT_PURPLES;
-      ApplyMaskEffectPreset(fxSprite, &maskEffect);
+      RenderMaskEffect(fxSprite, &maskEffect);
       fxSprite->functionIndex = EVTF_NULL;
 
       targetSprite->d.sprite.hidden = 0;

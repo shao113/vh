@@ -8,6 +8,7 @@ void Evtf004_005_408_Window(EvtData *);
 void Evtf006_Logo(EvtData *);
 void Evtf007_ApplyPoison(EvtData *);
 void Evtf008_BattlePortrait(EvtData *);
+void Evtf009_ItemIconMgr(EvtData *);
 void Evtf013_BattleMgr(EvtData *);
 void Evtf014_BattleUnit(EvtData *);
 void Evtf015_TargetingAttack(EvtData *);
@@ -287,6 +288,7 @@ void Evtf402_AI_TBD(EvtData *);
 void Evtf403_AI_TBD(EvtData *);
 void Evtf404_AI_TBD(EvtData *);
 void Evtf405_Panorama(EvtData *);
+void Evtf406_ShopOrDepot(EvtData *);
 void Evtf407_NoopIncState(EvtData *);
 void Evtf409_EventEntity(EvtData *);
 void Evtf410_EventZoom(EvtData *);
@@ -422,6 +424,7 @@ void Evtf573_BattleItemsList(EvtData *);
 void Evtf574_DisplayIcon(EvtData *);
 void Evtf575_StatusPortrait(EvtData *);
 void Evtf576_Tavern(EvtData *);
+void Evtf577_DynamicIcon(EvtData *);
 void Evtf581_AudioCommand(EvtData *);
 void Evtf582_MainMenu_Jpn(EvtData *);
 void Evtf583_LoadingIndicator(EvtData *);
@@ -520,7 +523,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [6] = Evtf006_Logo,
     [7] = Evtf007_ApplyPoison,
     [8] = Evtf008_BattlePortrait,
-    [9] = (EvtFunction)0x801ed158,
+    [9] = Evtf009_ItemIconMgr,
     [10] = (EvtFunction)NULL,
     [11] = (EvtFunction)NULL,
     [12] = (EvtFunction)NULL,
@@ -917,7 +920,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [403] = Evtf403_AI_TBD,
     [404] = Evtf404_AI_TBD,
     [405] = Evtf405_Panorama,
-    [406] = (EvtFunction)0x801e6704,
+    [406] = Evtf406_ShopOrDepot,
     [407] = Evtf407_NoopIncState,
     [408] = Evtf004_005_408_Window,
     [409] = Evtf409_EventEntity,
@@ -1088,7 +1091,7 @@ EvtFunction gEvtFunctionPointers[804] = {
     [574] = Evtf574_DisplayIcon,
     [575] = Evtf575_StatusPortrait,
     [576] = Evtf576_Tavern,
-    [577] = (EvtFunction)0x801ed610,
+    [577] = Evtf577_DynamicIcon,
     [578] = (EvtFunction)0x801edb54,
     [579] = (EvtFunction)0x801efd0c,
     [580] = (EvtFunction)0x801f3a5c,

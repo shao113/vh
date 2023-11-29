@@ -1917,7 +1917,7 @@ void Evtf681_StatBuffFx(EvtData *evt) {
       evt->y1.n = unitSprite->y1.n;
       evt->state3++;
 
-      ApplyMaskEffectPreset(unitSprite, &maskEffect);
+      RenderMaskEffect(unitSprite, &maskEffect);
       unitSprite->d.sprite.hidden = 0;
       RenderUnitSprite(gGraphicsPtr->ot, unitSprite, 0);
       unitSprite->d.sprite.hidden = 1;
@@ -1954,7 +1954,7 @@ void Evtf681_StatBuffFx(EvtData *evt) {
       evt->y1.n = unitSprite->y1.n;
 
       maskEffect.color.r = maskEffect.color.g = maskEffect.color.b = evt->state2;
-      ApplyMaskEffectPreset(unitSprite, &maskEffect);
+      RenderMaskEffect(unitSprite, &maskEffect);
       unitSprite->d.sprite.hidden = 0;
       RenderUnitSprite(gGraphicsPtr->ot, unitSprite, 0);
       unitSprite->d.sprite.hidden = 1;

@@ -55,6 +55,9 @@ build/src/glyphs.c.s: GP_OPT := -G0
 
 build/src/temp_sdata.c.s: GP_OPT := -G16
 
+build/src/supplies.c.s: GP_OPT := -G0
+build/src/dojo.c.s: GP_OPT := -G0
+
 default: dirs check
 	
 clean:

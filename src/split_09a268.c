@@ -252,9 +252,7 @@ void func_800AA42C(void) {
    SetScreenEffectOrdering(0);
 }
 
-void ApplyMaskEffectPreset(EvtData *unitSprite, MaskEffectPreset *preset) {
-   // TODO: Rename to specify that it renders
-
+void RenderMaskEffect(EvtData *unitSprite, MaskEffectPreset *preset) {
    EvtData *clonedSprite;
    s32 spriteX, spriteY, spriteW, spriteH;
    POLY_FT4 *poly;
