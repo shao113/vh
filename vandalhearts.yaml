@@ -278,15 +278,20 @@ segments:
     subalign: 4
     subsegments:
     - [0x1d4e90, .rdata, supplies]             # 0x801e4690
-    - [0x1d5114, rdata]                        #
+    - [0x1d5114, .rdata, dojo]                 # 0x801e4914
+    - [0x1d5328, .rdata, state_world_map]      # 0x801e4b28
+    - [0x1d5428, .rdata, world_map]            # 0x801e4c28
+    - [0x1d5714, .rdata, town]                 # 0x801e4f14
 
     - [0x1d5ac4, c, supplies]                  # 0x801e52c4 RenderScrollIndicator ...
     - [0x1ddee8, c, dojo]                      # 0x801ed6e8 Dojo_DisplayUnitPreview ...
-    - [0x1de354, bin]                          # 
+    - [0x1e02bc, c, state_world_map]           # 0x801efabc State_WorldMap
+    - [0x1e04b0, c, world_map]                 # 0x801efcb0 WorldMap_HandleCancel ...
+    - [0x1e3cdc, c, town]                      # 0x801f34dc PlayTownBGM ...
 
     - [0x1e6f78, .data, supplies]              # 0x801f6778
     - [0x1e7234, .data, dojo]                  # 0x801f6a34 
-    - [0x1e743c, data]                         # 
+    - [0x1e743c, .data, town]                  # 0x801f6c3c
 
     - [0x1e7540, bin]                          # 0x801f6d40 (.bss?)
 

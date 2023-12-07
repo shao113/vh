@@ -290,6 +290,8 @@ typedef enum EvtFunctionIdx {
    EVTF_TAVERN = 576,
    EVTF_DYNAMIC_ICON = 577,
    EVTF_DOJO = 578,
+   EVTF_WORLD_MAP = 579,
+   EVTF_TOWN = 580,
    EVTF_AUDIO_CMD = 581,
    EVTF_MAIN_MENU_JPN = 582,
    EVTF_BATTLE_PLAYER_EVENT = 585,
@@ -305,6 +307,7 @@ typedef enum EvtFunctionIdx {
    EVTF_STATUS_WINDOW = 595,
    EVTF_STATUS_WINDOW_MGR = 596,
    EVTF_BATTLE_INTRO = 597,
+   EVTF_WORLD_ACTIONS = 598,
    EVTF_MAP32_CAR_RELEASE = 650,
    EVTF_MAP33_LAVA_PIT_PLATFORM = 651,
    EVTF_MAP35_BUTTON = 652,
@@ -2932,6 +2935,41 @@ typedef struct EvtData_577 {
    /* :0x3E */ u8 unk_0x3E[34];
 } EvtData_577;
 
+/* Dojo */
+typedef struct EvtData_578 {
+   /* :0x24 */ s8 timer;
+   /* :0x25 */ s8 chosePathB;
+   /* :0x26 */ u8 unk_0x26[6];
+   /* :0x2C */ s8 partyNeedsRedraw;
+   /* :0x2D */ u8 unk_0x2D[2];
+   /* :0x2F */ s8 partyTop;
+   /* :0x30 */ u8 unk_0x30[2];
+   /* :0x32 */ s8 partyIdx;
+   /* :0x33 */ u8 unk_0x33[41];
+   /* :0x5C */ s16 advancementTimer;
+   /* :0x5E */ u8 unk_0x5E[2];
+} EvtData_578;
+
+/* World Map */
+typedef struct EvtData_579 {
+   /* :0x24 */ u8 unk_0x24[56];
+   /* :0x5C */ s8 timer;
+   /* :0x5D */ u8 unk_0x5D[3];
+} EvtData_579;
+
+/* Town */
+typedef struct EvtData_580 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s8 textPtrIdx;
+   /* :0x29 */ u8 unk_0x29;
+   /* :0x2A */ s16 portrait;
+   /* :0x2C */ u8 unk_0x2C[32];
+   /* :0x4C */ s8 timer;
+   /* :0x4D */ u8 unk_0x4D[15];
+   /* :0x5C */ s8 fadeTimer;
+   /* :0x5D */ u8 unk_0x5D[3];
+} EvtData_580;
+
 /* Audio Command */
 typedef struct EvtData_581 {
    /* :0x24 */ s16 cmd;
@@ -3612,6 +3650,9 @@ typedef struct EvtData {
       EvtData_575 evtf575;         /* Status Portrait */
       EvtData_576 evtf576;         /* Tavern */
       EvtData_577 evtf577;         /* Dynamic Icon */
+      EvtData_578 evtf578;         /* Dojo */
+      EvtData_579 evtf579;         /* World Map */
+      EvtData_580 evtf580;         /* Town */
       EvtData_581 evtf581;         /* Audio Command */
       EvtData_585 evtf585;         /* Battle - Player Event */
       EvtData_586 evtf586;         /* Battle - MsgBox */

@@ -27,6 +27,7 @@ typedef enum AudioCommand {
    // TODO: Descriptive names
    AUDIO_CMD_FADE_OUT_32_4 = 32,
    AUDIO_CMD_FADE_OUT_8_4 = 33,
+   AUDIO_CMD_FADE_OUT_1_4 = 36,
    AUDIO_CMD_FADE_OUT_128_1 = 48,
    AUDIO_CMD_FADE_OUT_8_1 = 49,
    AUDIO_CMD_FADE_OUT_4_1 = 50,

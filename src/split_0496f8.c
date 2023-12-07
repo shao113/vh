@@ -17,7 +17,7 @@ void SetupPartySprites(void);
 void SetDefaultStatsForParty(void);
 void PopulateUnitSpellList(UnitStatus *);
 void SetupPartyBattleUnit(u8, u8, u8, u8);
-void SyncPartyUnits(u8);
+void SyncPartyUnit(u8);
 void Evtf424_BattleEnder(EvtData *);
 void func_8005AA7C(void);
 void SetupBattleUnit(s16, u8, u8, s8, u8, u8, u8, u8, u8);
@@ -349,7 +349,7 @@ void SetupPartyBattleUnit(u8 partyIdx, u8 z, u8 x, u8 direction) {
    }
 }
 
-void SyncPartyUnits(u8 partyIdx) {
+void SyncPartyUnit(u8 partyIdx) {
    UnitStatus *unit;
    s32 i;
    u8 level;
@@ -539,7 +539,7 @@ void Evtf424_BattleEnder(EvtData *evt) {
             case 4:
             case 5:
                SwapOutCodeToVram();
-               gState.primary = STATE_29;
+               gState.primary = STATE_TRIAL_COMPLETE;
                break;
 
             case 10:

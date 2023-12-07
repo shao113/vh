@@ -183,7 +183,7 @@ void ClearScreen(s32 is24bit) {
                  (is24bit ? SCREEN_WIDTH * 3 / 2 : SCREEN_WIDTH), SCREEN_HEIGHT);
 }
 
-void State_FinishChapter(void) {
+void State_ChapterComplete(void) {
    switch (gState.secondary) {
    case 0:
       FadeInScreen(2, 10);

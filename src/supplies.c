@@ -94,14 +94,9 @@ extern MenuMem1 gMenuMem_TransferTo;
 
 extern s16 gScrollIndicatorX;
 extern s16 gScrollIndicatorY;
-extern s16 *gDepotInventoryPtr;     // Expanded list of item indices
-extern u8 gItemEquipmentTypes[101]; // See: EquipmentType
-extern s16 gItemCosts[101];
+extern s16 *gDepotInventoryPtr; // Expanded list of item indices
 extern u8 gPartyMemberInventory[5];
-extern u8 gEquipmentTypeClassCapability[14][9];
 extern u8 gShopInventories[10][10][20]; // [shopId][category][item]
-extern u8 gPartyListBuffer[232];
-extern u8 gCurrentParty[16]; // List of party indices
 extern u8 *gItemDescriptions2[101];
 
 // TODO

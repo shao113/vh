@@ -588,12 +588,16 @@ typedef enum EquipmentType {
 
 extern s8 gCharacterNames[35][7];
 extern s8 gUnitTypeNames[86][11];
+
 extern s8 gItemNames[139][13];
 extern u8 gItemNamesSjis[101][17];
 extern s8 *gItemDescriptions[101];
+extern s16 gItemCosts[101];
 extern s8 gItemEquipmentDisplayPower[104];
 extern u8 gItemEquipmentPower[104];
+extern u8 gItemEquipmentTypes[101]; // See: EquipmentType
 extern u8 gItemSpells[104];
+extern u8 gEquipmentTypeClassCapability[14][9];
 
 extern Spell gSpells[80];
 extern s8 gSpellNames[72][21];
@@ -615,8 +619,10 @@ extern void *gUnitDataPtr;
 extern s16 gCurrentUnitSet[20];
 extern s16 gSceneUnitSets[105][20];
 extern s32 gPartyUnitIds[PARTY_CT][2][3];
+extern u8 gCurrentParty[16]; // List of party indices
+extern u8 gPartyListBuffer[232];
 
-extern s16 gUnitPortraitIds[UNIT_CT];
+extern s16 gUnitPortraitIds[UNIT_DB_CT];
 
 extern s16 gUnitSounds_Attacking1[UNIT_DB_CT][2];
 extern s16 gUnitSounds_Attacking2[UNIT_DB_CT][2];

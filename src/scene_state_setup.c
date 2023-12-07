@@ -19,22 +19,22 @@ void State_SetupScene(void) {
    if (gState.scene == 10) {
       SetupParty(1);
    }
-   if (gState.scene == 0xb) {
+   if (gState.scene == 11) {
       SetupParty(2);
    }
-   if (gState.scene == 0x10) {
+   if (gState.scene == 16) {
       SetupParty(3);
    }
-   if (gState.scene == 0x15) {
+   if (gState.scene == 21) {
       SetupParty(4);
    }
-   if (gState.scene == 0x25) {
+   if (gState.scene == 37) {
       SetupParty(5);
    }
-   if (gState.scene == 0x30) {
+   if (gState.scene == 48) {
       SetupParty(6);
    }
-   if (gState.scene == 0x1f) {
+   if (gState.scene == 31) {
       SetupParty(7);
    }
 
@@ -107,7 +107,7 @@ void State_SetSceneState(void) {
    case 2:
       gState.worldMapDestination = 0;
       gState.primary = STATE_6;
-      gState.worldMapState = 0xb;
+      gState.worldMapState = 11;
       break;
 
    case 3:
@@ -134,7 +134,7 @@ void State_SetSceneState(void) {
 
    case 7:
       gState.primary = STATE_12;
-      gState.scene = 0x14;
+      gState.scene = 20;
       break;
 
    case 8:
@@ -152,435 +152,435 @@ void State_SetSceneState(void) {
    case 10:
       gState.worldMapDestination = 2;
       gState.primary = STATE_6;
-      gState.worldMapState = 0xd;
+      gState.worldMapState = 13;
       break;
 
-   case 0xb:
+   case 11:
       gState.primary = STATE_30;
       gState.mapNum = 13;
       gState.chapter = 1;
       gState.section = 4;
       break;
 
-   case 0xc:
+   case 12:
       gState.primary = STATE_19;
-      gState.scene = 0xd;
+      gState.scene = 13;
       break;
 
-   case 0xd:
+   case 13:
       gState.worldMapDestination = 3;
       gState.primary = STATE_6;
-      gState.worldMapState = 0xe;
+      gState.worldMapState = 14;
       break;
 
-   case 0xe:
+   case 14:
       gState.primary = STATE_20;
       gState.townState = 9;
       break;
 
-   case 0xf:
+   case 15:
       gState.primary = STATE_30;
       gState.mapNum = 14;
       gState.chapter = 1;
       gState.section = 5;
       break;
 
-   case 0x10:
+   case 16:
       gState.primary = STATE_20;
       gState.townState = 10;
       break;
 
-   case 0x11:
+   case 17:
       gState.primary = STATE_30;
       gState.mapNum = 15;
       gState.chapter = 1;
       gState.section = 6;
       break;
 
-   case 0x12:
-      gState.primary = STATE_FINISH_CHAPTER;
+   case 18:
+      gState.primary = STATE_CHAPTER_COMPLETE;
       gState.chapterOutro = 0;
       gState.chapter = 2;
       gState.section = 1;
       break;
 
-   case 0x13:
+   case 19:
       gState.primary = STATE_30;
       gState.mapNum = 16;
       gState.chapter = 2;
       gState.section = 1;
       break;
 
-   case 0x14:
+   case 20:
       gState.primary = STATE_7;
-      gState.townState = 0xb;
+      gState.townState = 11;
       break;
 
-   case 0x15:
+   case 21:
       gState.primary = STATE_30;
       gState.mapNum = 17;
       gState.chapter = 2;
       gState.section = 2;
       break;
 
-   case 0x16:
+   case 22:
       gState.primary = STATE_19;
-      gState.scene = 0x17;
+      gState.scene = 23;
       break;
 
-   case 0x17:
+   case 23:
       gState.primary = STATE_7;
-      gState.townState = 0xc;
+      gState.townState = 12;
       break;
 
-   case 0x18:
+   case 24:
       gState.primary = STATE_30;
       gState.mapNum = 18;
       gState.chapter = 2;
       gState.section = 3;
       break;
 
-   case 0x19:
+   case 25:
       gState.primary = STATE_18;
-      gState.scene = 0x1a;
+      gState.scene = 26;
       break;
 
-   case 0x1a:
+   case 26:
       gState.worldMapDestination = 9;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x17;
+      gState.worldMapState = 23;
       break;
 
-   case 0x1b:
+   case 27:
       gState.primary = STATE_30;
       gState.mapNum = 19;
       gState.chapter = 2;
       gState.section = 4;
       break;
 
-   case 0x1c:
+   case 28:
       if (gState.eventChoice == 0) {
          gState.worldMapDestination = 9;
          gState.primary = STATE_6;
-         gState.worldMapState = 0x18;
+         gState.worldMapState = 24;
       } else {
          gState.primary = STATE_12;
-         gState.scene = 0x1d;
+         gState.scene = 29;
       }
       break;
 
-   case 0x1d:
+   case 29:
       gState.primary = STATE_30;
       gState.mapNum = 20;
       gState.chapter = 2;
       gState.section = 5;
       break;
 
-   case 0x1e:
+   case 30:
       gState.primary = STATE_12;
-      gState.scene = 0x1f;
+      gState.scene = 31;
       break;
 
-   case 0x1f:
+   case 31:
       gState.primary = STATE_6;
-      gState.worldMapState = 0x19;
+      gState.worldMapState = 25;
       gState.worldMapDestination = 10;
       break;
 
-   case 0x20:
+   case 32:
       gState.primary = STATE_30;
       gState.mapNum = 21;
       gState.chapter = 2;
       gState.section = 6;
       break;
 
-   case 0x21:
+   case 33:
       gState.primary = STATE_12;
-      gState.scene = 0x22;
+      gState.scene = 34;
       break;
 
-   case 0x22:
-      gState.primary = STATE_FINISH_CHAPTER;
+   case 34:
+      gState.primary = STATE_CHAPTER_COMPLETE;
       gState.chapterOutro = 1;
       gState.chapter = 3;
       gState.section = 1;
       break;
 
-   case 0x23:
+   case 35:
       gState.primary = STATE_30;
       gState.mapNum = 22;
       gState.chapter = 3;
       gState.section = 1;
       break;
 
-   case 0x24:
-      gState.worldMapDestination = 0xb;
+   case 36:
+      gState.worldMapDestination = 11;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x1f;
+      gState.worldMapState = 31;
       break;
 
-   case 0x25:
+   case 37:
       gState.primary = STATE_7;
-      gState.townState = 0x10;
+      gState.townState = 16;
       break;
 
-   case 0x26:
+   case 38:
       gState.primary = STATE_30;
       gState.mapNum = 23;
       gState.chapter = 3;
       gState.section = 2;
       break;
 
-   case 0x27:
+   case 39:
       gState.primary = STATE_12;
-      gState.scene = 0x28;
+      gState.scene = 40;
       break;
 
-   case 0x28:
+   case 40:
       gState.primary = STATE_30;
       gState.mapNum = 24;
       gState.chapter = 3;
       gState.section = 3;
       break;
 
-   case 0x29:
+   case 41:
       gState.primary = STATE_19;
-      gState.scene = 0x2a;
+      gState.scene = 42;
       break;
 
-   case 0x2a:
+   case 42:
       gState.primary = STATE_7;
-      gState.townState = 0x11;
+      gState.townState = 17;
       break;
 
-   case 0x2b:
+   case 43:
       gState.primary = STATE_30;
       gState.mapNum = 25;
       gState.chapter = 3;
       gState.section = 4;
       break;
 
-   case 0x2c:
-      gState.worldMapDestination = 0xe;
+   case 44:
+      gState.worldMapDestination = 14;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x2a;
+      gState.worldMapState = 42;
       break;
 
-   case 0x2e:
+   case 46:
       gState.primary = STATE_30;
       gState.mapNum = 26;
       gState.chapter = 3;
       gState.section = 5;
       break;
 
-   case 0x2f:
+   case 47:
       gState.primary = STATE_12;
-      gState.scene = 0x30;
+      gState.scene = 48;
       break;
 
-   case 0x30:
+   case 48:
       gState.primary = STATE_30;
       gState.mapNum = 27;
       gState.chapter = 3;
       gState.section = 6;
       break;
 
-   case 0x31:
+   case 49:
       gState.primary = STATE_30;
       gState.mapNum = 28;
       gState.chapter = 3;
       gState.section = 7;
       break;
 
-   case 0x32:
-      gState.primary = STATE_FINISH_CHAPTER;
+   case 50:
+      gState.primary = STATE_CHAPTER_COMPLETE;
       gState.chapterOutro = 2;
       gState.chapter = 4;
       gState.section = 1;
       break;
 
-   case 0x33:
+   case 51:
       gState.primary = STATE_19;
-      gState.scene = 0x34;
+      gState.scene = 52;
       break;
 
-   case 0x34:
+   case 52:
       gState.primary = STATE_7;
-      gState.townState = 0x12;
+      gState.townState = 18;
       break;
 
-   case 0x35:
+   case 53:
       gState.primary = STATE_30;
       gState.mapNum = 29;
       gState.chapter = 4;
       gState.section = 2;
       break;
 
-   case 0x36:
-      gState.worldMapDestination = 0x11;
+   case 54:
+      gState.worldMapDestination = 17;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x33;
+      gState.worldMapState = 51;
       break;
 
-   case 0x37:
+   case 55:
       gState.primary = STATE_30;
       gState.mapNum = 30;
       gState.chapter = 4;
       gState.section = 3;
       break;
 
-   case 0x38:
-      gState.worldMapDestination = 0x12;
+   case 56:
+      gState.worldMapDestination = 18;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x34;
+      gState.worldMapState = 52;
       break;
 
-   case 0x39:
+   case 57:
       gState.primary = STATE_7;
-      gState.townState = 0x16;
+      gState.townState = 22;
       break;
 
-   case 0x3c:
+   case 60:
       gState.primary = STATE_30;
       gState.mapNum = 31;
       gState.chapter = 4;
       gState.section = 4;
       break;
 
-   case 0x3d:
+   case 61:
       gState.primary = STATE_19;
-      gState.scene = 0x3e;
+      gState.scene = 62;
       break;
 
-   case 0x3e:
+   case 62:
       gState.primary = STATE_7;
-      gState.townState = 0x17;
+      gState.townState = 23;
       break;
 
-   case 0x3f:
+   case 63:
       gState.primary = STATE_30;
       gState.mapNum = 32;
       gState.chapter = 4;
       gState.section = 5;
       break;
 
-   case 0x40:
-      gState.worldMapDestination = 0x14;
+   case 64:
+      gState.worldMapDestination = 20;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x35;
+      gState.worldMapState = 53;
       break;
 
-   case 0x41:
+   case 65:
       gState.primary = STATE_30;
       gState.mapNum = 33;
       gState.chapter = 4;
       gState.section = 6;
       break;
 
-   case 0x42:
+   case 66:
       gState.primary = STATE_19;
-      gState.scene = 0x43;
+      gState.scene = 67;
       BigIntAdd(gPartyMembers[UNIT_KIRA].experience, gExperienceLevels[20]);
       break;
 
-   case 0x43:
-      gState.primary = STATE_FINISH_CHAPTER;
+   case 67:
+      gState.primary = STATE_CHAPTER_COMPLETE;
       gState.chapterOutro = 3;
       gState.chapter = 5;
       gState.section = 1;
       break;
 
-   case 0x44:
+   case 68:
       gState.primary = STATE_12;
-      gState.scene = 0x45;
+      gState.scene = 69;
       break;
 
-   case 0x45:
+   case 69:
       gState.primary = STATE_30;
       gState.mapNum = 34;
       gState.chapter = 5;
       gState.section = 1;
       break;
 
-   case 0x46:
+   case 70:
       gState.primary = STATE_7;
-      gState.townState = 0x1a;
+      gState.townState = 26;
       break;
 
-   case 0x47:
+   case 71:
       gState.primary = STATE_3;
       gState.mapNum = 35;
       gState.chapter = 5;
       gState.section = 2;
       break;
 
-   case 0x48:
-      gState.worldMapDestination = 0x18;
+   case 72:
+      gState.worldMapDestination = 24;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x3f;
+      gState.worldMapState = 63;
       break;
 
-   case 0x49:
+   case 73:
       gState.primary = STATE_7;
-      gState.townState = 0x1e;
+      gState.townState = 30;
       break;
 
-   case 0x4a:
+   case 74:
       gState.primary = STATE_30;
       gState.mapNum = 36;
       gState.chapter = 5;
       gState.section = 3;
       break;
 
-   case 0x4b:
+   case 75:
       gState.primary = STATE_19;
-      gState.scene = 0x4c;
+      gState.scene = 76;
       break;
 
-   case 0x4c:
+   case 76:
       gState.primary = STATE_7;
-      gState.townState = 0x1f;
+      gState.townState = 31;
       break;
 
-   case 0x4d:
+   case 77:
       gState.primary = STATE_30;
       gState.mapNum = 37;
       gState.chapter = 5;
       gState.section = 4;
       break;
 
-   case 0x4e:
+   case 78:
       gState.primary = STATE_3;
       gState.mapNum = 38;
       gState.chapter = 5;
       gState.section = 5;
       break;
 
-   case 0x4f:
+   case 79:
       gState.primary = STATE_12;
-      gState.scene = 0x50;
+      gState.scene = 80;
       break;
 
-   case 0x50:
+   case 80:
       gState.primary = STATE_18;
-      gState.scene = 0x51;
+      gState.scene = 81;
       break;
 
-   case 0x51:
-      gState.worldMapDestination = 0x19;
+   case 81:
+      gState.worldMapDestination = 25;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x43;
+      gState.worldMapState = 67;
       break;
 
-   case 0x52:
+   case 82:
       gState.primary = STATE_30;
       gState.mapNum = 39;
       gState.chapter = 5;
       gState.section = 6;
       break;
 
-   case 0x53:
-      gState.primary = STATE_FINISH_CHAPTER;
+   case 83:
+      gState.primary = STATE_CHAPTER_COMPLETE;
       gState.chapterOutro = 4;
       gState.chapter = 6;
       gState.section = 1;
@@ -588,72 +588,72 @@ void State_SetSceneState(void) {
       gPartyMembers[UNIT_ASH].weapon = ITEM_V_HEART;
       break;
 
-   case 0x54:
+   case 84:
       gState.primary = STATE_30;
       gState.mapNum = 40;
       gState.chapter = 6;
       gState.section = 2;
       break;
 
-   case 0x55:
+   case 85:
       gState.primary = STATE_30;
       gState.mapNum = 41;
       gState.chapter = 6;
       gState.section = 3;
       break;
 
-   case 0x56:
+   case 86:
       gState.primary = STATE_12;
-      gState.scene = 0x57;
+      gState.scene = 87;
       break;
 
-   case 0x57:
+   case 87:
       gState.primary = STATE_18;
-      gState.scene = 0x58;
+      gState.scene = 88;
       break;
 
-   case 0x58:
+   case 88:
       gState.primary = STATE_12;
-      gState.scene = 0x59;
+      gState.scene = 89;
       break;
 
-   case 0x59:
-      gState.worldMapDestination = 0x1d;
+   case 89:
+      gState.worldMapDestination = 29;
       gState.primary = STATE_6;
-      gState.worldMapState = 0x49;
+      gState.worldMapState = 73;
       break;
 
-   case 0x5a:
+   case 90:
       gState.primary = STATE_30;
       gState.mapNum = 42;
       gState.chapter = 6;
       gState.section = 4;
       break;
 
-   case 0x5b:
+   case 91:
       if (gState.eventChoice == 0) {
-         gState.worldMapDestination = 0x20;
+         gState.worldMapDestination = 32;
          gState.primary = STATE_6;
-         gState.worldMapState = 0x4a;
+         gState.worldMapState = 74;
       } else {
          gState.primary = STATE_12;
-         gState.scene = 0x5c;
+         gState.scene = 92;
       }
       break;
 
-   case 0x5c:
+   case 92:
       gState.primary = STATE_30;
       gState.mapNum = 43;
       gState.chapter = 6;
       gState.section = 5;
       break;
 
-   case 0x5d:
+   case 93:
       gState.primary = STATE_MOVIE;
       gState.movieIdxToPlay = MOV_END1_WS_STR;
       break;
 
-   case 0x5e:
+   case 94:
       gState.primary = STATE_ENDING_SCREEN;
       break;
    }

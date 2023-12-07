@@ -425,6 +425,9 @@ void Evtf574_DisplayIcon(EvtData *);
 void Evtf575_StatusPortrait(EvtData *);
 void Evtf576_Tavern(EvtData *);
 void Evtf577_DynamicIcon(EvtData *);
+void Evtf578_Dojo(EvtData *);
+void Evtf579_WorldMap(EvtData *);
+void Evtf580_Town(EvtData *);
 void Evtf581_AudioCommand(EvtData *);
 void Evtf582_MainMenu_Jpn(EvtData *);
 void Evtf583_LoadingIndicator(EvtData *);
@@ -1092,9 +1095,9 @@ EvtFunction gEvtFunctionPointers[804] = {
     [575] = Evtf575_StatusPortrait,
     [576] = Evtf576_Tavern,
     [577] = Evtf577_DynamicIcon,
-    [578] = (EvtFunction)0x801edb54,
-    [579] = (EvtFunction)0x801efd0c,
-    [580] = (EvtFunction)0x801f3a5c,
+    [578] = Evtf578_Dojo,
+    [579] = Evtf579_WorldMap,
+    [580] = Evtf580_Town,
     [581] = Evtf581_AudioCommand,
     [582] = Evtf582_MainMenu_Jpn,
     [583] = Evtf583_LoadingIndicator,

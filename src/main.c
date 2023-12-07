@@ -93,8 +93,8 @@ void UpdateState(void) {
    case STATE_TAVERN:
       State_Tavern();
       break;
-   case STATE_9:
-   case STATE_29:
+   case STATE_DOJO:
+   case STATE_TRIAL_COMPLETE:
       State_Dojo();
       break;
    case STATE_MOVIE:
@@ -106,8 +106,8 @@ void UpdateState(void) {
    case STATE_26:
       State_SetupScene();
       break;
-   case STATE_FINISH_CHAPTER:
-      State_FinishChapter();
+   case STATE_CHAPTER_COMPLETE:
+      State_ChapterComplete();
       break;
    case STATE_ENDING_SCREEN:
       State_EndingScreen();
