@@ -780,6 +780,15 @@ typedef struct EvtData_052 {
    /* :0x5C */ struct EvtData *sprite;
 } EvtData_052;
 
+/* Debug - VRAM */
+typedef struct EvtData_059 {
+   /* :0x24 */ s16 widthIdx;
+   /* :0x26 */ s16 heightIdx;
+   /* :0x28 */ s16 width;
+   /* :0x2A */ s16 height;
+   /* :0x2C */ u8 unk_0x2C[52];
+} EvtData_059;
+
 /* Stretch Warp Sprite */
 typedef struct EvtData_062 {
    /* :0x24 */ s16 speed;
@@ -3452,6 +3461,7 @@ typedef struct EvtData {
       EvtData_050 evtf050;         /* Unit Sprites Decoder */
       EvtData_051 evtf051;         /* Floating Damage Text */
       EvtData_052 evtf052;         /* Attack Info Marker */
+      EvtData_059 evtf059;         /* Debug - VRAM */
       EvtData_062 evtf062;         /* Stretch Warp Sprite */
       EvtData_070 evtf070;         /* Fade From Black */
       EvtData_071 evtf071;         /* Fade To Black */
@@ -3710,7 +3720,7 @@ typedef void (*EvtFunction)(EvtData *evt);
 
 extern EvtData gEvtDataArray[EVT_DATA_CT];
 extern EvtFunction gEvtFunctionPointers[804];
-extern EvtData gEvtData050_UnitSpritesDecoder;
+extern EvtData gUnitSpritesDecoder; // evtf050
 extern EvtData *gTempGfxEvt;
 extern EvtData *gTempEvt;
 extern EvtData *gScreenFade;

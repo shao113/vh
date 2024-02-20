@@ -40,6 +40,10 @@ void Evtf046_MapObject_Crate(EvtData *);
 void Evtf047_BattleMapCursor(EvtData *);
 void Evtf048_Push(EvtData *);
 void Evtf049_BattleMapCursorControl(EvtData *);
+void Evtf050_UnitSpritesDecoder(EvtData *);
+void Evtf051_FloatingDamageText(EvtData *);
+void Evtf052_AttackInfoMarker(EvtData *);
+void Evtf059_DebugVram(EvtData *);
 void Evtf060_Healing_FX1(EvtData *);
 void Evtf062_StretchWarpSprite(EvtData *);
 void Evtf070_FadeFromBlack(EvtData *);
@@ -567,16 +571,16 @@ EvtFunction gEvtFunctionPointers[804] = {
     [47] = Evtf047_BattleMapCursor,
     [48] = Evtf048_Push,
     [49] = Evtf049_BattleMapCursorControl,
-    [50] = (EvtFunction)0x800bfcd0,
-    [51] = (EvtFunction)0x800bffe8,
-    [52] = (EvtFunction)0x800c0ac4,
+    [50] = Evtf050_UnitSpritesDecoder,
+    [51] = Evtf051_FloatingDamageText,
+    [52] = Evtf052_AttackInfoMarker,
     [53] = (EvtFunction)NULL,
     [54] = (EvtFunction)NULL,
     [55] = (EvtFunction)NULL,
     [56] = (EvtFunction)NULL,
     [57] = (EvtFunction)NULL,
     [58] = (EvtFunction)NULL,
-    [59] = (EvtFunction)0x800c1088,
+    [59] = Evtf059_DebugVram,
     [60] = Evtf060_Healing_FX1,
     [61] = (EvtFunction)NULL,
     [62] = Evtf062_StretchWarpSprite,

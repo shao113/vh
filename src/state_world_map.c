@@ -107,6 +107,7 @@ s32 State_WorldMap(void) {
       case 73:
       case 74:
          LoadFullscreenImage(CDF_MAP_7_3_TIM);
+         break;
       }
 
       gTempEvt = Evt_GetUnused();

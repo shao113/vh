@@ -1,3 +1,4 @@
+SetLightMatrix = 0x800cff74;
 gTempRect = 0x80123458;
 gMovieDecoder = 0x8012396c;
 gPathGrid10 = 0x8012b6ec;

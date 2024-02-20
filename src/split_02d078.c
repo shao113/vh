@@ -63,7 +63,7 @@ UnitStatus *CreateUnit(u8 last) {
 }
 
 void StartUnitSpritesDecoder(u8 stripIdx) {
-   EvtData *evt = &gEvtData050_UnitSpritesDecoder;
+   EvtData *evt = &gUnitSpritesDecoder;
 
    stripIdx -= 2;
    evt->functionIndex = EVTF_UNIT_SPRITES_DECODER;

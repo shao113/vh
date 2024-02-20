@@ -672,6 +672,7 @@ extern Graphics *gGraphicsPtr;
 extern SVECTOR gLightRotation;
 extern CVECTOR gLightColor;
 extern CVECTOR gSideLightColor[26];
+extern SVECTOR gSideLightNormals[26];
 extern MATRIX gCameraMatrix;
 extern SVECTOR gCameraPos;
 extern SVECTOR gCameraRotation;

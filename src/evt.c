@@ -174,7 +174,7 @@ void Evt_Execute(void) {
 }
 
 void DecodeUnitSprites(void) {
-   EvtData *evt = &gEvtData050_UnitSpritesDecoder;
+   EvtData *evt = &gUnitSpritesDecoder;
    if (evt->functionIndex != EVTF_NULL) {
       (*gEvtFunctionPointers[EVTF_UNIT_SPRITES_DECODER])(evt);
    }

@@ -79,8 +79,7 @@ segments:
     - [0x0041f4, .rdata, split_03c94c]         # 0x800139f4
     - [0x0046cc, .rdata, setup_map_objects]    # 0x80013ecc
     - [0x0047e0, .rdata, map_objects]          # 0x80013fe0
-    - [0x004870, rdata]                        # 0x80014070 (TODO)
-    - [0x004a00, .rdata, ai_048570]            # 0x80014200
+    - [0x004870, .rdata, ai]                   # 0x80014070
     - [0x004b90, .rdata, split_0496f8]         # 0x80014390
     - [0x005088, .rdata, fx_0506c0]            # 0x80014888
     - [0x0050a4, .rdata, fx_057370]            # 0x800148a4
@@ -106,8 +105,8 @@ segments:
     - [0x00591c, .rdata, map_effects_094b4c]   # 0x8001511c
     - [0x0059c8, .rdata, text]                 # 0x800151c8
     - [0x005e48, .rdata, screen_effects]       # 0x80015648
-    - [0x005e94, rdata]                        #
-
+    - [0x005e94, rdata]                        # TODO
+    - [0x006574, .rdata, graphics]             # 0x80015d74
     - [0x006580, .rdata, audio]                # 0x80015d80 
     - [0x0069b0, bin]                          # 0x800161b0 end of audio jtbls
 
@@ -141,8 +140,6 @@ segments:
     - [0x041dc8, c, setup_map_objects]         # 0x800515c8 Evtf043_SetupMapObjects ...
     - [0x042434, c, map_objects]               # 0x80051c34 Evtf035_MapObject_Tree ...                         
     - [0x04620c, c, ai]                        # 0x80055a0c Evtf570_AI_TBD ...
-    - [0x047ba4, bin]                          # 0x800573a4 Evtf402_AI_TBD (TODO)
-    - [0x048570, c, ai_048570]                 # 0x80057d70 Evtf403_AI_TBD ...
     - [0x0496f8, c, split_0496f8]              # 0x80058ef8 ClearPortraitSet ...
     - [0x0506c0, c, fx_0506c0]                 # 0x8005fec0 Evtf119_Fx_TBD ...
     - [0x057370, c, fx_057370]                 # 0x80066b70 Evtf204_SummonCrest ...
@@ -176,7 +173,8 @@ segments:
     - [0x09ae70, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
-    - [0x0b0480, bin]
+    - [0x0b0480, c, graphics]                  # 0x800bfc80 LoadDecodedUnitSprites ...
+    - [0x0b21fc, bin]
 
     - [0x0b4e60, c, audio]                     # 0x800c4660 SetSeqDataPtr ...
     - [0x0b7ac8, bin]                          # 0x800c72c8 End of audio functions
@@ -231,10 +229,10 @@ segments:
     - [0x0f2020, .data, split_09a268]          # 0x80101820
     - [0x0f2038, data]
   
+    - [0x0f7044, .data, graphics]              # 0x80106844
+    - [0x0f7094, data]                         # TODO
     - [0x0f76ec, .data, audio]                 # 0x80106eec
-    - [0x0f91d0, data]                         # 0x801089d0 lib data
-    - [0x111a5c, bin]                # - TBD - # 
-    - [0x111a60, data]               # # # # # # 
+    - [0x0f91d0, bin]                          # 0x801089d0 lib data
 
     - [0x113610, .sdata, temp_sdata]           # 0x80122e10 trying stuff
     - [0x113628, bin] 
@@ -257,8 +255,9 @@ segments:
     - [0x113794, .sdata, map_effects_08dc10]   # 0x80122f94
     - [0x1137a0, .sdata, map_effects_08f524]   # 0x80122fa0
     - [0x1137b0, .sdata, text]                 # 0x80122fb0
-    - [0x113898, .sdata, split_09a268]
-    - [0x11389c, sdata]
+    - [0x113898, .sdata, split_09a268]         # 0x80123098
+    - [0x11389c, sdata]                        # TODO
+    - [0x113928, .sdata, graphics]             # 0x80123128
 
     # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses
     # set through symbol_addrs to override the assembler's placement

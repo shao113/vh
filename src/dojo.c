@@ -764,7 +764,6 @@ void Evtf578_Dojo(EvtData *evt) {
             CloseWindow(0x39);
             func_80044364(10, 0);
             evt->state2++;
-            break;
          }
 
          break;

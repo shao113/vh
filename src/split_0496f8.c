@@ -1045,8 +1045,8 @@ void SetupLight(void) {
    gLightRotation.vx = 0;
    gLightRotation.vy = 0xe00;
    gLightRotation.vz = 0xa00;
-   func_800C1428();
-   func_800C1900();
+   SetupLightNormals();
+   UpdateMapLighting();
    gLightColor.r = 0x80;
    gLightColor.g = 0x80;
    gLightColor.b = 0x80;
