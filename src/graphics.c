@@ -4,9 +4,9 @@
 #include "battle.h"
 #include "state.h"
 #include "field.h"
+#include "inline_gte.h"
 
 #include "PsyQ/kernel.h"
-#include "PsyQ/inline_gte.h"
 #include "PsyQ/gtemac.h"
 
 void LoadDecodedUnitSprites(EvtData *evt) {
@@ -711,13 +711,12 @@ void UpdateLight(s16 intensity) {
    VECTOR vec;
    SVECTOR svec = {0x1000, 0, 0, 0};
    CVECTOR unused;
-   CVECTOR c1 = {128, 128, 128, 0};
-   CVECTOR c2;
+   CVECTOR color1 = {128, 128, 128, 0};
+   CVECTOR color2;
    s32 flag;
    s16 i;
    s32 idx1, idx2;
    s32 j;
-   CVECTOR *pc;
 
    PushMatrix();
    RotMatrix(&gLightRotation, &mtx);
@@ -742,16 +741,10 @@ void UpdateLight(s16 intensity) {
    SetLightMatrix(&mtx);
 
    for (i = 0; i < 26; i++) {
-      // gte_NormalColorCol(&gSideLightNormals[i], &c1, &c2);
-      gte_ldv0(&gSideLightNormals[i]);
-      pc = &c1;
-      gte_ldrgb(pc);
-      gte_nccs();
-      pc = &c2;
-      gte_strgb(pc);
-      gSideLightColor[i].r = gLightColor.r * (intensity + (c2.r * (128 - intensity) >> 7)) >> 7;
-      gSideLightColor[i].g = gLightColor.g * (intensity + (c2.g * (128 - intensity) >> 7)) >> 7;
-      gSideLightColor[i].b = gLightColor.b * (intensity + (c2.b * (128 - intensity) >> 7)) >> 7;
+      gte_NormalColorCol(&gSideLightNormals[i], &color1, &color2);
+      gSideLightColor[i].r = gLightColor.r * (intensity + (color2.r * (128 - intensity) >> 7)) >> 7;
+      gSideLightColor[i].g = gLightColor.g * (intensity + (color2.g * (128 - intensity) >> 7)) >> 7;
+      gSideLightColor[i].b = gLightColor.b * (intensity + (color2.b * (128 - intensity) >> 7)) >> 7;
    }
    PopMatrix();
 
@@ -775,4 +768,138 @@ void UpdateMapLighting(void) {
          UpdateMapTileLighting(&gMapRowPointers[iz][ix]);
       }
    }
+}
+
+void UpdateMapTileLighting(MapTileModel *tileModel) {
+   VECTOR vec_sp10;
+   VECTOR vec_sp20;
+   VECTOR vec_sp30;
+   SVECTOR svec_sp40;
+
+   s16 var_a1, var_a0, var_t0, var_a2;
+   s16 i, j;
+   s32 greatest;
+   s32 iVar6;
+   s16 iVar5;
+   s32 ct1, ct2;
+
+   PushMatrix();
+
+   for (i = 0; i < tileModel->faceCt; i++) {
+      var_a1 = tileModel->faces[i][0];
+      var_a0 = tileModel->faces[i][1];
+      var_t0 = tileModel->faces[i][2];
+      var_a2 = tileModel->faces[i][3];
+
+      if (var_a1 == var_a0) {
+         var_a1 = tileModel->faces[i][2];
+         var_a0 = tileModel->faces[i][0];
+         var_t0 = tileModel->faces[i][3];
+      } else if (var_a1 == var_t0) {
+         var_a1 = tileModel->faces[i][1];
+         var_a0 = tileModel->faces[i][0];
+         var_t0 = tileModel->faces[i][3];
+      } else if (var_a1 == var_a2) {
+         var_a1 = tileModel->faces[i][1];
+         var_a0 = tileModel->faces[i][0];
+         var_t0 = tileModel->faces[i][2];
+      } else if (var_a0 == var_t0) {
+         var_a1 = tileModel->faces[i][1];
+         var_a0 = tileModel->faces[i][0];
+         var_t0 = tileModel->faces[i][3];
+      }
+
+      vec_sp20.vx = tileModel->vertices[var_a0].vx - tileModel->vertices[var_a1].vx;
+      vec_sp20.vy = tileModel->vertices[var_a0].vy - tileModel->vertices[var_a1].vy;
+      vec_sp20.vz = tileModel->vertices[var_a0].vz - tileModel->vertices[var_a1].vz;
+
+      vec_sp30.vx = tileModel->vertices[var_t0].vx - tileModel->vertices[var_a1].vx;
+      vec_sp30.vy = tileModel->vertices[var_t0].vy - tileModel->vertices[var_a1].vy;
+      vec_sp30.vz = tileModel->vertices[var_t0].vz - tileModel->vertices[var_a1].vz;
+
+      gte_OuterProduct0(&vec_sp20, &vec_sp30, &vec_sp10);
+      VectorNormalS(&vec_sp10, &svec_sp40);
+
+      greatest = -0x1000000;
+      iVar5 = 0;
+      for (j = 0; j < 26; j++) {
+         iVar6 = gSideLightNormals[j].vx * svec_sp40.vx + gSideLightNormals[j].vy * svec_sp40.vy +
+                 gSideLightNormals[j].vz * svec_sp40.vz;
+         if (iVar6 > greatest) {
+            iVar5 = j;
+            greatest = iVar6;
+         } else if (iVar6 == greatest) {
+            ct1 = 0;
+            ct2 = 0;
+
+            var_a1 = gSideLightNormals[j].vx;
+            var_a0 = gSideLightNormals[j].vy;
+            var_t0 = gSideLightNormals[j].vz;
+
+            if (svec_sp40.vx > 0 && var_a1 > 0) {
+               ct1++;
+            } else if (svec_sp40.vx < 0 && var_a1 < 0) {
+               ct1++;
+            }
+            if (svec_sp40.vy > 0 && var_a0 > 0) {
+               ct1++;
+            } else if (svec_sp40.vy < 0 && var_a0 < 0) {
+               ct1++;
+            }
+            if (svec_sp40.vz > 0 && var_t0 > 0) {
+               ct1++;
+            } else if (svec_sp40.vz < 0 && var_t0 < 0) {
+               ct1++;
+            }
+
+            if (svec_sp40.vx == var_a1) {
+               ct1++;
+            }
+            if (svec_sp40.vy == var_a0) {
+               ct1++;
+            }
+            if (svec_sp40.vz == var_t0) {
+               ct1++;
+            }
+
+            var_a1 = gSideLightNormals[iVar5].vx;
+            var_a0 = gSideLightNormals[iVar5].vy;
+            var_t0 = gSideLightNormals[iVar5].vz;
+
+            if (svec_sp40.vx > 0 && var_a1 > 0) {
+               ct2++;
+            } else if (svec_sp40.vx < 0 && var_a1 < 0) {
+               ct2++;
+            }
+            if (svec_sp40.vy > 0 && var_a0 > 0) {
+               ct2++;
+            } else if (svec_sp40.vy < 0 && var_a0 < 0) {
+               ct2++;
+            }
+            if (svec_sp40.vz > 0 && var_t0 > 0) {
+               ct2++;
+            } else if (svec_sp40.vz < 0 && var_t0 < 0) {
+               ct2++;
+            }
+
+            if (svec_sp40.vx == var_a1) {
+               ct2++;
+            }
+            if (svec_sp40.vy == var_a0) {
+               ct2++;
+            }
+            if (svec_sp40.vz == var_t0) {
+               ct2++;
+            }
+
+            if (ct1 > ct2) {
+               iVar5 = j;
+            }
+         }
+
+         tileModel->shades[i] = iVar5;
+      }
+   }
+
+   PopMatrix();
 }

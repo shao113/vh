@@ -153,7 +153,7 @@ void Evtf145_HolyLightning_ElectricOrb(EvtData *evt) {
                                  1, GFX_GLOBE_7, 1, GFX_GLOBE_6, 1, GFX_GLOBE_5, 1, GFX_GLOBE_4,
                                  1, GFX_GLOBE_3, 1, GFX_GLOBE_2, 1, GFX_NULL,    0, GFX_NULL};
 
-   s16 cluts[4] = {3, 4, 8, 9};
+   s16 cluts[4] = {CLUT_REDS, CLUT_BLUES, CLUT_PURPLES, CLUT_GREENS};
    EvtData *evt_s4;
    EvtData *orbSprite;
    POLY_FT4 *poly;
@@ -825,8 +825,7 @@ void Evtf200_RollingThunder_FX3(EvtData *evt) {
 #undef EVTF
 #define EVTF 195
 void Evtf195_RollingThunder_FX2(EvtData *evt) {
-   // static u8 cluts[4] = {3, 4, 8, 9}; //? Explicit size gets this placed into sdata
-   static u8 cluts[] = {3, 4, 8, 9}; //? But implicit size gets this placed into data
+   static u8 cluts[] = {CLUT_REDS, CLUT_BLUES, CLUT_PURPLES, CLUT_GREENS};
 
    s32 i;
    EvtData *evt_v1;

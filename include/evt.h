@@ -71,11 +71,13 @@ typedef enum EvtFunctionIdx {
    EVTF_AVALANCHE_DUST_CLOUD = 84,
    EVTF_MAP13_EXPLOSION_PILLAR = 85,
    EVTF_MAP15_HULL_SPLASH = 86,
+   EVTF_FX_TBD_088 = 88,
    EVTF_DAGGER_STORM_FX2 = 90,
    EVTF_DAGGER_STORM_DAGGER = 91,
    EVTF_MOOD_RING_RING = 95,
    EVTF_MOOD_RING_FX2 = 96,
    EVTF_MAP20_SCN30_ARROW = 98,
+   EVTF_FX_TBD_099 = 99,
    EVTF_HEALING_FX2 = 100,
    EVTF_HEALING_SPARKLE = 101,
    EVTF_POISON_FX2 = 102,
@@ -142,6 +144,7 @@ typedef enum EvtFunctionIdx {
    EVTF_THUNDER_BALL_CHILD_ORB = 226,
    EVTF_MAP36_LEENA = 256,
    EVTF_MAP36_VILLAGER = 258,
+   EVTF_FX_TBD_269 = 269,
    EVTF_STAT_RAISED = 272,
    EVTF_OUTWARD_RAY = 273,
    EVTF_CAMERA_TBD_277 = 277,
@@ -177,6 +180,7 @@ typedef enum EvtFunctionIdx {
    EVTF_AVALANCHE_FX3 = 317,
    EVTF_FX_TBD_323 = 323,
    EVTF_EVIL_STREAM_FX2 = 324,
+   EVTF_MAP43_SCN93_MAGIC_STONE_FX = 328,
    EVTF_SALAMANDER_HEAD = 335,
    EVTF_SALAMANDER_SEGMENT = 336,
    EVTF_DAGGER_STORM_BLOOD_SPLATTER = 337,
@@ -329,6 +333,7 @@ typedef enum EvtFunctionIdx {
    EVTF_MAP14_RAISE_SAND_TILE = 669,
    EVTF_MAP14_SAND = 670,
    EVTF_MAP39_SPLASHING_TILE = 672,
+   EVTF_LEENA_FORCEFIELD = 675,
    EVTF_HEAVY_RAINFALL = 676,
    EVTF_RAINFALL_DROP = 677,
    EVTF_RIPPLE = 678,
@@ -338,6 +343,7 @@ typedef enum EvtFunctionIdx {
    EVTF_ROCK_SPURT = 685,
    EVTF_ROCK_SPURT_PARTICLE_2 = 686,
    EVTF_LIGHT_RAINFALL = 687,
+   EVTF_MAGIC_STONE_EXPLOSION = 690,
    EVTF_DYNAMO_HUM_COLORED_BOLT = 700,
    EVTF_FLAMING_ROCK = 702,
    EVTF_MAP40_BARRICADE = 703,
@@ -913,6 +919,17 @@ typedef struct EvtData_087 {
    /* :0x5C */ struct EvtData *entitySprite;
 } EvtData_087;
 
+/* FX - TBD */
+typedef struct EvtData_088 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[14];
+   /* :0x3C */ SVectorXZY coords[4];
+   /* :0x54 */ u8 unk_0x54[12];
+} EvtData_088;
+
 /* Map 15 - Scene 17 - Cinematic */
 typedef struct EvtData_089 {
    /* :0x24 */ s16 todo_x24;
@@ -996,6 +1013,19 @@ typedef struct EvtData_098 {
    /* :0x54 */ SVectorXZY pos;
    /* :0x5A */ u8 unk_0x5A[6];
 } EvtData_098;
+
+/* FX - TBD */
+typedef struct EvtData_099 {
+   /* :0x24 */ s16 theta1;
+   /* :0x26 */ s16 theta2;
+   /* :0x28 */ s16 todo_x28;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ s16 todo_x30;
+   /* :0x32 */ u8 unk_0x32[42];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_099;
 
 /* Healing - FX2 */
 // Used for: Healing, Self Healing, Herb, Megaherb, Moon Pie
@@ -2024,6 +2054,32 @@ typedef struct EvtData_226 {
    /* :0x5C */ struct EvtData *orbSprite;
 } EvtData_226;
 
+/* FX - TBD */
+typedef struct EvtData_269 {
+   /* :0x24 */ s16 theta1;
+   /* :0x26 */ s16 theta2;
+   /* :0x28 */ u8 unk_0x28[44];
+   /* :0x54 */ struct EvtData *sprite;
+   /* :0x58 */ struct EvtData *parent; // evtf270
+   /* :0x5C */ struct EvtData *link;   // evtf269/evtf270
+} EvtData_269;
+
+/* FX - TBD */
+typedef struct EvtData_270 {
+   /* :0x24 */ s16 todo_x24;
+   /* :0x26 */ s16 todo_x26;
+   /* :0x28 */ u8 unk_0x28[48];
+   /* :0x58 */ struct EvtData *sprite;
+   /* :0x5C */ u8 unk_0x5C[4];
+} EvtData_270;
+
+/* Map 36 - Scene 74 - Leena Casting Shield */
+typedef struct EvtData_271 {
+   /* :0x24 */ struct EvtData *entitySprite;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct EvtData *dataStore; // cylinder
+} EvtData_271;
+
 /* Stat Raised */
 typedef struct EvtData_272 {
    /* :0x24 */ u8 unk_0x24[4];
@@ -2039,6 +2095,35 @@ typedef struct EvtData_272 {
    /* :0x5A */ s16 animYOfs;
    /* :0x5C */ struct EvtData *unitSprite;
 } EvtData_272;
+
+/* Outward Ray */
+typedef struct EvtData_273 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[3];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ u8 unk_0x32[2];
+   /* :0x34 */ s16 theta1;
+   /* :0x36 */ s16 theta2;
+   /* :0x38 */ s16 todo_x38;
+   /* :0x3A */ s16 unused_0x3A;
+   /* :0x3C */ SVectorXZY coords[4];
+   /* :0x54 */ s16 todo_x54;
+   /* :0x56 */ u8 unk_0x56[10];
+} EvtData_273;
+
+/* FX - TBD */
+typedef struct EvtData_275 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[6];
+   /* :0x30 */ s16 animFinished;
+   /* :0x32 */ u8 unk_0x32[6];
+   /* :0x38 */ void *animData;
+   /* :0x3C */ u8 unk_0x3C[36];
+} EvtData_275;
 
 /* Zoom - TBD */
 typedef struct EvtData_277 {
@@ -2167,6 +2252,20 @@ typedef struct EvtData_304_661 {
    /* :0x5A */ s16 theta;
    /* :0x5C */ Quad *quadp;
 } EvtData_304_661;
+
+/* Magic Stone - FX (Map 43 - Scene 93 / Map 44 - Scene 00) */
+typedef struct EvtData_305_328 {
+   /* :0x24 */ union {
+      struct EvtData *entitySpriteParam;
+      struct {
+         s16 ray;
+         s16 explosion;
+      } timers;
+   } variant_0x24;
+   /* :0x28 */ u8 unk_0x28[48];
+   /* :0x58 */ struct EvtData *sprite;
+   /* :0x5C */ struct EvtData *unused_0x5C;
+} EvtData_305_328;
 
 /* Healing - FX2 */
 // TODO: Disambiguate from EvtData_100?
@@ -2537,6 +2636,19 @@ typedef struct EvtData_369 {
 } EvtData_369;
 
 /* FX - TBD */
+typedef struct EvtData_276 {
+   /* :0x24 */ union {
+      struct EvtData *targetParam;
+      s16 unk;
+   } variant_0x24;
+   /* :0x28 */ u8 unk_0x28[16];
+   /* :0x38 */ void *animData;
+   /* :0x3C */ u8 unk_0x3C[28];
+   /* :0x58 */ struct EvtData *unused_0x58;
+   /* :0x5C */ struct EvtData *dataStore; // cylinder
+} EvtData_276;
+
+/* FX - TBD */
 typedef struct EvtData_377 {
    /* :0x24 */ s16 theta1;
    /* :0x26 */ s16 theta2;
@@ -2649,6 +2761,13 @@ typedef struct EvtData_392 {
    /* :0x34 */ u8 unk_0x34[40];
    /* :0x5C */ struct EvtData *todo_x5c;
 } EvtData_392;
+
+/* Map 44 - Scene 00 - Explosion Rays */
+typedef struct EvtData_393 {
+   /* :0x24 */ struct EvtData *target;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct EvtData *sprite;
+} EvtData_393;
 
 /* Dynamo Hum - FX1 */
 typedef struct EvtData_394 {
@@ -3476,6 +3595,7 @@ typedef struct EvtData {
       EvtData_080 evtf080;         /* Roman Fire - FX1 */
       EvtData_082 evtf082;         /* FX - TBD */
       EvtData_087 evtf087;         /* Map 20 - Scene 30 - Arrow Spawner */
+      EvtData_088 evtf088;         /* FX - TBD */
       EvtData_089 evtf089;         /* Map 15 - Scene 17 - Cinematic */
       EvtData_090 evtf090;         /* Dagger Storm - FX2 */
       EvtData_091 evtf091;         /* Dagger Storm - Dagger */
@@ -3484,6 +3604,7 @@ typedef struct EvtData {
       EvtData_096 evtf096;         /* Mood Ring - FX2 */
       EvtData_097 evtf097;         /* Mood Ring - FX3 */
       EvtData_098 evtf098;         /* Map 20 - Scene 30 - Arrow */
+      EvtData_099 evtf099;         /* FX - TBD */
       EvtData_100 evtf100;         /* Healing - FX2 */
       EvtData_101 evtf101;         /* Healing Sparkle */
       EvtData_102_227 evtf102;     /* Poison - FX2 */
@@ -3571,7 +3692,13 @@ typedef struct EvtData {
       EvtData_224 evtf224;         /* Thunder Ball - FX1 */
       EvtData_225 evtf225;         /* Thunder Ball - Initial Orb */
       EvtData_226 evtf226;         /* Thunder Ball - Child Orb */
+      EvtData_269 evtf269;         /* FX - TBD */
+      EvtData_270 evtf270;         /* FX - TBD */
+      EvtData_271 evtf271;         /* Map 36 - Scene 74 - Leena Casting Shield */
       EvtData_272 evtf272;         /* Stat Raised */
+      EvtData_273 evtf273;         /* Outward Ray */
+      EvtData_275 evtf275;         /* FX - TBD */
+      EvtData_276 evtf276;         /* FX - TBD */
       EvtData_277 evtf277;         /* Zoom - TBD */
       EvtData_278 evtf278;         /* Faint Sparkles */
       EvtData_279 evtf279;         /* Ice Storm - Camera */
@@ -3586,6 +3713,7 @@ typedef struct EvtData {
       EvtData_292 evtf292;         /* Blue Item Sparkles */
       EvtData_303 evtf303;         /* Map 31 - Scene 61 - Xeno's Flames */
       EvtData_304_661 evtf304;     /* Flame */
+      EvtData_305_328 evtf305;     /* Magic Stone - FX (Map 43 - Scene 93 / Map 44 - Scene 00) */
       EvtData_306_Etc evtf306;     /* Healing - FX2 */
       EvtData_307_324 evtf307;     /* Evil Stream - FX2 / FX3 */
       EvtData_310 evtf310;         /* Life Orb - Beam */
@@ -3631,6 +3759,7 @@ typedef struct EvtData {
       EvtData_389 evtf389;         /* Dark Hurricane - Vortex */
       EvtData_390 evtf390;         /* Dark Hurricane - Vortex Layer */
       EvtData_392 evtf392;         /* FX - TBD */
+      EvtData_393 evtf393;         /* Map 44 - Scene 00 - Explosion Rays */
       EvtData_394 evtf394;         /* Dynamo Hum - FX1 */
       EvtData_395 evtf395;         /* Dynamo Hum - Electric Orb */
       EvtData_399 evtf399;         /* Map 11 */

@@ -648,7 +648,7 @@ void Evtf169_EvilStream_FX1(EvtData *evt) {
 #undef EVTF
 #define EVTF 161
 void Evtf161_PiercingLight_FX1(EvtData *evt) {
-   s16 cluts[4] = {3, 4, 9, 8};
+   s16 cluts[4] = {CLUT_REDS, CLUT_BLUES, CLUT_GREENS, CLUT_PURPLES};
    EvtData *casterSprite;
    EvtData *targetSprite;
    EvtData *homingRay;
@@ -698,7 +698,7 @@ void Evtf161_PiercingLight_FX1(EvtData *evt) {
 #define EVTF 170
 void Evtf170_PiercingRay_Etc_FX1(EvtData *evt) {
    // FX1 for Plasma Wave and Piercing Ray / Aura Gem
-   s16 cluts[5] = {3, 4, 9, 8, 5};
+   s16 cluts[5] = {CLUT_REDS, CLUT_BLUES, CLUT_GREENS, CLUT_PURPLES, CLUT_GRAYS};
    EvtData *casterSprite;
    EvtData *targetSprite;
    EvtData *homingRay;

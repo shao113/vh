@@ -959,7 +959,7 @@ void Evtf_Unk_8008a364(EvtData *evt) {
 #define EVTF 395
 void Evtf395_DynamoHum_ElectricOrb(EvtData *evt) {
    extern s16 gExplosionAnimData_800ff3dc[26];
-   static u8 cluts[5] = {3, 4, 5, 8, 9};
+   static u8 cluts[5] = {CLUT_REDS, CLUT_BLUES, CLUT_GRAYS, CLUT_PURPLES, CLUT_GREENS};
 
    EvtData *parent;
    EvtData *ray;

@@ -170,11 +170,11 @@ segments:
     - [0x097888, c, text]                      # 0x800a7088 CopySjisString ...
     - [0x0992fc, c, screen_effects]            # 0x800a8afc SetScreenEffectOrdering ...
     - [0x09a268, c, split_09a268]              # 0x800a9a68 Evtf391 ...
-    - [0x09ae70, bin]
+    - [0x09d590, bin]
 
     - [0x0a6d54, c, events]                    # 0x800b6554 Evtf417_LoadEvent03 ...
     - [0x0b0480, c, graphics]                  # 0x800bfc80 LoadDecodedUnitSprites ...
-    - [0x0b21fc, bin]
+    - [0x0b2718, bin]
 
     - [0x0b4e60, c, audio]                     # 0x800c4660 SetSeqDataPtr ...
     - [0x0b7ac8, bin]                          # 0x800c72c8 End of audio functions
@@ -227,7 +227,7 @@ segments:
     - [0x0f182c, .data, text]                  # 0x8010102c
     - [0x0f1f64, data]
     - [0x0f2020, .data, split_09a268]          # 0x80101820
-    - [0x0f2038, data]
+    - [0x0f2150, data]
   
     - [0x0f7044, .data, graphics]              # 0x80106844
     - [0x0f7094, data]                         # TODO
@@ -256,7 +256,7 @@ segments:
     - [0x1137a0, .sdata, map_effects_08f524]   # 0x80122fa0
     - [0x1137b0, .sdata, text]                 # 0x80122fb0
     - [0x113898, .sdata, split_09a268]         # 0x80123098
-    - [0x11389c, sdata]                        # TODO
+    - [0x1138ac, sdata]                        # TODO
     - [0x113928, .sdata, graphics]             # 0x80123128
 
     # TODO: Need to figure out how to handle sbss without messing up order. Currently I just rely on the addresses

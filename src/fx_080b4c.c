@@ -252,7 +252,7 @@ void Evtf302_ChimneySmoke(EvtData *evt) {
 #define EVTF 675
 void Evtf675_LeenaForcefield(EvtData *evt) {
    // Spawned by: EVDATA74.DAT->271->675, SetupMapExtras()->256->675
-   static u8 cluts[4] = {3, 4, 8, 9};
+   static u8 cluts[4] = {CLUT_REDS, CLUT_BLUES, CLUT_PURPLES, CLUT_GREENS};
 
    EvtData *targetSprite;
    s32 i;
@@ -724,7 +724,7 @@ void Evtf272_StatRaised(EvtData *evt) {
 void Evtf380_LevelUpFx(EvtData *evt) {
    static Quad quad = {{-32, -32, 0, 0}, {32, -32, 0, 0}, {-32, 32, 0, 0}, {32, 32, 0, 0}};
 
-   u8 cluts[4] = {3, 4, 8, 0};
+   u8 cluts[4] = {CLUT_REDS, CLUT_BLUES, CLUT_PURPLES};
 
    EvtData *evt_s2;
    EvtData *unitSprite;
