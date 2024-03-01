@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "state.h"
 #include "cd_files.h"
@@ -111,10 +111,10 @@ extern u8 D_801F6D98;  // partyIdx of transfer src
 
 void RenderScrollIndicator(u8 downward, s16 x, s16 y) {
    s16 halfSize;
-   EvtData *sprite;
+   Object *sprite;
 
    halfSize = 7 + (rcos(gOscillation) * 3 >> 12);
-   sprite = Evt_GetUnused();
+   sprite = Obj_GetUnused();
    sprite->x1.n = x + halfSize;
    sprite->x3.n = x - halfSize;
    if (!downward) {
@@ -126,20 +126,20 @@ void RenderScrollIndicator(u8 downward, s16 x, s16 y) {
    }
    sprite->d.sprite.otOfs = 5;
    sprite->d.sprite.gfxIdx = GFX_SCROLL_INDICATOR;
-   AddEvtPrim_Gui(gGraphicsPtr->ot, sprite);
+   AddObjPrim_Gui(gGraphicsPtr->ot, sprite);
 }
 
 s32 PositionScrollIndicator(s32 windowId, u8 downward) {
    s32 i;
-   EvtData *p;
-   EvtData *window;
+   Object *p;
+   Object *window;
 
-   p = &gEvtDataArray[0];
+   p = &gObjectArray[0];
 
-   for (i = 0; i < EVT_DATA_CT; i++, p++) {
-      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
-          p->d.evtf004.windowId == windowId && p->state == 2) {
-         window = p->d.evtf004.window;
+   for (i = 0; i < OBJ_DATA_CT; i++, p++) {
+      if ((p->functionIndex == OBJF_WINDOW_TBD_004 || p->functionIndex == OBJF_WINDOW_TBD_005) &&
+          p->d.objf004.windowId == windowId && p->state == 2) {
+         window = p->d.objf004.window;
          gScrollIndicatorX = window->d.sprite2.coords[0].x +
                              (window->d.sprite2.coords[1].x - window->d.sprite2.coords[0].x) / 2;
          if (!downward) {
@@ -161,13 +161,13 @@ void State_ShopOrDepot(void) {
 
    s32 cdFile;
    s32 i;
-   EvtData *iconMgr;
+   Object *iconMgr;
 
    switch (gState.secondary) {
    case 0:
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       gDepotInventoryPtr = (s16 *)gScratch1_801317c0;
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       gState.vsyncMode = 0;
       gClearSavedPadState = 1;
       gState.fieldRenderingDisabled = 1;
@@ -200,25 +200,25 @@ void State_ShopOrDepot(void) {
       }
 
       LoadFullscreenImage(cdFile);
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_FULLSCREEN_IMAGE;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_FULLSCREEN_IMAGE;
 
       LoadText(CDF_SHOP_T_DAT, gText, gTextPointers);
       gState.currentTextPointers = &gTextPointers[1];
 
       for (i = 0; i < 7; i++) {
-         gTempEvt = Evt_GetLastUnused();
-         gTempEvt->functionIndex = EVTF_DYNAMIC_ICON;
-         gTempEvt->d.evtf577.idx = i;
+         gTempObj = Obj_GetLastUnused();
+         gTempObj->functionIndex = OBJF_DYNAMIC_ICON;
+         gTempObj->d.objf577.idx = i;
       }
 
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_SHOP_OR_DEPOT;
-      gTempEvt->d.evtf406.shopId = townShopIds[gState.townState];
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_SHOP_OR_DEPOT;
+      gTempObj->d.objf406.shopId = townShopIds[gState.townState];
 
-      iconMgr = Evt_GetLastUnused();
-      iconMgr->functionIndex = EVTF_ITEM_ICON_MGR;
-      iconMgr->d.evtf009.shopOrDepot = gTempEvt;
+      iconMgr = Obj_GetLastUnused();
+      iconMgr->functionIndex = OBJF_ITEM_ICON_MGR;
+      iconMgr->d.objf009.shopOrDepot = gTempObj;
       gState.secondary++;
       break;
 
@@ -600,11 +600,11 @@ void ListParty(u8 top, u8 rows, s32 unused) {
    *pDst = '\0';
 }
 
-#undef EVTF
-#define EVTF 406
-void Evtf406_ShopOrDepot(EvtData *evt) {
+#undef OBJF
+#define OBJF 406
+void Objf406_ShopOrDepot(Object *obj) {
    s32 i, j;
-   EvtData *evt_v1;
+   Object *obj_v1;
    s16 newEquipment;
 
    gClearSavedPadState = 1;
@@ -630,7 +630,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       gState.gold = 990000;
    }
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       gMenuMem_TransferFrom.ofs = 0;
       gMenuMem_TransferFrom.top = 0;
@@ -656,7 +656,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       gWindowChoicesTopMargin = 10;
       FadeInScreen(2, 10);
       D_801F6D44 = 30;
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
@@ -677,23 +677,23 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          if (i > 7) {
             i = 7;
          }
-         EVT.partyRows = i;
+         OBJ.partyRows = i;
          DisplayBasicWindow(0x01);
 
-         evt_v1 = Evt_GetLastUnused();
-         evt_v1->functionIndex = EVTF_UNIT_PORTRAIT;
-         evt_v1->d.evtf447.windowId = 0x3e;
+         obj_v1 = Obj_GetLastUnused();
+         obj_v1->functionIndex = OBJF_UNIT_PORTRAIT;
+         obj_v1->d.objf447.windowId = 0x3e;
          DrawWindow(0x3e, 400, 0, 64, 63, 210, 280, WBS_CROSSED, 0);
          DisplayCustomWindow(0x3e, 2, 1, 20, 0, 0);
-         evt->state = 2;
-         evt->state2 = 0;
+         obj->state = 2;
+         obj->state2 = 0;
 
          if (gState.primary != STATE_SHOP) {
             DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
             DisplayCustomWindow(0x34, 0, 1, 50, 0, 0);
             DisplayCustomWindow(0x35, 0, 1, 50, 0, 0);
-            evt->state = 50;
-            evt->state2 = 0;
+            obj->state = 50;
+            obj->state2 = 0;
          }
       }
       break;
@@ -707,13 +707,13 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       SlideWindowTo(0x35, 252, 10);
       SetupTownMsgBox(gState.portraitsToLoad[25], 0);
       DrawText(68, 20, 30, 2, 0, gTextPointers[1]);
-      evt->state = 3;
-      evt->state2 = 0;
+      obj->state = 3;
+      obj->state2 = 0;
       break;
 
    case 3:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // Buy/Sell/Exit
          gWindowChoiceHeight = 17;
@@ -722,33 +722,33 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawText(324, 11, 10, 2, 0, gTextPointers[2]);
          gWindowActiveIdx = 0x38;
          DisplayCustomWindowWithSetChoice(0x38, 5, 1, 40, 0, 0, gState.choices[0]);
-         evt->state2 += 2;
+         obj->state2 += 2;
          break;
 
       case 1:
          gWindowActiveIdx = 0x38;
          SlideWindowTo(0x38, 110, 110);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 2:
          if (gWindowChoice.raw == 0x3801) {
             // Buy
             SlideWindowTo(0x38, 12, 90);
-            evt->state = 4;
-            evt->state2 = 0;
+            obj->state = 4;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3802) {
             // Sell
             SlideWindowTo(0x38, 12, 90);
-            evt->state = 30;
-            evt->state2 = 0;
+            obj->state = 30;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3803 || gWindowChoice.raw == 0x38ff) {
             // Exit
             CloseWindow(0x38);
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
       }
 
@@ -756,7 +756,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 4:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // Weapon/Armor/Item/Quit
          gWindowChoiceHeight = 17;
@@ -765,44 +765,44 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawText(404, 11, 10, 2, 0, gTextPointers[3]);
          DisplayCustomWindowWithSetChoice(0x39, 2, 1, 30, 0, 0, gState.choices[1]);
          SlideWindowTo(0x39, 110, 110);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          // "What sort of thing are you looking for?"
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[4]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 2:
          gWindowActiveIdx = 0x39;
          if (gWindowChoice.raw == 0x3901) {
-            EVT.category = INVENTORY_WEAPON;
-            EVT.shopRows = 7;
-            EVT.shopTop = gMenuMem_ShopOrDepot[INVENTORY_WEAPON].top;
-            evt->state = 6;
-            evt->state2 = 0;
+            OBJ.category = INVENTORY_WEAPON;
+            OBJ.shopRows = 7;
+            OBJ.shopTop = gMenuMem_ShopOrDepot[INVENTORY_WEAPON].top;
+            obj->state = 6;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3902) {
-            EVT.category = INVENTORY_ARMOR;
-            EVT.shopRows = 7;
-            EVT.shopTop = gMenuMem_ShopOrDepot[INVENTORY_ARMOR].top;
-            evt->state = 6;
-            evt->state2 = 0;
+            OBJ.category = INVENTORY_ARMOR;
+            OBJ.shopRows = 7;
+            OBJ.shopTop = gMenuMem_ShopOrDepot[INVENTORY_ARMOR].top;
+            obj->state = 6;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3903) {
-            EVT.category = INVENTORY_ITEM;
-            EVT.shopRows = 7;
-            EVT.shopTop = gMenuMem_ShopOrDepot[INVENTORY_ITEM].top;
-            evt->state = 6;
-            evt->state2 = 0;
+            OBJ.category = INVENTORY_ITEM;
+            OBJ.shopRows = 7;
+            OBJ.shopTop = gMenuMem_ShopOrDepot[INVENTORY_ITEM].top;
+            obj->state = 6;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3904 || gWindowChoice.raw == 0x39ff) {
             SlideWindowTo(0x39, 325, 110);
             CloseWindow(0x39);
-            evt->state = 5;
-            evt->state2 = 0;
+            obj->state = 5;
+            obj->state2 = 0;
          }
       }
 
@@ -812,13 +812,13 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       // "Let me know if you need anything else."
       DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
       DrawText(68, 20, 30, 2, 0, gTextPointers[5]);
-      evt->state = 3;
-      evt->state2 = 1;
+      obj->state = 3;
+      obj->state2 = 1;
       break;
 
    case 6:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Do you see anything that interests you?"
          SlideWindowTo(0x39, 460, 110);
@@ -826,36 +826,36 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          SlideWindowTo(0x38, -100, 90);
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[6]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         gState.choices[2] = gMenuMem_ShopOrDepot[EVT.category].ofs;
+         gState.choices[2] = gMenuMem_ShopOrDepot[OBJ.category].ofs;
          gWindowChoiceHeight = 17;
          gWindowChoicesTopMargin = 10;
-         DrawWindow(0x3a, 0, 100, 200, 136, 84, 250, WBS_CROSSED, EVT.shopRows);
-         ListShopInventory(EVT.shopId, EVT.category, EVT.shopTop, EVT.shopRows, 0);
+         DrawWindow(0x3a, 0, 100, 200, 136, 84, 250, WBS_CROSSED, OBJ.shopRows);
+         ListShopInventory(OBJ.shopId, OBJ.category, OBJ.shopTop, OBJ.shopRows, 0);
          DrawSjisText(28, 110, 19, 2, 0, sInventoryBuffer);
          DisplayCustomWindowWithSetChoice(0x3a, 5, 1, 50, 1, 0, gState.choices[2]);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 2:
          SlideWindowTo(0x3e, 210, 250);
          SlideWindowTo(0x01, 350, 90);
-         EVT.selectionModified = 0;
-         evt->state2++;
+         OBJ.selectionModified = 0;
+         obj->state2++;
 
       // fallthrough
       case 3:
-         gMenuMem_ShopOrDepot[EVT.category].ofs = gState.choices[2];
-         gMenuMem_ShopOrDepot[EVT.category].top = EVT.shopTop;
+         gMenuMem_ShopOrDepot[OBJ.category].ofs = gState.choices[2];
+         gMenuMem_ShopOrDepot[OBJ.category].top = OBJ.shopTop;
          if ((gPadStateNewPresses & PAD_DOWN) || (gPadStateNewPresses & PAD_UP)) {
-            EVT.selectionModified = 1;
+            OBJ.selectionModified = 1;
          }
-         i = gShopInventories[EVT.shopId][EVT.category][EVT.shopTop + gHighlightedChoice - 1];
-         if (EVT.selectionModified && EVT.item != i) {
-            EVT.item = i;
+         i = gShopInventories[OBJ.shopId][OBJ.category][OBJ.shopTop + gHighlightedChoice - 1];
+         if (OBJ.selectionModified && OBJ.item != i) {
+            OBJ.item = i;
             DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
             DrawText(68, 20, 29, 2, 0, gItemDescriptions2[i]);
          }
@@ -867,16 +867,16 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             CloseWindow(0x3a);
             gWindowActiveIdx = 0;
             D_8012338C = 0;
-            evt->state = 4;
-            evt->state2 = 0;
+            obj->state = 4;
+            obj->state2 = 0;
             SlideWindowTo(0x38, 12, 90);
          } else if (gWindowChoice.s.windowId == 0x3a && gWindowChoice.s.choice != 0) {
-            EVT.itemToPurchase =
-                gShopInventories[EVT.shopId][EVT.category][EVT.shopTop + gHighlightedChoice - 1];
-            if (EVT.itemToPurchase != ITEM_NULL) {
+            OBJ.itemToPurchase =
+                gShopInventories[OBJ.shopId][OBJ.category][OBJ.shopTop + gHighlightedChoice - 1];
+            if (OBJ.itemToPurchase != ITEM_NULL) {
                gWindowActiveIdx = 0;
-               evt->state = 7;
-               evt->state2 = 0;
+               obj->state = 7;
+               obj->state2 = 0;
             }
          }
          break;
@@ -886,7 +886,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 7:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Would you like to purchase this?"
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
@@ -898,7 +898,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawWindow(0x37, 256, 140, 64, 54, 210, 126, WBS_CROSSED, 2);
          DrawText(260, 151, 10, 2, 0, gTextPointers[8]);
          DisplayCustomWindow(0x37, 2, 1, 5, 0, 0);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -906,18 +906,18 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             // No
             CloseWindow(0x37);
             gWindowActiveIdx = 0;
-            evt->state = 8;
-            evt->state2 = 0;
+            obj->state = 8;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3701) {
             // Yes
             CloseWindow(0x37);
             gWindowActiveIdx = 0;
-            if (gItemCosts[EVT.itemToPurchase] > gState.gold) {
-               evt->state2++;
+            if (gItemCosts[OBJ.itemToPurchase] > gState.gold) {
+               obj->state2++;
             } else {
-               evt->state = 9;
-               evt->state2 = 0;
+               obj->state = 9;
+               obj->state2 = 0;
             }
          }
          break;
@@ -926,8 +926,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          // "You don't have enough money. Is there anything else I can get you?"
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[9]);
-         evt->state = 6;
-         evt->state2 = 2;
+         obj->state = 6;
+         obj->state2 = 2;
       }
 
       break;
@@ -936,34 +936,34 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       // "Too bad. Anything else?"
       DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
       DrawText(68, 20, 30, 2, 0, gTextPointers[10]);
-      evt->state = 6;
-      evt->state2 = 2;
+      obj->state = 6;
+      obj->state2 = 2;
       break;
 
    case 9:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Thank you.  Who shall I give it to?"
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[11]);
          SlideWindowTo(0x3a, -210, 90);
-         DrawWindow(0x3b, 412, 100, 96, 136, 330, 290, WBS_CROSSED, EVT.partyRows);
-         ListParty(EVT.partyTop, EVT.partyRows, 0);
+         DrawWindow(0x3b, 412, 100, 96, 136, 330, 290, WBS_CROSSED, OBJ.partyRows);
+         ListParty(OBJ.partyTop, OBJ.partyRows, 0);
          DrawSjisText(420, 110, 19, 2, 0, gPartyListBuffer);
          DisplayCustomWindowWithSetChoice(0x3b, 5, 1, 50, 1, 0, gState.choices[3]);
          SlideWindowTo(0x3b, 10, 90);
-         EVT.partyChoice = EVT.partyTop + GetWindowChoice(0x3b);
-         DrawSmallEquipmentWindow(gCurrentParty[EVT.partyChoice - 1]);
+         OBJ.partyChoice = OBJ.partyTop + GetWindowChoice(0x3b);
+         DrawSmallEquipmentWindow(gCurrentParty[OBJ.partyChoice - 1]);
          DrawWindow(0x3c, 256, 200, 128, 36, 108, 188, WBS_CROSSED, 0);
-         DrawSjisText(272, 210, 19, 2, 0, gItemNamesSjis[EVT.itemToPurchase]);
+         DrawSjisText(272, 210, 19, 2, 0, gItemNamesSjis[OBJ.itemToPurchase]);
          DisplayCustomWindow(0x3c, 2, 1, 50, 1, 0);
-         evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_DISPLAY_ICON;
-         evt_v1->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + EVT.itemToPurchase;
-         evt_v1->x1.n = 116;
-         evt_v1->y1.n = 198;
-         evt->state2++;
+         obj_v1 = Obj_GetUnused();
+         obj_v1->functionIndex = OBJF_DISPLAY_ICON;
+         obj_v1->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + OBJ.itemToPurchase;
+         obj_v1->x1.n = 116;
+         obj_v1->y1.n = 198;
+         obj->state2++;
 
       // fallthrough
       case 1:
@@ -971,31 +971,31 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawWindow(0x3d, 324, 140, 64, 54, 350, 170, WBS_CROSSED, 0);
          DrawSjisText(328, 151, 10, 2, 0, sStatChangeBuffer);
          DisplayCustomWindow(0x3d, 2, 1, 5, 0, 0);
-         EVT.partyIdx2 = -1;
-         evt->state2++;
+         OBJ.partyIdx2 = -1;
+         obj->state2++;
 
       // fallthrough
       case 2:
-         i = GetWindowChoice(0x3b) + EVT.partyTop;
-         if (i != EVT.partyChoice && i < 13) {
-            EVT.partyChoice = i;
+         i = GetWindowChoice(0x3b) + OBJ.partyTop;
+         if (i != OBJ.partyChoice && i < 13) {
+            OBJ.partyChoice = i;
             DrawSmallEquipmentWindow(gCurrentParty[i - 1]);
          }
-         if (EVT.category != INVENTORY_ITEM) {
+         if (OBJ.category != INVENTORY_ITEM) {
             SlideWindowTo(0x3d, 240, 170);
          }
-         i = gCurrentParty[EVT.partyTop + gHighlightedChoice - 1];
-         if (EVT.partyIdx2 != i && i < 13) {
-            EVT.partyIdx2 = i;
+         i = gCurrentParty[OBJ.partyTop + gHighlightedChoice - 1];
+         if (OBJ.partyIdx2 != i && i < 13) {
+            OBJ.partyIdx2 = i;
             DrawWindow(0x3d, 324, 140, 64, 54, 240, 170, WBS_CROSSED, 0);
-            UpdateStatChangeText(EVT.itemToPurchase, EVT.partyIdx2);
+            UpdateStatChangeText(OBJ.itemToPurchase, OBJ.partyIdx2);
             DrawSjisText(328, 151, 10, 2, 0, sStatChangeBuffer);
          }
          if (i >= 13) {
             // Depot
             SlideWindowTo(0x3d, 350, 170);
          }
-         gState.unitListPortraitId = gUnitPortraitIds[gUnits[EVT.partyIdx2].unitId];
+         gState.unitListPortraitId = gUnitPortraitIds[gUnits[OBJ.partyIdx2].unitId];
          SlideWindowTo(0x3e, 210, 128);
          SlideWindowTo(1, 108, 90);
          if (i >= 13) {
@@ -1014,44 +1014,44 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             CloseWindow(0x3d);
             SlideWindowTo(0x3e, 210, 250);
             SlideWindowTo(1, 350, 90);
-            evt->state = 8;
-            evt->state2 = 0;
+            obj->state = 8;
+            obj->state2 = 0;
          }
          if (gWindowChoice.s.windowId == 0x3b && gWindowChoice.s.choice != 0) {
-            EVT.partyIdx1 = gCurrentParty[EVT.partyTop + gHighlightedChoice - 1];
-            if (EVT.partyIdx1 == 13) {
+            OBJ.partyIdx1 = gCurrentParty[OBJ.partyTop + gHighlightedChoice - 1];
+            if (OBJ.partyIdx1 == 13) {
                // Depot
-               evt->state = 10;
-               evt->state2 = 0;
+               obj->state = 10;
+               obj->state2 = 0;
             } else {
-               if (EVT.category < INVENTORY_ITEM) {
-                  if (gEquipmentTypeClassCapability[gItemEquipmentTypes[EVT.itemToPurchase]]
-                                                   [gUnits[EVT.partyIdx1].class] &&
-                      !(EVT.category == INVENTORY_WEAPON && EVT.partyIdx1 == UNIT_ASH &&
+               if (OBJ.category < INVENTORY_ITEM) {
+                  if (gEquipmentTypeClassCapability[gItemEquipmentTypes[OBJ.itemToPurchase]]
+                                                   [gUnits[OBJ.partyIdx1].class] &&
+                      !(OBJ.category == INVENTORY_WEAPON && OBJ.partyIdx1 == UNIT_ASH &&
                         gPartyMembers[UNIT_ASH].weapon == ITEM_V_HEART)) {
                      gWindowActiveIdx = 0;
-                     evt->state = 12;
-                     evt->state2 = 0;
+                     obj->state = 12;
+                     obj->state2 = 0;
                   } else {
-                     evt->state = 13;
-                     evt->state2 = 0;
+                     obj->state = 13;
+                     obj->state2 = 0;
                   }
                   SlideWindowTo(0x3d, 350, 170);
                   CloseWindow(0x3d);
                   SlideWindowTo(0x3e, 240, 168);
                }
-               if (EVT.category == INVENTORY_ITEM) {
-                  if (gPartyMembers[EVT.partyIdx1].items[0] == ITEM_NULL) {
-                     gPartyMembers[EVT.partyIdx1].items[0] = EVT.itemToPurchase;
-                     evt->state = 11;
-                     evt->state2 = 0;
-                  } else if (gPartyMembers[EVT.partyIdx1].items[1] == ITEM_NULL) {
-                     gPartyMembers[EVT.partyIdx1].items[1] = EVT.itemToPurchase;
-                     evt->state = 11;
-                     evt->state2 = 0;
+               if (OBJ.category == INVENTORY_ITEM) {
+                  if (gPartyMembers[OBJ.partyIdx1].items[0] == ITEM_NULL) {
+                     gPartyMembers[OBJ.partyIdx1].items[0] = OBJ.itemToPurchase;
+                     obj->state = 11;
+                     obj->state2 = 0;
+                  } else if (gPartyMembers[OBJ.partyIdx1].items[1] == ITEM_NULL) {
+                     gPartyMembers[OBJ.partyIdx1].items[1] = OBJ.itemToPurchase;
+                     obj->state = 11;
+                     obj->state2 = 0;
                   } else {
                      // "#32's hands are full. Is there someone else I should give it to?"
-                     gStringTable[32] = gStringTable[EVT.partyIdx1];
+                     gStringTable[32] = gStringTable[OBJ.partyIdx1];
                      DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
                      DrawText(68, 20, 30, 2, 0, gTextPointers[12]);
                   }
@@ -1066,15 +1066,15 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 10:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Okay, I'll put it in your supply wagon."
-         gState.gold -= gItemCosts[EVT.itemToPurchase];
-         gState.depot[EVT.itemToPurchase]++;
+         gState.gold -= gItemCosts[OBJ.itemToPurchase];
+         gState.depot[OBJ.itemToPurchase]++;
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[13]);
          gWindowActiveIdx = 0;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
@@ -1084,8 +1084,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             SlideWindowTo(0x3c, 308, 190);
             CloseWindow(0x3c);
             ClearIcons();
-            evt->state = 19;
-            evt->state2 = 0;
+            obj->state = 19;
+            obj->state2 = 0;
          }
          break;
       }
@@ -1094,15 +1094,15 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 11:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Okay, here you go. Thanks very much."
-         gState.gold -= gItemCosts[EVT.itemToPurchase];
+         gState.gold -= gItemCosts[OBJ.itemToPurchase];
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[14]);
-         DrawSmallEquipmentWindow(EVT.partyIdx1);
+         DrawSmallEquipmentWindow(OBJ.partyIdx1);
          gWindowActiveIdx = 0;
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -1112,8 +1112,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             SlideWindowTo(0x3c, 308, 190);
             CloseWindow(0x3c);
             ClearIcons();
-            evt->state = 19;
-            evt->state2 = 0;
+            obj->state = 19;
+            obj->state2 = 0;
          }
          break;
       }
@@ -1122,7 +1122,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 12:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Do you want to equip yourself with it now?"
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
@@ -1134,64 +1134,64 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawWindow(0x37, 256, 140, 64, 54, 210, 126, WBS_CROSSED, 2);
          DrawText(260, 151, 10, 2, 0, gTextPointers[16]);
          DisplayCustomWindow(0x37, 2, 1, 5, 0, 0);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
          if (gWindowChoice.raw == 0x3701) {
             // "It suits you very well."
-            gState.gold -= gItemCosts[EVT.itemToPurchase];
+            gState.gold -= gItemCosts[OBJ.itemToPurchase];
             CloseWindow(0x37);
             DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
             DrawText(68, 20, 30, 2, 0, gTextPointers[17]);
 
-            i = gItemEquipmentTypes[EVT.itemToPurchase];
-            newEquipment = EVT.itemToPurchase;
+            i = gItemEquipmentTypes[OBJ.itemToPurchase];
+            newEquipment = OBJ.itemToPurchase;
             if (i <= EQUIPMENT_TYPE_V_HEART) {
-               i = gItemCosts[gPartyMembers[EVT.partyIdx1].weapon];
-               EVT.formerEquipment = gPartyMembers[EVT.partyIdx1].weapon;
-               gPartyMembers[EVT.partyIdx1].weapon = newEquipment;
+               i = gItemCosts[gPartyMembers[OBJ.partyIdx1].weapon];
+               OBJ.formerEquipment = gPartyMembers[OBJ.partyIdx1].weapon;
+               gPartyMembers[OBJ.partyIdx1].weapon = newEquipment;
             } else if (i <= EQUIPMENT_TYPE_V_HELM) {
-               i = gItemCosts[gPartyMembers[EVT.partyIdx1].helmet];
-               EVT.formerEquipment = gPartyMembers[EVT.partyIdx1].helmet;
-               gPartyMembers[EVT.partyIdx1].helmet = newEquipment;
+               i = gItemCosts[gPartyMembers[OBJ.partyIdx1].helmet];
+               OBJ.formerEquipment = gPartyMembers[OBJ.partyIdx1].helmet;
+               gPartyMembers[OBJ.partyIdx1].helmet = newEquipment;
             } else {
-               i = gItemCosts[gPartyMembers[EVT.partyIdx1].armor];
-               EVT.formerEquipment = gPartyMembers[EVT.partyIdx1].armor;
-               gPartyMembers[EVT.partyIdx1].armor = newEquipment;
+               i = gItemCosts[gPartyMembers[OBJ.partyIdx1].armor];
+               OBJ.formerEquipment = gPartyMembers[OBJ.partyIdx1].armor;
+               gPartyMembers[OBJ.partyIdx1].armor = newEquipment;
             }
-            DrawSmallEquipmentWindow(EVT.partyIdx1);
+            DrawSmallEquipmentWindow(OBJ.partyIdx1);
             if (i == 0) {
                // Priceless equipment can't be sold
-               evt->state = 14;
-               evt->state2 = 0;
+               obj->state = 14;
+               obj->state2 = 0;
             } else {
-               evt->state = 17;
-               evt->state2 = 0;
+               obj->state = 17;
+               obj->state2 = 0;
             }
          }
          if (gWindowChoice.raw == 0x3702 || gWindowChoice.raw == 0x37ff) {
             CloseWindow(0x37);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
-         if (gPartyMembers[EVT.partyIdx1].items[0] == ITEM_NULL) {
-            gPartyMembers[EVT.partyIdx1].items[0] = EVT.itemToPurchase;
-            evt->state = 11;
-            evt->state2 = 0;
-         } else if (gPartyMembers[EVT.partyIdx1].items[1] == ITEM_NULL) {
-            gPartyMembers[EVT.partyIdx1].items[1] = EVT.itemToPurchase;
-            evt->state = 11;
-            evt->state2 = 0;
+         if (gPartyMembers[OBJ.partyIdx1].items[0] == ITEM_NULL) {
+            gPartyMembers[OBJ.partyIdx1].items[0] = OBJ.itemToPurchase;
+            obj->state = 11;
+            obj->state2 = 0;
+         } else if (gPartyMembers[OBJ.partyIdx1].items[1] == ITEM_NULL) {
+            gPartyMembers[OBJ.partyIdx1].items[1] = OBJ.itemToPurchase;
+            obj->state = 11;
+            obj->state2 = 0;
          } else {
             // "#32's hands are full. Is there someone else I should give it to?"
             DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
-            gStringTable[32] = gStringTable[EVT.partyIdx1];
+            gStringTable[32] = gStringTable[OBJ.partyIdx1];
             DrawText(68, 20, 30, 2, 0, gTextPointers[18]);
-            evt->state = 9;
-            evt->state2 = 1;
+            obj->state = 9;
+            obj->state2 = 1;
          }
          break;
       }
@@ -1200,10 +1200,10 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 13:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "#32 cannot use this. Shall I give it to him anyway?"
-         gStringTable[32] = gStringTable[EVT.partyIdx1];
+         gStringTable[32] = gStringTable[OBJ.partyIdx1];
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[19]);
          // YES/NO
@@ -1211,7 +1211,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawText(260, 151, 30, 2, 0, gTextPointers[20]);
          DisplayCustomWindow(0x37, 2, 1, 5, 0, 0);
          gWindowActiveIdx = 0x37;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
@@ -1220,12 +1220,12 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             CloseWindow(0x37);
             DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
             DrawText(68, 20, 30, 2, 0, gTextPointers[21]);
-            evt->state = 9;
-            evt->state2 = 1;
+            obj->state = 9;
+            obj->state2 = 1;
          } else if (gWindowChoice.raw == 0x3701) {
             CloseWindow(0x37);
-            evt->state = 12;
-            evt->state2 = 2;
+            obj->state = 12;
+            obj->state2 = 2;
          }
          break;
       }
@@ -1234,21 +1234,21 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 14:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         if (gPartyMembers[EVT.partyIdx1].items[0] == ITEM_NULL ||
-             gPartyMembers[EVT.partyIdx1].items[1] == ITEM_NULL) {
-            evt->state2++;
+         if (gPartyMembers[OBJ.partyIdx1].items[0] == ITEM_NULL ||
+             gPartyMembers[OBJ.partyIdx1].items[1] == ITEM_NULL) {
+            obj->state2++;
          } else {
-            evt->state = 16;
-            evt->state2 = 0;
+            obj->state = 16;
+            obj->state2 = 0;
          }
 
       // fallthrough
       case 1:
          if (PressedCircleOrX_2()) {
-            evt->state = 15;
-            evt->state2 = 0;
+            obj->state = 15;
+            obj->state2 = 0;
          }
          break;
       }
@@ -1257,18 +1257,18 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 15:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Thank you. Here is your former equipment."
-         if (gPartyMembers[EVT.partyIdx1].items[0] == ITEM_NULL) {
-            gPartyMembers[EVT.partyIdx1].items[0] = EVT.formerEquipment;
+         if (gPartyMembers[OBJ.partyIdx1].items[0] == ITEM_NULL) {
+            gPartyMembers[OBJ.partyIdx1].items[0] = OBJ.formerEquipment;
          } else {
-            gPartyMembers[EVT.partyIdx1].items[1] = EVT.formerEquipment;
+            gPartyMembers[OBJ.partyIdx1].items[1] = OBJ.formerEquipment;
          }
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[22]);
-         DrawSmallEquipmentWindow(EVT.partyIdx1);
-         evt->state2++;
+         DrawSmallEquipmentWindow(OBJ.partyIdx1);
+         obj->state2++;
          break;
 
       case 1:
@@ -1278,8 +1278,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             SlideWindowTo(0x3c, 308, 190);
             CloseWindow(0x3c);
             ClearIcons();
-            evt->state = 19;
-            evt->state2 = 0;
+            obj->state = 19;
+            obj->state2 = 0;
          }
          break;
       }
@@ -1288,13 +1288,13 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 16:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "I'll put your former equipment in the supply wagon. Thanks."
-         gState.depot[EVT.formerEquipment]++;
+         gState.depot[OBJ.formerEquipment]++;
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[23]);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -1304,8 +1304,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             SlideWindowTo(0x3c, 308, 190);
             CloseWindow(0x3c);
             ClearIcons();
-            evt->state = 19;
-            evt->state2 = 0;
+            obj->state = 19;
+            obj->state2 = 0;
          }
          break;
       }
@@ -1314,10 +1314,10 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 17:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          if (PressedCircleOrX_2()) {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -1329,22 +1329,22 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawWindow(0x37, 256, 140, 64, 54, 210, 126, WBS_CROSSED, 2);
          DrawText(260, 151, 30, 2, 0, gTextPointers[25]);
          DisplayCustomWindow(0x37, 2, 1, 5, 0, 0);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 2:
          if (gWindowChoice.raw == 0x3701) {
-            evt->state = 18;
-            evt->state2 = 0;
+            obj->state = 18;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x3702 || gWindowChoice.raw == 0x37ff) {
             CloseWindow(0x37);
-            if (gPartyMembers[EVT.partyIdx1].items[0] == ITEM_NULL ||
-                gPartyMembers[EVT.partyIdx1].items[1] == ITEM_NULL) {
-               evt->state = 15;
-               evt->state2 = 0;
+            if (gPartyMembers[OBJ.partyIdx1].items[0] == ITEM_NULL ||
+                gPartyMembers[OBJ.partyIdx1].items[1] == ITEM_NULL) {
+               obj->state = 15;
+               obj->state2 = 0;
             } else {
-               evt->state = 16;
-               evt->state2 = 0;
+               obj->state = 16;
+               obj->state2 = 0;
             }
          }
          break;
@@ -1354,14 +1354,14 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 18:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Thank you. Please accept this as payment in return."
-         gState.gold += gItemCosts[EVT.formerEquipment] / 2;
+         gState.gold += gItemCosts[OBJ.formerEquipment] / 2;
          CloseWindow(0x37);
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[26]);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -1371,8 +1371,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             SlideWindowTo(0x3c, 308, 190);
             CloseWindow(0x3c);
             ClearIcons();
-            evt->state = 19;
-            evt->state2 = 0;
+            obj->state = 19;
+            obj->state2 = 0;
             break;
          }
          break;
@@ -1384,8 +1384,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       // "Is there anything else you need?"
       DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
       DrawText(68, 20, 30, 2, 0, gTextPointers[27]);
-      evt->state = 6;
-      evt->state2 = 2;
+      obj->state = 6;
+      obj->state2 = 2;
       break;
 
    case 30:
@@ -1393,22 +1393,22 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       SlideWindowTo(0x38, 12, 90);
       DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
       DrawText(68, 20, 30, 2, 0, gTextPointers[28]);
-      DrawWindow(0x3b, 412, 100, 96, 136, 90, 90, WBS_CROSSED, EVT.partyRows);
-      ListParty(EVT.partyTop, EVT.partyRows, 0);
+      DrawWindow(0x3b, 412, 100, 96, 136, 90, 90, WBS_CROSSED, OBJ.partyRows);
+      ListParty(OBJ.partyTop, OBJ.partyRows, 0);
       DrawSjisText(420, 110, 19, 2, 0, gPartyListBuffer);
       DisplayCustomWindowWithSetChoice(0x3b, 5, 1, 50, 1, 0, gState.choices[3]);
       DrawWindow(0x3e, 400, 0, 64, 63, 0, 0, WBS_CROSSED, 0);
-      EVT.partyIdx2 = -1;
-      evt->state++;
+      OBJ.partyIdx2 = -1;
+      obj->state++;
 
    // fallthrough
    case 31:
       gWindowActiveIdx = 0x3b;
-      i = gCurrentParty[EVT.partyTop + gHighlightedChoice - 1];
-      if (EVT.partyIdx2 != i && i < 13) {
-         EVT.partyIdx2 = i;
+      i = gCurrentParty[OBJ.partyTop + gHighlightedChoice - 1];
+      if (OBJ.partyIdx2 != i && i < 13) {
+         OBJ.partyIdx2 = i;
       }
-      gState.unitListPortraitId = gUnitPortraitIds[gUnits[EVT.partyIdx2].unitId];
+      gState.unitListPortraitId = gUnitPortraitIds[gUnits[OBJ.partyIdx2].unitId];
       SlideWindowTo(0x3e, 210, 128);
       if (i >= 13) {
          gState.unitListPortraitId = 0;
@@ -1418,55 +1418,55 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          SlideWindowTo(0x3b, 90, 240);
          CloseWindow(0x3b);
          SlideWindowTo(0x3e, 210, 250);
-         evt->state = 5;
+         obj->state = 5;
       } else if (gWindowChoice.s.windowId == 0x3b && gWindowChoice.s.choice != 0) {
          SlideWindowTo(0x3b, 90, 240);
          CloseWindow(0x3b);
-         EVT.partyIdx1 = gCurrentParty[EVT.partyTop + gHighlightedChoice - 1];
-         if (EVT.partyIdx1 == 13) {
+         OBJ.partyIdx1 = gCurrentParty[OBJ.partyTop + gHighlightedChoice - 1];
+         if (OBJ.partyIdx1 == 13) {
             SlideWindowTo(0x38, -80, 90);
-            evt->state = 33;
-            evt->state2 = 0;
+            obj->state = 33;
+            obj->state2 = 0;
          } else {
             // "We pay a fair rate for all goods we buy."
             DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
             DrawText(68, 20, 30, 2, 0, gTextPointers[29]);
             SlideWindowTo(0x38, -80, 90);
-            evt->state++;
+            obj->state++;
          }
       }
       break;
 
    case 32:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gWindowChoiceHeight = 17;
          gWindowChoicesTopMargin = 10;
          DrawWindow(0x3f, 0, 100, 200, 108, 10, 390, WBS_CROSSED, 5);
-         ListPartyMemberInventory(EVT.partyIdx1, 1);
+         ListPartyMemberInventory(OBJ.partyIdx1, 1);
          DrawSjisText(28, 110, 19, 2, 0, sInventoryBuffer);
          gWindowActiveIdx = 0x3f;
          D_8012338C = 0x3f;
          DisplayCustomWindowWithSetChoice(0x3f, 5, 1, 40, 0, 0,
-                                          gMenuMem_SellingFromParty[EVT.partyIdx1]);
+                                          gMenuMem_SellingFromParty[OBJ.partyIdx1]);
          SlideWindowTo(0x3f, 10, 90);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
-         EVT.selectionModified = 0;
-         evt->state2++;
+         OBJ.selectionModified = 0;
+         obj->state2++;
 
       // fallthrough
       case 2:
-         gMenuMem_SellingFromParty[EVT.partyIdx1] = gState.choices[4];
+         gMenuMem_SellingFromParty[OBJ.partyIdx1] = gState.choices[4];
          if ((gPadStateNewPresses & PAD_DOWN) || (gPadStateNewPresses & PAD_UP)) {
-            EVT.selectionModified = 1;
+            OBJ.selectionModified = 1;
          }
          i = gPartyMemberInventory[gHighlightedChoice - 1];
-         if (EVT.selectionModified && EVT.item != i) {
-            EVT.item = i;
+         if (OBJ.selectionModified && OBJ.item != i) {
+            OBJ.item = i;
             DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
             DrawText(68, 20, 29, 2, 0, gItemDescriptions2[i]);
          }
@@ -1474,24 +1474,24 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             SlideWindowTo(0x3f, 90, 240);
             CloseWindow(0x3f);
             D_8012338C = 0;
-            evt->state = 30;
-            evt->state2 = 0;
+            obj->state = 30;
+            obj->state2 = 0;
          } else if (gWindowChoice.s.windowId == 0x3f && gWindowChoice.s.choice != 0) {
-            EVT.itemToPurchase = gPartyMemberInventory[gHighlightedChoice - 1];
-            EVT.itemIdx = gHighlightedChoice - 4;
-            if (EVT.itemToPurchase != ITEM_NULL) {
+            OBJ.itemToPurchase = gPartyMemberInventory[gHighlightedChoice - 1];
+            OBJ.itemIdx = gHighlightedChoice - 4;
+            if (OBJ.itemToPurchase != ITEM_NULL) {
                if (gHighlightedChoice < 4) {
                   // "I can't buy weapons or armor that you are currently equipped with."
                   DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
                   DrawText(68, 20, 30, 2, 0, gTextPointers[30]);
                   gWindowActiveIdx = 0;
-                  evt->state2++;
-               } else if (gItemCosts[EVT.itemToPurchase] == 0) {
+                  obj->state2++;
+               } else if (gItemCosts[OBJ.itemToPurchase] == 0) {
                   // "You mustn't sell such a thing!!"
                   DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
                   DrawText(68, 20, 30, 2, 0, gTextPointers[31]);
                   gWindowActiveIdx = 0;
-                  evt->state2++;
+                  obj->state2++;
                } else {
                   // "I'll give you this much for it.  Do you want to make a deal?"
                   DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
@@ -1501,7 +1501,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
                   DrawText(260, 151, 10, 2, 0, gTextPointers[33]);
                   DisplayCustomWindow(0x37, 2, 1, 5, 0, 0);
                   gWindowActiveIdx = 0x37;
-                  evt->state2 += 3;
+                  obj->state2 += 3;
                }
             }
          }
@@ -1509,7 +1509,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
       case 3:
          if (PressedCircleOrX_2()) {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -1519,29 +1519,29 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawText(68, 20, 30, 2, 0, gTextPointers[34]);
          gWindowActiveIdx = 0x3f;
          D_8012338C = 0x3f;
-         evt->state2 -= 2;
+         obj->state2 -= 2;
          break;
 
       case 5:
          if (gWindowChoice.raw == 0x3701) {
             // "Thank you very much. Is there anything else you would like to sell?"
-            gState.gold += gItemCosts[EVT.itemToPurchase] / 2;
-            if (gPartyMembers[EVT.partyIdx1].items[0] != ITEM_NULL) {
-               gPartyMembers[EVT.partyIdx1].items[EVT.itemIdx] = ITEM_NULL;
+            gState.gold += gItemCosts[OBJ.itemToPurchase] / 2;
+            if (gPartyMembers[OBJ.partyIdx1].items[0] != ITEM_NULL) {
+               gPartyMembers[OBJ.partyIdx1].items[OBJ.itemIdx] = ITEM_NULL;
             } else {
-               gPartyMembers[EVT.partyIdx1].items[1] = ITEM_NULL;
+               gPartyMembers[OBJ.partyIdx1].items[1] = ITEM_NULL;
             }
-            ListPartyMemberInventory(EVT.partyIdx1, 1);
+            ListPartyMemberInventory(OBJ.partyIdx1, 1);
             DrawSjisText(28, 110, 19, 2, 0, sInventoryBuffer);
             DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
             DrawText(68, 20, 30, 2, 0, gTextPointers[35]);
             CloseWindow(0x37);
             gWindowActiveIdx = 0x3f;
             D_8012338C = 0x3f;
-            evt->state2 -= 4;
+            obj->state2 -= 4;
          } else if (gWindowChoice.raw == 0x3702 || gWindowChoice.raw == 0x37ff) {
             CloseWindow(0x37);
-            evt->state2--;
+            obj->state2--;
          }
          break;
       }
@@ -1550,12 +1550,12 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 33:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "What sort of things do you want to sell?"
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[36]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
@@ -1567,33 +1567,33 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DisplayCustomWindowWithSetChoice(0x39, 2, 1, 30, 0, 0, gState.choices[1]);
          SlideWindowTo(0x39, 110, 110);
          gWindowActiveIdx = 0x39;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 2:
          if (gWindowChoice.raw == 0x3904 || gWindowChoice.raw == 0x39ff) {
             SlideWindowTo(0x39, 325, 110);
             CloseWindow(0x39);
-            evt->state = 30;
-            evt->state2 = 0;
+            obj->state = 30;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3901) {
-            EVT.depotCategory = INVENTORY_WEAPON;
-            EVT.depotTop = gMenuMem_SellingFromDepot[INVENTORY_WEAPON].top;
-            evt->state = 34;
-            evt->state2 = 0;
+            OBJ.depotCategory = INVENTORY_WEAPON;
+            OBJ.depotTop = gMenuMem_SellingFromDepot[INVENTORY_WEAPON].top;
+            obj->state = 34;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3902) {
-            EVT.depotCategory = INVENTORY_ARMOR;
-            EVT.depotTop = gMenuMem_SellingFromDepot[INVENTORY_ARMOR].top;
-            evt->state = 34;
-            evt->state2 = 0;
+            OBJ.depotCategory = INVENTORY_ARMOR;
+            OBJ.depotTop = gMenuMem_SellingFromDepot[INVENTORY_ARMOR].top;
+            obj->state = 34;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3903) {
-            EVT.depotCategory = INVENTORY_ITEM;
-            EVT.depotTop = gMenuMem_SellingFromDepot[INVENTORY_ITEM].top;
-            evt->state = 34;
-            evt->state2 = 0;
+            OBJ.depotCategory = INVENTORY_ITEM;
+            OBJ.depotTop = gMenuMem_SellingFromDepot[INVENTORY_ITEM].top;
+            obj->state = 34;
+            obj->state2 = 0;
          }
          break;
       }
@@ -1602,20 +1602,20 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 34:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SlideWindowTo(0x39, 325, 110);
          CloseWindow(0x39);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          // "We pay a fair rate for all goods we buy."
-         gState.choices[5] = gMenuMem_SellingFromDepot[EVT.depotCategory].ofs;
+         gState.choices[5] = gMenuMem_SellingFromDepot[OBJ.depotCategory].ofs;
          gWindowChoiceHeight = 17;
          gWindowChoicesTopMargin = 10;
          DrawWindow(0x40, 0, 100, 200, 136, 90, 240, WBS_CROSSED, 7);
-         ListDepotInventory(EVT.depotCategory, EVT.depotTop, 7, 0, 1);
+         ListDepotInventory(OBJ.depotCategory, OBJ.depotTop, 7, 0, 1);
          DrawSjisText(28, 110, 30, 2, 0, sInventoryBuffer);
          DisplayCustomWindowWithSetChoice(0x40, 5, 1, 50, 1, 0, gState.choices[5]);
          gWindowActiveIdx = 0x40;
@@ -1623,23 +1623,23 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          SlideWindowTo(0x40, 10, 90);
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[38]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 2:
-         EVT.selectionModified = 0;
-         evt->state2++;
+         OBJ.selectionModified = 0;
+         obj->state2++;
 
       // fallthrough
       case 3:
-         gMenuMem_SellingFromDepot[EVT.depotCategory].ofs = gState.choices[5];
-         gMenuMem_SellingFromDepot[EVT.depotCategory].top = EVT.depotTop;
+         gMenuMem_SellingFromDepot[OBJ.depotCategory].ofs = gState.choices[5];
+         gMenuMem_SellingFromDepot[OBJ.depotCategory].top = OBJ.depotTop;
          if ((gPadStateNewPresses & PAD_DOWN) || (gPadStateNewPresses & PAD_UP)) {
-            EVT.selectionModified = 1;
+            OBJ.selectionModified = 1;
          }
-         i = gDepotInventoryPtr[EVT.depotTop + gHighlightedChoice - 1];
-         if (EVT.selectionModified && EVT.item != i) {
-            EVT.item = i;
+         i = gDepotInventoryPtr[OBJ.depotTop + gHighlightedChoice - 1];
+         if (OBJ.selectionModified && OBJ.item != i) {
+            OBJ.item = i;
             DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
             DrawText(68, 20, 29, 2, 0, gItemDescriptions2[i]);
          }
@@ -1648,18 +1648,18 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             CloseWindow(0x40);
             gWindowActiveIdx = 0;
             D_8012338C = 0;
-            evt->state = 33;
-            evt->state2 = 1;
+            obj->state = 33;
+            obj->state2 = 1;
          }
          if (gWindowChoice.s.windowId == 0x40 && gWindowChoice.s.choice != 0) {
-            EVT.itemToPurchase = gDepotInventoryPtr[EVT.depotTop + gHighlightedChoice - 1];
-            if (EVT.itemToPurchase != 0) {
-               if (gItemCosts[EVT.itemToPurchase] == 0) {
+            OBJ.itemToPurchase = gDepotInventoryPtr[OBJ.depotTop + gHighlightedChoice - 1];
+            if (OBJ.itemToPurchase != 0) {
+               if (gItemCosts[OBJ.itemToPurchase] == 0) {
                   // "You mustn't sell such a thing!!"
                   DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
                   DrawText(68, 20, 30, 2, 0, gTextPointers[39]);
                   gWindowActiveIdx = 0;
-                  evt->state2++;
+                  obj->state2++;
                } else {
                   // "I'll give you this much for it.  Do you want to make a deal?"
                   DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
@@ -1669,7 +1669,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
                   DrawText(260, 151, 30, 2, 0, gTextPointers[41]);
                   DisplayCustomWindow(0x37, 2, 1, 5, 0, 0);
                   gWindowActiveIdx = 0x37;
-                  evt->state2 += 3;
+                  obj->state2 += 3;
                }
             }
          }
@@ -1677,7 +1677,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
       case 4:
          if (PressedCircleOrX_2()) {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -1687,26 +1687,26 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawText(68, 20, 30, 2, 0, gTextPointers[42]);
          gWindowActiveIdx = 0x40;
          D_8012338C = 0x40;
-         evt->state2 -= 2;
+         obj->state2 -= 2;
          break;
 
       case 6:
          if (gWindowChoice.raw == 0x3701) {
             // "Thank you very much. Is there anything else you would like to sell?"
-            gState.gold += gItemCosts[EVT.itemToPurchase] / 2;
-            gState.depot[EVT.itemToPurchase]--;
+            gState.gold += gItemCosts[OBJ.itemToPurchase] / 2;
+            gState.depot[OBJ.itemToPurchase]--;
             DrawWindow(0x40, 0, 100, 200, 136, 84, 250, WBS_CROSSED, 7);
-            ListDepotInventory(EVT.depotCategory, EVT.depotTop, 7, 0, 1);
+            ListDepotInventory(OBJ.depotCategory, OBJ.depotTop, 7, 0, 1);
             DrawSjisText(28, 110, 19, 2, 0, sInventoryBuffer);
             DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
             DrawText(68, 20, 30, 2, 0, gTextPointers[43]);
             CloseWindow(0x37);
             gWindowActiveIdx = 0x40;
             D_8012338C = 0x40;
-            evt->state2 -= 4;
+            obj->state2 -= 4;
          } else if (gWindowChoice.raw == 0x3702 || gWindowChoice.raw == 0x37ff) {
             CloseWindow(0x37);
-            evt->state2--;
+            obj->state2--;
          }
          break;
       }
@@ -1715,25 +1715,25 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 99:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Thanks. Please come again."
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(68, 20, 30, 2, 0, gTextPointers[44]);
-         EVT.exitTimer = 60;
-         evt->state2++;
+         OBJ.exitTimer = 60;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (--EVT.exitTimer == 0) {
+         if (--OBJ.exitTimer == 0) {
             FadeOutScreen(2, 6);
-            EVT.exitTimer = 50;
-            evt->state2++;
+            OBJ.exitTimer = 50;
+            obj->state2++;
          }
          break;
 
       case 2:
-         if (--EVT.exitTimer == 0) {
+         if (--OBJ.exitTimer == 0) {
             gState.primary = STATE_20;
             gState.secondary = 0;
             gState.state3 = 0;
@@ -1747,33 +1747,33 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 50:
       // "Whose possessions do you want to transfer?"
-      EVT.partyTop = gMenuMem_TransferFrom.top;
-      EVT.partyNeedsRedraw = 1;
+      OBJ.partyTop = gMenuMem_TransferFrom.top;
+      OBJ.partyNeedsRedraw = 1;
       SlideWindowTo(0x34, 4, 10);
       SlideWindowTo(0x35, 252, 10);
       D_801F6D8C = 0;
       D_801F6D88 = 0;
       DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
       DrawText(20, 20, 30, 2, 0, gTextPointers[45]);
-      DrawWindow(0x3b, 412, 100, 96, 136, 90, 90, WBS_CROSSED, EVT.partyRows);
-      ListParty(EVT.partyTop, EVT.partyRows, 0);
+      DrawWindow(0x3b, 412, 100, 96, 136, 90, 90, WBS_CROSSED, OBJ.partyRows);
+      ListParty(OBJ.partyTop, OBJ.partyRows, 0);
       DrawSjisText(420, 110, 19, 2, 0, gPartyListBuffer);
       DisplayCustomWindowWithSetChoice(0x3b, 5, 1, 50, 1, 0, gMenuMem_TransferFrom.ofs);
       DrawWindow(0x3e, 400, 0, 64, 63, 0, 0, WBS_CROSSED, 0);
-      EVT.partyIdx2 = -1;
-      evt->state++;
+      OBJ.partyIdx2 = -1;
+      obj->state++;
       gWindowActiveIdx = 0x3b;
       break;
 
    case 51:
       gWindowActiveIdx = 0x3b;
       gMenuMem_TransferFrom.ofs = GetWindowChoice(0x3b) - 1;
-      gMenuMem_TransferFrom.top = EVT.partyTop;
-      i = gCurrentParty[EVT.partyTop + gHighlightedChoice - 1];
-      if (EVT.partyIdx2 != i && i < 13) {
-         EVT.partyIdx2 = i;
+      gMenuMem_TransferFrom.top = OBJ.partyTop;
+      i = gCurrentParty[OBJ.partyTop + gHighlightedChoice - 1];
+      if (OBJ.partyIdx2 != i && i < 13) {
+         OBJ.partyIdx2 = i;
       }
-      gState.unitListPortraitId = gUnitPortraitIds[gUnits[EVT.partyIdx2].unitId];
+      gState.unitListPortraitId = gUnitPortraitIds[gUnits[OBJ.partyIdx2].unitId];
       SlideWindowTo(0x3e, 210, 128);
       if (i >= 13) {
          SlideWindowTo(0x3e, 210, 250);
@@ -1782,25 +1782,25 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       if (gWindowChoice.raw == 0x3bff) {
          CloseWindow(0x3b);
          SlideWindowTo(0x3e, 210, 250);
-         evt->state = 90;
+         obj->state = 90;
       } else if (gWindowChoice.s.windowId == 0x3b && gWindowChoice.s.choice != 0) {
          CloseWindow(0x3b);
-         D_801F6D98 = gCurrentParty[EVT.partyTop + gHighlightedChoice - 1];
+         D_801F6D98 = gCurrentParty[OBJ.partyTop + gHighlightedChoice - 1];
          if (D_801F6D98 == 13) {
-            evt->state = 53;
-            evt->state2 = 0;
+            obj->state = 53;
+            obj->state2 = 0;
          } else {
             // "Which possession do you want to transfer?"
             DrawWindow(0x34, 0, 0, 312, 90, -400, -400, WBS_DRAGON, 0);
             DrawText(20, 20, 30, 2, 0, gTextPointers[46]);
-            evt->state++;
+            obj->state++;
          }
       }
       break;
 
    case 52:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gWindowChoiceHeight = 17;
          gWindowChoicesTopMargin = 10;
@@ -1812,22 +1812,22 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DisplayCustomWindowWithSetChoice(0x3f, 5, 1, 40, 0, 0,
                                           gMenuMem_PartyInventory[D_801F6D98]);
          SlideWindowTo(0x3f, 10, 90);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
-         EVT.selectionModified = 0;
-         evt->state2++;
+         OBJ.selectionModified = 0;
+         obj->state2++;
 
       // fallthrough
       case 2:
          gMenuMem_PartyInventory[D_801F6D98] = gState.choices[4];
          if ((gPadStateNewPresses & PAD_DOWN) || (gPadStateNewPresses & PAD_UP)) {
-            EVT.selectionModified = 1;
+            OBJ.selectionModified = 1;
          }
          i = gPartyMemberInventory[gHighlightedChoice - 1];
-         if (EVT.selectionModified && EVT.item != i) {
-            EVT.item = i;
+         if (OBJ.selectionModified && OBJ.item != i) {
+            OBJ.item = i;
             DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
             DrawText(20, 20, 35, 2, 0, gItemDescriptions2[i]);
          }
@@ -1835,8 +1835,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             SlideWindowTo(0x3f, 90, 240);
             CloseWindow(0x3f);
             D_8012338C = 0;
-            evt->state = 50;
-            evt->state2 = 0;
+            obj->state = 50;
+            obj->state2 = 0;
          } else {
             if (gWindowChoice.s.windowId == 0x3f && gWindowChoice.s.choice != 0) {
                D_801F6D94 = gPartyMemberInventory[gHighlightedChoice - 1];
@@ -1853,8 +1853,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
                   CloseWindow(0x3f);
                   D_8012338C = 0;
                   gWindowActiveIdx = 0;
-                  evt->state = 55;
-                  evt->state2 = 0;
+                  obj->state = 55;
+                  obj->state2 = 0;
                }
             }
          }
@@ -1865,13 +1865,13 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 53:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Which type of possession do you want to transfer?"
          D_801F6D88 = 0;
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(20, 20, 30, 2, 0, gTextPointers[47]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
@@ -1883,33 +1883,33 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DisplayCustomWindowWithSetChoice(0x39, 2, 1, 30, 0, 0, gState.choices[1]);
          SlideWindowTo(0x39, 110, 110);
          gWindowActiveIdx = 0x39;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 2:
          if (gWindowChoice.raw == 0x39ff) {
             SlideWindowTo(0x39, 325, 110);
             CloseWindow(0x39);
-            evt->state = 50;
-            evt->state2 = 0;
+            obj->state = 50;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3901) {
-            EVT.depotCategory = INVENTORY_WEAPON;
-            EVT.depotTop = 0;
-            evt->state = 54;
-            evt->state2 = 0;
+            OBJ.depotCategory = INVENTORY_WEAPON;
+            OBJ.depotTop = 0;
+            obj->state = 54;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3902) {
-            EVT.depotCategory = INVENTORY_ARMOR;
-            EVT.depotTop = 0;
-            evt->state = 54;
-            evt->state2 = 0;
+            OBJ.depotCategory = INVENTORY_ARMOR;
+            OBJ.depotTop = 0;
+            obj->state = 54;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3903) {
-            EVT.depotCategory = INVENTORY_ITEM;
-            EVT.depotTop = 0;
-            evt->state = 54;
-            evt->state2 = 0;
+            OBJ.depotCategory = INVENTORY_ITEM;
+            OBJ.depotTop = 0;
+            obj->state = 54;
+            obj->state2 = 0;
          }
       }
 
@@ -1917,13 +1917,13 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 54:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SlideWindowTo(0x39, 325, 110);
          CloseWindow(0x39);
-         evt->state2++;
-         gState.choices[5] = gMenuMem_ShopOrDepot[EVT.depotCategory].ofs;
-         EVT.depotTop = gMenuMem_ShopOrDepot[EVT.depotCategory].top;
+         obj->state2++;
+         gState.choices[5] = gMenuMem_ShopOrDepot[OBJ.depotCategory].ofs;
+         OBJ.depotTop = gMenuMem_ShopOrDepot[OBJ.depotCategory].top;
 
       // fallthrough
       case 1:
@@ -1931,32 +1931,32 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          gWindowChoiceHeight = 17;
          gWindowChoicesTopMargin = 10;
          DrawWindow(0x40, 0, 100, 200, 136, 10, 240, WBS_CROSSED, 7);
-         ListDepotInventory(EVT.depotCategory, EVT.depotTop, 7, 0, 0);
+         ListDepotInventory(OBJ.depotCategory, OBJ.depotTop, 7, 0, 0);
          DrawSjisText(28, 110, 19, 2, 0, sInventoryBuffer);
          DisplayCustomWindowWithSetChoice(0x40, 5, 1, 50, 1, 0,
-                                          gMenuMem_ShopOrDepot[EVT.depotCategory].ofs);
+                                          gMenuMem_ShopOrDepot[OBJ.depotCategory].ofs);
          SlideWindowTo(0x40, 10, 90);
          gWindowActiveIdx = 0x40;
          D_8012338C = 0x40;
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(20, 20, 30, 2, 0, gTextPointers[49]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 2:
-         EVT.selectionModified = 0;
-         evt->state2++;
+         OBJ.selectionModified = 0;
+         obj->state2++;
 
       // fallthrough
       case 3:
-         gMenuMem_ShopOrDepot[EVT.depotCategory].ofs = gState.choices[5];
-         gMenuMem_ShopOrDepot[EVT.depotCategory].top = EVT.depotTop;
+         gMenuMem_ShopOrDepot[OBJ.depotCategory].ofs = gState.choices[5];
+         gMenuMem_ShopOrDepot[OBJ.depotCategory].top = OBJ.depotTop;
          if ((gPadStateNewPresses & PAD_DOWN) || (gPadStateNewPresses & PAD_UP)) {
-            EVT.selectionModified = 1;
+            OBJ.selectionModified = 1;
          }
-         i = gDepotInventoryPtr[EVT.depotTop + gHighlightedChoice - 1];
-         if (EVT.selectionModified && EVT.item != i) {
-            EVT.item = i;
+         i = gDepotInventoryPtr[OBJ.depotTop + gHighlightedChoice - 1];
+         if (OBJ.selectionModified && OBJ.item != i) {
+            OBJ.item = i;
             DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
             DrawText(20, 20, 35, 2, 0, gItemDescriptions2[i]);
          }
@@ -1965,19 +1965,19 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             CloseWindow(0x40);
             gWindowActiveIdx = 0;
             D_8012338C = 0;
-            evt->state = 53;
-            evt->state2 = 0;
+            obj->state = 53;
+            obj->state2 = 0;
          }
          if (gWindowChoice.s.windowId == 0x40 && gWindowChoice.s.choice != 0) {
-            D_801F6D94 = gDepotInventoryPtr[EVT.depotTop + gHighlightedChoice - 1];
+            D_801F6D94 = gDepotInventoryPtr[OBJ.depotTop + gHighlightedChoice - 1];
             if (D_801F6D94 != ITEM_NULL) {
                D_801F6D8C = 1;
                SlideWindowTo(0x40, 90, 240);
                CloseWindow(0x40);
                D_8012338C = 0;
                gWindowActiveIdx = 0;
-               evt->state = 55;
-               evt->state2 = 0;
+               obj->state = 55;
+               obj->state2 = 0;
             }
          }
          break;
@@ -1987,29 +1987,29 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 55:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Who do you want to transfer it to?"
-         EVT.partyTop = gMenuMem_TransferTo.top;
-         EVT.partyNeedsRedraw = 1;
+         OBJ.partyTop = gMenuMem_TransferTo.top;
+         OBJ.partyNeedsRedraw = 1;
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(20, 20, 30, 2, 0, gTextPointers[50]);
-         DrawWindow(0x3b, 412, 100, 96, 136, 330, 290, WBS_CROSSED, EVT.partyRows);
-         ListParty(EVT.partyTop, EVT.partyRows, 0);
+         DrawWindow(0x3b, 412, 100, 96, 136, 330, 290, WBS_CROSSED, OBJ.partyRows);
+         ListParty(OBJ.partyTop, OBJ.partyRows, 0);
          DrawSjisText(420, 110, 19, 2, 0, gPartyListBuffer);
          DisplayCustomWindowWithSetChoice(0x3b, 5, 1, 50, 1, 0, gMenuMem_TransferTo.ofs);
          SlideWindowTo(0x3b, 10, 90);
-         EVT.partyChoice = EVT.partyTop + GetWindowChoice(0x3b);
-         DrawSmallEquipmentWindow(gCurrentParty[EVT.partyChoice - 1]);
+         OBJ.partyChoice = OBJ.partyTop + GetWindowChoice(0x3b);
+         DrawSmallEquipmentWindow(gCurrentParty[OBJ.partyChoice - 1]);
          DrawWindow(0x3c, 256, 200, 128, 36, 108, 188, WBS_CROSSED, 0);
          DrawSjisText(272, 210, 19, 2, 0, gItemNamesSjis[D_801F6D94]);
          DisplayCustomWindow(0x3c, 2, 1, 50, 1, 0);
-         evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_DISPLAY_ICON;
-         evt_v1->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + D_801F6D94;
-         evt_v1->x1.n = 116;
-         evt_v1->y1.n = 198;
-         evt->state2++;
+         obj_v1 = Obj_GetUnused();
+         obj_v1->functionIndex = OBJF_DISPLAY_ICON;
+         obj_v1->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + D_801F6D94;
+         obj_v1->x1.n = 116;
+         obj_v1->y1.n = 198;
+         obj->state2++;
 
       // fallthrough
       case 1:
@@ -2017,33 +2017,33 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawWindow(0x3d, 324, 140, 64, 54, 350, 170, WBS_CROSSED, 0);
          DrawSjisText(328, 151, 10, 2, 0, sStatChangeBuffer);
          DisplayCustomWindow(0x3d, 2, 1, 5, 0, 0);
-         EVT.partyIdx2 = -1;
-         evt->state2++;
+         OBJ.partyIdx2 = -1;
+         obj->state2++;
          gWindowActiveIdx = 0x3b;
          break;
 
       case 2:
          gMenuMem_TransferTo.ofs = GetWindowChoice(0x3b) - 1;
-         gMenuMem_TransferTo.top = EVT.partyTop;
-         i = GetWindowChoice(0x3b) + EVT.partyTop;
-         if (i != EVT.partyChoice && i < 13) {
-            EVT.partyChoice = i;
+         gMenuMem_TransferTo.top = OBJ.partyTop;
+         i = GetWindowChoice(0x3b) + OBJ.partyTop;
+         if (i != OBJ.partyChoice && i < 13) {
+            OBJ.partyChoice = i;
             DrawSmallEquipmentWindow(gCurrentParty[i - 1]);
          }
          if (gItemEquipmentTypes[D_801F6D94] != EQUIPMENT_TYPE_ITEM) {
             SlideWindowTo(0x3d, 240, 170);
          }
-         i = gCurrentParty[EVT.partyTop + gHighlightedChoice - 1];
-         if (EVT.partyIdx2 != i && i < 13) {
-            EVT.partyIdx2 = i;
+         i = gCurrentParty[OBJ.partyTop + gHighlightedChoice - 1];
+         if (OBJ.partyIdx2 != i && i < 13) {
+            OBJ.partyIdx2 = i;
             DrawWindow(0x3d, 324, 140, 64, 54, 240, 170, WBS_CROSSED, 0);
-            UpdateStatChangeText(D_801F6D94, EVT.partyIdx2);
+            UpdateStatChangeText(D_801F6D94, OBJ.partyIdx2);
             DrawSjisText(328, 151, 10, 2, 0, sStatChangeBuffer);
          }
          if (i >= 13) {
             SlideWindowTo(0x3d, 350, 170);
          }
-         gState.unitListPortraitId = gUnitPortraitIds[gUnits[EVT.partyIdx2].unitId];
+         gState.unitListPortraitId = gUnitPortraitIds[gUnits[OBJ.partyIdx2].unitId];
          SlideWindowTo(0x3e, 210, 128);
          SlideWindowTo(1, 108, 90);
          if (i >= 13) {
@@ -2053,69 +2053,69 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          }
          gWindowActiveIdx = 0x3b;
          if (gWindowChoice.raw == 0x3bff) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
          } else if (gWindowChoice.s.windowId == 0x3b && gWindowChoice.s.choice != 0) {
             D_8012338C = 0;
             gWindowActiveIdx = 0;
-            EVT.partyIdx1 = gCurrentParty[EVT.partyTop + gHighlightedChoice - 1];
-            if (EVT.partyIdx1 == D_801F6D98 &&
+            OBJ.partyIdx1 = gCurrentParty[OBJ.partyTop + gHighlightedChoice - 1];
+            if (OBJ.partyIdx1 == D_801F6D98 &&
                 (D_801F6D88 != 0 || D_801F6D8C != 0 ||
                  !gEquipmentTypeClassCapability[gItemEquipmentTypes[D_801F6D94]]
-                                               [gUnits[EVT.partyIdx1].class])) {
+                                               [gUnits[OBJ.partyIdx1].class])) {
                // "You gave it back to yourself."
                DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
                DrawText(20, 20, 30, 2, 0, gTextPointers[51]);
-               evt->state = 56;
-               evt->state2 = 0;
-            } else if (EVT.partyIdx1 == 13) {
+               obj->state = 56;
+               obj->state2 = 0;
+            } else if (OBJ.partyIdx1 == 13) {
                if (D_801F6D88 == 0) {
-                  evt->state = 58;
-                  evt->state2 = 0;
+                  obj->state = 58;
+                  obj->state2 = 0;
                } else {
-                  evt->state = 57;
-                  evt->state2 = 0;
+                  obj->state = 57;
+                  obj->state2 = 0;
                }
             } else if (gEquipmentTypeClassCapability[gItemEquipmentTypes[D_801F6D94]]
-                                                    [gUnits[EVT.partyIdx1].class] &&
+                                                    [gUnits[OBJ.partyIdx1].class] &&
                        D_801F6D94 != ITEM_V_HEART &&
-                       !(EVT.partyIdx1 == UNIT_ASH &&
+                       !(OBJ.partyIdx1 == UNIT_ASH &&
                          gPartyMembers[UNIT_ASH].weapon == ITEM_V_HEART &&
                          gItemEquipmentTypes[D_801F6D94] <= EQUIPMENT_TYPE_V_HEART)) {
                SlideWindowTo(0x3d, 350, 170);
                CloseWindow(0x3d);
                SlideWindowTo(0x3e, 240, 168);
                if (D_801F6D88 != 0) {
-                  evt->state = 62;
-                  evt->state2 = 0;
+                  obj->state = 62;
+                  obj->state2 = 0;
                } else {
-                  if (EVT.partyIdx1 == D_801F6D98) {
-                     evt->state = 64;
-                     evt->state2 = 0;
+                  if (OBJ.partyIdx1 == D_801F6D98) {
+                     obj->state = 64;
+                     obj->state2 = 0;
                   } else {
-                     evt->state = 63;
-                     evt->state2 = 0;
+                     obj->state = 63;
+                     obj->state2 = 0;
                   }
                }
             } else {
-               if (EVT.partyIdx1 == D_801F6D98 &&
+               if (OBJ.partyIdx1 == D_801F6D98 &&
                    gItemEquipmentTypes[D_801F6D94] <= EQUIPMENT_TYPE_V_HEART) {
                   // "You gave it back to yourself."
                   DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
                   DrawText(20, 20, 30, 2, 0, gTextPointers[51]);
-                  evt->state = 56;
-                  evt->state2 = 0;
+                  obj->state = 56;
+                  obj->state2 = 0;
                } else if (D_801F6D88 != 0) {
-                  evt->state = 59;
-                  evt->state2 = 0;
+                  obj->state = 59;
+                  obj->state2 = 0;
                } else {
-                  if (gPartyMembers[EVT.partyIdx1].items[0] != ITEM_NULL &&
-                      gPartyMembers[EVT.partyIdx1].items[1] != ITEM_NULL) {
-                     evt->state = 61;
-                     evt->state2 = 0;
+                  if (gPartyMembers[OBJ.partyIdx1].items[0] != ITEM_NULL &&
+                      gPartyMembers[OBJ.partyIdx1].items[1] != ITEM_NULL) {
+                     obj->state = 61;
+                     obj->state2 = 0;
                   } else {
-                     evt->state = 60;
-                     evt->state2 = 0;
+                     obj->state = 60;
+                     obj->state2 = 0;
                   }
                }
             }
@@ -2127,25 +2127,25 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 56:
       if (PressedCircleOrX_2()) {
-         evt->state = 80;
-         evt->state2 = 0;
+         obj->state = 80;
+         obj->state2 = 0;
       }
       break;
 
    case 57:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "You can't transfer equipped items to the supply wagon."
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(20, 20, 30, 2, 0, gTextPointers[52]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (PressedCircleOrX_2()) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2154,20 +2154,20 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 58:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Item was transferred to the supply wagon."
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(20, 20, 30, 2, 0, gTextPointers[53]);
          gState.depot[D_801F6D94]++;
          gPartyMembers[D_801F6D98].items[D_801F6D90 - 4] = ITEM_NULL;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (PressedCircleOrX_2()) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2176,18 +2176,18 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 59:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "You can't transfer this equipped item."
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(20, 20, 30, 2, 0, gTextPointers[54]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (PressedCircleOrX_2()) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2196,7 +2196,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 60:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Possession has been transferred."
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
@@ -2206,19 +2206,19 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          } else {
             gPartyMembers[D_801F6D98].items[D_801F6D90 - 4] = ITEM_NULL;
          }
-         if (gPartyMembers[EVT.partyIdx1].items[0] == ITEM_NULL) {
-            gPartyMembers[EVT.partyIdx1].items[0] = D_801F6D94;
+         if (gPartyMembers[OBJ.partyIdx1].items[0] == ITEM_NULL) {
+            gPartyMembers[OBJ.partyIdx1].items[0] = D_801F6D94;
          } else {
-            gPartyMembers[EVT.partyIdx1].items[1] = D_801F6D94;
+            gPartyMembers[OBJ.partyIdx1].items[1] = D_801F6D94;
          }
-         DrawSmallEquipmentWindow(gCurrentParty[EVT.partyChoice - 1]);
-         evt->state2++;
+         DrawSmallEquipmentWindow(gCurrentParty[OBJ.partyChoice - 1]);
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (PressedCircleOrX_2()) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2227,18 +2227,18 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 61:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Too many possessions. Cannot transfer."
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
          DrawText(20, 20, 30, 2, 0, gTextPointers[56]);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (PressedCircleOrX_2()) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2247,7 +2247,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    case 62:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          // "Do you want to exchange equipment?"
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
@@ -2259,7 +2259,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawWindow(0x37, 256, 140, 64, 54, 210, 126, WBS_CROSSED, 2);
          DrawText(260, 151, 10, 2, 0, gTextPointers[58]);
          DisplayCustomWindow(0x37, 2, 1, 5, 0, 0);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -2270,28 +2270,28 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             DrawText(20, 20, 30, 2, 0, gTextPointers[59]);
             i = gItemEquipmentTypes[D_801F6D94];
             if (i <= EQUIPMENT_TYPE_V_HEART) {
-               gPartyMembers[D_801F6D98].weapon = gPartyMembers[EVT.partyIdx1].weapon;
-               gPartyMembers[EVT.partyIdx1].weapon = D_801F6D94;
+               gPartyMembers[D_801F6D98].weapon = gPartyMembers[OBJ.partyIdx1].weapon;
+               gPartyMembers[OBJ.partyIdx1].weapon = D_801F6D94;
             } else if (i <= EQUIPMENT_TYPE_V_HELM) {
-               gPartyMembers[D_801F6D98].helmet = gPartyMembers[EVT.partyIdx1].helmet;
-               gPartyMembers[EVT.partyIdx1].helmet = D_801F6D94;
+               gPartyMembers[D_801F6D98].helmet = gPartyMembers[OBJ.partyIdx1].helmet;
+               gPartyMembers[OBJ.partyIdx1].helmet = D_801F6D94;
             } else {
-               gPartyMembers[D_801F6D98].armor = gPartyMembers[EVT.partyIdx1].armor;
-               gPartyMembers[EVT.partyIdx1].armor = D_801F6D94;
+               gPartyMembers[D_801F6D98].armor = gPartyMembers[OBJ.partyIdx1].armor;
+               gPartyMembers[OBJ.partyIdx1].armor = D_801F6D94;
             }
-            DrawSmallEquipmentWindow(EVT.partyIdx1);
-            evt->state2++;
+            DrawSmallEquipmentWindow(OBJ.partyIdx1);
+            obj->state2++;
          } else if (gWindowChoice.raw == 0x3702 || gWindowChoice.raw == 0x37ff) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
             CloseWindow(0x37);
          }
          break;
 
       case 2:
          if (PressedCircleOrX_2()) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2301,10 +2301,10 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
    case 63:
    case 64:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
-         if (evt->state == 63) {
+         if (obj->state == 63) {
             // "Do you want to equip it?"
             DrawText(20, 20, 30, 2, 0, gTextPointers[60]);
          } else {
@@ -2318,7 +2318,7 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          DrawWindow(0x37, 256, 140, 64, 54, 210, 126, WBS_CROSSED, 2);
          DrawText(260, 151, 10, 2, 0, gTextPointers[62]);
          DisplayCustomWindow(0x37, 2, 1, 5, 0, 0);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -2329,14 +2329,14 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
             DrawText(20, 20, 30, 2, 0, gTextPointers[63]);
             i = gItemEquipmentTypes[D_801F6D94];
             if (i <= EQUIPMENT_TYPE_V_HEART) {
-               j = gPartyMembers[EVT.partyIdx1].weapon;
-               gPartyMembers[EVT.partyIdx1].weapon = D_801F6D94;
+               j = gPartyMembers[OBJ.partyIdx1].weapon;
+               gPartyMembers[OBJ.partyIdx1].weapon = D_801F6D94;
             } else if (i < EQUIPMENT_TYPE_ARMOR) {
-               j = gPartyMembers[EVT.partyIdx1].helmet;
-               gPartyMembers[EVT.partyIdx1].helmet = D_801F6D94;
+               j = gPartyMembers[OBJ.partyIdx1].helmet;
+               gPartyMembers[OBJ.partyIdx1].helmet = D_801F6D94;
             } else {
-               j = gPartyMembers[EVT.partyIdx1].armor;
-               gPartyMembers[EVT.partyIdx1].armor = D_801F6D94;
+               j = gPartyMembers[OBJ.partyIdx1].armor;
+               gPartyMembers[OBJ.partyIdx1].armor = D_801F6D94;
             }
             if (D_801F6D8C != 0) {
                gState.depot[D_801F6D94]--;
@@ -2348,24 +2348,24 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
                   gPartyMembers[D_801F6D98].items[1] = j;
                }
             }
-            DrawSmallEquipmentWindow(EVT.partyIdx1);
-            evt->state2++;
+            DrawSmallEquipmentWindow(OBJ.partyIdx1);
+            obj->state2++;
          } else if (gWindowChoice.raw == 0x3702 || gWindowChoice.raw == 0x37ff) {
             CloseWindow(0x37);
-            if (evt->state == 64) {
+            if (obj->state == 64) {
                // "You gave it back to yourself."
                DrawWindow(0x34, 0, 0, 312, 90, 4, 10, WBS_DRAGON, 0);
                DrawText(20, 20, 30, 2, 0, gTextPointers[64]);
-               evt->state = 56;
-               evt->state2 = 0;
+               obj->state = 56;
+               obj->state2 = 0;
             } else {
-               if (gPartyMembers[EVT.partyIdx1].items[0] != ITEM_NULL &&
-                   gPartyMembers[EVT.partyIdx1].items[1] != ITEM_NULL) {
-                  evt->state = 61;
-                  evt->state2 = 0;
+               if (gPartyMembers[OBJ.partyIdx1].items[0] != ITEM_NULL &&
+                   gPartyMembers[OBJ.partyIdx1].items[1] != ITEM_NULL) {
+                  obj->state = 61;
+                  obj->state2 = 0;
                } else {
-                  evt->state = 60;
-                  evt->state2 = 0;
+                  obj->state = 60;
+                  obj->state2 = 0;
                }
             }
          }
@@ -2373,8 +2373,8 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
       case 2:
          if (PressedCircleOrX_2()) {
-            evt->state = 80;
-            evt->state2 = 0;
+            obj->state = 80;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2393,24 +2393,24 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       CloseWindow(0x3d);
       SlideWindowTo(0x3e, 210, 250);
       SlideWindowTo(1, 350, 90);
-      evt->state = 50;
-      evt->state2 = 0;
+      obj->state = 50;
+      obj->state2 = 0;
       break;
 
    case 90:
       D_801F6D44 = 40;
-      evt->state++;
-      evt->state2 = 0;
+      obj->state++;
+      obj->state2 = 0;
 
    // fallthrough
    case 91:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          if (--D_801F6D44 == 0) {
             FadeOutScreen(2, 6);
             D_801F6D44 = 50;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -2443,22 +2443,22 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
       } else {
          i = 0;
       }
-      if ((gPadStateNewPresses & PAD_DOWN) && (i > EVT.depotTop) && (gHighlightedChoice == 7)) {
-         EVT.depotTop++;
-         EVT.depotNeedsRedraw++;
+      if ((gPadStateNewPresses & PAD_DOWN) && (i > OBJ.depotTop) && (gHighlightedChoice == 7)) {
+         OBJ.depotTop++;
+         OBJ.depotNeedsRedraw++;
       }
-      if (EVT.depotTop != 0) {
+      if (OBJ.depotTop != 0) {
          if ((gPadStateNewPresses & PAD_UP) && (gHighlightedChoice == 1)) {
-            EVT.depotTop--;
-            EVT.depotNeedsRedraw++;
+            OBJ.depotTop--;
+            OBJ.depotNeedsRedraw++;
          }
       }
-      if (EVT.depotTop != 0) {
+      if (OBJ.depotTop != 0) {
          if (PositionScrollIndicator(0x40, 0)) {
             RenderScrollIndicator(0, gScrollIndicatorX, gScrollIndicatorY);
          }
       }
-      if (j > EVT.depotTop + 7) {
+      if (j > OBJ.depotTop + 7) {
          if (PositionScrollIndicator(0x40, 1)) {
             RenderScrollIndicator(1, gScrollIndicatorX, gScrollIndicatorY);
          }
@@ -2467,32 +2467,32 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
 
    if (gWindowActiveIdx == 0x3a) {
       i = 0;
-      while (gShopInventories[EVT.shopId][EVT.category][i] != ITEM_NULL) {
+      while (gShopInventories[OBJ.shopId][OBJ.category][i] != ITEM_NULL) {
          i++;
       }
       j = i;
-      if (i > EVT.shopRows) {
-         i -= EVT.shopRows;
+      if (i > OBJ.shopRows) {
+         i -= OBJ.shopRows;
       } else {
          i = 0;
       }
-      if ((gPadStateNewPresses & PAD_DOWN) && (i > EVT.shopTop) &&
-          (gHighlightedChoice == EVT.shopRows)) {
-         EVT.shopTop++;
-         EVT.shopNeedsRedraw++;
+      if ((gPadStateNewPresses & PAD_DOWN) && (i > OBJ.shopTop) &&
+          (gHighlightedChoice == OBJ.shopRows)) {
+         OBJ.shopTop++;
+         OBJ.shopNeedsRedraw++;
       }
-      if (EVT.shopTop != 0) {
+      if (OBJ.shopTop != 0) {
          if ((gPadStateNewPresses & PAD_UP) && (gHighlightedChoice == 1)) {
-            EVT.shopTop--;
-            EVT.shopNeedsRedraw++;
+            OBJ.shopTop--;
+            OBJ.shopNeedsRedraw++;
          }
       }
-      if (EVT.shopTop != 0) {
+      if (OBJ.shopTop != 0) {
          if (PositionScrollIndicator(0x3a, 0)) {
             RenderScrollIndicator(0, gScrollIndicatorX, gScrollIndicatorY);
          }
       }
-      if (j > EVT.shopTop + EVT.shopRows) {
+      if (j > OBJ.shopTop + OBJ.shopRows) {
          if (PositionScrollIndicator(0x3a, 1)) {
             RenderScrollIndicator(1, gScrollIndicatorX, gScrollIndicatorY);
          }
@@ -2505,67 +2505,67 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
          i++;
       }
       j = i;
-      if (i > EVT.partyRows) {
-         i -= EVT.partyRows;
+      if (i > OBJ.partyRows) {
+         i -= OBJ.partyRows;
       } else {
          i = 0;
       }
-      if ((gPadStateNewPresses & PAD_DOWN) && (i > EVT.partyTop) &&
-          (gHighlightedChoice == EVT.partyRows)) {
-         EVT.partyTop++;
-         EVT.partyNeedsRedraw++;
+      if ((gPadStateNewPresses & PAD_DOWN) && (i > OBJ.partyTop) &&
+          (gHighlightedChoice == OBJ.partyRows)) {
+         OBJ.partyTop++;
+         OBJ.partyNeedsRedraw++;
       }
-      if (EVT.partyTop != 0) {
+      if (OBJ.partyTop != 0) {
          if ((gPadStateNewPresses & PAD_UP) && (gHighlightedChoice == 1)) {
-            EVT.partyTop--;
-            EVT.partyNeedsRedraw++;
+            OBJ.partyTop--;
+            OBJ.partyNeedsRedraw++;
          }
       }
-      if (EVT.partyTop != 0) {
+      if (OBJ.partyTop != 0) {
          if (PositionScrollIndicator(0x3b, 0)) {
             RenderScrollIndicator(0, gScrollIndicatorX, gScrollIndicatorY);
          }
       }
-      if (j > EVT.partyTop + EVT.partyRows) {
+      if (j > OBJ.partyTop + OBJ.partyRows) {
          if (PositionScrollIndicator(0x3b, 1)) {
             RenderScrollIndicator(1, gScrollIndicatorX, gScrollIndicatorY);
          }
       }
    }
 
-   if (EVT.depotNeedsRedraw) {
-      EVT.depotNeedsRedraw = 0;
-      i = (evt->state < 51) ? 1 : 0;
-      ListDepotInventory(EVT.depotCategory, EVT.depotTop, 7, 1, i);
+   if (OBJ.depotNeedsRedraw) {
+      OBJ.depotNeedsRedraw = 0;
+      i = (obj->state < 51) ? 1 : 0;
+      ListDepotInventory(OBJ.depotCategory, OBJ.depotTop, 7, 1, i);
       DrawSjisText(28, 110, 19, 2, 0, sInventoryBuffer);
    }
-   if (EVT.shopNeedsRedraw) {
-      EVT.shopNeedsRedraw = 0;
-      ListShopInventory(EVT.shopId, EVT.category, EVT.shopTop, EVT.shopRows, 1);
+   if (OBJ.shopNeedsRedraw) {
+      OBJ.shopNeedsRedraw = 0;
+      ListShopInventory(OBJ.shopId, OBJ.category, OBJ.shopTop, OBJ.shopRows, 1);
       DrawSjisText(28, 110, 19, 2, 0, sInventoryBuffer);
    }
-   if (EVT.partyNeedsRedraw) {
-      EVT.partyNeedsRedraw = 0;
-      DrawWindow(0x3b, 412, 100, 96, 136, 84, 250, WBS_CROSSED, EVT.partyRows);
-      ListParty(EVT.partyTop, EVT.partyRows, 1);
+   if (OBJ.partyNeedsRedraw) {
+      OBJ.partyNeedsRedraw = 0;
+      DrawWindow(0x3b, 412, 100, 96, 136, 84, 250, WBS_CROSSED, OBJ.partyRows);
+      ListParty(OBJ.partyTop, OBJ.partyRows, 1);
       DrawSjisText(420, 110, 19, 2, 0, gPartyListBuffer);
    }
 
-   switch (EVT.goldState) {
+   switch (OBJ.goldState) {
    case 0:
-      EVT.goldTimer = 50;
-      EVT.goldState++;
+      OBJ.goldTimer = 50;
+      OBJ.goldState++;
 
    // fallthrough
    case 1:
-      if (--EVT.goldTimer == 0) {
+      if (--OBJ.goldTimer == 0) {
          D_801F6D40 = gState.gold;
          DrawWindow(0x36, 256, 98, 104, 36, 408, 90, WBS_CROSSED, 0);
          EmbedIntAsSjis(D_801F6D40, sGoldBuffer, 6);
          DrawSjisText(256, 109, 10, 2, 0, sGoldBuffer);
          DisplayCustomWindow(0x36, 0, 1, 49, 0, 0);
          SlideWindowTo(0x36, 208, 90);
-         EVT.goldState++;
+         OBJ.goldState++;
       }
       break;
 
@@ -2579,30 +2579,30 @@ void Evtf406_ShopOrDepot(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 009
-void Evtf009_ItemIconMgr(EvtData *evt) {
+#undef OBJF
+#define OBJF 009
+void Objf009_ItemIconMgr(Object *obj) {
    s32 i, j;
-   EvtData *shopOrDepot;
-   EvtData *window;
-   EvtData *p;
+   Object *shopOrDepot;
+   Object *window;
+   Object *p;
    s16 x, y;
    s16 dx, dy;
    s32 tmp;
 
-   shopOrDepot = EVT.shopOrDepot;
+   shopOrDepot = OBJ.shopOrDepot;
 
    for (i = 0; i < 7; i++) {
       gState.dynamicIcons[i].gfxIdx = GFX_NULL;
    }
 
    if (D_8012338C == 0x40) {
-      p = &gEvtDataArray[0];
-      for (j = 0; j < EVT_DATA_CT; j++, p++) {
-         if (p->functionIndex == EVTF_WINDOW_TBD_005 && p->d.evtf005.windowId == 0x40 &&
-             p->d.evtf005.window != NULL) {
+      p = &gObjectArray[0];
+      for (j = 0; j < OBJ_DATA_CT; j++, p++) {
+         if (p->functionIndex == OBJF_WINDOW_TBD_005 && p->d.objf005.windowId == 0x40 &&
+             p->d.objf005.window != NULL) {
 
-            window = p->d.evtf005.window;
+            window = p->d.objf005.window;
             dx = (window->d.sprite2.coords[2].x - window->d.sprite2.coords[0].x) / 7;
             dy = (window->d.sprite2.coords[2].y - window->d.sprite2.coords[0].y - 16) / 7;
             x = window->d.sprite2.coords[0].x + 9;
@@ -2613,7 +2613,7 @@ void Evtf009_ItemIconMgr(EvtData *evt) {
                gState.dynamicIcons[i].y = y;
                //? Maybe fake match due to unusual assignments
                tmp = gState.dynamicIcons[i].gfxIdx =
-                   gDepotInventoryPtr[shopOrDepot->d.evtf406.depotTop + i];
+                   gDepotInventoryPtr[shopOrDepot->d.objf406.depotTop + i];
                if (tmp != 0) {
                   gState.dynamicIcons[i].gfxIdx += GFX_ITEM_ICONS_OFS;
                }
@@ -2626,12 +2626,12 @@ void Evtf009_ItemIconMgr(EvtData *evt) {
    }
 
    if (D_8012338C == 0x3f) {
-      p = &gEvtDataArray[0];
-      for (j = 0; j < EVT_DATA_CT; j++, p++) {
-         if (p->functionIndex == EVTF_WINDOW_TBD_005 && p->d.evtf005.windowId == 0x3f &&
-             p->d.evtf005.window != NULL) {
+      p = &gObjectArray[0];
+      for (j = 0; j < OBJ_DATA_CT; j++, p++) {
+         if (p->functionIndex == OBJF_WINDOW_TBD_005 && p->d.objf005.windowId == 0x3f &&
+             p->d.objf005.window != NULL) {
 
-            window = p->d.evtf005.window;
+            window = p->d.objf005.window;
             dx = (window->d.sprite2.coords[2].x - window->d.sprite2.coords[0].x) / 5;
             dy = (window->d.sprite2.coords[2].y - window->d.sprite2.coords[0].y - 20) / 5;
             x = window->d.sprite2.coords[0].x + 9;
@@ -2653,12 +2653,12 @@ void Evtf009_ItemIconMgr(EvtData *evt) {
    }
 
    if (D_8012338C == 0x3a) {
-      p = &gEvtDataArray[0];
-      for (j = 0; j < EVT_DATA_CT; j++, p++) {
-         if (p->functionIndex == EVTF_WINDOW_TBD_005 && p->d.evtf005.windowId == 0x3a &&
-             p->d.evtf005.window != NULL) {
+      p = &gObjectArray[0];
+      for (j = 0; j < OBJ_DATA_CT; j++, p++) {
+         if (p->functionIndex == OBJF_WINDOW_TBD_005 && p->d.objf005.windowId == 0x3a &&
+             p->d.objf005.window != NULL) {
 
-            window = p->d.evtf005.window;
+            window = p->d.objf005.window;
             dx = (window->d.sprite2.coords[2].x - window->d.sprite2.coords[0].x) / 7;
             dy = (window->d.sprite2.coords[2].y - window->d.sprite2.coords[0].y - 16) / 7;
             x = window->d.sprite2.coords[0].x + 9;
@@ -2668,9 +2668,9 @@ void Evtf009_ItemIconMgr(EvtData *evt) {
                gState.dynamicIcons[i].x = x;
                gState.dynamicIcons[i].y = y;
                tmp = (gState.dynamicIcons[i].gfxIdx =
-                          gShopInventories[shopOrDepot->d.evtf406.shopId]
-                                          [shopOrDepot->d.evtf406.category]
-                                          [shopOrDepot->d.evtf406.shopTop + i]);
+                          gShopInventories[shopOrDepot->d.objf406.shopId]
+                                          [shopOrDepot->d.objf406.category]
+                                          [shopOrDepot->d.objf406.shopTop + i]);
                if (tmp != 0) {
                   gState.dynamicIcons[i].gfxIdx += GFX_ITEM_ICONS_OFS;
                }
@@ -2683,15 +2683,15 @@ void Evtf009_ItemIconMgr(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 577
-void Evtf577_DynamicIcon(EvtData *evt) {
-   EVT.gfxIdx = gState.dynamicIcons[EVT.idx].gfxIdx;
-   if (EVT.gfxIdx != GFX_NULL) {
-      evt->x1.n = gState.dynamicIcons[EVT.idx].x;
-      evt->y1.n = gState.dynamicIcons[EVT.idx].y;
-      evt->x3.n = evt->x1.n + 15;
-      evt->y3.n = evt->y1.n + 15;
-      AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
+#undef OBJF
+#define OBJF 577
+void Objf577_DynamicIcon(Object *obj) {
+   OBJ.gfxIdx = gState.dynamicIcons[OBJ.idx].gfxIdx;
+   if (OBJ.gfxIdx != GFX_NULL) {
+      obj->x1.n = gState.dynamicIcons[OBJ.idx].x;
+      obj->y1.n = gState.dynamicIcons[OBJ.idx].y;
+      obj->x3.n = obj->x1.n + 15;
+      obj->y3.n = obj->y1.n + 15;
+      AddObjPrim_Gui(gGraphicsPtr->ot, obj);
    }
 }

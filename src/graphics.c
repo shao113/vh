@@ -1,6 +1,6 @@
 #include "common.h"
 #include "graphics.h"
-#include "evt.h"
+#include "object.h"
 #include "battle.h"
 #include "state.h"
 #include "field.h"
@@ -9,11 +9,11 @@
 #include "PsyQ/kernel.h"
 #include "PsyQ/gtemac.h"
 
-void LoadDecodedUnitSprites(EvtData *evt) {
+void LoadDecodedUnitSprites(Object *obj) {
    RECT rect;
 
-   rect.x = evt->d.evtf050.vramX;
-   rect.y = evt->d.evtf050.vramY;
+   rect.x = obj->d.objf050.vramX;
+   rect.y = obj->d.objf050.vramY;
    rect.w = 256 >> 2;
    rect.h = 352;
    LoadImage(&rect, &gScratch1_801317c0[0]);
@@ -26,29 +26,29 @@ static inline void SetFunctionIndex(s16 value) { gUnitSpritesDecoder.functionInd
 static inline u16 GetState(void) { return gUnitSpritesDecoder.state; }
 static inline void SetState(u16 value) { gUnitSpritesDecoder.state = value; }
 
-static inline s32 GetRemainingBytes(void) { return gUnitSpritesDecoder.d.evtf050.remainingBytes; }
+static inline s32 GetRemainingBytes(void) { return gUnitSpritesDecoder.d.objf050.remainingBytes; }
 static inline void SetRemainingBytes(s32 value) {
-   gUnitSpritesDecoder.d.evtf050.remainingBytes = value;
+   gUnitSpritesDecoder.d.objf050.remainingBytes = value;
 }
 
-static inline u16 GetCacheOfs(void) { return gUnitSpritesDecoder.d.evtf050.cacheOfs; }
-static inline void SetCacheOfs(u16 value) { gUnitSpritesDecoder.d.evtf050.cacheOfs = value; }
+static inline u16 GetCacheOfs(void) { return gUnitSpritesDecoder.d.objf050.cacheOfs; }
+static inline void SetCacheOfs(u16 value) { gUnitSpritesDecoder.d.objf050.cacheOfs = value; }
 
-static inline u16 GetModeBits(void) { return gUnitSpritesDecoder.d.evtf050.encodingBits; }
-static inline void SetModeBits(u16 value) { gUnitSpritesDecoder.d.evtf050.encodingBits = value; }
+static inline u16 GetModeBits(void) { return gUnitSpritesDecoder.d.objf050.encodingBits; }
+static inline void SetModeBits(u16 value) { gUnitSpritesDecoder.d.objf050.encodingBits = value; }
 
-static inline u8 *GetSrc(void) { return gUnitSpritesDecoder.d.evtf050.src; }
-static inline void SetSrc(u8 *value) { gUnitSpritesDecoder.d.evtf050.src = value; }
+static inline u8 *GetSrc(void) { return gUnitSpritesDecoder.d.objf050.src; }
+static inline void SetSrc(u8 *value) { gUnitSpritesDecoder.d.objf050.src = value; }
 
-static inline u8 *GetDst(void) { return gUnitSpritesDecoder.d.evtf050.dst; }
-static inline void SetDst(u8 *value) { gUnitSpritesDecoder.d.evtf050.dst = value; }
+static inline u8 *GetDst(void) { return gUnitSpritesDecoder.d.objf050.dst; }
+static inline void SetDst(u8 *value) { gUnitSpritesDecoder.d.objf050.dst = value; }
 
-static inline u8 *GetBaseSrc(void) { return (u8 *)gUnitSpritesDecoder.d.evtf050.baseSrcDataPtr; }
-static inline u8 *GetBaseDst(void) { return (u8 *)gUnitSpritesDecoder.d.evtf050.baseDstDataPtr; }
+static inline u8 *GetBaseSrc(void) { return (u8 *)gUnitSpritesDecoder.d.objf050.baseSrcDataPtr; }
+static inline u8 *GetBaseDst(void) { return (u8 *)gUnitSpritesDecoder.d.objf050.baseDstDataPtr; }
 
-#undef EVTF
-#define EVTF 050
-void Evtf050_UnitSpritesDecoder(EvtData *evt) {
+#undef OBJF
+#define OBJF 050
+void Objf050_UnitSpritesDecoder(Object *obj) {
    s32 i, j, k;
    u8 *pCache;
    s32 maxTicks;
@@ -117,7 +117,7 @@ void Evtf050_UnitSpritesDecoder(EvtData *evt) {
                remainingBytes--;
                if (remainingBytes == 0) {
                   LoadDecodedUnitSprites(&gUnitSpritesDecoder);
-                  SetFunctionIndex(EVTF_NULL);
+                  SetFunctionIndex(OBJF_NULL);
                   gDecodingSprites = 0;
                   return;
                }
@@ -140,7 +140,7 @@ void Evtf050_UnitSpritesDecoder(EvtData *evt) {
                remainingBytes -= k;
                if (remainingBytes <= 0) {
                   LoadDecodedUnitSprites(&gUnitSpritesDecoder);
-                  SetFunctionIndex(EVTF_NULL);
+                  SetFunctionIndex(OBJF_NULL);
                   gDecodingSprites = 0;
                   return;
                }
@@ -157,64 +157,64 @@ void Evtf050_UnitSpritesDecoder(EvtData *evt) {
 
    case 2:
       gDecodingSprites = 0;
-      SetFunctionIndex(EVTF_NULL);
+      SetFunctionIndex(OBJF_NULL);
       DrawSync(0);
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 051
-void Evtf051_FloatingDamageText(EvtData *evt) {
-   EvtData *unitSprite;
-   EvtData *digitSprite;
+#undef OBJF
+#define OBJF 051
+void Objf051_FloatingDamageText(Object *obj) {
+   Object *unitSprite;
+   Object *digitSprite;
    s32 i;
    s16 hundreds, tens;
    s16 digits[4];
    s16 a, b;
    s16 x_1, x_2, z_1, z_2;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      OBJ.unitSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
 
-      EVT.hundreds = hundreds = EVT.damage / 100;
-      EVT.damage -= EVT.hundreds * 100;
-      EVT.tens = tens = EVT.damage / 10;
-      EVT.damage -= EVT.tens * 10;
-      EVT.ones = EVT.damage;
+      OBJ.hundreds = hundreds = OBJ.damage / 100;
+      OBJ.damage -= OBJ.hundreds * 100;
+      OBJ.tens = tens = OBJ.damage / 10;
+      OBJ.damage -= OBJ.tens * 10;
+      OBJ.ones = OBJ.damage;
 
       if (hundreds != 0) {
-         EVT.numDigits = 3;
+         OBJ.numDigits = 3;
       } else if (tens != 0) {
-         EVT.numDigits = 2;
+         OBJ.numDigits = 2;
       } else {
-         EVT.numDigits = 1;
+         OBJ.numDigits = 1;
       }
 
-      digitSprite = Evt_GetUnused();
-      EVT.digitSprite = digitSprite;
-      digitSprite->functionIndex = EVTF_NOOP;
+      digitSprite = Obj_GetUnused();
+      OBJ.digitSprite = digitSprite;
+      digitSprite->functionIndex = OBJF_NOOP;
 
-      if (EVT.clut == CLUT_NULL) {
-         EVT.clut = CLUT_REDS;
+      if (OBJ.clut == CLUT_NULL) {
+         OBJ.clut = CLUT_REDS;
       }
-      digitSprite->d.sprite.clut = EVT.clut;
+      digitSprite->d.sprite.clut = OBJ.clut;
 
-      evt->state++;
+      obj->state++;
       break;
 
    case 1:
-      digits[0] = EVT.ones;
-      digits[1] = EVT.tens;
-      digits[2] = EVT.hundreds;
+      digits[0] = OBJ.ones;
+      digits[1] = OBJ.tens;
+      digits[2] = OBJ.hundreds;
 
-      unitSprite = EVT.unitSprite;
-      digitSprite = EVT.digitSprite;
+      unitSprite = OBJ.unitSprite;
+      digitSprite = OBJ.digitSprite;
 
-      evt->x1.n = unitSprite->x1.n;
-      evt->z1.n = unitSprite->z1.n;
-      evt->y1.n = unitSprite->y1.n + CV(0.875);
+      obj->x1.n = unitSprite->x1.n;
+      obj->z1.n = unitSprite->z1.n;
+      obj->y1.n = unitSprite->y1.n + CV(0.875);
 
       switch ((gCameraRotation.vy & 0xfff) >> 10) {
       case CAM_DIR_SOUTH:
@@ -254,7 +254,7 @@ void Evtf051_FloatingDamageText(EvtData *evt) {
       digitSprite->d.sprite.coords[0].y = CV(0.1875);
       digitSprite->d.sprite.coords[1].y = CV(0.1875);
 
-      a = rsin(EVT.phase) + 0x800;
+      a = rsin(OBJ.phase) + 0x800;
       digitSprite->d.sprite.coords[0].x = (digitSprite->d.sprite.coords[0].x * a) >> 12;
       digitSprite->d.sprite.coords[1].x = (digitSprite->d.sprite.coords[1].x * a) >> 12;
       digitSprite->d.sprite.coords[0].z = (digitSprite->d.sprite.coords[0].z * a) >> 12;
@@ -269,27 +269,27 @@ void Evtf051_FloatingDamageText(EvtData *evt) {
       digitSprite->d.sprite.coords[3].y = -1 * digitSprite->d.sprite.coords[1].y;
 
       b = abs(digitSprite->d.sprite.coords[0].x) * 2;
-      digitSprite->d.sprite.coords[0].x += evt->x1.n;
-      digitSprite->d.sprite.coords[1].x += evt->x1.n;
-      digitSprite->d.sprite.coords[2].x += evt->x1.n;
-      digitSprite->d.sprite.coords[3].x += evt->x1.n;
+      digitSprite->d.sprite.coords[0].x += obj->x1.n;
+      digitSprite->d.sprite.coords[1].x += obj->x1.n;
+      digitSprite->d.sprite.coords[2].x += obj->x1.n;
+      digitSprite->d.sprite.coords[3].x += obj->x1.n;
 
-      digitSprite->d.sprite.coords[0].z += evt->z1.n;
-      digitSprite->d.sprite.coords[1].z += evt->z1.n;
-      digitSprite->d.sprite.coords[2].z += evt->z1.n;
-      digitSprite->d.sprite.coords[3].z += evt->z1.n;
+      digitSprite->d.sprite.coords[0].z += obj->z1.n;
+      digitSprite->d.sprite.coords[1].z += obj->z1.n;
+      digitSprite->d.sprite.coords[2].z += obj->z1.n;
+      digitSprite->d.sprite.coords[3].z += obj->z1.n;
 
-      digitSprite->d.sprite.coords[0].y += evt->y1.n + (a - 0x800) / 16;
-      digitSprite->d.sprite.coords[1].y += evt->y1.n + (a - 0x800) / 16;
-      digitSprite->d.sprite.coords[2].y += evt->y1.n + (a - 0x800) / 16;
-      digitSprite->d.sprite.coords[3].y += evt->y1.n + (a - 0x800) / 16;
+      digitSprite->d.sprite.coords[0].y += obj->y1.n + (a - 0x800) / 16;
+      digitSprite->d.sprite.coords[1].y += obj->y1.n + (a - 0x800) / 16;
+      digitSprite->d.sprite.coords[2].y += obj->y1.n + (a - 0x800) / 16;
+      digitSprite->d.sprite.coords[3].y += obj->y1.n + (a - 0x800) / 16;
 
       digitSprite->d.sprite.otOfs = 32;
 
-      switch (EVT.numDigits) {
+      switch (OBJ.numDigits) {
       case 1:
          digitSprite->d.sprite.gfxIdx = GFX_DIGIT_0 + digits[0];
-         AddEvtPrim4(gGraphicsPtr->ot, digitSprite);
+         AddObjPrim4(gGraphicsPtr->ot, digitSprite);
          break;
 
       case 2:
@@ -340,7 +340,7 @@ void Evtf051_FloatingDamageText(EvtData *evt) {
             digitSprite->d.sprite.coords[1].z += z_2;
             digitSprite->d.sprite.coords[2].z += z_2;
             digitSprite->d.sprite.coords[3].z += z_2;
-            AddEvtPrim4(gGraphicsPtr->ot, digitSprite);
+            AddObjPrim4(gGraphicsPtr->ot, digitSprite);
          }
 
          break;
@@ -393,26 +393,26 @@ void Evtf051_FloatingDamageText(EvtData *evt) {
             digitSprite->d.sprite.coords[1].z += z_2;
             digitSprite->d.sprite.coords[2].z += z_2;
             digitSprite->d.sprite.coords[3].z += z_2;
-            AddEvtPrim4(gGraphicsPtr->ot, digitSprite);
+            AddObjPrim4(gGraphicsPtr->ot, digitSprite);
          }
 
          break;
       }
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         EVT.phase += DEG(16.34765625);
-         if (EVT.phase >= DEG(135)) {
-            evt->state2++;
+         OBJ.phase += DEG(16.34765625);
+         if (OBJ.phase >= DEG(135)) {
+            obj->state2++;
          }
          break;
 
       case 1:
-         if (EVT.timer == 30) {
-            evt->functionIndex = EVTF_NULL;
-            digitSprite->functionIndex = EVTF_NULL;
+         if (OBJ.timer == 30) {
+            obj->functionIndex = OBJF_NULL;
+            digitSprite->functionIndex = OBJF_NULL;
          }
-         EVT.timer++;
+         OBJ.timer++;
          break;
       }
 
@@ -420,37 +420,37 @@ void Evtf051_FloatingDamageText(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 052
-void Evtf052_AttackInfoMarker(EvtData *evt) {
+#undef OBJF
+#define OBJF 052
+void Objf052_AttackInfoMarker(Object *obj) {
    s16 markers[4] = {GFX_MISS, GFX_PARALYZED, GFX_SUPPORT, GFX_POISONED};
-   EvtData *unitSprite;
-   EvtData *markerSprite;
+   Object *unitSprite;
+   Object *markerSprite;
    s16 a;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      OBJ.unitSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
 
-      markerSprite = Evt_GetUnused();
-      EVT.sprite = markerSprite;
-      markerSprite->functionIndex = EVTF_NOOP;
-      markerSprite->d.sprite.gfxIdx = markers[EVT.type];
+      markerSprite = Obj_GetUnused();
+      OBJ.sprite = markerSprite;
+      markerSprite->functionIndex = OBJF_NOOP;
+      markerSprite->d.sprite.gfxIdx = markers[OBJ.type];
 
-      if (EVT.clut == CLUT_NULL) {
-         EVT.clut = CLUT_REDS;
+      if (OBJ.clut == CLUT_NULL) {
+         OBJ.clut = CLUT_REDS;
       }
-      markerSprite->d.sprite.clut = EVT.clut;
+      markerSprite->d.sprite.clut = OBJ.clut;
 
-      evt->state++;
+      obj->state++;
       break;
 
    case 1:
-      unitSprite = EVT.unitSprite;
-      markerSprite = EVT.sprite;
-      evt->x1.n = unitSprite->x1.n;
-      evt->z1.n = unitSprite->z1.n;
-      evt->y1.n = unitSprite->y1.n + CV(0.875);
+      unitSprite = OBJ.unitSprite;
+      markerSprite = OBJ.sprite;
+      obj->x1.n = unitSprite->x1.n;
+      obj->z1.n = unitSprite->z1.n;
+      obj->y1.n = unitSprite->y1.n + CV(0.875);
 
       switch ((gCameraRotation.vy & 0xfff) >> 10) {
       case CAM_DIR_SOUTH:
@@ -490,7 +490,7 @@ void Evtf052_AttackInfoMarker(EvtData *evt) {
       markerSprite->d.sprite.coords[0].y = CV(0.1875);
       markerSprite->d.sprite.coords[1].y = CV(0.1875);
 
-      if (EVT.type == ATK_MARKER_SUPPORT) {
+      if (OBJ.type == ATK_MARKER_SUPPORT) {
          markerSprite->d.sprite.coords[0].y = CV(0.125);
          markerSprite->d.sprite.coords[1].y = CV(0.125);
          markerSprite->d.sprite.coords[0].x /= 2;
@@ -499,46 +499,46 @@ void Evtf052_AttackInfoMarker(EvtData *evt) {
          markerSprite->d.sprite.coords[1].z /= 2;
       }
 
-      a = rsin(EVT.angle) + 0x800;
+      a = rsin(OBJ.angle) + 0x800;
       markerSprite->d.sprite.coords[0].x = markerSprite->d.sprite.coords[0].x * a / 0xc00;
       markerSprite->d.sprite.coords[1].x = markerSprite->d.sprite.coords[1].x * a / 0xc00;
       markerSprite->d.sprite.coords[0].z = markerSprite->d.sprite.coords[0].z * a / 0xc00;
       markerSprite->d.sprite.coords[1].z = markerSprite->d.sprite.coords[1].z * a / 0xc00;
       markerSprite->d.sprite.coords[0].y = markerSprite->d.sprite.coords[0].y * a / 0xc00;
       markerSprite->d.sprite.coords[1].y = markerSprite->d.sprite.coords[1].y * a / 0xc00;
-      markerSprite->d.sprite.coords[0].x += evt->x1.n;
-      markerSprite->d.sprite.coords[1].x += evt->x1.n;
-      markerSprite->d.sprite.coords[0].z += evt->z1.n;
-      markerSprite->d.sprite.coords[1].z += evt->z1.n;
+      markerSprite->d.sprite.coords[0].x += obj->x1.n;
+      markerSprite->d.sprite.coords[1].x += obj->x1.n;
+      markerSprite->d.sprite.coords[0].z += obj->z1.n;
+      markerSprite->d.sprite.coords[1].z += obj->z1.n;
       markerSprite->d.sprite.coords[2].x = markerSprite->d.sprite.coords[0].x;
       markerSprite->d.sprite.coords[3].x = markerSprite->d.sprite.coords[1].x;
       markerSprite->d.sprite.coords[2].z = markerSprite->d.sprite.coords[0].z;
       markerSprite->d.sprite.coords[3].z = markerSprite->d.sprite.coords[1].z;
       markerSprite->d.sprite.coords[2].y = -markerSprite->d.sprite.coords[0].y;
       markerSprite->d.sprite.coords[3].y = -markerSprite->d.sprite.coords[1].y;
-      markerSprite->d.sprite.coords[0].y += evt->y1.n + ((a - 0x800) >> 4);
-      markerSprite->d.sprite.coords[1].y += evt->y1.n + ((a - 0x800) >> 4);
-      markerSprite->d.sprite.coords[2].y += evt->y1.n + ((a - 0x800) >> 4);
-      markerSprite->d.sprite.coords[3].y += evt->y1.n + ((a - 0x800) >> 4);
-      AddEvtPrim4(gGraphicsPtr->ot, markerSprite);
+      markerSprite->d.sprite.coords[0].y += obj->y1.n + ((a - 0x800) >> 4);
+      markerSprite->d.sprite.coords[1].y += obj->y1.n + ((a - 0x800) >> 4);
+      markerSprite->d.sprite.coords[2].y += obj->y1.n + ((a - 0x800) >> 4);
+      markerSprite->d.sprite.coords[3].y += obj->y1.n + ((a - 0x800) >> 4);
+      AddObjPrim4(gGraphicsPtr->ot, markerSprite);
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         EVT.angle += DEG(16.171875);
-         if (EVT.angle >= DEG(135)) {
-            evt->state2++;
+         OBJ.angle += DEG(16.171875);
+         if (OBJ.angle >= DEG(135)) {
+            obj->state2++;
          }
-         if (EVT.type == ATK_MARKER_SUPPORT) {
-            EVT.timer = 20;
+         if (OBJ.type == ATK_MARKER_SUPPORT) {
+            OBJ.timer = 20;
          } else {
-            EVT.timer = 30;
+            OBJ.timer = 30;
          }
          break;
 
       case 1:
-         if (--EVT.timer == 0) {
-            evt->functionIndex = EVTF_NULL;
-            markerSprite->functionIndex = EVTF_NULL;
+         if (--OBJ.timer == 0) {
+            obj->functionIndex = OBJF_NULL;
+            markerSprite->functionIndex = OBJF_NULL;
          }
          break;
       }
@@ -547,28 +547,28 @@ void Evtf052_AttackInfoMarker(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 059
-void Evtf059_DebugVram(EvtData *evt) {
+#undef OBJF
+#define OBJF 059
+void Objf059_DebugVram(Object *obj) {
    extern s32 D_8012340C;
 
    s16 widths[5] = {256, 320, 384, 512, 640};
    s16 heights[2] = {240, 480};
    Graphics *g;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.widthIdx = 1;
-      EVT.heightIdx = 0;
-      EVT.width = widths[EVT.widthIdx];
-      EVT.height = heights[EVT.heightIdx];
-      evt->state++;
+      OBJ.widthIdx = 1;
+      OBJ.heightIdx = 0;
+      OBJ.width = widths[OBJ.widthIdx];
+      OBJ.height = heights[OBJ.heightIdx];
+      obj->state++;
       break;
 
    case 1:
       if (gSavedPad2StateNewPresses & PAD_SELECT) {
          D_8012340C = 0;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
          SetDefDispEnv(&gGraphicBuffers[0].dispEnv, 0, 272, SCREEN_WIDTH, SCREEN_HEIGHT);
          SetDefDispEnv(&gGraphicBuffers[1].dispEnv, 0, 16, SCREEN_WIDTH, SCREEN_HEIGHT);
       } else {
@@ -585,17 +585,17 @@ void Evtf059_DebugVram(EvtData *evt) {
             gGraphicsPtr->dispEnv.disp.x += 8;
          }
          if (gSavedPad2StateNewPresses & PAD_L1) {
-            EVT.widthIdx++;
-            EVT.widthIdx %= 5;
-            EVT.width = widths[EVT.widthIdx];
+            OBJ.widthIdx++;
+            OBJ.widthIdx %= 5;
+            OBJ.width = widths[OBJ.widthIdx];
          }
          if (gSavedPad2StateNewPresses & PAD_L2) {
-            EVT.heightIdx++;
-            EVT.heightIdx %= 2;
-            EVT.height = heights[EVT.heightIdx];
+            OBJ.heightIdx++;
+            OBJ.heightIdx %= 2;
+            OBJ.height = heights[OBJ.heightIdx];
          }
-         gGraphicsPtr->dispEnv.disp.w = widths[EVT.widthIdx];
-         gGraphicsPtr->dispEnv.disp.h = heights[EVT.heightIdx];
+         gGraphicsPtr->dispEnv.disp.w = widths[OBJ.widthIdx];
+         gGraphicsPtr->dispEnv.disp.h = heights[OBJ.heightIdx];
 
          g = (gGraphicsPtr == &gGraphicBuffers[0]) ? &gGraphicBuffers[1] : &gGraphicBuffers[0];
          g->dispEnv.disp.x = gGraphicsPtr->dispEnv.disp.x;
@@ -607,7 +607,7 @@ void Evtf059_DebugVram(EvtData *evt) {
    }
 }
 
-void CopyEvtData(EvtData *src, EvtData *dst) {
+void CopyObject(Object *src, Object *dst) {
    s32 i;
 
    for (i = 0; i < 24; i++) {

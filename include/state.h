@@ -78,7 +78,7 @@ typedef struct State {
    s32 state4;
    s32 state5;
    s32 state6;
-   s32 state7; //<- Sometimes used to communicate evtf# of scene loader
+   s32 state7; //<- Sometimes used to communicate objf# of scene loader
    s32 state8;
    s32 D_801405A4;
 
@@ -143,7 +143,7 @@ typedef struct State {
    SVectorXYZ eventCameraPan;
    s16 eventCameraRot;
    s16 eventCameraHeight;
-   struct EvtData *focus;
+   struct Object *focus;
    u8 msgBoxFinished;
    u8 field_0x31d;
    u8 field_0x31e;
@@ -167,7 +167,7 @@ typedef struct State {
    u8 field_0x339;
    u8 field_0x33a;
    u8 field_0x33b;
-   struct EvtData *screenEffect;
+   struct Object *screenEffect;
    u8 field_0x340;
    u8 field_0x341;
    u8 field_0x342;

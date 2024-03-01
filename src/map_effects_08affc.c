@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "field.h"
 #include "state.h"
@@ -243,9 +243,9 @@ void Map29_LowerDrawbridge(void) {
    }
 }
 
-#undef EVTF
-#define EVTF 362
-void Evtf362_DrawbridgeButton(EvtData *evt) {
+#undef OBJF
+#define OBJF 362
+void Objf362_DrawbridgeButton(Object *obj) {
    extern MapTileModel s_tileModels_80124314[2];
 
    static VECTOR translation = {288, -48, 112, 0};
@@ -257,42 +257,42 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
    MATRIX mtx;
    VECTOR rotated;
    s32 flag;
-   EvtData *dust;
+   Object *dust;
    s32 signedTileSize;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       if (gState.mapNum == 26) {
-         evt->x1.n = CV(38.0);
-         evt->y1.n = CV(1.0);
-         evt->z1.n = CV(7.5);
-         evt->mem = DEG(180);
-         evt->y3.n = DEG(0.703125);
-         EVT.gfxSetIdx = 3;
-         EVT.battleNum = 17; // i.e. mapNum - 9 (same as displayed in debug menu)
-         EVT.tileModel = &sMapTileModel_80100644;
+         obj->x1.n = CV(38.0);
+         obj->y1.n = CV(1.0);
+         obj->z1.n = CV(7.5);
+         obj->mem = DEG(180);
+         obj->y3.n = DEG(0.703125);
+         OBJ.gfxSetIdx = 3;
+         OBJ.battleNum = 17; // i.e. mapNum - 9 (same as displayed in debug menu)
+         OBJ.tileModel = &sMapTileModel_80100644;
          gTerrainPtr[7][37].s.terrain = TERRAIN_NO_ENTRY;
          gTerrainPtr[8][37].s.terrain = TERRAIN_NO_ENTRY;
          gMapRowPointers[7][37].height = 8;
          gMapRowPointers[8][37].height = 8;
       } else if (gState.mapNum == 11) {
-         evt->x1.n = CV(9.0);
-         evt->y1.n = CV(1.5);
-         evt->z1.n = CV(3.5);
-         evt->mem = DEG(0);
-         evt->y3.n = DEG(0.703125);
-         EVT.gfxSetIdx = 0;
-         EVT.battleNum = 2;
-         EVT.tileModel = &sMapTileModel_80100514;
+         obj->x1.n = CV(9.0);
+         obj->y1.n = CV(1.5);
+         obj->z1.n = CV(3.5);
+         obj->mem = DEG(0);
+         obj->y3.n = DEG(0.703125);
+         OBJ.gfxSetIdx = 0;
+         OBJ.battleNum = 2;
+         OBJ.tileModel = &sMapTileModel_80100514;
       } else if (gState.mapNum == 29) {
-         evt->x1.n = CV(9.5);
-         evt->y1.n = CV(1.5);
-         evt->z1.n = CV(15.0);
-         evt->mem = DEG(90);
-         evt->y3.n = DEG(0.703125);
-         EVT.gfxSetIdx = 6;
-         EVT.battleNum = 20;
-         EVT.tileModel = &sMapTileModel_80100514;
+         obj->x1.n = CV(9.5);
+         obj->y1.n = CV(1.5);
+         obj->z1.n = CV(15.0);
+         obj->mem = DEG(90);
+         obj->y3.n = DEG(0.703125);
+         OBJ.gfxSetIdx = 6;
+         OBJ.battleNum = 20;
+         OBJ.tileModel = &sMapTileModel_80100514;
          gTerrainPtr[15][9].s.terrain = TERRAIN_NO_ENTRY;
          gTerrainPtr[15][10].s.terrain = TERRAIN_NO_ENTRY;
          gMapRowPointers[15][9].height = 9;
@@ -300,7 +300,7 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
       }
 
       if (gState.mapState.s.field_0x0 != 0) {
-         switch (EVT.battleNum) {
+         switch (OBJ.battleNum) {
          case 2: // Map 11
             DepressButton(11, 1);
             Map11_LowerDrawbridge();
@@ -314,33 +314,33 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
             Map29_LowerDrawbridge();
             break;
          }
-         evt->state = 12;
+         obj->state = 12;
          return;
       }
 
       s_tileModels_80124314[0] = sMapTileModel_80100514;
       s_tileModels_80124314[1] = sMapTileModel_80100514;
-      gfxSetIdx = EVT.gfxSetIdx;
+      gfxSetIdx = OBJ.gfxSetIdx;
 
       for (i = 0; i < 18; i++) {
          s_tileModels_80124314[0].gfx[i] = sGfxSets_80100774[gfxSetIdx][i];
          s_tileModels_80124314[1].gfx[i] = sGfxSets_80100774[gfxSetIdx + 1][i];
       }
 
-      evt->z3.n = 0;
-      evt->state3 = DEG(90);
-      evt->state++;
+      obj->z3.n = 0;
+      obj->state3 = DEG(90);
+      obj->state++;
 
    // fallthrough
    case 1:
-      tileModel = EVT.tileModel;
+      tileModel = OBJ.tileModel;
       PushMatrix();
       rot.vx = 0;
       rot.vz = DEG(90);
-      rot.vy = evt->mem;
-      translation.vx = evt->x1.n >> 3;
-      translation.vz = evt->z1.n >> 3;
-      translation.vy = -evt->y1.n >> 3;
+      rot.vy = obj->mem;
+      translation.vx = obj->x1.n >> 3;
+      translation.vz = obj->z1.n >> 3;
+      translation.vy = -obj->y1.n >> 3;
       RotMatrix(&rot, &mtx);
       TransMatrix(&mtx, &translation);
       SetRotMatrix(&mtx);
@@ -354,7 +354,7 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
          s_tileModels_80124314[1].vertices[i].vx = rotated.vx;
          s_tileModels_80124314[1].vertices[i].vy = rotated.vy;
          s_tileModels_80124314[1].vertices[i].vz = rotated.vz;
-         if (EVT.battleNum != 20) {
+         if (OBJ.battleNum != 20) {
             s_tileModels_80124314[1].vertices[i].vz = s_tileModels_80124314[0].vertices[i].vz + 32;
          } else {
             s_tileModels_80124314[1].vertices[i].vx = s_tileModels_80124314[0].vertices[i].vx + 32;
@@ -364,13 +364,13 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
       PopMatrix();
       UpdateMapTileLighting(&s_tileModels_80124314[0]);
       UpdateMapTileLighting(&s_tileModels_80124314[1]);
-      evt->state++;
+      obj->state++;
       break;
 
    case 2:
       if (gState.mapState.s.field_0x0 == 2) {
          PerformAudioCommand(AUDIO_CMD_PREPARE_XA(34));
-         evt->state++;
+         obj->state++;
       }
       if (gOverheadMapState != 0) {
          RenderOverheadMapTile(gGraphicsPtr->ot, &s_tileModels_80124314[0], 128);
@@ -384,61 +384,61 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
    case 3:
       RenderMapTile(gGraphicsPtr->ot, &s_tileModels_80124314[0], GRID_COLOR_NONE);
       RenderMapTile(gGraphicsPtr->ot, &s_tileModels_80124314[1], GRID_COLOR_NONE);
-      EVT.timer = 64;
-      EVT.dstCamPosY = -(s_tileModels_80124314[0].vertices[12].vy << 3);
+      OBJ.timer = 64;
+      OBJ.dstCamPosY = -(s_tileModels_80124314[0].vertices[12].vy << 3);
       gCameraRotation.vy &= 0xfff;
-      EVT.dstCamRotY = func_800A96A8(gCameraRotation.vy, DEG(315));
-      evt->state++;
+      OBJ.dstCamRotY = func_800A96A8(gCameraRotation.vy, DEG(315));
+      obj->state++;
       break;
 
    case 4:
       RenderMapTile(gGraphicsPtr->ot, &s_tileModels_80124314[0], GRID_COLOR_NONE);
       RenderMapTile(gGraphicsPtr->ot, &s_tileModels_80124314[1], GRID_COLOR_NONE);
-      if (evt->mem != DEG(0)) {
-         PanCamera(evt->x1.n + CV(2.0), EVT.dstCamPosY, evt->z1.n, 2);
+      if (obj->mem != DEG(0)) {
+         PanCamera(obj->x1.n + CV(2.0), OBJ.dstCamPosY, obj->z1.n, 2);
       } else {
-         PanCamera(evt->x1.n - CV(2.0), EVT.dstCamPosY, evt->z1.n, 2);
+         PanCamera(obj->x1.n - CV(2.0), OBJ.dstCamPosY, obj->z1.n, 2);
       }
-      if (--EVT.timer > 0) {
-         gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 3;
+      if (--OBJ.timer > 0) {
+         gCameraRotation.vy += (OBJ.dstCamRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 3;
          gCameraZoom.vz += (384 - gCameraZoom.vz) >> 3;
       } else {
-         EVT.timer = 64;
-         evt->state++;
+         OBJ.timer = 64;
+         obj->state++;
       }
       break;
 
    case 5:
       RenderMapTile(gGraphicsPtr->ot, &s_tileModels_80124314[0], GRID_COLOR_NONE);
       RenderMapTile(gGraphicsPtr->ot, &s_tileModels_80124314[1], GRID_COLOR_NONE);
-      if (--evt->state2 <= 0) {
+      if (--obj->state2 <= 0) {
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(34));
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 6:
-      tileModel = EVT.tileModel;
+      tileModel = OBJ.tileModel;
       gCameraPos.vy = -s_tileModels_80124314[0].vertices[12].vy;
-      evt->y3.n += DEG(0.3515625);
-      evt->state3 -= evt->y3.n;
-      if (evt->state3 < DEG(0)) {
-         if (evt->z3.n == 0) {
+      obj->y3.n += DEG(0.3515625);
+      obj->state3 -= obj->y3.n;
+      if (obj->state3 < DEG(0)) {
+         if (obj->z3.n == 0) {
             for (i = 0; i < 2; i++) {
-               dust = Evt_GetUnused();
-               dust->functionIndex = EVTF_DUST_CLOUD_SPAWNER;
-               signedTileSize = (evt->mem != DEG(0)) ? CV(+1.0) : CV(-1.0);
-               dust->x1.n = evt->x1.s.hi * CV(1.0) + 3 * signedTileSize;
-               dust->z1.n = (evt->z1.s.hi + i) * CV(1.0) + CV(0.5);
-               dust->y1.n = evt->y1.n;
+               dust = Obj_GetUnused();
+               dust->functionIndex = OBJF_DUST_CLOUD_SPAWNER;
+               signedTileSize = (obj->mem != DEG(0)) ? CV(+1.0) : CV(-1.0);
+               dust->x1.n = obj->x1.s.hi * CV(1.0) + 3 * signedTileSize;
+               dust->z1.n = (obj->z1.s.hi + i) * CV(1.0) + CV(0.5);
+               dust->y1.n = obj->y1.n;
             }
          }
-         evt->state3 = DEG(0);
-         evt->z3.n++;
-         evt->y3.n = -(evt->y3.n >> 1);
-         if (evt->z3.n > 5) {
-            switch (EVT.battleNum) {
+         obj->state3 = DEG(0);
+         obj->z3.n++;
+         obj->y3.n = -(obj->y3.n >> 1);
+         if (obj->z3.n > 5) {
+            switch (OBJ.battleNum) {
             case 2: // Map 11
                Map11_LowerDrawbridge();
                break;
@@ -449,13 +449,13 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
                Map29_LowerDrawbridge();
                break;
             }
-            evt->state++;
+            obj->state++;
          }
       }
       PushMatrix();
       rot.vx = 0;
-      rot.vz = evt->state3;
-      rot.vy = evt->mem;
+      rot.vz = obj->state3;
+      rot.vy = obj->mem;
       RotMatrix(&rot, &mtx);
       TransMatrix(&mtx, &translation);
       SetRotMatrix(&mtx);
@@ -469,7 +469,7 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
          s_tileModels_80124314[1].vertices[i].vx = rotated.vx;
          s_tileModels_80124314[1].vertices[i].vy = rotated.vy;
          s_tileModels_80124314[1].vertices[i].vz = rotated.vz;
-         if (EVT.battleNum != 20) {
+         if (OBJ.battleNum != 20) {
             s_tileModels_80124314[1].vertices[i].vz = s_tileModels_80124314[0].vertices[i].vz + 32;
          } else {
             s_tileModels_80124314[1].vertices[i].vx = s_tileModels_80124314[0].vertices[i].vx + 32;
@@ -484,36 +484,36 @@ void Evtf362_DrawbridgeButton(EvtData *evt) {
       break;
 
    case 7:
-      evt->state2 = 32;
-      evt->state++;
+      obj->state2 = 32;
+      obj->state++;
 
    // fallthrough
    case 8:
-      if (--evt->state2 <= 0) {
-         evt->state2 = 16;
-         evt->state++;
+      if (--obj->state2 <= 0) {
+         obj->state2 = 16;
+         obj->state++;
          gState.mapState.s.field_0x0 = 3;
       }
       break;
 
    case 9:
-      if (--evt->state2 <= 0) {
-         evt->state++;
+      if (--obj->state2 <= 0) {
+         obj->state++;
       }
       break;
 
    case 10:
-      evt->state++;
+      obj->state++;
       break;
 
    case 11:
-      if (--evt->state2 <= 0) {
-         evt->state++;
+      if (--obj->state2 <= 0) {
+         obj->state++;
       }
       break;
 
    case 12:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }

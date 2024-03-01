@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "state.h"
 #include "graphics.h"
 #include "field.h"
@@ -63,19 +63,19 @@ UnitStatus *CreateUnit(u8 last) {
 }
 
 void StartUnitSpritesDecoder(u8 stripIdx) {
-   EvtData *evt = &gUnitSpritesDecoder;
+   Object *obj = &gUnitSpritesDecoder;
 
    stripIdx -= 2;
-   evt->functionIndex = EVTF_UNIT_SPRITES_DECODER;
-   evt->state = 0;
-   evt->d.evtf050.baseSrcDataPtr = gEncodedUnitSpriteData[gUnitSetEncodedSpriteDataIdx[stripIdx]];
-   evt->d.evtf050.baseDstDataPtr = gScratch1_801317c0;
-   evt->d.evtf050.vramX = 704;
-   evt->d.evtf050.vramY = 0;
+   obj->functionIndex = OBJF_UNIT_SPRITES_DECODER;
+   obj->state = 0;
+   obj->d.objf050.baseSrcDataPtr = gEncodedUnitSpriteData[gUnitSetEncodedSpriteDataIdx[stripIdx]];
+   obj->d.objf050.baseDstDataPtr = gScratch1_801317c0;
+   obj->d.objf050.vramX = 704;
+   obj->d.objf050.vramY = 0;
 }
 
-EvtData *GetUnitSpriteAtPosition(u8 z, u8 x) {
-   EvtData *unitSprite;
+Object *GetUnitSpriteAtPosition(u8 z, u8 x) {
+   Object *unitSprite;
    u8 unitIdx = gMapUnitsPtr[z][x].s.unitIdx;
 
    if (unitIdx == 0) {
@@ -87,7 +87,7 @@ EvtData *GetUnitSpriteAtPosition(u8 z, u8 x) {
    return unitSprite;
 }
 
-EvtData *FindUnitSpriteByNameIdx(u8 nameIdx) {
+Object *FindUnitSpriteByNameIdx(u8 nameIdx) {
    s32 i;
    UnitStatus *pUnit = &gUnits[1];
 
@@ -101,7 +101,7 @@ EvtData *FindUnitSpriteByNameIdx(u8 nameIdx) {
    return NULL;
 }
 
-EvtData *FindUnitSpriteByType(u8 unitType) {
+Object *FindUnitSpriteByType(u8 unitType) {
    s32 i;
    UnitStatus *pUnit = &gUnits[1];
 
@@ -115,7 +115,7 @@ EvtData *FindUnitSpriteByType(u8 unitType) {
    return NULL;
 }
 
-void GetUnitSpriteVramRect(EvtData *unitSprite, s32 *px, s32 *py, s32 *pw, s32 *ph) {
+void GetUnitSpriteVramRect(Object *unitSprite, s32 *px, s32 *py, s32 *pw, s32 *ph) {
    s32 tpage;
    s32 gfx = unitSprite->d.sprite.gfxIdx;
    s32 stripIdx = unitSprite->d.sprite.stripIdx;
@@ -290,11 +290,11 @@ s32 IntToGlyphs(s16 n, u8 *dst) {
    return len;
 }
 
-#undef EVTF
-#define EVTF 032
-void Evtf032_033_DisplayDamage(EvtData *evt) {
+#undef OBJF
+#define OBJF 032
+void Objf032_033_DisplayDamage(Object *obj) {
    // FIXME: maxHp, prevHp, curHp?
-   EvtData *evt_s2, *evt_s3, *unitSprite;
+   Object *obj_s2, *obj_s3, *unitSprite;
    SVECTOR screenXY;
    s32 p;
    s32 flag;
@@ -304,12 +304,12 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
    s16 savedHpBefore;
    s16 savedHpAfter;
 
-   evt_s2 = EVT.barFg;
-   evt_s3 = EVT.barBg;
+   obj_s2 = OBJ.barFg;
+   obj_s3 = OBJ.barBg;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      unitSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      unitSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
       RotTransPers(&unitSprite->vec, &screenXY, &p, &flag);
       screenXY.vy += 28;
       if (screenXY.vy > 0xc0) {
@@ -321,15 +321,15 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
       SaveRestoreDamage(&savedDamage, 1);
 
       if (savedDamage != 0) {
-         evt_s2 = Evt_GetUnused();
-         evt_s2->functionIndex = EVTF_FLOATING_DAMAGE_TEXT;
-         evt_s2->x1.s.hi = evt->x1.s.hi;
-         evt_s2->z1.s.hi = evt->z1.s.hi;
-         evt_s2->d.evtf051.damage = savedDamage;
-         evt_s2->d.evtf051.clut = CLUT_BLUES;
+         obj_s2 = Obj_GetUnused();
+         obj_s2->functionIndex = OBJF_FLOATING_DAMAGE_TEXT;
+         obj_s2->x1.s.hi = obj->x1.s.hi;
+         obj_s2->z1.s.hi = obj->z1.s.hi;
+         obj_s2->d.objf051.damage = savedDamage;
+         obj_s2->d.objf051.clut = CLUT_BLUES;
       }
 
-      if (OBJ_MAP_UNIT(evt).s.team == TEAM_PLAYER) {
+      if (OBJ_MAP_UNIT(obj).s.team == TEAM_PLAYER) {
          DisplayBasicWindow(0x1b);
          DisplayBasicWindow(0x1c);
       } else {
@@ -339,26 +339,26 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
 
       SaveRestoreHpPercents(&savedHpBefore, &savedHpAfter, 1);
 
-      evt_s2 = Evt_GetUnused();
-      EVT.barFg = evt_s2;
-      evt_s2->functionIndex = EVTF_NOOP;
-      evt_s2->x1.n = savedX - 56;
-      evt_s2->x3.n = savedX - 56 + (savedHpBefore * 80 / 100);
-      evt_s2->y1.n = savedY - 4;
-      evt_s2->y3.n = savedY + 4;
-      evt_s2->d.sprite.gfxIdx = GFX_COLOR_5;
-      evt_s2->d.sprite.clut = CLUT_REDS;
-      evt_s2->d.sprite.otOfs = 3;
+      obj_s2 = Obj_GetUnused();
+      OBJ.barFg = obj_s2;
+      obj_s2->functionIndex = OBJF_NOOP;
+      obj_s2->x1.n = savedX - 56;
+      obj_s2->x3.n = savedX - 56 + (savedHpBefore * 80 / 100);
+      obj_s2->y1.n = savedY - 4;
+      obj_s2->y3.n = savedY + 4;
+      obj_s2->d.sprite.gfxIdx = GFX_COLOR_5;
+      obj_s2->d.sprite.clut = CLUT_REDS;
+      obj_s2->d.sprite.otOfs = 3;
 
-      evt_s3 = Evt_GetUnused();
-      EVT.barBg = evt_s3;
-      evt_s3->functionIndex = EVTF_NOOP;
-      evt_s3->x1.n = savedX - 56;
-      evt_s3->x3.n = savedX + 23;
-      evt_s3->y1.n = savedY - 4;
-      evt_s3->y3.n = savedY + 4;
-      evt_s3->d.sprite.gfxIdx = GFX_COLOR_1;
-      evt_s3->d.sprite.otOfs = 3;
+      obj_s3 = Obj_GetUnused();
+      OBJ.barBg = obj_s3;
+      obj_s3->functionIndex = OBJF_NOOP;
+      obj_s3->x1.n = savedX - 56;
+      obj_s3->x3.n = savedX + 23;
+      obj_s3->y1.n = savedY - 4;
+      obj_s3->y3.n = savedY + 4;
+      obj_s3->d.sprite.gfxIdx = GFX_COLOR_1;
+      obj_s3->d.sprite.otOfs = 3;
 
       if (savedHpAfter < savedHpBefore) {
          //?
@@ -366,86 +366,86 @@ void Evtf032_033_DisplayDamage(EvtData *evt) {
          if ((tmp < 3) && (tmp % 2)) {
             savedHpAfter = 3;
          }
-         EVT.barDstX3 = (savedX - 56) + (savedHpAfter * 80 / 100);
+         OBJ.barDstX3 = (savedX - 56) + (savedHpAfter * 80 / 100);
       } else {
-         EVT.barDstX3 = (savedX - 54) + (savedHpAfter * 80 / 100);
+         OBJ.barDstX3 = (savedX - 54) + (savedHpAfter * 80 / 100);
       }
 
       //?
-      SaveRestoreHp((s16 *)&EVT.maxHp, (s16 *)&EVT.prevHp, (s16 *)&EVT.curHp, 1);
-      EVT.maxHp = (s16)EVT.maxHp;
-      EVT.prevHp = (s16)EVT.prevHp << 0x10;
-      EVT.curHp = (s16)EVT.curHp << 0x10;
+      SaveRestoreHp((s16 *)&OBJ.maxHp, (s16 *)&OBJ.prevHp, (s16 *)&OBJ.curHp, 1);
+      OBJ.maxHp = (s16)OBJ.maxHp;
+      OBJ.prevHp = (s16)OBJ.prevHp << 0x10;
+      OBJ.curHp = (s16)OBJ.curHp << 0x10;
 
-      EVT.timer = 40;
-      evt->state++;
+      OBJ.timer = 40;
+      obj->state++;
 
    // fallthrough
    case 1:
-      EVT.prevHp += (EVT.curHp - EVT.prevHp) >> 2;
-      if (EVT.timer == 30) {
-         EVT.prevHp = EVT.curHp;
+      OBJ.prevHp += (OBJ.curHp - OBJ.prevHp) >> 2;
+      if (OBJ.timer == 30) {
+         OBJ.prevHp = OBJ.curHp;
       }
 
-      IntToLeftPaddedGlyphs2(EVT.prevHp >> 0x10, &gGlyphStrip_50[1]);
-      IntToLeftPaddedGlyphs2(EVT.maxHp, &gGlyphStrip_50[5]);
+      IntToLeftPaddedGlyphs2(OBJ.prevHp >> 0x10, &gGlyphStrip_50[1]);
+      IntToLeftPaddedGlyphs2(OBJ.maxHp, &gGlyphStrip_50[5]);
       DrawGlyphStripGroup(gGlyphStripGroups[28], GFX_TBD_685);
 
-      evt_s2->x3.n += (EVT.barDstX3 - evt_s2->x3.n) >> 2;
+      obj_s2->x3.n += (OBJ.barDstX3 - obj_s2->x3.n) >> 2;
 
-      if (--EVT.timer == 0) {
+      if (--OBJ.timer == 0) {
          CloseWindow(0x1b);
          CloseWindow(0x1c);
-         evt->functionIndex = EVTF_NULL;
-         evt_s2->functionIndex = EVTF_NULL;
-         evt_s3->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
+         obj_s2->functionIndex = OBJF_NULL;
+         obj_s3->functionIndex = OBJF_NULL;
          return;
       }
    }
 
-   if (evt_s2->x3.n > evt_s3->x1.n) {
+   if (obj_s2->x3.n > obj_s3->x1.n) {
       // Bar fill (if visible)
-      AddEvtPrim_Gui(gGraphicsPtr->ot, evt_s2);
+      AddObjPrim_Gui(gGraphicsPtr->ot, obj_s2);
    }
    // Bar background
-   AddEvtPrim_Gui(gGraphicsPtr->ot, evt_s3);
+   AddObjPrim_Gui(gGraphicsPtr->ot, obj_s3);
 }
 
-#undef EVTF
-#define EVTF 008
-void Evtf008_BattlePortrait(EvtData *evt) {
-   EvtData *window, *sprite;
+#undef OBJF
+#define OBJF 008
+void Objf008_BattlePortrait(Object *obj) {
+   Object *window, *sprite;
    u8 gfx;
    s32 i;
    s16 portraitNum;
 
-   sprite = EVT.sprite;
-   window = EVT.window;
+   sprite = OBJ.sprite;
+   window = OBJ.window;
 
-   gfx = EVT.flipped ? GFX_PORTRAIT_B_FACE : GFX_PORTRAIT_A_FACE;
+   gfx = OBJ.flipped ? GFX_PORTRAIT_B_FACE : GFX_PORTRAIT_A_FACE;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      window = &gEvtDataArray[0];
-      for (i = 0; i < EVT_DATA_CT; i++) {
-         if ((window->functionIndex == EVTF_WINDOW_TBD_004 ||
-              window->functionIndex == EVTF_WINDOW_TBD_005) &&
-             window->d.evtf004.windowId == EVT.windowId) {
-            EVT.window = window;
+      window = &gObjectArray[0];
+      for (i = 0; i < OBJ_DATA_CT; i++) {
+         if ((window->functionIndex == OBJF_WINDOW_TBD_004 ||
+              window->functionIndex == OBJF_WINDOW_TBD_005) &&
+             window->d.objf004.windowId == OBJ.windowId) {
+            OBJ.window = window;
             break;
          }
          window++;
       }
-      sprite = Evt_GetUnused();
-      sprite->functionIndex = EVTF_NOOP;
+      sprite = Obj_GetUnused();
+      sprite->functionIndex = OBJF_NOOP;
       sprite->d.sprite.gfxIdx = gfx;
       sprite->d.sprite.otOfs = 2;
-      EVT.sprite = sprite;
-      evt->state++;
+      OBJ.sprite = sprite;
+      obj->state++;
       break;
 
    case 1:
-      if (EVT.flipped) {
+      if (OBJ.flipped) {
          sprite->x1.n = window->x1.n + 24;
          sprite->x3.n = window->x1.n - 23;
       } else {
@@ -456,7 +456,7 @@ void Evtf008_BattlePortrait(EvtData *evt) {
       sprite->y3.n = window->y1.n + 24;
 
       for (portraitNum = 0; portraitNum <= 60; portraitNum++) {
-         if (gState.portraitsToLoad[portraitNum] == EVT.portraitId) {
+         if (gState.portraitsToLoad[portraitNum] == OBJ.portraitId) {
             break;
          }
       }
@@ -488,29 +488,29 @@ void Evtf008_BattlePortrait(EvtData *evt) {
       break;
    }
 
-   AddEvtPrim_Gui(gGraphicsPtr->ot, sprite);
+   AddObjPrim_Gui(gGraphicsPtr->ot, sprite);
 }
 
-#undef EVTF
-#define EVTF 413
-void Evtf413_MsgBoxPortrait(EvtData *evt) {
-   // evt->state3: blinkState
-   EvtData *speakSprite, *blinkSprite, *faceSprite, *anchor;
+#undef OBJF
+#define OBJF 413
+void Objf413_MsgBoxPortrait(Object *obj) {
+   // obj->state3: blinkState
+   Object *speakSprite, *blinkSprite, *faceSprite, *anchor;
    // This could use some fiddling
    u8 portrait_u8;
    s16 portrait_s16;
    s32 gfx;
 
-   faceSprite = EVT.faceSprite;
-   speakSprite = EVT.speakSprite;
-   blinkSprite = EVT.blinkSprite;
+   faceSprite = OBJ.faceSprite;
+   speakSprite = OBJ.speakSprite;
+   blinkSprite = OBJ.blinkSprite;
 
-   portrait_u8 = EVT.portrait.idx;
+   portrait_u8 = OBJ.portrait.idx;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       for (portrait_s16 = 0; portrait_s16 < 75; portrait_s16++) {
-         if (gState.portraitsToLoad[portrait_s16] == EVT.portrait.id) {
+         if (gState.portraitsToLoad[portrait_s16] == OBJ.portrait.id) {
             break;
          }
       }
@@ -519,12 +519,12 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
       }
 
       // Starts as s16 portrait ID to search for, and is replaced by the resulting one-byte index
-      EVT.portrait.idx = portrait_s16;
+      OBJ.portrait.idx = portrait_s16;
 
-      gfx = (!EVT.flipped) ? GFX_PORTRAIT_A_FACE : GFX_PORTRAIT_B_FACE;
+      gfx = (!OBJ.flipped) ? GFX_PORTRAIT_A_FACE : GFX_PORTRAIT_B_FACE;
 
-      portrait_s16 = EVT.portrait.idx;
-      portrait_u8 = EVT.portrait.idx;
+      portrait_s16 = OBJ.portrait.idx;
+      portrait_u8 = OBJ.portrait.idx;
 
       if (portrait_s16 < 25) {
          gGfxTPageIds[gfx++] = gTPageIds[10];
@@ -600,128 +600,128 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
       gGfxSubTextures[gfx][0] = (portrait_s16 % 5) * 48;
       gGfxSubTextures[gfx][1] = (portrait_s16 / 5) * 48;
 
-      faceSprite = Evt_GetUnused();
-      faceSprite->functionIndex = EVTF_NOOP;
+      faceSprite = Obj_GetUnused();
+      faceSprite->functionIndex = OBJF_NOOP;
       faceSprite->d.sprite.gfxIdx = gfx;
       faceSprite->d.sprite.otOfs = 3;
       faceSprite->d.sprite.clut = gPortraitClutIds[portrait_u8];
-      EVT.faceSprite = faceSprite;
+      OBJ.faceSprite = faceSprite;
 
-      speakSprite = Evt_GetUnused();
-      speakSprite->functionIndex = EVTF_NOOP;
+      speakSprite = Obj_GetUnused();
+      speakSprite->functionIndex = OBJF_NOOP;
       speakSprite->d.sprite.gfxIdx = gfx + 1;
       speakSprite->d.sprite.clut = gPortraitClutIds[portrait_u8];
       speakSprite->d.sprite.otOfs = 2;
-      EVT.speakSprite = speakSprite;
+      OBJ.speakSprite = speakSprite;
 
-      blinkSprite = Evt_GetUnused();
-      blinkSprite->functionIndex = EVTF_NOOP;
+      blinkSprite = Obj_GetUnused();
+      blinkSprite->functionIndex = OBJF_NOOP;
       blinkSprite->d.sprite.gfxIdx = gfx + 3;
       blinkSprite->d.sprite.clut = gPortraitClutIds[portrait_u8];
       blinkSprite->d.sprite.otOfs = 2;
-      EVT.blinkSprite = blinkSprite;
+      OBJ.blinkSprite = blinkSprite;
 
-      evt->state2 = 0; // (speaking state)
-      evt->state3 = 0; // (blinking state)
-      evt->state++;
+      obj->state2 = 0; // (speaking state)
+      obj->state3 = 0; // (blinking state)
+      obj->state++;
       break;
 
    case 1:
       break;
 
    case 99:
-      evt->functionIndex = EVTF_NULL;
-      faceSprite->functionIndex = EVTF_NULL;
-      speakSprite->functionIndex = EVTF_NULL;
-      blinkSprite->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
+      faceSprite->functionIndex = OBJF_NULL;
+      speakSprite->functionIndex = OBJF_NULL;
+      blinkSprite->functionIndex = OBJF_NULL;
       return;
    }
 
-   anchor = EVT.anchor;
+   anchor = OBJ.anchor;
    if (anchor != NULL) {
-      evt->x1.n = anchor->x1.n + EVT.anchorOfsX;
-      evt->y1.n = anchor->y1.n + EVT.anchorOfsY;
+      obj->x1.n = anchor->x1.n + OBJ.anchorOfsX;
+      obj->y1.n = anchor->y1.n + OBJ.anchorOfsY;
    }
 
-   if (!EVT.flipped) {
-      faceSprite->x1.n = evt->x1.n;
-      faceSprite->x3.n = evt->x1.n + 47;
+   if (!OBJ.flipped) {
+      faceSprite->x1.n = obj->x1.n;
+      faceSprite->x3.n = obj->x1.n + 47;
    } else {
-      faceSprite->x1.n = evt->x1.n + 47;
-      faceSprite->x3.n = evt->x1.n;
+      faceSprite->x1.n = obj->x1.n + 47;
+      faceSprite->x3.n = obj->x1.n;
    }
-   faceSprite->y1.n = evt->y1.n;
-   faceSprite->y3.n = evt->y1.n + 47;
+   faceSprite->y1.n = obj->y1.n;
+   faceSprite->y3.n = obj->y1.n + 47;
 
-   if (!EVT.flipped) {
-      speakSprite->x1.n = evt->x1.n + gPortraitOverlayOffsets[portrait_u8].s.speakX;
+   if (!OBJ.flipped) {
+      speakSprite->x1.n = obj->x1.n + gPortraitOverlayOffsets[portrait_u8].s.speakX;
       speakSprite->x3.n = speakSprite->x1.n + 15;
    } else {
-      speakSprite->x1.n = evt->x1.n + 46 - gPortraitOverlayOffsets[portrait_u8].s.speakX + 1;
+      speakSprite->x1.n = obj->x1.n + 46 - gPortraitOverlayOffsets[portrait_u8].s.speakX + 1;
       speakSprite->x3.n = speakSprite->x1.n - 15;
    }
-   speakSprite->y1.n = evt->y1.n + gPortraitOverlayOffsets[portrait_u8].s.speakY;
+   speakSprite->y1.n = obj->y1.n + gPortraitOverlayOffsets[portrait_u8].s.speakY;
    speakSprite->y3.n = speakSprite->y1.n + 16;
 
-   if (!EVT.flipped) {
-      blinkSprite->x1.n = evt->x1.n + gPortraitOverlayOffsets[portrait_u8].s.blinkX;
+   if (!OBJ.flipped) {
+      blinkSprite->x1.n = obj->x1.n + gPortraitOverlayOffsets[portrait_u8].s.blinkX;
       blinkSprite->x3.n = blinkSprite->x1.n + 15;
    } else {
-      blinkSprite->x1.n = evt->x1.n + 46 - gPortraitOverlayOffsets[portrait_u8].s.blinkX + 1;
+      blinkSprite->x1.n = obj->x1.n + 46 - gPortraitOverlayOffsets[portrait_u8].s.blinkX + 1;
       blinkSprite->x3.n = blinkSprite->x1.n - 15;
    }
-   blinkSprite->y1.n = evt->y1.n + gPortraitOverlayOffsets[portrait_u8].s.blinkY;
+   blinkSprite->y1.n = obj->y1.n + gPortraitOverlayOffsets[portrait_u8].s.blinkY;
    blinkSprite->y3.n = blinkSprite->y1.n + 16;
 
-   if (gState.msgTextWaitTimer[EVT.flipped + 1] != 0) {
-      gState.msgTextWaitTimer[EVT.flipped + 1]--;
+   if (gState.msgTextWaitTimer[OBJ.flipped + 1] != 0) {
+      gState.msgTextWaitTimer[OBJ.flipped + 1]--;
 
       // Speaking animation
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gfx = (gState.vsyncMode != 2) ? 2 : 1;
-         EVT.speakTimer = gfx;
-         evt->state2++;
+         OBJ.speakTimer = gfx;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (--EVT.speakTimer == 0) {
+         if (--OBJ.speakTimer == 0) {
             gfx = (gState.vsyncMode != 2) ? 6 : 3;
-            EVT.speakTimer = gfx;
-            evt->state2++;
+            OBJ.speakTimer = gfx;
+            obj->state2++;
          }
          break;
 
       case 2:
          speakSprite->d.sprite.hidden = 0;
 
-         if (--EVT.speakTimer == 0) {
+         if (--OBJ.speakTimer == 0) {
             speakSprite->d.sprite.gfxIdx++;
             gfx = (gState.vsyncMode != 2) ? 4 : 2;
-            EVT.speakTimer = gfx;
-            evt->state2++;
+            OBJ.speakTimer = gfx;
+            obj->state2++;
          }
          break;
 
       case 3:
          speakSprite->d.sprite.hidden = 0;
 
-         if (--EVT.speakTimer == 0) {
+         if (--OBJ.speakTimer == 0) {
             speakSprite->d.sprite.gfxIdx--;
             gfx = (gState.vsyncMode != 2) ? 4 : 2;
-            EVT.speakTimer = gfx;
-            evt->state2++;
+            OBJ.speakTimer = gfx;
+            obj->state2++;
          }
          break;
 
       case 4:
          speakSprite->d.sprite.hidden = 0;
 
-         if (--EVT.speakTimer == 0) {
+         if (--OBJ.speakTimer == 0) {
             gfx = (gState.vsyncMode != 2) ? 2 : 1;
-            EVT.speakTimer = gfx;
+            OBJ.speakTimer = gfx;
             speakSprite->d.sprite.hidden = 1;
-            evt->state2 -= 3;
+            obj->state2 -= 3;
          }
          break;
       }
@@ -731,62 +731,62 @@ void Evtf413_MsgBoxPortrait(EvtData *evt) {
    }
 
    // Blinking animation
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
       blinkSprite->d.sprite.hidden = 1;
 
       if (gState.vsyncMode == 2) {
-         EVT.blinkTimer = rand() % 50 + 20;
+         OBJ.blinkTimer = rand() % 50 + 20;
          if (rand() == 0) {
-            EVT.blinkTimer = 2;
+            OBJ.blinkTimer = 2;
          }
       } else {
-         EVT.blinkTimer = rand() % 100 + 40;
+         OBJ.blinkTimer = rand() % 100 + 40;
          if (rand() == 0) {
-            EVT.blinkTimer = 4;
+            OBJ.blinkTimer = 4;
          }
       }
-      evt->state3++;
+      obj->state3++;
       break;
 
    case 1:
-      if (--EVT.blinkTimer == 0) {
+      if (--OBJ.blinkTimer == 0) {
          blinkSprite->d.sprite.hidden = 0;
 
          if (gState.vsyncMode == 2) {
-            EVT.blinkTimer = 5;
+            OBJ.blinkTimer = 5;
             if (rand() == 0) {
                //?: TINY chance to blink 4x as long?
-               EVT.blinkTimer = 20;
+               OBJ.blinkTimer = 20;
             }
          } else {
-            EVT.blinkTimer = 10;
+            OBJ.blinkTimer = 10;
             if (rand() == 0) {
-               EVT.blinkTimer = 40;
+               OBJ.blinkTimer = 40;
             }
          }
-         evt->state3++;
+         obj->state3++;
       }
       break;
 
    case 2:
-      if (--EVT.blinkTimer == 0) {
-         evt->state3 -= 2;
+      if (--OBJ.blinkTimer == 0) {
+         obj->state3 -= 2;
       }
       break;
    }
 
-   AddEvtPrim_Gui(gGraphicsPtr->ot, faceSprite);
-   AddEvtPrim_Gui(gGraphicsPtr->ot, speakSprite);
-   AddEvtPrim_Gui(gGraphicsPtr->ot, blinkSprite);
+   AddObjPrim_Gui(gGraphicsPtr->ot, faceSprite);
+   AddObjPrim_Gui(gGraphicsPtr->ot, speakSprite);
+   AddObjPrim_Gui(gGraphicsPtr->ot, blinkSprite);
 }
 
-void Evtf448_UnitPortraitWrapper(EvtData *evt) { Evtf447_UnitPortrait(evt); }
+void Objf448_UnitPortraitWrapper(Object *obj) { Objf447_UnitPortrait(obj); }
 
-#undef EVTF
-#define EVTF 447
-void Evtf447_UnitPortrait(EvtData *evt) {
-   EvtData *sprite, *window;
+#undef OBJF
+#define OBJF 447
+void Objf447_UnitPortrait(Object *obj) {
+   Object *sprite, *window;
    s32 i;
    s16 portraitNum;
 
@@ -794,27 +794,27 @@ void Evtf447_UnitPortrait(EvtData *evt) {
       return;
    }
 
-   sprite = EVT.sprite;
-   window = EVT.window;
+   sprite = OBJ.sprite;
+   window = OBJ.window;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      window = &gEvtDataArray[0];
-      for (i = 0; i < EVT_DATA_CT; i++) {
-         if ((window->functionIndex == EVTF_WINDOW_TBD_004 ||
-              window->functionIndex == EVTF_WINDOW_TBD_005) &&
-             window->d.evtf004.windowId == EVT.windowId) {
-            EVT.window = window;
+      window = &gObjectArray[0];
+      for (i = 0; i < OBJ_DATA_CT; i++) {
+         if ((window->functionIndex == OBJF_WINDOW_TBD_004 ||
+              window->functionIndex == OBJF_WINDOW_TBD_005) &&
+             window->d.objf004.windowId == OBJ.windowId) {
+            OBJ.window = window;
             break;
          }
          window++;
       }
-      sprite = Evt_GetUnused();
-      sprite->functionIndex = EVTF_NOOP;
+      sprite = Obj_GetUnused();
+      sprite->functionIndex = OBJF_NOOP;
       sprite->d.sprite.gfxIdx = GFX_PORTRAIT_B_FACE;
       sprite->d.sprite.otOfs = 10;
-      EVT.sprite = sprite;
-      evt->state++;
+      OBJ.sprite = sprite;
+      obj->state++;
 
    // fallthrough
    case 1:
@@ -856,34 +856,34 @@ void Evtf447_UnitPortrait(EvtData *evt) {
       break;
 
    case 99:
-      evt->functionIndex = EVTF_NULL;
-      sprite->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
+      sprite->functionIndex = OBJF_NULL;
       return;
    }
 
-   AddEvtPrim_Gui(gGraphicsPtr->ot, sprite);
+   AddObjPrim_Gui(gGraphicsPtr->ot, sprite);
 }
 
-#undef EVTF
-#define EVTF 575
-void Evtf575_StatusPortrait(EvtData *evt) {
+#undef OBJF
+#define OBJF 575
+void Objf575_StatusPortrait(Object *obj) {
    s16 portraitNum;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.gfxIdx = GFX_PORTRAIT_B_FACE;
-      EVT.otOfs = 2;
-      evt->state++;
+      OBJ.gfxIdx = GFX_PORTRAIT_B_FACE;
+      OBJ.otOfs = 2;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->x1.n = 29;
-      evt->x3.n = 76;
-      evt->y1.n = 65;
-      evt->y3.n = 112;
+      obj->x1.n = 29;
+      obj->x3.n = 76;
+      obj->y1.n = 65;
+      obj->y3.n = 112;
 
       for (portraitNum = 0; portraitNum < 75; portraitNum++) {
-         if (gState.portraitsToLoad[portraitNum] == EVT.portraitId) {
+         if (gState.portraitsToLoad[portraitNum] == OBJ.portraitId) {
             break;
          }
       }
@@ -891,7 +891,7 @@ void Evtf575_StatusPortrait(EvtData *evt) {
          portraitNum = 0;
       }
 
-      EVT.clut = gPortraitClutIds[portraitNum];
+      OBJ.clut = gPortraitClutIds[portraitNum];
 
       if (portraitNum < 25) {
          gGfxTPageIds[GFX_PORTRAIT_B_FACE] = gTPageIds[10];
@@ -906,12 +906,12 @@ void Evtf575_StatusPortrait(EvtData *evt) {
       gGfxSubTextures[GFX_PORTRAIT_B_FACE][0] = (portraitNum % 5) * 48;
       gGfxSubTextures[GFX_PORTRAIT_B_FACE][1] = (portraitNum / 5) * 48;
 
-      evt->state++;
+      obj->state++;
       break;
 
    case 2:
       break;
    }
 
-   AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
+   AddObjPrim_Gui(gGraphicsPtr->ot, obj);
 }

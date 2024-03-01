@@ -737,14 +737,14 @@ extern Quad *gSpriteBoxQuads[19];
 
 void DecodeUnitSprites(void);
 void StartUnitSpritesDecoder(u8);
-struct EvtData *GetUnitSpriteAtPosition(u8, u8);
-// FIXME: Discrepancy in Evtf327_HealingCircle_FX2
+struct Object *GetUnitSpriteAtPosition(u8, u8);
+// FIXME: Discrepancy in Objf327_HealingCircle_FX2
 //  void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s16, s16, s16);
-void RenderMaskEffect(struct EvtData *, MaskEffectPreset *);
+void RenderMaskEffect(struct Object *, MaskEffectPreset *);
 
-void AddEvtPrim_Gui(u32 *ot, struct EvtData *evt);
-void RenderUnitSprite(u32 *ot, struct EvtData *sprite, s32 useMapElevation);
-void UpdateEvtAnimation(struct EvtData *);
+void AddObjPrim_Gui(u32 *ot, struct Object *obj);
+void RenderUnitSprite(u32 *ot, struct Object *sprite, s32 useMapElevation);
+void UpdateObjAnimation(struct Object *);
 
 static inline u16 GetLightRotY() { return gLightRotation.vy; }
 static inline s32 GetCamZoom() { return gCameraZoom.vz; }

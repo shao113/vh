@@ -1,51 +1,51 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "battle.h"
 #include "field.h"
 
-#undef EVTF
-#define EVTF 327
-void Evtf327_HealingCircle_FX2(EvtData *evt) {
+#undef OBJF
+#define OBJF 327
+void Objf327_HealingCircle_FX2(Object *obj) {
    // FX2 for Healing Circle, Healing Wave, Kingfoil, Life Orb
 
    // Any way to resolve this discrepancy?
    extern void ApplyMaskEffect(s16, s16, s16, s16, s16, s16, s16, s32, s16, s16);
    extern s16 gSparkleAnimData_800ffab4[36];
 
-   EvtData *targetSprite;
-   EvtData *fxSprite;
-   EvtData *evt_s1;
+   Object *targetSprite;
+   Object *fxSprite;
+   Object *obj_s1;
    s32 fade;
    POLY_FT4 *poly;
    s32 spriteX, spriteY, spriteW, spriteH;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      targetSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
-      evt->x1.n = targetSprite->x1.n;
-      evt->z1.n = targetSprite->z1.n;
-      evt->y1.n = targetSprite->y1.n;
-      EVT.targetSprite = targetSprite;
-      evt->state2 = 0x40;
-      evt->state++;
+      targetSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
+      obj->x1.n = targetSprite->x1.n;
+      obj->z1.n = targetSprite->z1.n;
+      obj->y1.n = targetSprite->y1.n;
+      OBJ.targetSprite = targetSprite;
+      obj->state2 = 0x40;
+      obj->state++;
 
    // fallthrough
    case 1:
-      targetSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
-      evt->x1.n = targetSprite->x1.n;
-      evt->z1.n = targetSprite->z1.n;
-      evt->y1.n = targetSprite->y1.n;
-      targetSprite = EVT.targetSprite;
+      targetSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
+      obj->x1.n = targetSprite->x1.n;
+      obj->z1.n = targetSprite->z1.n;
+      obj->y1.n = targetSprite->y1.n;
+      targetSprite = OBJ.targetSprite;
 
       GetUnitSpriteVramRect(targetSprite, &spriteX, &spriteY, &spriteW, &spriteH);
       //? These increments and the need for an alternate ApplyMaskEffect declaration seem odd.
       spriteW++;
       spriteH++;
       ApplyMaskEffect(spriteX, spriteY, spriteW, spriteH, 416 << 2, 320, 0,
-                      0x40 - (evt->state2 & 0x3f), GFX_TBD_25, 0);
+                      0x40 - (obj->state2 & 0x3f), GFX_TBD_25, 0);
 
-      fxSprite = CreatePositionedEvt(evt, EVTF_NOOP);
+      fxSprite = CreatePositionedObj(obj, OBJF_NOOP);
 
       if (targetSprite->d.sprite.gfxIdx >= 21 && targetSprite->d.sprite.gfxIdx <= 30) {
          fxSprite->d.sprite.boxIdx = 1;
@@ -57,344 +57,344 @@ void Evtf327_HealingCircle_FX2(EvtData *evt) {
       fxSprite->d.sprite.clut = CLUT_BLUES;
       fxSprite->d.sprite.semiTrans = 2;
       fxSprite->d.sprite.facingLeft = targetSprite->d.sprite.facingLeft;
-      AddEvtPrim6(gGraphicsPtr->ot, fxSprite, 0);
-      fxSprite->functionIndex = EVTF_NULL;
+      AddObjPrim6(gGraphicsPtr->ot, fxSprite, 0);
+      fxSprite->functionIndex = OBJF_NULL;
 
-      fade = rsin(evt->state2 * 0x20) >> 4;
+      fade = rsin(obj->state2 * 0x20) >> 4;
       if (fade > 0xe0 || fade < 0) { //? Could also be u32 fade or 0xe0u instead.
          fade = 0xe0;
       }
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, fade, fade, fade);
-      evt->state2--;
+      obj->state2--;
 
-      evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_PARTICLE_710;
-      evt_s1->x1.n = evt->x1.n + rand() % 0x120 - 0x8f;
-      evt_s1->z1.n = evt->z1.n + rand() % 0x120 - 0x8f;
-      evt_s1->y1.n = evt->y1.n + rand() % 0x80 + 0x41;
-      evt_s1->state2 = (rand() >> 4) % 5;
-      evt_s1->mem = 0x10;
-      evt_s1->d.sprite.clut = CLUT_REDS;
-      evt_s1->d.sprite.animData = gSparkleAnimData_800ffab4;
+      obj_s1 = Obj_GetUnused();
+      obj_s1->functionIndex = OBJF_PARTICLE_710;
+      obj_s1->x1.n = obj->x1.n + rand() % 0x120 - 0x8f;
+      obj_s1->z1.n = obj->z1.n + rand() % 0x120 - 0x8f;
+      obj_s1->y1.n = obj->y1.n + rand() % 0x80 + 0x41;
+      obj_s1->state2 = (rand() >> 4) % 5;
+      obj_s1->mem = 0x10;
+      obj_s1->d.sprite.clut = CLUT_REDS;
+      obj_s1->d.sprite.animData = gSparkleAnimData_800ffab4;
 
-      if (evt->state2 == 0x20) {
-         evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_DISPLAY_DAMAGE_2;
-         evt_s1->x1.n = evt->x1.n;
-         evt_s1->z1.n = evt->z1.n;
+      if (obj->state2 == 0x20) {
+         obj_s1 = Obj_GetUnused();
+         obj_s1->functionIndex = OBJF_DISPLAY_DAMAGE_2;
+         obj_s1->x1.n = obj->x1.n;
+         obj_s1->z1.n = obj->z1.n;
       }
-      if (evt->state2 <= 0) {
-         evt->state++;
+      if (obj->state2 <= 0) {
+         obj->state++;
       }
 
       break;
 
    case 2:
-      targetSprite = EVT.targetSprite;
+      targetSprite = OBJ.targetSprite;
       targetSprite->d.sprite.semiTrans = 0;
       targetSprite->d.sprite.hidden = 0;
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       gSignal3 = 1;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 322
-void Evtf322_370_371_372_MagicRestoration_FX2(EvtData *evt) {
+#undef OBJF
+#define OBJF 322
+void Objf322_370_371_372_MagicRestoration_FX2(Object *obj) {
    // FX2 for Mage Oil, Mage Gem, Magic Charge
-   EvtData *targetSprite;
-   EvtData *fxSprite;
-   EvtData *floatingText;
+   Object *targetSprite;
+   Object *fxSprite;
+   Object *floatingText;
    u8 fade;
    POLY_FT4 *poly;
    MaskEffectPreset maskEffect;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
 
-      switch (evt->functionIndex) {
-      case EVTF_MAGE_OIL_FX2:
-         EVT.amount = 4;
+      switch (obj->functionIndex) {
+      case OBJF_MAGE_OIL_FX2:
+         OBJ.amount = 4;
          break;
-      case EVTF_RESTORE_8_MP_UNK_FX2:
-         EVT.amount = 8;
+      case OBJF_RESTORE_8_MP_UNK_FX2:
+         OBJ.amount = 8;
          break;
-      case EVTF_MAGIC_CHARGE_FX2:
+      case OBJF_MAGIC_CHARGE_FX2:
          // Also used for Mage Gem
-         EVT.amount = 10;
+         OBJ.amount = 10;
          break;
       default:
-         EVT.amount = 10;
+         OBJ.amount = 10;
          break;
       }
 
-      targetSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
+      targetSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
       targetSprite->d.sprite.hidden = 1;
-      evt->state2 = 0x60;
-      evt->state++;
+      obj->state2 = 0x60;
+      obj->state++;
 
    // fallthrough
    case 1:
-      targetSprite = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
-      evt->x1.n = targetSprite->x1.n;
-      evt->z1.n = targetSprite->z1.n;
-      evt->y1.n = targetSprite->y1.n;
+      targetSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
+      obj->x1.n = targetSprite->x1.n;
+      obj->z1.n = targetSprite->z1.n;
+      obj->y1.n = targetSprite->y1.n;
 
-      fxSprite = Evt_GetUnused();
-      CopyEvtData(targetSprite, fxSprite);
-      fxSprite->functionIndex = EVTF_NOOP;
+      fxSprite = Obj_GetUnused();
+      CopyObject(targetSprite, fxSprite);
+      fxSprite->functionIndex = OBJF_NOOP;
 
       maskEffect.srcGfxIdx = GFX_TILED_VEINS;
       maskEffect.dstGfxIdx = GFX_TBD_25;
       maskEffect.width = 0;
-      maskEffect.height = 0x60 - evt->state2;
+      maskEffect.height = 0x60 - obj->state2;
       maskEffect.semiTrans = 2;
-      fade = evt->state2 << 1;
+      fade = obj->state2 << 1;
       maskEffect.color.r = maskEffect.color.g = maskEffect.color.b = fade;
       maskEffect.clut = CLUT_PURPLES;
       RenderMaskEffect(fxSprite, &maskEffect);
-      fxSprite->functionIndex = EVTF_NULL;
+      fxSprite->functionIndex = OBJF_NULL;
 
       targetSprite->d.sprite.hidden = 0;
-      fade = (0x60 - evt->state2) << 1;
+      fade = (0x60 - obj->state2) << 1;
       RenderUnitSprite(gGraphicsPtr->ot, targetSprite, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, fade, fade, fade);
       targetSprite->d.sprite.hidden = 1;
 
-      if (--evt->state2 == 0x20) {
-         floatingText = CreatePositionedEvt(targetSprite, EVTF_FLOATING_DAMAGE_TEXT);
-         floatingText->d.evtf051.damage = EVT.amount;
-         floatingText->d.evtf051.clut = CLUT_PURPLES;
+      if (--obj->state2 == 0x20) {
+         floatingText = CreatePositionedObj(targetSprite, OBJF_FLOATING_DAMAGE_TEXT);
+         floatingText->d.objf051.damage = OBJ.amount;
+         floatingText->d.objf051.clut = CLUT_PURPLES;
       }
-      if (evt->state2 <= 0) {
+      if (obj->state2 <= 0) {
          targetSprite->d.sprite.hidden = 0;
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 2:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       gSignal3 = 1;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 310
-void Evtf310_LifeOrb_Beam(EvtData *evt) {
-   EvtData *sprite;
+#undef OBJF
+#define OBJF 310
+void Objf310_LifeOrb_Beam(Object *obj) {
+   Object *sprite;
    POLY_FT4 *poly;
    s32 i;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      sprite = Evt_GetUnused();
-      sprite->functionIndex = EVTF_NOOP;
+      sprite = Obj_GetUnused();
+      sprite->functionIndex = OBJF_NOOP;
       sprite->d.sprite.gfxIdx = GFX_TILED_RED_SPARKLES_DYN_1;
       sprite->d.sprite.clut = CLUT_BLUES;
       sprite->d.sprite.semiTrans = 2;
-      EVT.sprite = sprite;
-      EVT.height = 0;
-      EVT.unused_0x26 = 0x10;
-      EVT.radius = CV(0.25);
-      evt->state++;
+      OBJ.sprite = sprite;
+      OBJ.height = 0;
+      OBJ.unused_0x26 = 0x10;
+      OBJ.radius = CV(0.25);
+      obj->state++;
 
    // fallthrough
    case 1:
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = 160 - evt->state2 % 0x20;
-      sprite = EVT.sprite;
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = 160 - obj->state2 % 0x20;
+      sprite = OBJ.sprite;
 
       for (i = 0; i < 8; i++) {
          sprite->d.sprite.coords[0].x = sprite->d.sprite.coords[2].x =
-             evt->x1.n + (EVT.radius * rcos(i * DEG(45)) >> 12);
+             obj->x1.n + (OBJ.radius * rcos(i * DEG(45)) >> 12);
          sprite->d.sprite.coords[1].x = sprite->d.sprite.coords[3].x =
-             evt->x1.n + (EVT.radius * rcos((i + 1) * DEG(45)) >> 12);
+             obj->x1.n + (OBJ.radius * rcos((i + 1) * DEG(45)) >> 12);
          sprite->d.sprite.coords[0].z = sprite->d.sprite.coords[2].z =
-             evt->z1.n + (EVT.radius * rsin(i * DEG(45)) >> 12);
+             obj->z1.n + (OBJ.radius * rsin(i * DEG(45)) >> 12);
          sprite->d.sprite.coords[1].z = sprite->d.sprite.coords[3].z =
-             evt->z1.n + (EVT.radius * rsin((i + 1) * DEG(45)) >> 12);
-         sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = evt->y1.n + EVT.height;
-         sprite->d.sprite.coords[2].y = sprite->d.sprite.coords[3].y = evt->y1.n;
+             obj->z1.n + (OBJ.radius * rsin((i + 1) * DEG(45)) >> 12);
+         sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = obj->y1.n + OBJ.height;
+         sprite->d.sprite.coords[2].y = sprite->d.sprite.coords[3].y = obj->y1.n;
          sprite->x1.n = sprite->d.sprite.coords[0].x;
          sprite->z1.n = sprite->d.sprite.coords[0].z;
          sprite->y1.n = sprite->d.sprite.coords[0].y;
-         AddEvtPrim3(gGraphicsPtr->ot, sprite);
+         AddObjPrim3(gGraphicsPtr->ot, sprite);
          poly = &gGraphicsPtr->quads[gQuadIndex - 1];
          setRGB0(poly, 0xff, 0xff, 0xff);
       }
 
-      if (EVT.height < CV(5.0)) {
-         EVT.height += CV(0.125);
+      if (OBJ.height < CV(5.0)) {
+         OBJ.height += CV(0.125);
       }
 
-      if (--evt->state2 <= 0) {
-         sprite->functionIndex = EVTF_NULL;
-         evt->functionIndex = EVTF_NULL;
+      if (--obj->state2 <= 0) {
+         sprite->functionIndex = OBJF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
 
       break;
    }
 }
 
-void Evtf311_BubbleSwirl(EvtData *evt) {
-   EvtData *bubble;
+void Objf311_BubbleSwirl(Object *obj) {
+   Object *bubble;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      SnapToUnit(evt);
-      evt->state2 = 128; // Number of bubbles
-      evt->state++;
+      SnapToUnit(obj);
+      obj->state2 = 128; // Number of bubbles
+      obj->state++;
 
    // fallthrough
    case 1:
-      bubble = Evt_GetUnused();
-      bubble->functionIndex = EVTF_BUBBLE_SWIRL_BUBBLE;
-      bubble->x2.n = evt->x1.n;
-      bubble->z2.n = evt->z1.n;
-      bubble->y2.n = evt->y1.n;
-      if (--evt->state2 <= 0) {
-         evt->state++;
+      bubble = Obj_GetUnused();
+      bubble->functionIndex = OBJF_BUBBLE_SWIRL_BUBBLE;
+      bubble->x2.n = obj->x1.n;
+      bubble->z2.n = obj->z1.n;
+      bubble->y2.n = obj->y1.n;
+      if (--obj->state2 <= 0) {
+         obj->state++;
       }
       break;
 
    case 2:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       gSignal3 = 1;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 312
-void Evtf312_BubbleSwirl_Bubble(EvtData *evt) {
-   switch (evt->state) {
+#undef OBJF
+#define OBJF 312
+void Objf312_BubbleSwirl_Bubble(Object *obj) {
+   switch (obj->state) {
    case 0:
-      EVT.gfxIdx = GFX_BUBBLE;
-      EVT.boxIdx = 5;
-      EVT.clut = CLUT_BLUES;
-      EVT.theta = rand() % DEG(360);
-      EVT.yVelocity = 0x10;
-      EVT.rVelocity = 1;
-      EVT.radius = 0x100;
-      evt->state++;
+      OBJ.gfxIdx = GFX_BUBBLE;
+      OBJ.boxIdx = 5;
+      OBJ.clut = CLUT_BLUES;
+      OBJ.theta = rand() % DEG(360);
+      OBJ.yVelocity = 0x10;
+      OBJ.rVelocity = 1;
+      OBJ.radius = 0x100;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->x1.n = evt->x2.n + (EVT.radius * rcos(EVT.theta) >> 12);
-      evt->z1.n = evt->z2.n + (EVT.radius * rsin(EVT.theta) >> 12);
-      evt->y1.n = evt->y2.n;
-      AddEvtPrim6(gGraphicsPtr->ot, evt, 0);
-      EVT.theta = (EVT.theta + 0x80) & 0xfff;
-      evt->y2.n += EVT.yVelocity;
-      EVT.radius += EVT.rVelocity;
-      if (evt->y2.n >= CV(5.0)) {
-         evt->functionIndex = EVTF_NULL;
+      obj->x1.n = obj->x2.n + (OBJ.radius * rcos(OBJ.theta) >> 12);
+      obj->z1.n = obj->z2.n + (OBJ.radius * rsin(OBJ.theta) >> 12);
+      obj->y1.n = obj->y2.n;
+      AddObjPrim6(gGraphicsPtr->ot, obj, 0);
+      OBJ.theta = (OBJ.theta + 0x80) & 0xfff;
+      obj->y2.n += OBJ.yVelocity;
+      OBJ.radius += OBJ.rVelocity;
+      if (obj->y2.n >= CV(5.0)) {
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 313
-void Evtf313_LifeOrb_FX1(EvtData *evt) {
-   EvtData *targetSprite;
-   EvtData *evt_v1;
+#undef OBJF
+#define OBJF 313
+void Objf313_LifeOrb_FX1(Object *obj) {
+   Object *targetSprite;
+   Object *obj_v1;
    BVectorXZ *p;
    s32 i;
 
    gCameraRotation.vy += 0x10;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       p = (BVectorXZ *)gTargetCoords;
       targetSprite = GetUnitSpriteAtPosition(p->z, p->x);
-      evt->x1.n = targetSprite->x1.n;
-      evt->z1.n = targetSprite->z1.n;
-      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
-      evt->state2 = 0x40;
-      evt->state3 = 0x80;
-      evt->mem = 3;
-      evt->state++;
+      obj->x1.n = targetSprite->x1.n;
+      obj->z1.n = targetSprite->z1.n;
+      obj->y1.n = GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi);
+      obj->state2 = 0x40;
+      obj->state3 = 0x80;
+      obj->mem = 3;
+      obj->state++;
 
    // fallthrough
    case 1:
-      PanCamera(evt->x1.n, evt->y1.n, evt->z1.n, 3);
-      if (--evt->mem <= 0) {
+      PanCamera(obj->x1.n, obj->y1.n, obj->z1.n, 3);
+      if (--obj->mem <= 0) {
          for (i = 0; i < 12; i++) {
-            evt_v1 = Evt_GetUnused();
-            evt_v1->functionIndex = EVTF_INWARD_RAY;
-            evt_v1->x2.n = evt->x1.n;
-            evt_v1->z2.n = evt->z1.n;
-            evt_v1->y2.n = evt->y1.n;
-            evt->mem = 2 + rand() % 3;
+            obj_v1 = Obj_GetUnused();
+            obj_v1->functionIndex = OBJF_INWARD_RAY;
+            obj_v1->x2.n = obj->x1.n;
+            obj_v1->z2.n = obj->z1.n;
+            obj_v1->y2.n = obj->y1.n;
+            obj->mem = 2 + rand() % 3;
          }
       }
-      gLightColor.r = evt->state3;
-      gLightColor.g = evt->state3;
-      gLightColor.b = evt->state3;
-      if (evt->state3 > 32) {
-         evt->state3 -= 4;
+      gLightColor.r = obj->state3;
+      gLightColor.g = obj->state3;
+      gLightColor.b = obj->state3;
+      if (obj->state3 > 32) {
+         obj->state3 -= 4;
       }
-      if (--evt->state2 <= 0) {
-         evt->state2 = 0x40;
-         evt->state++;
-         evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_LIFE_ORB_BEAM;
-         evt_v1->x1.n = evt->x1.n;
-         evt_v1->z1.n = evt->z1.n;
-         evt_v1->y1.n = evt->y1.n;
-         evt_v1->state2 = 0x40;
-         EVT.beam = evt_v1;
+      if (--obj->state2 <= 0) {
+         obj->state2 = 0x40;
+         obj->state++;
+         obj_v1 = Obj_GetUnused();
+         obj_v1->functionIndex = OBJF_LIFE_ORB_BEAM;
+         obj_v1->x1.n = obj->x1.n;
+         obj_v1->z1.n = obj->z1.n;
+         obj_v1->y1.n = obj->y1.n;
+         obj_v1->state2 = 0x40;
+         OBJ.beam = obj_v1;
       }
       break;
 
    case 2:
-      evt_v1 = EVT.beam;
-      if (evt_v1->state2 < 0x40) {
-         evt_v1->d.evtf310.radius = (0x40 - evt_v1->state2) << 1;
+      obj_v1 = OBJ.beam;
+      if (obj_v1->state2 < 0x40) {
+         obj_v1->d.objf310.radius = (0x40 - obj_v1->state2) << 1;
       }
-      if (--evt->mem <= 0) {
+      if (--obj->mem <= 0) {
          for (i = 0; i < 4; i++) {
-            evt_v1 = Evt_GetUnused();
-            evt_v1->functionIndex = EVTF_INWARD_RAY;
-            evt_v1->x2.n = evt->x1.n;
-            evt_v1->z2.n = evt->z1.n;
-            evt_v1->y2.n = evt->y1.n;
-            evt->mem = 2 + rand() % 3;
+            obj_v1 = Obj_GetUnused();
+            obj_v1->functionIndex = OBJF_INWARD_RAY;
+            obj_v1->x2.n = obj->x1.n;
+            obj_v1->z2.n = obj->z1.n;
+            obj_v1->y2.n = obj->y1.n;
+            obj->mem = 2 + rand() % 3;
          }
       }
       for (i = 0; i < 4; i++) {
-         evt_v1 = Evt_GetUnused();
-         if (evt_v1 != NULL) {
-            evt_v1->functionIndex = EVTF_VERTICAL_RAY;
-            evt_v1->x2.n = evt->x1.n;
-            evt_v1->z2.n = evt->z1.n;
-            evt_v1->y2.n = evt->y1.n;
+         obj_v1 = Obj_GetUnused();
+         if (obj_v1 != NULL) {
+            obj_v1->functionIndex = OBJF_VERTICAL_RAY;
+            obj_v1->x2.n = obj->x1.n;
+            obj_v1->z2.n = obj->z1.n;
+            obj_v1->y2.n = obj->y1.n;
          }
       }
-      gLightColor.r = evt->state3;
-      gLightColor.g = evt->state3;
-      gLightColor.b = evt->state3;
-      if (--evt->state2 <= 0) {
-         evt->state++;
+      gLightColor.r = obj->state3;
+      gLightColor.g = obj->state3;
+      gLightColor.b = obj->state3;
+      if (--obj->state2 <= 0) {
+         obj->state++;
       }
       break;
 
    case 3:
-      evt_v1 = EVT.beam;
-      if (evt_v1->state2 < 0x40) {
-         evt_v1->d.evtf310.radius = evt_v1->state2;
+      obj_v1 = OBJ.beam;
+      if (obj_v1->state2 < 0x40) {
+         obj_v1->d.objf310.radius = obj_v1->state2;
       }
-      if (evt->state3 < 0x80) {
-         evt->state3 += 4;
-         gLightColor.r = evt->state3;
-         gLightColor.g = evt->state3;
-         gLightColor.b = evt->state3;
+      if (obj->state3 < 0x80) {
+         obj->state3 += 4;
+         gLightColor.r = obj->state3;
+         gLightColor.g = obj->state3;
+         gLightColor.b = obj->state3;
       } else {
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
          gSignal3 = 1;
          gLightColor.r = 0x80;
          gLightColor.g = 0x80;
@@ -407,122 +407,122 @@ void Evtf313_LifeOrb_FX1(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 314
-void Evtf314_InwardRay(EvtData *evt) {
+#undef OBJF
+#define OBJF 314
+void Objf314_InwardRay(Object *obj) {
    s32 radius;
    s32 rnd;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.theta1 = -(rand() % DEG(33.75));
-      EVT.theta2 = rand() % DEG(360);
-      if (EVT.todo_x38 == 0) {
-         EVT.todo_x38 = 0x500;
+      OBJ.theta1 = -(rand() % DEG(33.75));
+      OBJ.theta2 = rand() % DEG(360);
+      if (OBJ.todo_x38 == 0) {
+         OBJ.todo_x38 = 0x500;
       }
-      EVT.unused_0x3A = rand() % 0x40 + 0x20;
+      OBJ.unused_0x3A = rand() % 0x40 + 0x20;
       rnd = (rand() >> 3) % 0x1000;
       if (rnd >= 0x200) {
-         evt->mem = 3;
+         obj->mem = 3;
       } else {
-         evt->mem = 2;
+         obj->mem = 2;
       }
-      EVT.todo_x54 = -0x20 - rand() % 0x40;
-      EVT.gfxIdx = GFX_COLOR_15;
-      evt->state2 = 0;
+      OBJ.todo_x54 = -0x20 - rand() % 0x40;
+      OBJ.gfxIdx = GFX_COLOR_15;
+      obj->state2 = 0;
 
-      radius = EVT.todo_x38 * rcos(EVT.theta1) >> 12;
-      EVT.coords[1].x = evt->x2.n + (radius * rcos(EVT.theta2) >> 12);
-      EVT.coords[1].z = evt->z2.n + (radius * rsin(EVT.theta2) >> 12);
-      EVT.coords[3].x = evt->x2.n + (radius * rcos(EVT.theta2 + 16) >> 12);
-      EVT.coords[3].z = evt->z2.n + (radius * rsin(EVT.theta2 + 16) >> 12);
-      EVT.coords[1].y = EVT.coords[3].y = evt->y2.n + (EVT.todo_x38 * rsin(EVT.theta1) >> 12);
+      radius = OBJ.todo_x38 * rcos(OBJ.theta1) >> 12;
+      OBJ.coords[1].x = obj->x2.n + (radius * rcos(OBJ.theta2) >> 12);
+      OBJ.coords[1].z = obj->z2.n + (radius * rsin(OBJ.theta2) >> 12);
+      OBJ.coords[3].x = obj->x2.n + (radius * rcos(OBJ.theta2 + 16) >> 12);
+      OBJ.coords[3].z = obj->z2.n + (radius * rsin(OBJ.theta2 + 16) >> 12);
+      OBJ.coords[1].y = OBJ.coords[3].y = obj->y2.n + (OBJ.todo_x38 * rsin(OBJ.theta1) >> 12);
 
-      EVT.otOfs = 16;
-      evt->state++;
+      OBJ.otOfs = 16;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->state2++;
-      EVT.clut = 3 + evt->state2 % 3;
+      obj->state2++;
+      OBJ.clut = 3 + obj->state2 % 3;
 
-      EVT.todo_x38 += (0 - EVT.todo_x38) >> evt->mem;
-      radius = (EVT.todo_x38 * rcos(EVT.theta1)) >> 12;
-      EVT.coords[0].x = evt->x2.n + (radius * rcos(EVT.theta2) >> 12);
-      EVT.coords[0].z = evt->z2.n + (radius * rsin(EVT.theta2) >> 12);
-      EVT.coords[2].x = evt->x2.n + (radius * rcos(EVT.theta2 + 16) >> 12);
-      EVT.coords[2].z = evt->z2.n + (radius * rsin(EVT.theta2 + 16) >> 12);
-      EVT.coords[0].y = EVT.coords[2].y = evt->y2.n + (EVT.todo_x38 * rsin(EVT.theta1) >> 12);
+      OBJ.todo_x38 += (0 - OBJ.todo_x38) >> obj->mem;
+      radius = (OBJ.todo_x38 * rcos(OBJ.theta1)) >> 12;
+      OBJ.coords[0].x = obj->x2.n + (radius * rcos(OBJ.theta2) >> 12);
+      OBJ.coords[0].z = obj->z2.n + (radius * rsin(OBJ.theta2) >> 12);
+      OBJ.coords[2].x = obj->x2.n + (radius * rcos(OBJ.theta2 + 16) >> 12);
+      OBJ.coords[2].z = obj->z2.n + (radius * rsin(OBJ.theta2 + 16) >> 12);
+      OBJ.coords[0].y = OBJ.coords[2].y = obj->y2.n + (OBJ.todo_x38 * rsin(OBJ.theta1) >> 12);
 
-      evt->x1.n = EVT.coords[0].x;
-      evt->z1.n = EVT.coords[0].z;
-      evt->y1.n = EVT.coords[0].y;
+      obj->x1.n = OBJ.coords[0].x;
+      obj->z1.n = OBJ.coords[0].z;
+      obj->y1.n = OBJ.coords[0].y;
 
-      AddEvtPrim5(gGraphicsPtr->ot, evt);
+      AddObjPrim5(gGraphicsPtr->ot, obj);
 
-      EVT.coords[1].x = EVT.coords[0].x;
-      EVT.coords[1].z = EVT.coords[0].z;
-      EVT.coords[3].x = EVT.coords[2].x;
-      EVT.coords[3].z = EVT.coords[2].z;
-      EVT.coords[1].y = EVT.coords[3].y = EVT.coords[0].y;
+      OBJ.coords[1].x = OBJ.coords[0].x;
+      OBJ.coords[1].z = OBJ.coords[0].z;
+      OBJ.coords[3].x = OBJ.coords[2].x;
+      OBJ.coords[3].z = OBJ.coords[2].z;
+      OBJ.coords[1].y = OBJ.coords[3].y = OBJ.coords[0].y;
 
-      if (EVT.todo_x38 <= 0x80) {
-         evt->state++;
+      if (OBJ.todo_x38 <= 0x80) {
+         obj->state++;
       }
       break;
 
    case 2:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 315
-void Evtf315_VerticalRay(EvtData *evt) {
-   switch (evt->state) {
+#undef OBJF
+#define OBJF 315
+void Objf315_VerticalRay(Object *obj) {
+   switch (obj->state) {
    case 0:
-      EVT.theta = rand() % DEG(360);
-      EVT.radius = CV(0.125);
-      EVT.top = evt->y2.n;
-      EVT.height = rand() % CV(1.0);
-      EVT.rotationSpeed = 0x20;
-      EVT.speed = 0x40;
-      EVT.clut = 3 + rand() % 3;
-      EVT.gfxIdx = GFX_COLOR_15;
-      evt->state++;
+      OBJ.theta = rand() % DEG(360);
+      OBJ.radius = CV(0.125);
+      OBJ.top = obj->y2.n;
+      OBJ.height = rand() % CV(1.0);
+      OBJ.rotationSpeed = 0x20;
+      OBJ.speed = 0x40;
+      OBJ.clut = 3 + rand() % 3;
+      OBJ.gfxIdx = GFX_COLOR_15;
+      obj->state++;
 
    // fallthrough
    case 1:
-      EVT.coords[0].x = EVT.coords[2].x = evt->x2.n + (EVT.radius * rcos(EVT.theta) >> 12);
-      EVT.coords[0].z = EVT.coords[2].z = evt->z2.n + (EVT.radius * rsin(EVT.theta) >> 12);
-      EVT.coords[1].x = EVT.coords[3].x = evt->x2.n + (EVT.radius * rcos(EVT.theta + 16) >> 12);
-      EVT.coords[1].z = EVT.coords[3].z = evt->z2.n + (EVT.radius * rsin(EVT.theta + 16) >> 12);
-      EVT.coords[0].y = EVT.coords[1].y = EVT.top;
-      EVT.coords[2].y = EVT.top - EVT.height;
-      if (EVT.coords[2].y < evt->y2.n) {
-         EVT.coords[2].y = evt->y2.n;
+      OBJ.coords[0].x = OBJ.coords[2].x = obj->x2.n + (OBJ.radius * rcos(OBJ.theta) >> 12);
+      OBJ.coords[0].z = OBJ.coords[2].z = obj->z2.n + (OBJ.radius * rsin(OBJ.theta) >> 12);
+      OBJ.coords[1].x = OBJ.coords[3].x = obj->x2.n + (OBJ.radius * rcos(OBJ.theta + 16) >> 12);
+      OBJ.coords[1].z = OBJ.coords[3].z = obj->z2.n + (OBJ.radius * rsin(OBJ.theta + 16) >> 12);
+      OBJ.coords[0].y = OBJ.coords[1].y = OBJ.top;
+      OBJ.coords[2].y = OBJ.top - OBJ.height;
+      if (OBJ.coords[2].y < obj->y2.n) {
+         OBJ.coords[2].y = obj->y2.n;
       }
-      EVT.coords[3].y = EVT.coords[2].y;
-      evt->x1.n = EVT.coords[0].x;
-      evt->z1.n = EVT.coords[0].z;
-      evt->y1.n = EVT.coords[0].y;
-      EVT.theta += EVT.rotationSpeed;
-      AddEvtPrim5(gGraphicsPtr->ot, evt, 0x400); //? Extra arg
-      EVT.top += EVT.speed;
-      if (EVT.top >= evt->y2.n + CV(5.0)) {
-         evt->state++;
+      OBJ.coords[3].y = OBJ.coords[2].y;
+      obj->x1.n = OBJ.coords[0].x;
+      obj->z1.n = OBJ.coords[0].z;
+      obj->y1.n = OBJ.coords[0].y;
+      OBJ.theta += OBJ.rotationSpeed;
+      AddObjPrim5(gGraphicsPtr->ot, obj, 0x400); //? Extra arg
+      OBJ.top += OBJ.speed;
+      if (OBJ.top >= obj->y2.n + CV(5.0)) {
+         obj->state++;
       }
       break;
 
    case 2:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
 
 void RenderCylinder(Cylinder *cylinder) {
-   EvtData *face;
+   Object *face;
    s32 sideCt;
    s32 i;
    s16 increment;
@@ -530,7 +530,7 @@ void RenderCylinder(Cylinder *cylinder) {
    s16 theta;
    POLY_FT4 *poly;
 
-   face = Evt_GetUnused();
+   face = Obj_GetUnused();
    face->d.sprite.semiTrans = cylinder->semiTrans;
    face->d.sprite.gfxIdx = cylinder->gfxIdx;
    if (cylinder->clut != 0) {
@@ -570,7 +570,7 @@ void RenderCylinder(Cylinder *cylinder) {
       face->z1.n = face->d.sprite.coords[0].z;
       face->y1.n = face->d.sprite.coords[0].y;
 
-      AddEvtPrim3(gGraphicsPtr->ot, face);
+      AddObjPrim3(gGraphicsPtr->ot, face);
 
       face->d.sprite.coords[0].x = face->d.sprite.coords[1].x;
       face->d.sprite.coords[2].x = face->d.sprite.coords[3].x;
@@ -585,7 +585,7 @@ void RenderCylinder(Cylinder *cylinder) {
 }
 
 void RenderCylinderWithRotatedTexture(Cylinder *cylinder) {
-   EvtData *face;
+   Object *face;
    s32 sideCt;
    s32 i;
    s16 increment;
@@ -593,7 +593,7 @@ void RenderCylinderWithRotatedTexture(Cylinder *cylinder) {
    s16 theta;
    POLY_FT4 *poly;
 
-   face = Evt_GetUnused();
+   face = Obj_GetUnused();
    face->d.sprite.semiTrans = cylinder->semiTrans;
    face->d.sprite.gfxIdx = cylinder->gfxIdx;
    if (cylinder->clut != 0) {
@@ -633,7 +633,7 @@ void RenderCylinderWithRotatedTexture(Cylinder *cylinder) {
       face->z1.n = face->d.sprite.coords[1].z;
       face->y1.n = face->d.sprite.coords[1].y;
 
-      AddEvtPrim3(gGraphicsPtr->ot, face);
+      AddObjPrim3(gGraphicsPtr->ot, face);
 
       face->d.sprite.coords[2].x = face->d.sprite.coords[0].x;
       face->d.sprite.coords[3].x = face->d.sprite.coords[1].x;
@@ -647,11 +647,11 @@ void RenderCylinderWithRotatedTexture(Cylinder *cylinder) {
    }
 }
 
-void EvilStream_RenderSkull(EvtData *evilStream, s16 height) {
-   EvtData *skullSprite;
+void EvilStream_RenderSkull(Object *evilStream, s16 height) {
+   Object *skullSprite;
    s16 halfSize;
 
-   skullSprite = CreatePositionedEvt(evilStream, EVTF_NOOP);
+   skullSprite = CreatePositionedObj(evilStream, OBJF_NOOP);
    skullSprite->y1.n += 0x80;
    skullSprite->d.sprite.gfxIdx = GFX_SKULL;
    skullSprite->d.sprite.boxIdx = 7;
@@ -669,51 +669,51 @@ void EvilStream_RenderSkull(EvtData *evilStream, s16 height) {
    gQuad_800fe63c[1].vz = 0;
    gQuad_800fe63c[2].vz = 0;
    gQuad_800fe63c[3].vz = 0;
-   AddEvtPrim6(gGraphicsPtr->ot, skullSprite, 0);
-   skullSprite->functionIndex = EVTF_NULL;
+   AddObjPrim6(gGraphicsPtr->ot, skullSprite, 0);
+   skullSprite->functionIndex = OBJF_NULL;
 }
 
-void Evtf325_Fx_TBD(EvtData *evt) {
+void Objf325_Fx_TBD(Object *obj) {
    POLY_FT4 *poly;
 
-   evt->d.sprite.clut = 3 + evt->state2 % 3;
-   AddEvtPrim6(gGraphicsPtr->ot, evt, 0);
-   if (evt->d.sprite.semiTrans != 0) {
+   obj->d.sprite.clut = 3 + obj->state2 % 3;
+   AddObjPrim6(gGraphicsPtr->ot, obj, 0);
+   if (obj->d.sprite.semiTrans != 0) {
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-      setRGB0(poly, evt->state2, evt->state2, evt->state2);
+      setRGB0(poly, obj->state2, obj->state2, obj->state2);
    }
-   if (--evt->state2 <= 0) {
-      evt->functionIndex = EVTF_NULL;
+   if (--obj->state2 <= 0) {
+      obj->functionIndex = OBJF_NULL;
    }
 }
 
-#undef EVTF
-#define EVTF 307
-void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
-   EvtData *evt_s1;
-   EvtData *fxSprite;
+#undef OBJF
+#define OBJF 307
+void Objf307_324_EvilStream_FX2_FX3(Object *obj) {
+   Object *obj_s1;
+   Object *fxSprite;
    s32 rnd;
    Cylinder *cylinder;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt_s1 = SnapToUnit(evt);
-      fxSprite = Evt_GetUnused();
-      CopyEvtData(evt_s1, fxSprite);
-      fxSprite->functionIndex = EVTF_NOOP;
-      evt_s1->d.sprite.hidden = 1;
-      EVT.sprite = fxSprite;
-      EVT.targetSprite = evt_s1;
-      evt->mem = 1;
+      obj_s1 = SnapToUnit(obj);
+      fxSprite = Obj_GetUnused();
+      CopyObject(obj_s1, fxSprite);
+      fxSprite->functionIndex = OBJF_NOOP;
+      obj_s1->d.sprite.hidden = 1;
+      OBJ.sprite = fxSprite;
+      OBJ.targetSprite = obj_s1;
+      obj->mem = 1;
 
       // TODO: union?
       *(s32 *)&gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1] =
           *(s32 *)&gGfxSubTextures[GFX_TILED_RED_SPARKLES];
 
-      cylinder = &EVT.cylinder;
-      cylinder->top.vx = cylinder->bottom.vx = evt->x1.n;
-      cylinder->top.vz = cylinder->bottom.vz = evt->z1.n;
-      cylinder->bottom.vy = evt->y1.n;
+      cylinder = &OBJ.cylinder;
+      cylinder->top.vx = cylinder->bottom.vx = obj->x1.n;
+      cylinder->top.vz = cylinder->bottom.vz = obj->z1.n;
+      cylinder->bottom.vy = obj->y1.n;
       cylinder->top.vy = cylinder->bottom.vy + 0x400;
       cylinder->sideCt = 16;
       cylinder->semiTrans = 2;
@@ -724,40 +724,40 @@ void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
       cylinder->color.r = cylinder->color.g = cylinder->color.b = 0;
       cylinder->clut = CLUT_REDS;
 
-      evt->state2 = 0x80;
-      evt->mem = 0;
-      evt->state++;
+      obj->state2 = 0x80;
+      obj->mem = 0;
+      obj->state++;
 
    // fallthrough
    case 1:
-      cylinder = &EVT.cylinder;
+      cylinder = &OBJ.cylinder;
 
-      switch (evt->mem) {
+      switch (obj->mem) {
       case 0:
          cylinder->topRadius += (CV(0.75) - cylinder->topRadius) >> 4;
          cylinder->bottomRadius = cylinder->topRadius;
          cylinder->color.b += (0x40 - cylinder->color.b) >> 3;
          cylinder->color.r += (0x40 - cylinder->color.r) >> 3;
          cylinder->color.g += (0x40 - cylinder->color.g) >> 3;
-         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - evt->state2 * 8 % 0x20;
+         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - obj->state2 * 8 % 0x20;
          RenderCylinder(cylinder);
 
          gLightColor.r -= (gLightColor.r - 0x10) >> 4;
          gLightColor.g -= (gLightColor.g - 0x10) >> 4;
          gLightColor.b -= (gLightColor.b - 0x10) >> 4;
 
-         if (evt->state2 % 2 == 0) {
-            evt_s1 = Evt_GetUnused();
-            evt_s1->functionIndex = EVTF_EVIL_STREAM_ROCK;
+         if (obj->state2 % 2 == 0) {
+            obj_s1 = Obj_GetUnused();
+            obj_s1->functionIndex = OBJF_EVIL_STREAM_ROCK;
             rnd = (rand() >> 2) % DEG(360);
-            evt_s1->x1.n = evt->x1.n + (CV(0.5) * rcos(rnd) >> 12);
-            evt_s1->z1.n = evt->z1.n + (CV(0.5) * rsin(rnd) >> 12);
-            evt_s1->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
-            evt_s1->y2.n = 0x20 + (rand() >> 2) % 0x20; // y velocity
-            evt_s1->d.evtf379.maxHeight = evt_s1->y1.n + CV(8.0);
+            obj_s1->x1.n = obj->x1.n + (CV(0.5) * rcos(rnd) >> 12);
+            obj_s1->z1.n = obj->z1.n + (CV(0.5) * rsin(rnd) >> 12);
+            obj_s1->y1.n = GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi);
+            obj_s1->y2.n = 0x20 + (rand() >> 2) % 0x20; // y velocity
+            obj_s1->d.objf379.maxHeight = obj_s1->y1.n + CV(8.0);
          }
-         if (--evt->state2 <= 32) {
-            evt->mem++;
+         if (--obj->state2 <= 32) {
+            obj->mem++;
          }
          break;
 
@@ -767,84 +767,84 @@ void Evtf307_324_EvilStream_FX2_FX3(EvtData *evt) {
          cylinder->color.b += (0xff - cylinder->color.b) >> 3;
          cylinder->color.r += (0xff - cylinder->color.r) >> 3;
          cylinder->color.g += (0xff - cylinder->color.g) >> 3;
-         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - evt->state2 * 8 % 0x20;
-         cylinder->clut = 3 + evt->state2 % 3;
+         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - obj->state2 * 8 % 0x20;
+         cylinder->clut = 3 + obj->state2 % 3;
          RenderCylinder(cylinder);
-         if (--evt->state2 <= 0) {
-            evt->mem++;
+         if (--obj->state2 <= 0) {
+            obj->mem++;
          }
          break;
 
       case 2:
-         evt->state++;
+         obj->state++;
          break;
       }
 
-      fxSprite = EVT.sprite;
-      evt_s1 = GetUnitSpriteAtPosition(evt->z1.s.hi, evt->x1.s.hi);
-      CopyEvtData(evt_s1, fxSprite);
-      fxSprite->functionIndex = EVTF_NOOP;
-      evt_s1->d.sprite.hidden = 1;
+      fxSprite = OBJ.sprite;
+      obj_s1 = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
+      CopyObject(obj_s1, fxSprite);
+      fxSprite->functionIndex = OBJF_NOOP;
+      obj_s1->d.sprite.hidden = 1;
       fxSprite->d.sprite.hidden = 0;
-      fxSprite->x1.n = evt_s1->x1.n + rand() % 0x41 - 0x20;
-      fxSprite->y1.n = evt_s1->y1.n;
+      fxSprite->x1.n = obj_s1->x1.n + rand() % 0x41 - 0x20;
+      fxSprite->y1.n = obj_s1->y1.n;
       RenderUnitSprite(gGraphicsPtr->ot, fxSprite, 0);
-      if (evt->state2 >= 0x20 && evt->state2 <= 0x80) {
-         EvilStream_RenderSkull(evt, evt->state2 << 3);
+      if (obj->state2 >= 0x20 && obj->state2 <= 0x80) {
+         EvilStream_RenderSkull(obj, obj->state2 << 3);
       }
       break;
 
    case 2:
-      fxSprite = EVT.sprite;
-      fxSprite->functionIndex = EVTF_NULL;
-      evt_s1 = EVT.targetSprite;
-      evt_s1->d.sprite.hidden = 0;
-      if (evt->functionIndex == EVTF_EVIL_STREAM_FX3) {
-         evt_s1 = CreatePositionedEvt(evt, EVTF_FX_TBD_134);
-         evt_s1->d.evtf134.clut = CLUT_REDS;
-      } else { // EVTF_EVIL_STREAM_FX2:
-         evt_s1 = CreatePositionedEvt(evt, EVTF_FX_TBD_132);
-         evt_s1->d.evtf132.clut = CLUT_REDS;
+      fxSprite = OBJ.sprite;
+      fxSprite->functionIndex = OBJF_NULL;
+      obj_s1 = OBJ.targetSprite;
+      obj_s1->d.sprite.hidden = 0;
+      if (obj->functionIndex == OBJF_EVIL_STREAM_FX3) {
+         obj_s1 = CreatePositionedObj(obj, OBJF_FX_TBD_134);
+         obj_s1->d.objf134.clut = CLUT_REDS;
+      } else { // OBJF_EVIL_STREAM_FX2:
+         obj_s1 = CreatePositionedObj(obj, OBJF_FX_TBD_132);
+         obj_s1->d.objf132.clut = CLUT_REDS;
       }
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       gLightColor.r = gLightColor.g = gLightColor.b = 0x80;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 326
-void Evtf326_Fx_TBD(EvtData *evt) {
-   EvtData *sprite;
-   EvtData *dataStore;
+#undef OBJF
+#define OBJF 326
+void Objf326_Fx_TBD(Object *obj) {
+   Object *sprite;
+   Object *dataStore;
    Cylinder *dsCylinder;
    s32 i;
    s32 radius;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      sprite = Evt_GetUnused();
-      sprite->functionIndex = EVTF_NOOP;
+      sprite = Obj_GetUnused();
+      sprite->functionIndex = OBJF_NOOP;
       sprite->d.sprite.gfxIdx = GFX_TILED_RED_SPARKLES_DYN_1;
       sprite->d.sprite.clut = CLUT_REDS;
       sprite->d.sprite.semiTrans = 2;
-      EVT.sprite = sprite;
+      OBJ.sprite = sprite;
 
-      EVT.height = 0;
-      EVT.speed = 0x20;
-      EVT.radius = 2;
+      OBJ.height = 0;
+      OBJ.speed = 0x20;
+      OBJ.radius = 2;
 
       // TODO: union?
       *(s32 *)&gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1] =
           *(s32 *)&gGfxSubTextures[GFX_TILED_RED_SPARKLES];
 
-      evt->x2.n = evt->x1.n;
-      evt->z2.n = evt->z1.n;
-      evt->y2.n = evt->y1.n;
+      obj->x2.n = obj->x1.n;
+      obj->z2.n = obj->z1.n;
+      obj->y2.n = obj->y1.n;
 
-      dataStore = Evt_GetUnused();
-      dataStore->functionIndex = EVTF_NOOP;
-      EVT.dataStore = dataStore;
+      dataStore = Obj_GetUnused();
+      dataStore->functionIndex = OBJF_NOOP;
+      OBJ.dataStore = dataStore;
 
       dsCylinder = &dataStore->d.dataStore.cylinder;
       dsCylinder->sideCt = 16;
@@ -852,85 +852,85 @@ void Evtf326_Fx_TBD(EvtData *evt) {
       dsCylinder->gfxIdx = GFX_TILED_RED_SPARKLES_DYN_1;
       dsCylinder->topRadius = 2;
       dsCylinder->bottomRadius = 2;
-      dsCylinder->bottom.vx = evt->x1.n;
-      dsCylinder->bottom.vz = evt->z1.n;
-      dsCylinder->bottom.vy = evt->y1.n;
-      dsCylinder->top.vx = evt->x1.n;
-      dsCylinder->top.vz = evt->z1.n;
-      dsCylinder->top.vy = evt->y1.n;
+      dsCylinder->bottom.vx = obj->x1.n;
+      dsCylinder->bottom.vz = obj->z1.n;
+      dsCylinder->bottom.vy = obj->y1.n;
+      dsCylinder->top.vx = obj->x1.n;
+      dsCylinder->top.vz = obj->z1.n;
+      dsCylinder->top.vy = obj->y1.n;
       dsCylinder->useColor = 1;
 
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
-      dataStore = EVT.dataStore;
+      dataStore = OBJ.dataStore;
       dsCylinder = &dataStore->d.dataStore.cylinder;
-      EVT.radius += (CV(0.75) - EVT.radius) >> 4;
-      if (EVT.height < CV(4.0)) {
-         EVT.height += EVT.speed;
+      OBJ.radius += (CV(0.75) - OBJ.radius) >> 4;
+      if (OBJ.height < CV(4.0)) {
+         OBJ.height += OBJ.speed;
       }
-      dsCylinder->top.vy = evt->y1.n + EVT.height;
-      dsCylinder->bottomRadius = dsCylinder->topRadius = EVT.radius;
+      dsCylinder->top.vy = obj->y1.n + OBJ.height;
+      dsCylinder->bottomRadius = dsCylinder->topRadius = OBJ.radius;
       dsCylinder->color.r = 0x40;
       dsCylinder->color.g = 0x40;
       dsCylinder->color.b = 0x40;
       RenderCylinder(dsCylinder);
 
-      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - evt->state2 * 16 % 0x20;
-      sprite = EVT.sprite;
+      gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - obj->state2 * 16 % 0x20;
+      sprite = OBJ.sprite;
 
       for (i = 0; i < 16; i++) {
-         radius = EVT.radius;
-         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - evt->state2 * i % 0x20;
+         radius = OBJ.radius;
+         gGfxSubTextures[GFX_TILED_RED_SPARKLES_DYN_1][1] = -0x60 - obj->state2 * i % 0x20;
 
          sprite->d.sprite.coords[0].x = sprite->d.sprite.coords[2].x =
-             evt->x1.n + (radius * rcos(i * 0x100) >> 12);
+             obj->x1.n + (radius * rcos(i * 0x100) >> 12);
          sprite->d.sprite.coords[1].x = sprite->d.sprite.coords[3].x =
-             evt->x1.n + (radius * rcos((i + 1) * 0x100) >> 12);
+             obj->x1.n + (radius * rcos((i + 1) * 0x100) >> 12);
          sprite->d.sprite.coords[0].z = sprite->d.sprite.coords[2].z =
-             evt->z1.n + (radius * rsin(i * 0x100) >> 12);
+             obj->z1.n + (radius * rsin(i * 0x100) >> 12);
          sprite->d.sprite.coords[1].z = sprite->d.sprite.coords[3].z =
-             evt->z1.n + (radius * rsin((i + 1) * 0x100) >> 12);
-         sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = evt->y1.n + EVT.height;
-         sprite->d.sprite.coords[2].y = sprite->d.sprite.coords[3].y = evt->y1.n;
+             obj->z1.n + (radius * rsin((i + 1) * 0x100) >> 12);
+         sprite->d.sprite.coords[0].y = sprite->d.sprite.coords[1].y = obj->y1.n + OBJ.height;
+         sprite->d.sprite.coords[2].y = sprite->d.sprite.coords[3].y = obj->y1.n;
 
          sprite->x1.n = sprite->d.sprite.coords[0].x;
          sprite->z1.n = sprite->d.sprite.coords[0].z;
          sprite->y1.n = sprite->d.sprite.coords[0].y;
       }
 
-      if (--evt->state2 <= 0) {
-         sprite->functionIndex = EVTF_NULL;
-         evt->functionIndex = EVTF_NULL;
+      if (--obj->state2 <= 0) {
+         sprite->functionIndex = OBJF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
 
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 379
-void Evtf379_EvilStream_Rock(EvtData *evt) {
+#undef OBJF
+#define OBJF 379
+void Objf379_EvilStream_Rock(Object *obj) {
    extern s16 gRockAnimData_800ff670[12];
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.boxIdx = 4;
-      EVT.animData = gRockAnimData_800ff670;
-      evt->state++;
+      OBJ.boxIdx = 4;
+      OBJ.animData = gRockAnimData_800ff670;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->y1.n += evt->y2.n;
-      if (evt->y1.n > EVT.maxHeight) {
-         evt->functionIndex = EVTF_NULL;
+      obj->y1.n += obj->y2.n;
+      if (obj->y1.n > OBJ.maxHeight) {
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }
 
-   UpdateEvtAnimation(evt);
-   AddEvtPrim6(gGraphicsPtr->ot, evt, 0);
+   UpdateObjAnimation(obj);
+   AddObjPrim6(gGraphicsPtr->ot, obj, 0);
 }
 
-void Evtf329_Noop(EvtData *evt) {}
+void Objf329_Noop(Object *obj) {}

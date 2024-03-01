@@ -1,13 +1,13 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 
 // Identifying these as MapObjects since they're in the MapObject arrays.
-// (See: Predefined MapObject arrays @800f6378; Evtf043_SetupMapObjects @800515c8)
+// (See: Predefined MapObject arrays @800f6378; Objf043_SetupMapObjects @800515c8)
 
-#undef EVTF
-#define EVTF 564
-void Evtf564_565_566_MapObject_Water(EvtData *evt) {
+#undef OBJF
+#define OBJF 564
+void Objf564_565_566_MapObject_Water(Object *obj) {
    extern u32 s_distortedTex_80123490[32][4];
    extern u32 s_originalTex_80123690[32][4];
    RECT rect;
@@ -15,25 +15,25 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
    s16 shift;
    s16 phase;
 
-   if (evt->functionIndex == EVTF_MAP_OBJECT_WATER_1) {
+   if (obj->functionIndex == OBJF_MAP_OBJECT_WATER_1) {
       rect.x = 328;
       rect.y = 48;
       rect.w = 8;
       rect.h = 32;
 
-      switch (evt->state) {
+      switch (obj->state) {
       case 0:
          StoreImage(&rect, s_originalTex_80123690);
          DrawSync(0);
-         evt->state++;
+         obj->state++;
          break;
       case 1:
          for (i = 0; i < 128; i++) {
             ((u32 *)s_distortedTex_80123490)[i] = ((u32 *)s_originalTex_80123690)[i];
          }
 
-         EVT.phase += 130;
-         phase = EVT.phase;
+         OBJ.phase += 130;
+         phase = OBJ.phase;
 
          for (i = 0; i < 32; i++) {
             shift = ((rcos(phase & 0xfff) * 2 >> 12) + 4) * 4;
@@ -61,25 +61,25 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
       }
       gGfxSubTextures[GFX_MAP_TEXTURE_52][1] = gGfxSubTextures[GFX_MAP_TEXTURE_51][1];
 
-   } else if (evt->functionIndex == EVTF_MAP_OBJECT_WATER_2) {
+   } else if (obj->functionIndex == OBJF_MAP_OBJECT_WATER_2) {
       rect.x = 332;
       rect.y = 0;
       rect.w = 8;
       rect.h = 32;
 
-      switch (evt->state) {
+      switch (obj->state) {
       case 0:
          StoreImage(&rect, s_originalTex_80123690);
          DrawSync(0);
-         evt->state++;
+         obj->state++;
          break;
       case 1:
          for (i = 0; i < 128; i++) {
             ((u32 *)s_distortedTex_80123490)[i] = ((u32 *)s_originalTex_80123690)[i];
          }
 
-         EVT.phase += 130;
-         phase = EVT.phase;
+         OBJ.phase += 130;
+         phase = OBJ.phase;
 
          for (i = 0; i < 32; i++) {
             shift = ((rcos(phase & 0xfff) * 2 >> 12) + 4) * 4;
@@ -101,25 +101,25 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
          break;
       }
    } else {
-      // EVTF_MAP_OBJECT_LAVA_1:
+      // OBJF_MAP_OBJECT_LAVA_1:
       rect.x = 324;
       rect.y = 0;
       rect.w = 8;
       rect.h = 32;
 
-      switch (evt->state) {
+      switch (obj->state) {
       case 0:
          StoreImage(&rect, s_originalTex_80123690);
          DrawSync(0);
-         evt->state++;
+         obj->state++;
          break;
       case 1:
          for (i = 0; i < 128; i++) {
             ((u32 *)s_distortedTex_80123490)[i] = ((u32 *)s_originalTex_80123690)[i];
          }
 
-         EVT.phase += 130;
-         phase = EVT.phase;
+         OBJ.phase += 130;
+         phase = OBJ.phase;
 
          for (i = 0; i < 32; i++) {
             shift = ((rcos(phase & 0xfff) * 2 >> 12) + 4) * 4;
@@ -143,14 +143,14 @@ void Evtf564_565_566_MapObject_Water(EvtData *evt) {
    }
 }
 
-void Evtf449_MapObject_FlowingWater(EvtData *evt) {
+void Objf449_MapObject_FlowingWater(Object *obj) {
    gGfxSubTextures[GFX_MAP_TEXTURE_5][1]++;
    if (gGfxSubTextures[GFX_MAP_TEXTURE_5][1] >= 16) {
       gGfxSubTextures[GFX_MAP_TEXTURE_5][1] = 0;
    }
 }
 
-void Evtf568_MapObject_Rail(EvtData *evt) {
+void Objf568_MapObject_Rail(Object *obj) {
    // Simulated train movement
    s32 i;
 
@@ -173,37 +173,37 @@ void Evtf568_MapObject_Rail(EvtData *evt) {
       gGfxSubTextures[GFX_MAP_TEXTURES_OFS + i][1] = gGfxSubTextures[GFX_MAP_TEXTURE_23][1];
    }
 
-   switch (evt->mem) {
+   switch (obj->mem) {
    case 0:
       gGfxSubTextures[GFX_MAP_TEXTURE_90][0] = 224;
-      evt->mem++;
+      obj->mem++;
       break;
    case 1:
       gGfxSubTextures[GFX_MAP_TEXTURE_90][0] = 240;
-      evt->mem = 0;
+      obj->mem = 0;
       break;
    }
 }
 
-void Evtf411_MapObject_VileBog(EvtData *evt) {
-   switch (evt->state) {
+void Objf411_MapObject_VileBog(Object *obj) {
+   switch (obj->state) {
    case 0:
    case 4:
    case 8:
    case 12:
-      gGfxSubTextures[GFX_MAP_TEXTURE_21][0] = evt->state2 * 16 + 80;
-      evt->state2++;
+      gGfxSubTextures[GFX_MAP_TEXTURE_21][0] = obj->state2 * 16 + 80;
+      obj->state2++;
       break;
    case 15:
-      evt->state = 0;
-      evt->state2 = 0;
+      obj->state = 0;
+      obj->state2 = 0;
       return;
    }
-   evt->state++;
+   obj->state++;
 }
 
-void Evtf569_572_MapObject_Lava(EvtData *evt) {
-   switch (evt->state) {
+void Objf569_572_MapObject_Lava(Object *obj) {
+   switch (obj->state) {
    case 0:
    case 3:
    case 6:
@@ -212,24 +212,24 @@ void Evtf569_572_MapObject_Lava(EvtData *evt) {
    case 15:
    case 18:
    case 21:
-      if (evt->functionIndex == EVTF_MAP_OBJECT_LAVA_2) {
-         gGfxSubTextures[GFX_MAP_TEXTURE_198][0] = evt->state2 * 16 + 48;
+      if (obj->functionIndex == OBJF_MAP_OBJECT_LAVA_2) {
+         gGfxSubTextures[GFX_MAP_TEXTURE_198][0] = obj->state2 * 16 + 48;
       } else {
-         gGfxSubTextures[GFX_MAP_TEXTURE_4][0] = evt->state2 * 16 + 16;
+         gGfxSubTextures[GFX_MAP_TEXTURE_4][0] = obj->state2 * 16 + 16;
          // shadowed area
-         gGfxSubTextures[GFX_MAP_TEXTURE_128][0] = evt->state2 * 16 + 112;
+         gGfxSubTextures[GFX_MAP_TEXTURE_128][0] = obj->state2 * 16 + 112;
       }
-      evt->state2++;
+      obj->state2++;
       break;
    case 23:
-      evt->state = 0;
-      evt->state2 = 0;
+      obj->state = 0;
+      obj->state2 = 0;
       return;
    }
-   evt->state++;
+   obj->state++;
 }
 
-void Evtf042_MapObject_FlowingSand(EvtData *evt) {
+void Objf042_MapObject_FlowingSand(Object *obj) {
    gGfxSubTextures[GFX_MAP_TEXTURE_1][1]--;
    if (gGfxSubTextures[GFX_MAP_TEXTURE_1][1] == 0) {
       gGfxSubTextures[GFX_MAP_TEXTURE_1][1] = 16;

@@ -3,7 +3,7 @@
 #include "audio.h"
 #include "card.h"
 #include "state.h"
-#include "evt.h"
+#include "object.h"
 #include "units.h"
 #include "window.h"
 #include "graphics.h"
@@ -12,12 +12,12 @@
 
 void main(void);
 void UpdateState(void);
-void Evtf582_MainMenu_Jpn(EvtData *evt);
-void Evtf583_LoadingIndicator(EvtData *evt);
-void Evtf006_Logo(EvtData *evt);
+void Objf582_MainMenu_Jpn(Object *obj);
+void Objf583_LoadingIndicator(Object *obj);
+void Objf006_Logo(Object *obj);
 void State_Init(void);
 void State_EventScene(void);
-void Evtf584_Noop(void);
+void Objf584_Noop(void);
 
 void main(void) {
    s32 i;
@@ -37,7 +37,7 @@ void main(void) {
 }
 
 void UpdateState(void) {
-   EvtData *evt;
+   Object *obj;
 
    switch (gState.primary) {
    case STATE_0:
@@ -128,28 +128,28 @@ void UpdateState(void) {
       State_Title_FileLoadScreen();
       break;
    case STATE_LOAD_DEBUG_MENU:
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       SwapOutCodeToVram();
       gState.vsyncMode = 0;
       gClearSavedPadState = 1;
       gState.fieldRenderingDisabled = 1;
       LoadFullscreenImage(CDF_US_TITLE_TIM);
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FULLSCREEN_IMAGE;
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_DEBUG_MENU;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FULLSCREEN_IMAGE;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_DEBUG_MENU;
       gState.primary = STATE_DEBUG_MENU;
    case STATE_DEBUG_MENU:
       break;
    }
 }
 
-void Evtf582_MainMenu_Jpn(EvtData *evt) {
+void Objf582_MainMenu_Jpn(Object *obj) {
    // Left-over debugging stuff?
-   EvtData *dialog;
+   Object *dialog;
    s32 i;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       FadeInScreen(2, 0xff);
       gWindowChoiceHeight = 17;
@@ -159,8 +159,8 @@ void Evtf582_MainMenu_Jpn(EvtData *evt) {
       DrawSjisText(12, 11, 20, 2, 0,
                    "\x8e\x6e\x82\xdf\x82\xa9\x82\xe7\x0a\x83\x8d\x81\x5b\x83\x68");
       DisplayBasicWindow(0x34);
-      evt->state++;
-      evt->state2 = 0;
+      obj->state++;
+      obj->state2 = 0;
       break;
    case 1:
       gState.gold = 0;
@@ -181,9 +181,9 @@ void Evtf582_MainMenu_Jpn(EvtData *evt) {
          }
          if (gWindowChoice.raw == 0x3402) {
             CloseWindow(0x34);
-            dialog = Evt_GetUnused();
-            dialog->functionIndex = EVTF_FILE_LOAD_DIALOG_360;
-            evt->state++;
+            dialog = Obj_GetUnused();
+            dialog->functionIndex = OBJF_FILE_LOAD_DIALOG_360;
+            obj->state++;
             gState.D_8014053E = 0;
          }
       }
@@ -196,33 +196,33 @@ void Evtf582_MainMenu_Jpn(EvtData *evt) {
    }
 }
 
-void Evtf583_LoadingIndicator(EvtData *evt) {
-   EvtData *spr = Evt_GetUnused();
+void Objf583_LoadingIndicator(Object *obj) {
+   Object *spr = Obj_GetUnused();
 
    spr->d.sprite.gfxIdx = GFX_NOW_LOADING;
    spr->x1.n = 120;
    spr->y1.n = 95;
    spr->x3.n = spr->x1.n + 80;
    spr->y3.n = spr->y1.n + 50;
-   AddEvtPrim_Gui(gGraphicsPtr->ot, spr);
+   AddObjPrim_Gui(gGraphicsPtr->ot, spr);
 
    spr->d.sprite.gfxIdx = GFX_VANDAL_HEARTS;
    spr->x1.n = 156;
    spr->y1.n = 184;
    spr->x3.n = spr->x1.n + 128;
    spr->y3.n = spr->y1.n + 32;
-   AddEvtPrim_Gui(gGraphicsPtr->ot, spr);
+   AddObjPrim_Gui(gGraphicsPtr->ot, spr);
 }
 
-void Evtf006_Logo(EvtData *evt) {
-   evt->d.sprite.gfxIdx = GFX_VANDAL_HEARTS;
-   evt->d.sprite.otOfs = 2;
-   evt->d.sprite.clut = CLUT_BLUES;
-   evt->x1.n = 12;
-   evt->y1.n = 50;
-   evt->x3.n = evt->x1.n + 128;
-   evt->y3.n = evt->y1.n + 32;
-   AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
+void Objf006_Logo(Object *obj) {
+   obj->d.sprite.gfxIdx = GFX_VANDAL_HEARTS;
+   obj->d.sprite.otOfs = 2;
+   obj->d.sprite.clut = CLUT_BLUES;
+   obj->x1.n = 12;
+   obj->y1.n = 50;
+   obj->x3.n = obj->x1.n + 128;
+   obj->y3.n = obj->y1.n + 32;
+   AddObjPrim_Gui(gGraphicsPtr->ot, obj);
 }
 
 void State_Init(void) {
@@ -251,25 +251,25 @@ void State_Init(void) {
    gMapDataPtr = gScratch3_80180210;
    gGraphicsPtr = &gGraphicBuffers[0];
    ClearUnits();
-   Evt_ResetAll();
+   Obj_ResetAll();
    LoadFWD();
    SetupGfx();
 
-   gTempGfxEvt = Evt_GetFirstUnused();
-   gTempGfxEvt->functionIndex = EVTF_NOOP;
+   gTempGfxObj = Obj_GetFirstUnused();
+   gTempGfxObj->functionIndex = OBJF_NOOP;
 
-   gTempEvt = Evt_GetFirstUnused();
-   gTempEvt->functionIndex = EVTF_NOOP_407;
+   gTempObj = Obj_GetFirstUnused();
+   gTempObj->functionIndex = OBJF_NOOP_407;
 
-   gTempEvt = Evt_GetFirstUnused();
-   gTempEvt->functionIndex = EVTF_EVENT_CAMERA;
+   gTempObj = Obj_GetFirstUnused();
+   gTempObj->functionIndex = OBJF_EVENT_CAMERA;
 
-   gTempEvt = Evt_GetFirstUnused();
-   gTempEvt->functionIndex = EVTF_MENU_CHOICE;
+   gTempObj = Obj_GetFirstUnused();
+   gTempObj->functionIndex = OBJF_MENU_CHOICE;
 
-   gTempEvt = Evt_GetFirstUnused();
-   gTempEvt->functionIndex = EVTF_SCREEN_EFFECT;
-   gState.screenEffect = gTempEvt;
+   gTempObj = Obj_GetFirstUnused();
+   gTempObj->functionIndex = OBJF_SCREEN_EFFECT;
+   gState.screenEffect = gTempObj;
 
    gDecodingSprites = 0;
    gState.fieldRenderingDisabled = 1;
@@ -303,7 +303,7 @@ void State_EventScene(void) {
       ResetGeomOffset();
       gState.vsyncMode = 2;
       gState.preciseSprites = 0;
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       ClearUnits();
       gIsEnemyTurn = 0;
       gCameraRotation.vx = 0x180;
@@ -420,10 +420,10 @@ void State_EventScene(void) {
       gState.secondary++;
       break;
    case 6:
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       SetupMap();
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = gState.state7;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = gState.state7;
       FadeInScreen(2, 6);
       gState.secondary++;
    case 7:
@@ -431,4 +431,4 @@ void State_EventScene(void) {
    }
 }
 
-void Evtf584_Noop(void) {}
+void Objf584_Noop(void) {}

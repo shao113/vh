@@ -1,22 +1,22 @@
 #include "common.h"
 #include "units.h"
-#include "evt.h"
+#include "object.h"
 #include "window.h"
 #include "battle.h"
 #include "state.h"
 
 u8 s_currentIdx_8012329c;
 
-void Evtf596_StatusWindowMgr(EvtData *evt) {
+void Objf596_StatusWindowMgr(Object *obj) {
    // Null-terminated list of gUnits-indices of each available party member
    extern u8 gPartyMemberUnitIdx[PARTY_CT];
 
    s32 i, j;
    s32 ct;
    UnitStatus *pUnit;
-   EvtData *statusWindow;
+   Object *statusWindow;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       ct = 0;
       for (i = 1; i < PARTY_CT; i++) {
@@ -33,25 +33,25 @@ void Evtf596_StatusWindowMgr(EvtData *evt) {
       }
       gPartyMemberUnitIdx[ct] = 0; //<- Null-terminator
       s_currentIdx_8012329c = 0;
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
       gSignal2 = 0;
-      statusWindow = Evt_GetUnused();
-      statusWindow->functionIndex = EVTF_STATUS_WINDOW;
-      statusWindow->d.evtf595.unit = &gUnits[gPartyMemberUnitIdx[s_currentIdx_8012329c]];
+      statusWindow = Obj_GetUnused();
+      statusWindow->functionIndex = OBJF_STATUS_WINDOW;
+      statusWindow->d.objf595.unit = &gUnits[gPartyMemberUnitIdx[s_currentIdx_8012329c]];
       if (gPartyMemberUnitIdx[1] != 0) {
          // Multiple party members are available to switch between.
-         statusWindow->d.evtf595.multiple = 1;
+         statusWindow->d.objf595.multiple = 1;
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 2:
       if (gSignal2 == 99) {
          gSignal2 = 100;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
       if (gSignal2 == 1) {
          // Switching left
@@ -63,7 +63,7 @@ void Evtf596_StatusWindowMgr(EvtData *evt) {
             }
          }
          s_currentIdx_8012329c--;
-         evt->state--;
+         obj->state--;
       }
       if (gSignal2 == 2) {
          // Switching right
@@ -73,29 +73,29 @@ void Evtf596_StatusWindowMgr(EvtData *evt) {
          } else {
             s_currentIdx_8012329c++;
          }
-         evt->state--;
+         obj->state--;
       }
    }
 }
 
-#undef EVTF
-#define EVTF 595
-void Evtf595_StatusWindow(EvtData *evt) {
-   EvtData *portrait;
-   EvtData *arrow;
+#undef OBJF
+#define OBJF 595
+void Objf595_StatusWindow(Object *obj) {
+   Object *portrait;
+   Object *arrow;
    s16 size;
    s32 hasItems;
-   UnitStatus *unit = EVT.unit;
+   UnitStatus *unit = OBJ.unit;
 
-   switch (evt->state2) {
+   switch (obj->state2) {
    case 0:
-      evt->state2++;
+      obj->state2++;
 
    // fallthrough
    case 1:
-      portrait = Evt_GetLastUnused();
-      portrait->functionIndex = EVTF_STATUS_PORTRAIT;
-      portrait->d.evtf575.portraitId = gUnitPortraitIds[unit->unitId];
+      portrait = Obj_GetLastUnused();
+      portrait->functionIndex = OBJF_STATUS_PORTRAIT;
+      portrait->d.objf575.portraitId = gUnitPortraitIds[unit->unitId];
       UpdateSkillStatusWindow(unit);
       if (unit->team == TEAM_PLAYER) {
          DisplayBasicWindow(0x20);
@@ -113,28 +113,28 @@ void Evtf595_StatusWindow(EvtData *evt) {
       }
 
       if (unit->spells[0] == SPELL_NULL && !hasItems) {
-         evt->state2 += 1;
+         obj->state2 += 1;
       }
       if (unit->spells[0] != SPELL_NULL && !hasItems) {
          DrawWindow(0x3c, 316, 0, 64, 54, 241, 90, WBS_CROSSED, 2);
          DrawText(316, 11, 20, 2, 0, "Skill\nSpell");
          DisplayBasicWindow(0x3c);
-         evt->state2 += 2;
+         obj->state2 += 2;
       }
       if (unit->spells[0] == SPELL_NULL && hasItems) {
          DrawWindow(0x3c, 316, 0, 64, 54, 241, 90, WBS_CROSSED, 2);
          DrawText(316, 11, 20, 2, 0, "Skill\nItems");
          DisplayBasicWindow(0x3c);
-         evt->state2 += 3;
+         obj->state2 += 3;
       }
       if (unit->spells[0] != SPELL_NULL && hasItems) {
          DrawWindow(0x3c, 316, 0, 64, 72, 241, 90, WBS_CROSSED, 3);
          DrawText(316, 11, 20, 2, 0, "Skill\nSpell\nItems");
          DisplayBasicWindow(0x3c);
-         evt->state2 += 4;
+         obj->state2 += 4;
       }
 
-      evt->mem = 0;
+      obj->mem = 0;
       break;
 
    case 2:
@@ -142,21 +142,21 @@ void Evtf595_StatusWindow(EvtData *evt) {
 
    case 3:
 
-      switch (evt->mem) {
+      switch (obj->mem) {
       case 0:
          if (GetWindowChoice(0x3c) == 2) {
             CloseWindow(0x20);
             ClearIcons();
-            Evt_ResetByFunction(EVTF_STATUS_PORTRAIT);
+            Obj_ResetByFunction(OBJF_STATUS_PORTRAIT);
             DisplaySpellStatusWindow(unit, 0x3d);
-            evt->mem++;
+            obj->mem++;
          }
          break;
       case 1:
          if (GetWindowChoice(0x3c) == 1) {
             ClearIcons();
             CloseWindow(0x3d);
-            evt->state2 = 1;
+            obj->state2 = 1;
          }
          break;
       }
@@ -165,21 +165,21 @@ void Evtf595_StatusWindow(EvtData *evt) {
 
    case 4:
 
-      switch (evt->mem) {
+      switch (obj->mem) {
       case 0:
          if (GetWindowChoice(0x3c) == 2) {
             CloseWindow(0x20);
             ClearIcons();
-            Evt_ResetByFunction(EVTF_STATUS_PORTRAIT);
+            Obj_ResetByFunction(OBJF_STATUS_PORTRAIT);
             DisplayItemsStatusWindow(unit, 0x3d);
-            evt->mem++;
+            obj->mem++;
          }
          break;
       case 1:
          if (GetWindowChoice(0x3c) == 1) {
             ClearIcons();
             CloseWindow(0x3d);
-            evt->state2 = 1;
+            obj->state2 = 1;
          }
          break;
       }
@@ -187,21 +187,21 @@ void Evtf595_StatusWindow(EvtData *evt) {
    // fallthrough
    case 5:
 
-      switch (evt->mem) {
+      switch (obj->mem) {
       case 0:
          if (GetWindowChoice(0x3c) == 2) {
             CloseWindow(0x20);
-            Evt_ResetByFunction(EVTF_STATUS_PORTRAIT);
+            Obj_ResetByFunction(OBJF_STATUS_PORTRAIT);
             ClearIcons();
             DisplaySpellStatusWindow(unit, 0x3d);
-            evt->mem++;
+            obj->mem++;
          }
          if (GetWindowChoice(0x3c) == 3) {
             CloseWindow(0x20);
-            Evt_ResetByFunction(EVTF_STATUS_PORTRAIT);
+            Obj_ResetByFunction(OBJF_STATUS_PORTRAIT);
             ClearIcons();
             DisplayItemsStatusWindow(unit, 0x3d);
-            evt->mem += 2;
+            obj->mem += 2;
          }
          break;
 
@@ -209,11 +209,11 @@ void Evtf595_StatusWindow(EvtData *evt) {
          if (GetWindowChoice(0x3c) == 1) {
             ClearIcons();
             CloseWindow(0x3d);
-            evt->state2 = 1;
+            obj->state2 = 1;
          }
          if (GetWindowChoice(0x3c) == 3) {
             DisplayItemsStatusWindow(unit, 0x3d);
-            evt->mem++;
+            obj->mem++;
          }
          break;
 
@@ -221,12 +221,12 @@ void Evtf595_StatusWindow(EvtData *evt) {
          if (GetWindowChoice(0x3c) == 2) {
             ClearIcons();
             DisplaySpellStatusWindow(unit, 0x3d);
-            evt->mem--;
+            obj->mem--;
          }
          if (GetWindowChoice(0x3c) == 1) {
             ClearIcons();
             CloseWindow(0x3d);
-            evt->state2 = 1;
+            obj->state2 = 1;
          }
          break;
       }
@@ -236,43 +236,43 @@ void Evtf595_StatusWindow(EvtData *evt) {
 
    if (gPadStateNewPresses & PAD_X) {
       CloseWindow(0x20);
-      Evt_ResetByFunction(EVTF_STATUS_PORTRAIT);
+      Obj_ResetByFunction(OBJF_STATUS_PORTRAIT);
       ClearIcons();
       CloseWindow(0x3c);
       CloseWindow(0x3d);
       gSignal2 = 99;
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
    }
-   if (EVT.multiple) {
+   if (OBJ.multiple) {
       // Pulsating selection arrows
       size = (rcos(gOscillation) * 3 >> 12) + 10;
-      arrow = Evt_GetUnused();
+      arrow = Obj_GetUnused();
       arrow->x1.n = 20 + size;
       arrow->x3.n = 20 - size;
       arrow->y1.n = 136 - size;
       arrow->y3.n = 136 + size;
       arrow->d.sprite.gfxIdx = GFX_SELECTION_ARROW;
-      AddEvtPrim_Gui(gGraphicsPtr->ot, arrow);
+      AddObjPrim_Gui(gGraphicsPtr->ot, arrow);
       arrow->x1.n = 300 - size;
       arrow->x3.n = 300 + size;
-      AddEvtPrim_Gui(gGraphicsPtr->ot, arrow);
+      AddObjPrim_Gui(gGraphicsPtr->ot, arrow);
       if (gPadStateNewPresses & PAD_LEFT) {
          CloseWindow(0x20);
-         Evt_ResetByFunction(EVTF_STATUS_PORTRAIT);
+         Obj_ResetByFunction(OBJF_STATUS_PORTRAIT);
          ClearIcons();
          CloseWindow(0x3c);
          CloseWindow(0x3d);
          gSignal2 = 1;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
       if (gPadStateNewPresses & PAD_RIGHT) {
          CloseWindow(0x20);
-         Evt_ResetByFunction(EVTF_STATUS_PORTRAIT);
+         Obj_ResetByFunction(OBJF_STATUS_PORTRAIT);
          ClearIcons();
          CloseWindow(0x3c);
          CloseWindow(0x3d);
          gSignal2 = 2;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
    }
 }

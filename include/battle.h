@@ -56,7 +56,7 @@ typedef enum TileAction {
    TA_X20 = 32,
 } TileAction;
 
-// Used for evtf052.type
+// Used for objf052.type
 typedef enum AttackInfoMarker {
    ATK_MARKER_MISS = 0,
    ATK_MARKER_PARALYZED = 1,
@@ -64,7 +64,7 @@ typedef enum AttackInfoMarker {
    ATK_MARKER_POISONED = 3
 } AttackInfoMarker;
 
-// Used for evtf272.type
+// Used for objf272.type
 typedef enum RaisedStat {
    RAISED_STAT_LV = 0,
    RAISED_STAT_AT = 1,

@@ -1,6 +1,6 @@
 #include "common.h"
 #include "card.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "state.h"
 #include "cd_files.h"
@@ -69,19 +69,19 @@ typedef struct {
 } RawInBattleSaveData;
 
 void State_FileSaveScreen(void) {
-   EvtData *evt;
+   Object *obj;
 
    switch (gState.secondary) {
    case 0:
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       LoadFullscreenImage(CDF_US_LOAD_TIM);
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_FULLSCREEN_IMAGE;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_FULLSCREEN_IMAGE;
       gState.secondary++;
       break;
    case 1:
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FILE_SAVE_DIALOG;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FILE_SAVE_DIALOG;
       gState.D_8014053E = 0;
       gState.secondary++;
       break;
@@ -97,19 +97,19 @@ void State_FileSaveScreen(void) {
 }
 
 void State_FileLoadScreen(void) {
-   EvtData *evt;
+   Object *obj;
 
    switch (gState.secondary) {
    case 0:
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       LoadFullscreenImage(CDF_US_LOAD_TIM);
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_FULLSCREEN_IMAGE;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_FULLSCREEN_IMAGE;
       gState.secondary++;
       break;
    case 1:
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FILE_LOAD_DIALOG;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FILE_LOAD_DIALOG;
       gState.D_8014053E = 0;
       gState.secondary++;
       break;
@@ -289,7 +289,7 @@ void Card_LoadInBattleSaveFromBuf(void) {
 
 void Card_PopulateInBattleSave(void) {
    s32 i;
-   EvtData *evt;
+   Object *obj;
    u8 numChests, numCrates, numBoulders;
 
    for (i = 0; i < PARTY_CT; i++) {
@@ -298,9 +298,9 @@ void Card_PopulateInBattleSave(void) {
 
    for (i = 0; i < UNIT_CT; i++) {
       if (gUnits[i].idx) {
-         evt = gUnits[i].sprite;
-         gUnits[i].tileX = evt->x1.s.hi;
-         gUnits[i].tileZ = evt->z1.s.hi;
+         obj = gUnits[i].sprite;
+         gUnits[i].tileX = obj->x1.s.hi;
+         gUnits[i].tileZ = obj->z1.s.hi;
       }
       gInBattleSaveDataPtr->units[i] = gUnits[i];
    }
@@ -357,23 +357,23 @@ void Card_PopulateInBattleSave(void) {
    numChests = 0;
    numCrates = 0;
    numBoulders = 0;
-   evt = gEvtDataArray;
+   obj = gObjectArray;
 
-   for (i = 0; i < EVT_DATA_CT; i++) {
-      if (evt->functionIndex == EVTF_MAP_OBJECT_CHEST) {
-         gInBattleSaveDataPtr->chests[numChests].z = evt->z1.s.hi;
-         gInBattleSaveDataPtr->chests[numChests].x = evt->x1.s.hi;
-         gInBattleSaveDataPtr->chests[numChests++].item = evt->d.mapObj.param;
+   for (i = 0; i < OBJ_DATA_CT; i++) {
+      if (obj->functionIndex == OBJF_MAP_OBJECT_CHEST) {
+         gInBattleSaveDataPtr->chests[numChests].z = obj->z1.s.hi;
+         gInBattleSaveDataPtr->chests[numChests].x = obj->x1.s.hi;
+         gInBattleSaveDataPtr->chests[numChests++].item = obj->d.mapObj.param;
       }
-      if (evt->functionIndex == EVTF_MAP_OBJECT_CRATE) {
-         gInBattleSaveDataPtr->crates[numCrates].z = evt->z1.s.hi;
-         gInBattleSaveDataPtr->crates[numCrates++].x = evt->x1.s.hi;
+      if (obj->functionIndex == OBJF_MAP_OBJECT_CRATE) {
+         gInBattleSaveDataPtr->crates[numCrates].z = obj->z1.s.hi;
+         gInBattleSaveDataPtr->crates[numCrates++].x = obj->x1.s.hi;
       }
-      if (evt->functionIndex == EVTF_MAP_OBJECT_BOULDER) {
-         gInBattleSaveDataPtr->boulders[numBoulders].z = evt->z1.s.hi;
-         gInBattleSaveDataPtr->boulders[numBoulders++].x = evt->x1.s.hi;
+      if (obj->functionIndex == OBJF_MAP_OBJECT_BOULDER) {
+         gInBattleSaveDataPtr->boulders[numBoulders].z = obj->z1.s.hi;
+         gInBattleSaveDataPtr->boulders[numBoulders++].x = obj->x1.s.hi;
       }
-      evt++;
+      obj++;
    }
 }
 

@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "field.h"
 #include "state.h"
@@ -58,35 +58,35 @@ void Map33_LowerPlatform(s32 steps) {
    Map33_RestorePlatform();
 }
 
-#undef EVTF
-#define EVTF 651
-void Evtf651_Map33_LavaPitPlatform(EvtData *evt) {
+#undef OBJF
+#define OBJF 651
+void Objf651_Map33_LavaPitPlatform(Object *obj) {
    s32 i;
-   EvtData *unitSprite;
-   EvtData *evt_v1;
+   Object *unitSprite;
+   Object *obj_v1;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       if (gState.mapState.s.field_0x0 != 0) {
          Map33_LowerPlatform(gState.mapState.s.field_0x0);
          for (i = 0; i < ARRAY_COUNT(sPlatformLocations); i++) {
             UpdateTileElevation(sPlatformLocations[i].z, sPlatformLocations[i].x);
          }
-         EVT.step = gState.mapState.s.field_0x0;
+         OBJ.step = gState.mapState.s.field_0x0;
       }
-      evt->x2.n = CV(11.5);
-      evt->z2.n = CV(11.5);
-      evt->state++;
+      obj->x2.n = CV(11.5);
+      obj->z2.n = CV(11.5);
+      obj->state++;
 
    // fallthrough
    case 1:
-      if (gState.mapState.s.field_0x0 > EVT.step && EVT.step < 10) {
-         evt->state2 = 0;
-         evt->state++;
-         evt->state3 = 0;
-         evt->mem = 128;
-         evt->y3.n = 4;
-         evt->y2.n = 24;
+      if (gState.mapState.s.field_0x0 > OBJ.step && OBJ.step < 10) {
+         obj->state2 = 0;
+         obj->state++;
+         obj->state3 = 0;
+         obj->mem = 128;
+         obj->y3.n = 4;
+         obj->y2.n = 24;
          PerformAudioCommand(AUDIO_CMD_PREPARE_XA(39));
          gPlayerControlSuppressed = 1;
       }
@@ -94,103 +94,103 @@ void Evtf651_Map33_LavaPitPlatform(EvtData *evt) {
 
    case 2:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gCameraRotation.vy &= 0xfff;
-         AssignFromMainCamera(&EVT.camera);
-         unitSprite = GetUnitSpriteAtPosition(evt->z2.s.hi, evt->x2.s.hi);
-         evt_v1 = Evt_GetUnused();
-         evt_v1->functionIndex = EVTF_CAMERA_TBD_026;
-         evt_v1->d.evtf026.target = unitSprite;
-         *(s16 *)(&evt_v1->d.evtf026.type) = 1; //?
-         evt_v1->d.evtf026.zoom = 512;
-         evt->state3 = 0;
-         evt->state2++;
+         AssignFromMainCamera(&OBJ.camera);
+         unitSprite = GetUnitSpriteAtPosition(obj->z2.s.hi, obj->x2.s.hi);
+         obj_v1 = Obj_GetUnused();
+         obj_v1->functionIndex = OBJF_CAMERA_TBD_026;
+         obj_v1->d.objf026.target = unitSprite;
+         *(s16 *)(&obj_v1->d.objf026.type) = 1; //?
+         obj_v1->d.objf026.zoom = 512;
+         obj->state3 = 0;
+         obj->state2++;
          break;
 
       case 1:
-         if (++evt->state3 >= 32) {
-            evt->state3 = 0;
-            evt->state2++;
+         if (++obj->state3 >= 32) {
+            obj->state3 = 0;
+            obj->state2++;
          }
          break;
 
       case 2:
-         evt->state2 = 0;
-         evt->state++;
+         obj->state2 = 0;
+         obj->state++;
          break;
       }
 
       break;
 
    case 3:
-      evt_v1 = Evt_GetUnused();
-      evt_v1->functionIndex = EVTF_MAP33_LOWER_PLATFORM;
-      evt->state++;
+      obj_v1 = Obj_GetUnused();
+      obj_v1->functionIndex = OBJF_MAP33_LOWER_PLATFORM;
+      obj->state++;
       break;
 
    case 4:
-      if (--evt->mem <= 0) {
-         EVT.step++;
-         evt->state3 = 0;
-         evt->state++;
+      if (--obj->mem <= 0) {
+         OBJ.step++;
+         obj->state3 = 0;
+         obj->state++;
       }
       break;
 
    case 5:
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 6:
-      EaseOutCamera(&EVT.camera, 3);
-      if (++evt->state3 >= 32) {
-         AssignToMainCamera(&EVT.camera);
-         evt->state++;
+      EaseOutCamera(&OBJ.camera, 3);
+      if (++obj->state3 >= 32) {
+         AssignToMainCamera(&OBJ.camera);
+         obj->state++;
       }
       break;
 
    case 7:
-      evt->state = 1;
+      obj->state = 1;
       gPlayerControlSuppressed = 0;
       gState.field_0x96 = 0;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 750
-void Evtf750_751_Map33_LowerPlatform(EvtData *evt) {
+#undef OBJF
+#define OBJF 750
+void Objf750_751_Map33_LowerPlatform(Object *obj) {
    s32 i, j;
    MapTileModel *pMapTile;
    MapTileModel *pSavedTile;
    u8 *pMapTileFaceVerts;
    u8 *pSavedTileFaceVerts;
    s16 dx, dy, dz;
-   EvtData *clonedSprite;
-   EvtData *unitSprite;
+   Object *clonedSprite;
+   Object *unitSprite;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->x2.n = CV(11.5);
-      evt->z2.n = CV(11.5);
-      evt->mem = 128;
-      evt->y3.n = CV(0.015625);
-      evt->y2.n = CV(0.09375);
+      obj->x2.n = CV(11.5);
+      obj->z2.n = CV(11.5);
+      obj->mem = 128;
+      obj->y3.n = CV(0.015625);
+      obj->y2.n = CV(0.09375);
       PerformAudioCommand(AUDIO_CMD_PLAY_XA(39));
       Map33_SavePlatform();
-      evt->state++;
+      obj->state++;
       break;
 
    case 1:
-      dx = (evt->mem >> 4) * rcos(evt->state3 * 16) >> 12;
-      dz = (evt->mem >> 5) * rcos(evt->state3 * 8) >> 12;
-      EVT.ydrop += evt->y2.n;
-      if (EVT.ydrop > CV(0.5)) {
-         EVT.ydrop = CV(0.5);
-         evt->y2.n = -(evt->y2.n / 2);
+      dx = (obj->mem >> 4) * rcos(obj->state3 * 16) >> 12;
+      dz = (obj->mem >> 5) * rcos(obj->state3 * 8) >> 12;
+      OBJ.ydrop += obj->y2.n;
+      if (OBJ.ydrop > CV(0.5)) {
+         OBJ.ydrop = CV(0.5);
+         obj->y2.n = -(obj->y2.n / 2);
       }
-      evt->y2.n += evt->y3.n;
-      dy = EVT.ydrop >> 3;
+      obj->y2.n += obj->y3.n;
+      dy = OBJ.ydrop >> 3;
 
       for (i = 0, pSavedTile = (MapTileModel *)gScratch1_801317c0;
            i < ARRAY_COUNT(sPlatformLocations); i++) {
@@ -232,28 +232,28 @@ void Evtf750_751_Map33_LowerPlatform(EvtData *evt) {
          pSavedTile++;
       }
 
-      clonedSprite = Evt_GetUnused();
-      clonedSprite->functionIndex = EVTF_NOOP;
-      if (evt->functionIndex == EVTF_MAP33_SCN65_LOWER_PLATFORM) {
-         unitSprite = EVT.variant_0x24.entitySpriteParam;
+      clonedSprite = Obj_GetUnused();
+      clonedSprite->functionIndex = OBJF_NOOP;
+      if (obj->functionIndex == OBJF_MAP33_SCN65_LOWER_PLATFORM) {
+         unitSprite = OBJ.variant_0x24.entitySpriteParam;
       } else {
-         unitSprite = GetUnitSpriteAtPosition(evt->z2.s.hi, evt->x2.s.hi);
+         unitSprite = GetUnitSpriteAtPosition(obj->z2.s.hi, obj->x2.s.hi);
       }
-      CopyEvtData(unitSprite, clonedSprite);
+      CopyObject(unitSprite, clonedSprite);
       unitSprite->d.sprite.hidden = 1;
       clonedSprite->d.sprite.hidden = 0;
       clonedSprite->x1.n = unitSprite->x1.n + (dx << 3);
       clonedSprite->z1.n = unitSprite->z1.n + (dz << 3);
       clonedSprite->y1.n = unitSprite->y1.n - (dy << 3);
       RenderUnitSprite(gGraphicsPtr->ot, clonedSprite, 1);
-      clonedSprite->functionIndex = EVTF_NULL;
+      clonedSprite->functionIndex = OBJF_NULL;
 
-      evt->state3 += 8;
-      if (--evt->mem <= 0) {
-         EVT.variant_0x24.unk++;
-         evt->state3 = 0;
+      obj->state3 += 8;
+      if (--obj->mem <= 0) {
+         OBJ.variant_0x24.unk++;
+         obj->state3 = 0;
          unitSprite->d.sprite.hidden = 0;
-         evt->state++;
+         obj->state++;
       }
       break;
 
@@ -273,159 +273,159 @@ void Evtf750_751_Map33_LowerPlatform(EvtData *evt) {
          gTerrainPtr[sPlatformLocations[i].z][sPlatformLocations[i].x].s.elevation =
              -gMapRowPointers[sPlatformLocations[i].z][sPlatformLocations[i].x].vertices[0].vy >> 4;
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 3:
-      evt->state++;
+      obj->state++;
       break;
 
    case 4:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 653
-void Evtf653_ExplodingTile(EvtData *evt) {
+#undef OBJF
+#define OBJF 653
+void Objf653_ExplodingTile(Object *obj) {
    MapTileModel transformedModel;
    MapTileModel *pBaseModel;
    s16 y, z, x;
    s16 elevation;
-   EvtData *evt_s1;
+   Object *obj_s1;
    s32 theta;
    SVECTOR *pRot;
    SVECTOR *pTrans;
 
    memset(&transformedModel, 0, sizeof(MapTileModel));
-   pBaseModel = EVT.tileModel;
+   pBaseModel = OBJ.tileModel;
    transformedModel = *pBaseModel;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      pTrans = &EVT.translation;
-      evt->x1.n = pTrans->vx;
-      evt->y1.n = pTrans->vy;
-      evt->z1.n = pTrans->vz;
-      // memcpy(&EVT.savedTranslation, &EVT.translation, sizeof(SVECTOR));
-      ((u32 *)&EVT.savedTranslation)[0] = ((u32 *)pTrans)[0];
-      ((u32 *)&EVT.savedTranslation)[1] = ((u32 *)pTrans)[1];
-      evt->state++;
+      pTrans = &OBJ.translation;
+      obj->x1.n = pTrans->vx;
+      obj->y1.n = pTrans->vy;
+      obj->z1.n = pTrans->vz;
+      // memcpy(&OBJ.savedTranslation, &OBJ.translation, sizeof(SVECTOR));
+      ((u32 *)&OBJ.savedTranslation)[0] = ((u32 *)pTrans)[0];
+      ((u32 *)&OBJ.savedTranslation)[1] = ((u32 *)pTrans)[1];
+      obj->state++;
 
    // fallthrough
    case 1:
-      pTrans = &EVT.translation;
-      // memcpy(&EVT.translation, &EVT.savedTranslation, sizeof(SVECTOR));
-      ((u32 *)pTrans)[0] = ((u32 *)&EVT.savedTranslation)[0];
-      ((u32 *)pTrans)[1] = ((u32 *)&EVT.savedTranslation)[1];
-      evt->x1.n = pTrans->vx;
-      evt->y1.n = pTrans->vy;
-      evt->z1.n = pTrans->vz;
+      pTrans = &OBJ.translation;
+      // memcpy(&OBJ.translation, &OBJ.savedTranslation, sizeof(SVECTOR));
+      ((u32 *)pTrans)[0] = ((u32 *)&OBJ.savedTranslation)[0];
+      ((u32 *)pTrans)[1] = ((u32 *)&OBJ.savedTranslation)[1];
+      obj->x1.n = pTrans->vx;
+      obj->y1.n = pTrans->vy;
+      obj->z1.n = pTrans->vz;
       theta = (rand() >> 2) % DEG(360);
-      evt->x2.n = CV(0.0625) * rcos(theta) >> 12;
-      evt->z2.n = CV(0.0625) * rsin(theta) >> 12;
-      evt->y2.n = CV(0.625);
-      evt->y3.n = CV(-0.046875);
-      evt->x3.n = 0;
-      evt->z3.n = 0;
-      evt->state2 = 3;
-      evt->mem = 0;
-      evt->state++;
+      obj->x2.n = CV(0.0625) * rcos(theta) >> 12;
+      obj->z2.n = CV(0.0625) * rsin(theta) >> 12;
+      obj->y2.n = CV(0.625);
+      obj->y3.n = CV(-0.046875);
+      obj->x3.n = 0;
+      obj->z3.n = 0;
+      obj->state2 = 3;
+      obj->mem = 0;
+      obj->state++;
 
    // fallthrough
    case 2:
-      if (--evt->state3 <= 0) {
-         evt->state3 = 0;
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state3 = 0;
+         obj->state++;
       }
-      pBaseModel = EVT.tileModel;
-      pTrans = &EVT.translation;
-      pRot = &EVT.rotation;
-      pTrans->vx = evt->x1.n;
-      pTrans->vy = evt->y1.n;
-      pTrans->vz = evt->z1.n;
+      pBaseModel = OBJ.tileModel;
+      pTrans = &OBJ.translation;
+      pRot = &OBJ.rotation;
+      pTrans->vx = obj->x1.n;
+      pTrans->vy = obj->y1.n;
+      pTrans->vz = obj->z1.n;
       RotTransMapTile(pBaseModel, pRot, pTrans, &transformedModel);
       RenderMapTile(gGraphicsPtr->ot, &transformedModel, GRID_COLOR_NONE);
       break;
 
    case 3:
-      pBaseModel = EVT.tileModel;
-      pTrans = &EVT.translation;
-      pRot = &EVT.rotation;
-      evt->state3++;
+      pBaseModel = OBJ.tileModel;
+      pTrans = &OBJ.translation;
+      pRot = &OBJ.rotation;
+      obj->state3++;
 
-      if (evt->state2 != 0) {
-         pRot->vy = evt->state3 << 8; //* DEG(22.5);
-         pRot->vz = evt->state3 << 8;
+      if (obj->state2 != 0) {
+         pRot->vy = obj->state3 << 8; //* DEG(22.5);
+         pRot->vz = obj->state3 << 8;
       }
 
-      x = evt->x1.n;
-      y = evt->y1.n;
-      z = evt->z1.n;
+      x = obj->x1.n;
+      y = obj->y1.n;
+      z = obj->z1.n;
 
-      evt->y1.n += evt->y2.n;
-      evt->x1.n += evt->x2.n;
-      evt->z1.n += evt->z2.n;
-      evt->y2.n += evt->y3.n;
+      obj->y1.n += obj->y2.n;
+      obj->x1.n += obj->x2.n;
+      obj->z1.n += obj->z2.n;
+      obj->y2.n += obj->y3.n;
 
-      if (evt->mem != 0) {
-         elevation = evt->y1.n;
+      if (obj->mem != 0) {
+         elevation = obj->y1.n;
       } else {
-         elevation = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi) - CV(0.5);
+         elevation = GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi) - CV(0.5);
       }
 
-      if (elevation > evt->y1.n) {
-         if (OBJ_TERRAIN(evt).s.terrain != TERRAIN_WATER) {
-            evt->y1.n = elevation;
-            evt->y2.n = -(evt->y2.n >> 1);
-            if (evt->state2 != 0) {
-               evt->state2--;
+      if (elevation > obj->y1.n) {
+         if (OBJ_TERRAIN(obj).s.terrain != TERRAIN_WATER) {
+            obj->y1.n = elevation;
+            obj->y2.n = -(obj->y2.n >> 1);
+            if (obj->state2 != 0) {
+               obj->state2--;
             } else {
-               evt->x2.n = 0;
-               evt->y2.n = 0;
-               evt->z2.n = 0;
-               evt->y3.n = 0;
-               evt->state3 = 224;
+               obj->x2.n = 0;
+               obj->y2.n = 0;
+               obj->z2.n = 0;
+               obj->y3.n = 0;
+               obj->state3 = 224;
             }
          } else {
-            evt_s1 = Evt_GetUnused();
-            evt_s1->functionIndex = EVTF_SPLASH_WITH_DROPLETS;
-            evt_s1->x1.n = evt->x1.n;
-            evt_s1->z1.n = evt->z1.n;
-            evt_s1->y1.n = elevation;
-            evt_s1->y2.n = -evt->y2.n;
-            evt->y1.n = elevation;
-            evt->y2.n = 0;
-            evt->y3.n = 0;
-            evt->x2.n = 0;
-            evt->z2.n = EVT.riverVelocity;
-            evt->state2 = 0;
-            evt->state3 = 224;
-            evt->mem = 1;
+            obj_s1 = Obj_GetUnused();
+            obj_s1->functionIndex = OBJF_SPLASH_WITH_DROPLETS;
+            obj_s1->x1.n = obj->x1.n;
+            obj_s1->z1.n = obj->z1.n;
+            obj_s1->y1.n = elevation;
+            obj_s1->y2.n = -obj->y2.n;
+            obj->y1.n = elevation;
+            obj->y2.n = 0;
+            obj->y3.n = 0;
+            obj->x2.n = 0;
+            obj->z2.n = OBJ.riverVelocity;
+            obj->state2 = 0;
+            obj->state3 = 224;
+            obj->mem = 1;
             return;
          }
       }
 
-      if (evt->state3 >= 256) {
-         evt->functionIndex = EVTF_NULL;
+      if (obj->state3 >= 256) {
+         obj->functionIndex = OBJF_NULL;
       }
 
-      if ((evt->x1.s.hi < gMapMinX || evt->x1.s.hi > gMapMaxX) ||
-          (evt->z1.s.hi < gMapMinZ || evt->z1.s.hi > gMapMaxZ)) {
-         evt->functionIndex = EVTF_NULL;
+      if ((obj->x1.s.hi < gMapMinX || obj->x1.s.hi > gMapMaxX) ||
+          (obj->z1.s.hi < gMapMinZ || obj->z1.s.hi > gMapMaxZ)) {
+         obj->functionIndex = OBJF_NULL;
       } else {
-         pTrans->vx = evt->x1.n;
-         pTrans->vy = evt->y1.n;
-         pTrans->vz = evt->z1.n;
-         RotTransMapTile(pBaseModel, pRot, &EVT.translation, &transformedModel);
+         pTrans->vx = obj->x1.n;
+         pTrans->vy = obj->y1.n;
+         pTrans->vz = obj->z1.n;
+         RotTransMapTile(pBaseModel, pRot, &OBJ.translation, &transformedModel);
          RenderMapTile(gGraphicsPtr->ot, &transformedModel, GRID_COLOR_NONE);
-         if (evt->state2 != 0) {
-            evt_s1 = CreatePositionedEvt(evt, EVTF_EXPLOSION);
-            evt_s1->mem = 1;
-            evt_s1->x2.n = (x - evt->x1.n) >> 2;
-            evt_s1->z2.n = (z - evt->z1.n) >> 2;
-            evt_s1->y2.n = ((y - evt->y1.n) >> 2) + (rand() >> 2) % 16;
+         if (obj->state2 != 0) {
+            obj_s1 = CreatePositionedObj(obj, OBJF_EXPLOSION);
+            obj_s1->mem = 1;
+            obj_s1->x2.n = (x - obj->x1.n) >> 2;
+            obj_s1->z2.n = (z - obj->z1.n) >> 2;
+            obj_s1->y2.n = ((y - obj->y1.n) >> 2) + (rand() >> 2) % 16;
          }
       }
       break;

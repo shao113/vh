@@ -2,17 +2,17 @@
 #include "state.h"
 #include "audio.h"
 #include "cd_files.h"
-#include "evt.h"
+#include "object.h"
 #include "window.h"
 #include "graphics.h"
 
 void PlayTownBGM(void);
 s32 State_Town(void);
-void Town_HandleCancel(EvtData *);
-void Town_HandleShopOrDojo(EvtData *);
-s32 Evtf580_Town(EvtData *);
-void func_801F5540(EvtData *);
-void func_801F56A4(EvtData *);
+void Town_HandleCancel(Object *);
+void Town_HandleShopOrDojo(Object *);
+s32 Objf580_Town(Object *);
+void func_801F5540(Object *);
+void func_801F56A4(Object *);
 
 s16 gTownPortraitSets[10][13] = {
     {PORTRAIT_DOJO_MASTER, PORTRAIT_594, PORTRAIT_DIEGO_HAPPY, PORTRAIT_590, PORTRAIT_591,
@@ -101,7 +101,7 @@ s32 State_Town(void) {
    case 0:
       gState.suppressLoadingScreen = 1;
       gState.choices[0] = 0;
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
 
       for (i = 1; i < PARTY_CT; i++) {
          SyncPartyUnit(i);
@@ -151,11 +151,11 @@ s32 State_Town(void) {
 
       gState.primary = STATE_7;
 
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_FULLSCREEN_IMAGE;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_FULLSCREEN_IMAGE;
 
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_TOWN;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_TOWN;
 
       for (i = 24; i < 50; i++) {
          gState.portraitsToLoad[i] = PORTRAIT_NULL;
@@ -174,7 +174,7 @@ s32 State_Town(void) {
    }
 }
 
-void Town_HandleCancel(EvtData *town) {
+void Town_HandleCancel(Object *town) {
    if (gWindowChoice.raw == 0x3dff) {
       gState.choices[0] = GetWindowChoice(0x3d) - 1;
       CloseWindow(0x3d);
@@ -183,7 +183,7 @@ void Town_HandleCancel(EvtData *town) {
    }
 }
 
-void Town_HandleShopOrDojo(EvtData *town) {
+void Town_HandleShopOrDojo(Object *town) {
    if (gWindowChoice.raw == 0x3d01) {
       gWindowActiveIdx = 0;
       gState.state7 = STATE_SHOP;
@@ -198,14 +198,14 @@ void Town_HandleShopOrDojo(EvtData *town) {
    }
 }
 
-#undef EVTF
-#define EVTF 580
-s32 Evtf580_Town(EvtData *evt) {
+#undef OBJF
+#define OBJF 580
+s32 Objf580_Town(Object *obj) {
    extern s32 D_801F6DA8;
 
-   EvtData *actions;
+   Object *actions;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       D_801F6DA8 = 0;
       FadeInScreen(2, 10);
@@ -215,28 +215,28 @@ s32 Evtf580_Town(EvtData *evt) {
       DrawWindow(0x43, 0, 100, 312, 90, 4, 540, WBS_DRAGON, 0);
       DisplayCustomWindow(0x43, 0, 1, 50, 0, 0);
       DisplayCustomWindow(0x44, 0, 1, 50, 0, 0);
-      evt->state = 3;
-      evt->state2 = 0;
+      obj->state = 3;
+      obj->state2 = 0;
 
    // fallthrough
    case 3:
-      func_801F56A4(evt);
+      func_801F56A4(obj);
       break;
 
    case 4:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gSignal1 = 1;
-         actions = Evt_GetUnused();
-         actions->functionIndex = EVTF_WORLD_ACTIONS;
-         evt->state2++;
+         actions = Obj_GetUnused();
+         actions->functionIndex = OBJF_WORLD_ACTIONS;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (gSignal1 == 0) {
-            evt->state = 5;
-            evt->state2 = 0;
+            obj->state = 5;
+            obj->state2 = 0;
          }
          break;
       }
@@ -248,44 +248,44 @@ s32 Evtf580_Town(EvtData *evt) {
       switch (gState.townState) {
       case 1:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 108, 10, 10, WBS_CROSSED, 5);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#70\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_12;
                gState.scene = 3;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                break;
             }
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 1;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 1;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3d05) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 2;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 2;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -293,44 +293,44 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 3:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 108, 10, 10, WBS_CROSSED, 5);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#70\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 0;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                break;
             }
             if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 4;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 4;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3d05) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 2;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 2;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -338,44 +338,44 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 4:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 126, 10, 10, WBS_CROSSED, 6);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#70\n#71\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
+            Town_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3d05) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_26;
                gState.scene = 4;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                break;
             }
             if (gWindowChoice.raw == 0x3d03 || gWindowChoice.raw == 0x3d06 ||
                 gWindowChoice.raw == 0x3d01 || gWindowChoice.raw == 0x3d02) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 5;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 5;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3d04) {
-               EVT.textPtrIdx = 6;
+               OBJ.textPtrIdx = 6;
                gWindowActiveIdx = 0;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -383,24 +383,24 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 5:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 108, 10, 10, WBS_CROSSED, 5);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#70\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 1;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d05) {
                gState.worldMapDestination = 1;
                gWindowActiveIdx = 0;
@@ -408,19 +408,19 @@ s32 Evtf580_Town(EvtData *evt) {
                if (gState.worldMapState < 12) {
                   gState.worldMapState = 12;
                }
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 7;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 7;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -428,31 +428,31 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 7:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 2;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 4;
                gWindowActiveIdx = 0;
                gState.state7 = STATE_6;
                gState.worldMapState = 17;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -461,44 +461,44 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 8:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 108, 10, 10, WBS_CROSSED, 5);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#72\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_26;
                gState.scene = 14;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                break;
             }
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 10;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 10;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3d05) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 11;
-               EVT.portrait = PORTRAIT_DIEGO;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 11;
+               OBJ.portrait = PORTRAIT_DIEGO;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -506,45 +506,45 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 9:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 108, 10, 10, WBS_CROSSED, 5);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#72\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d05) {
                gState.worldMapDestination = 4;
                gWindowActiveIdx = 0;
                gState.state7 = STATE_6;
                gState.worldMapState = 15;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                break;
             }
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 12;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 12;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 13;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 13;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -552,31 +552,31 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 10:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 3;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 4;
                gWindowActiveIdx = 0;
                gState.state7 = STATE_6;
                gState.worldMapState = 16;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -585,24 +585,24 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 11:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#67");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 4;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 7;
                gWindowActiveIdx = 0;
@@ -610,8 +610,8 @@ s32 Evtf580_Town(EvtData *evt) {
                if (gState.worldMapState < 21) {
                   gState.worldMapState = 21;
                }
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -620,29 +620,29 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 12:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#67");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 4;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                SlideWindowTo(0x3d, -200, 10);
-               EVT.timer = 30;
+               OBJ.timer = 30;
                gWindowActiveIdx = 0;
-               evt->state2 = 3;
+               obj->state2 = 3;
             }
             break;
 
@@ -650,18 +650,18 @@ s32 Evtf580_Town(EvtData *evt) {
             break;
 
          case 3:
-            if (--EVT.timer == 0) {
+            if (--OBJ.timer == 0) {
                SetupTownMsgBox(PORTRAIT_DOLAN, 0);
                func_800440DC(0);
-               EVT.timer = 30;
-               evt->state2++;
+               OBJ.timer = 30;
+               obj->state2++;
             }
             break;
 
          case 4:
-            if (--EVT.timer == 0) {
+            if (--OBJ.timer == 0) {
                func_80044364(14, 2);
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
@@ -670,29 +670,29 @@ s32 Evtf580_Town(EvtData *evt) {
                SetupTownMsgBox(PORTRAIT_SARA, 1);
                func_8004404C(0);
                func_8004404C(1);
-               EVT.timer = 30;
-               evt->state2++;
+               OBJ.timer = 30;
+               obj->state2++;
             }
             break;
 
          case 6:
-            if (--EVT.timer == 0) {
+            if (--OBJ.timer == 0) {
                func_80044364(15, 1);
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
          case 7:
             if (gState.field_0x31d != 0) {
                gState.field_0x31d = 0;
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
          case 8:
             if (gState.field_0x31d != 0) {
                SetupTownMsgBox(PORTRAIT_SARA_ANGRY, 1);
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
@@ -700,7 +700,7 @@ s32 Evtf580_Town(EvtData *evt) {
             if (gState.msgBoxFinished) {
                SetupTownMsgBox(PORTRAIT_AMON_62, 0);
                func_80044364(16, 3);
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
@@ -708,7 +708,7 @@ s32 Evtf580_Town(EvtData *evt) {
             if (gState.msgBoxFinished) {
                SetupTownMsgBox(PORTRAIT_SARA_69, 1);
                func_80044364(17, 1);
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
@@ -716,7 +716,7 @@ s32 Evtf580_Town(EvtData *evt) {
             if (gState.msgBoxFinished) {
                SetupTownMsgBox(PORTRAIT_AMON_ANGRY, 0);
                func_80044364(18, 3);
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
@@ -724,18 +724,18 @@ s32 Evtf580_Town(EvtData *evt) {
             if (gState.msgBoxFinished) {
                func_80044134(0);
                func_80044134(1);
-               EVT.timer = 30;
-               evt->state2++;
+               OBJ.timer = 30;
+               obj->state2++;
             }
             break;
 
          case 13:
-            if (--EVT.timer == 0) {
+            if (--OBJ.timer == 0) {
                gState.worldMapDestination = 7;
                gState.state7 = STATE_6;
                gState.worldMapState = 22;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -744,35 +744,35 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 14:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 5;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 22;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 22;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -780,36 +780,36 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 16:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 12;
                gWindowActiveIdx = 0;
                gState.state7 = STATE_6;
                gState.worldMapState = 32;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 29;
-               EVT.portrait = PORTRAIT_ZOHAR;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 29;
+               OBJ.portrait = PORTRAIT_ZOHAR;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -817,24 +817,24 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 17:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#67");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 6;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 13;
                gWindowActiveIdx = 0;
@@ -842,8 +842,8 @@ s32 Evtf580_Town(EvtData *evt) {
                if (gState.worldMapState < 41) {
                   gState.worldMapState = 41;
                }
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -852,45 +852,45 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 18:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
                SlideWindowTo(0x3d, -200, 10);
-               EVT.timer = 30;
-               evt->state2 = 3;
+               OBJ.timer = 30;
+               obj->state2 = 3;
             }
             break;
 
          case 3:
-            if (--EVT.timer == 0) {
+            if (--OBJ.timer == 0) {
                SetupTownMsgBox(PORTRAIT_DARIUS_ANGRY, 0);
                func_800440DC(0);
-               EVT.timer = 30;
-               evt->state2++;
+               OBJ.timer = 30;
+               obj->state2++;
             }
             break;
 
          case 4:
-            if (--EVT.timer == 0) {
+            if (--OBJ.timer == 0) {
                func_80044364(30, 0);
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
@@ -899,15 +899,15 @@ s32 Evtf580_Town(EvtData *evt) {
                SetupTownMsgBox(PORTRAIT_ASH_ANGRY, 1);
                func_8004404C(0);
                func_8004404C(1);
-               EVT.timer = 30;
-               evt->state2++;
+               OBJ.timer = 30;
+               obj->state2++;
             }
             break;
 
          case 6:
-            if (--EVT.timer == 0) {
+            if (--OBJ.timer == 0) {
                func_80044364(31, 1);
-               evt->state2++;
+               obj->state2++;
             }
             break;
 
@@ -915,18 +915,18 @@ s32 Evtf580_Town(EvtData *evt) {
             if (gState.msgBoxFinished) {
                func_80044134(0);
                func_80044134(1);
-               EVT.timer = 30;
-               evt->state2++;
+               OBJ.timer = 30;
+               obj->state2++;
             }
             break;
 
          case 8:
-            if (--EVT.timer == 0) {
+            if (--OBJ.timer == 0) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_26;
                gState.scene = 53;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -935,41 +935,41 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 21:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 108, 10, 10, WBS_CROSSED, 5);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#73\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 8;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_26;
                gState.scene = 57;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d05) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 40;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 40;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -977,52 +977,52 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 22:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 126, 10, 10, WBS_CROSSED, 6);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#73\n#74\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 8;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                break;
             }
             if (gWindowChoice.raw == 0x3d05) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_26;
                gState.scene = 60;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                break;
             }
             if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 41;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 41;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3d06) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 42;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 42;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -1030,51 +1030,51 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 23:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 126, 10, 10, WBS_CROSSED, 6);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#73\n#75\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d05) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_26;
                gState.scene = 63;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                break;
             }
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 43;
-               EVT.portrait = PORTRAIT_ASH_ANGRY;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 43;
+               OBJ.portrait = PORTRAIT_ASH_ANGRY;
+               obj->state2++;
+               obj->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 44;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 44;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             if (gWindowChoice.raw == 0x3d06) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 43;
-               EVT.portrait = PORTRAIT_ASH_ANGRY;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 43;
+               OBJ.portrait = PORTRAIT_ASH_ANGRY;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -1082,42 +1082,42 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 24:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 108, 10, 10, WBS_CROSSED, 5);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#73\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 8;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d05) {
                gState.worldMapDestination = 19;
                gWindowActiveIdx = 0;
                gState.state7 = STATE_6;
                gState.worldMapState = 53;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 41;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 41;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -1125,24 +1125,24 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 26:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#67");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 9;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 23;
                gWindowActiveIdx = 0;
@@ -1150,8 +1150,8 @@ s32 Evtf580_Town(EvtData *evt) {
                if (gState.worldMapState < 62) {
                   gState.worldMapState = 62;
                }
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1160,35 +1160,35 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 28:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#67");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 10;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 0x34;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 0x34;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -1196,36 +1196,36 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 30:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#67");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 25;
                gWindowActiveIdx = 0;
                gState.state7 = STATE_6;
                gState.worldMapState = 64;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
-               EVT.textPtrIdx = 5;
-               EVT.portrait = PORTRAIT_ASH;
-               evt->state2++;
-               evt->state3 = 0;
+               OBJ.textPtrIdx = 5;
+               OBJ.portrait = PORTRAIT_ASH;
+               obj->state2++;
+               obj->state3 = 0;
             }
             break;
 
          case 2:
-            func_801F5540(evt);
+            func_801F5540(obj);
             break;
          }
 
@@ -1233,31 +1233,31 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 31:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#67");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 11;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 25;
                gWindowActiveIdx = 0;
                gState.state7 = STATE_6;
                gState.worldMapState = 65;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1266,24 +1266,24 @@ s32 Evtf580_Town(EvtData *evt) {
 
       case 32:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x3d, 328, 0, 176, 90, 10, 10, WBS_CROSSED, 4);
             DrawText(328, 11, 20, 2, 0, "#63\n#64\n#65\n#66");
             DisplayBasicWindowWithSetChoice(0x3d, gState.choices[0]);
             gWindowActiveIdx = 0x3d;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
-            Town_HandleCancel(evt);
-            Town_HandleShopOrDojo(evt);
+            Town_HandleCancel(obj);
+            Town_HandleShopOrDojo(obj);
             if (gWindowChoice.raw == 0x3d03) {
                gWindowActiveIdx = 0;
                gState.state7 = STATE_TAVERN;
                gState.D_80140530 = 12;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             } else if (gWindowChoice.raw == 0x3d04) {
                gState.worldMapDestination = 29;
                gWindowActiveIdx = 0;
@@ -1291,8 +1291,8 @@ s32 Evtf580_Town(EvtData *evt) {
                if (gState.worldMapState < 71) {
                   gState.worldMapState = 71;
                }
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1304,7 +1304,7 @@ s32 Evtf580_Town(EvtData *evt) {
 
    case 99:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gWindowActiveIdx = 0;
          if (!(gState.state7 == STATE_26 && (gState.scene == 57 || gState.scene == 14)) &&
@@ -1313,12 +1313,12 @@ s32 Evtf580_Town(EvtData *evt) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
          }
          FadeOutScreen(2, 6);
-         EVT.fadeTimer = 50;
-         evt->state2++;
+         OBJ.fadeTimer = 50;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (--EVT.fadeTimer == 0) {
+         if (--OBJ.fadeTimer == 0) {
             gState.primary = gState.state7;
             gState.secondary = 0;
             gState.state3 = 0;
@@ -1331,26 +1331,26 @@ s32 Evtf580_Town(EvtData *evt) {
    }
 }
 
-void func_801F5540(EvtData *town) {
+void func_801F5540(Object *town) {
    switch (town->state3) {
    case 0:
       SlideWindowTo(0x3d, -200, 10);
-      town->d.evtf580.timer = 30;
+      town->d.objf580.timer = 30;
       town->state3++;
 
    // fallthrough
    case 1:
-      if (--town->d.evtf580.timer == 0) {
-         SetupTownMsgBox(town->d.evtf580.portrait, 0);
+      if (--town->d.objf580.timer == 0) {
+         SetupTownMsgBox(town->d.objf580.portrait, 0);
          func_800440DC(0);
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state3++;
       }
       break;
 
    case 2:
-      if (--town->d.evtf580.timer == 0) {
-         func_80044364(town->d.evtf580.textPtrIdx, 0);
+      if (--town->d.objf580.timer == 0) {
+         func_80044364(town->d.objf580.textPtrIdx, 0);
          town->state3++;
       }
       break;
@@ -1358,13 +1358,13 @@ void func_801F5540(EvtData *town) {
    case 3:
       if (gState.msgBoxFinished) {
          func_80044134(0);
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state3++;
       }
       break;
 
    case 4:
-      if (--town->d.evtf580.timer == 0) {
+      if (--town->d.objf580.timer == 0) {
          SlideWindowTo(0x3d, 10, 10);
          gWindowActiveIdx = 0x3d;
          town->state2--;
@@ -1374,27 +1374,27 @@ void func_801F5540(EvtData *town) {
    }
 }
 
-void func_801F56A4(EvtData *town) {
+void func_801F56A4(Object *town) {
    switch (gState.townState) {
    case 0:
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_ASH, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(0, 0);
             town->state2++;
          }
@@ -1403,13 +1403,13 @@ void func_801F56A4(EvtData *town) {
       case 3:
          if (gState.msgBoxFinished) {
             func_80044134(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.townState = 1;
             town->state = 4;
             town->state2 = 0;
@@ -1423,21 +1423,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_DIEGO, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(3, 0);
             town->state2++;
          }
@@ -1446,13 +1446,13 @@ void func_801F56A4(EvtData *town) {
       case 3:
          if (gState.msgBoxFinished) {
             func_80044134(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.townState = 3;
             town->state = 4;
             town->state2 = 0;
@@ -1466,21 +1466,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_ASH, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(8, 2);
             town->state2++;
          }
@@ -1491,13 +1491,13 @@ void func_801F56A4(EvtData *town) {
             SetupTownMsgBox(PORTRAIT_CLINT, 1);
             func_8004404C(0);
             func_8004404C(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(9, 1);
             town->state2++;
          }
@@ -1507,13 +1507,13 @@ void func_801F56A4(EvtData *town) {
          if (gState.msgBoxFinished) {
             func_80044134(0);
             func_80044134(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 6:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.townState = 7;
             town->state = 4;
             town->state2 = 0;
@@ -1527,21 +1527,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_GROG, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(19, 0);
             town->state2++;
          }
@@ -1552,13 +1552,13 @@ void func_801F56A4(EvtData *town) {
             SetupTownMsgBox(PORTRAIT_SARA, 1);
             func_8004404C(0);
             func_8004404C(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(20, 1);
             town->state2++;
          }
@@ -1576,13 +1576,13 @@ void func_801F56A4(EvtData *town) {
          if (gState.msgBoxFinished) {
             func_80044134(0);
             func_80044134(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 7:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.townState = 14;
             town->state = 4;
             town->state2 = 0;
@@ -1596,21 +1596,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_GROG, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(23, 2);
             town->state2++;
          }
@@ -1621,13 +1621,13 @@ void func_801F56A4(EvtData *town) {
             SetupTownMsgBox(PORTRAIT_SARA, 1);
             func_8004404C(0);
             func_8004404C(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(24, 1);
             town->state2++;
          }
@@ -1644,22 +1644,22 @@ void func_801F56A4(EvtData *town) {
       case 6:
          if (gState.msgBoxFinished) {
             func_80044134(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 7:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_ZOHAR_ANGRY, 1);
             func_8004404C(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 8:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(26, 1);
             town->state2++;
          }
@@ -1701,13 +1701,13 @@ void func_801F56A4(EvtData *town) {
          if (gState.msgBoxFinished) {
             func_80044134(0);
             func_80044134(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 17:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.state7 = STATE_26;
             gState.scene = 37;
             town->state = 99;
@@ -1722,21 +1722,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_ASH, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(32, 0);
             town->state2++;
          }
@@ -1745,13 +1745,13 @@ void func_801F56A4(EvtData *town) {
       case 3:
          if (gState.msgBoxFinished) {
             func_80044134(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.state7 = STATE_6;
             if (gState.worldMapState < 51) {
                gState.worldMapState = 51;
@@ -1768,21 +1768,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_CLINT, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(33, 2);
             town->state2++;
          }
@@ -1793,13 +1793,13 @@ void func_801F56A4(EvtData *town) {
             SetupTownMsgBox(PORTRAIT_ASH, 1);
             func_8004404C(0);
             func_8004404C(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(34, 1);
             town->state2++;
          }
@@ -1861,13 +1861,13 @@ void func_801F56A4(EvtData *town) {
          if (gState.msgBoxFinished) {
             func_80044134(0);
             func_80044134(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 13:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.townState = 21;
             town->state = 4;
             town->state2 = 0;
@@ -1881,21 +1881,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_ASH, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(45, 2);
             town->state2++;
          }
@@ -1904,13 +1904,13 @@ void func_801F56A4(EvtData *town) {
       case 3:
          if (gState.msgBoxFinished) {
             func_80044134(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.state7 = STATE_26;
             gState.scene = 70;
             town->state = 99;
@@ -1925,21 +1925,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_ASH, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(46, 2);
             town->state2++;
          }
@@ -1950,13 +1950,13 @@ void func_801F56A4(EvtData *town) {
             SetupTownMsgBox(PORTRAIT_AMON, 1);
             func_8004404C(0);
             func_8004404C(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(47, 1);
             town->state2++;
          }
@@ -1996,13 +1996,13 @@ void func_801F56A4(EvtData *town) {
          if (gState.msgBoxFinished) {
             func_80044134(0);
             func_80044134(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 10:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.townState = 28;
             town->state = 4;
             town->state2 = 0;
@@ -2016,21 +2016,21 @@ void func_801F56A4(EvtData *town) {
 
       switch (town->state2) {
       case 0:
-         town->d.evtf580.timer = 30;
+         town->d.objf580.timer = 30;
          town->state2++;
 
       // fallthrough
       case 1:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_ASH, 0);
             func_800440DC(0);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 2:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(53, 0);
             town->state2++;
          }
@@ -2041,13 +2041,13 @@ void func_801F56A4(EvtData *town) {
             SetupTownMsgBox(PORTRAIT_ELENI_HAPPY, 1);
             func_8004404C(0);
             func_8004404C(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 4:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_PLAY_XA(96));
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_128_2);
             func_80044364(54, 1);
@@ -2098,22 +2098,22 @@ void func_801F56A4(EvtData *town) {
       case 11:
          if (gState.msgBoxFinished) {
             func_80044134(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 12:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             SetupTownMsgBox(PORTRAIT_OROSIUS, 1);
             func_8004404C(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 13:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             func_80044364(58, 1);
             town->state2++;
          }
@@ -2138,13 +2138,13 @@ void func_801F56A4(EvtData *town) {
          if (gState.msgBoxFinished) {
             func_80044134(0);
             func_80044134(1);
-            town->d.evtf580.timer = 30;
+            town->d.objf580.timer = 30;
             town->state2++;
          }
          break;
 
       case 17:
-         if (--town->d.evtf580.timer == 0) {
+         if (--town->d.objf580.timer == 0) {
             gState.state7 = STATE_26;
             gState.scene = 73;
             town->state = 99;

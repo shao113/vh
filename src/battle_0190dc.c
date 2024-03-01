@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "battle.h"
 #include "units.h"
 #include "state.h"
@@ -438,12 +438,12 @@ s32 CheckForSupporterBonus(u8 z, u8 x, u8 attackerZ, u8 attackerX, u8 team) {
 }
 
 void DisplaySupporterBonus(u8 z, u8 x, u8 attackerZ, u8 attackerX, u8 team) {
-   EvtData *marker;
+   Object *marker;
 
    if (CheckForSupporterBonus(z, x, attackerZ, attackerX, team)) {
-      marker = Evt_GetUnused();
-      marker->functionIndex = EVTF_ATTACK_INFO_MARKER;
-      marker->d.evtf052.type = ATK_MARKER_SUPPORT;
+      marker = Obj_GetUnused();
+      marker->functionIndex = OBJF_ATTACK_INFO_MARKER;
+      marker->d.objf052.type = ATK_MARKER_SUPPORT;
       marker->x1.s.hi = x;
       marker->z1.s.hi = z;
    }
@@ -452,7 +452,7 @@ void DisplaySupporterBonus(u8 z, u8 x, u8 attackerZ, u8 attackerX, u8 team) {
 s16 CalculateAttackDamage(UnitStatus *attacker, UnitStatus *defender) {
    // gExperienceLevels[n-2] etc results in negative addends, requiring the same fixup as large
    // addends to match
-   EvtData *attackerSprite, *defenderSprite;
+   Object *attackerSprite, *defenderSprite;
    u8 ax, az, dx, dz;
    s16 resist;
    s32 power;

@@ -84,7 +84,7 @@
 
 typedef u16 BigInt[8];
 
-struct EvtData;
+struct Object;
 
 // Note: On-screen compass vs internal coords: -N...S+  ;  -E...W+ (flipped)
 typedef enum Direction { DIR_SOUTH = 0, DIR_WEST = 1, DIR_NORTH = 2, DIR_EAST = 3 } Direction;

@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "state.h"
 #include "cd_files.h"
 #include "graphics.h"
@@ -29,133 +29,133 @@ extern u8 *gAnimSet_80105b10[124];
 extern u8 *gAnimSet_80105d00[50];
 extern u8 *gAnimSet_801063f4[82];
 
-void Evtf417_LoadEvent03(EvtData *);
-void Evtf418_LoadEvent06(EvtData *);
-void Evtf419_Noop(void);
-void Evtf252_LoadEvent05(EvtData *);
-void Evtf251_LoadEvent14(EvtData *);
-void Evtf250_350_LoadEvent16(EvtData *);
-void Evtf416_LoadEvent00(EvtData *);
+void Objf417_LoadEvent03(Object *);
+void Objf418_LoadEvent06(Object *);
+void Objf419_Noop(void);
+void Objf252_LoadEvent05(Object *);
+void Objf251_LoadEvent14(Object *);
+void Objf250_350_LoadEvent16(Object *);
+void Objf416_LoadEvent00(Object *);
 void LoadEvent(s32);
-void Evtf254_LoadEvent23(EvtData *);
-void Evtf255_LoadEvent33(EvtData *);
-void Evtf257_LoadEvent37(EvtData *);
-void Evtf260_LoadEvent42(EvtData *);
-void Evtf259_LoadEvent44(EvtData *);
-void Evtf262_LoadEvent51(EvtData *);
-void Evtf263_LoadEvent54(EvtData *);
-void Evtf264_LoadEvent57(EvtData *);
-void Noop_800b6da0(EvtData *);
-void Noop_800b6da8(EvtData *);
-void Evtf267_LoadEvent62(EvtData *);
-void Evtf268_LoadEvent67(EvtData *);
-void Evtf460_LoadEvent01(EvtData *);
-void Evtf461_LoadEvent02(EvtData *);
-void Evtf462_LoadEvent04(EvtData *);
-void Evtf463_LoadEvent08(EvtData *);
-void Evtf464_LoadEvent09(EvtData *);
-void Evtf492_LoadEvent10(EvtData *);
-void Evtf465_LoadEvent11(EvtData *);
-void Evtf466_LoadEvent12(EvtData *);
-void Evtf467_LoadEvent13(EvtData *);
-void Evtf494_LoadEvent15(EvtData *);
-void Evtf495_LoadEvent17(EvtData *);
-void Evtf493_LoadEvent18(EvtData *);
-void Evtf468_LoadEvent19(EvtData *);
-void Evtf523_LoadEvent07(EvtData *);
-void Evtf524_LoadEvent20(EvtData *);
-void Evtf469_LoadEvent21(EvtData *);
-void Evtf470_LoadEvent22(EvtData *);
-void Evtf471_LoadEvent24(EvtData *);
-void Evtf520_LoadEvent25(EvtData *);
-void Evtf522_LoadEvent26(EvtData *);
-void Evtf496_LoadEvent27(EvtData *);
-void Evtf472_LoadEvent28(EvtData *);
-void Evtf473_LoadEvent29(EvtData *);
-void Evtf474_LoadEvent30(EvtData *);
-void Evtf475_LoadEvent31(EvtData *);
-void Evtf497_LoadEvent32(EvtData *);
-void Evtf476_LoadEvent34(EvtData *);
-void Evtf477_LoadEvent35(EvtData *);
-void Evtf478_LoadEvent36(EvtData *);
-void Evtf498_LoadEvent38(EvtData *);
-void Evtf479_LoadEvent39(EvtData *);
-void Evtf480_LoadEvent40(EvtData *);
-void Evtf481_LoadEvent41(EvtData *);
-void Evtf499_LoadEvent43(EvtData *);
-void Evtf500_LoadEvent46(EvtData *);
-void Evtf525_LoadEvent47(EvtData *);
-void Evtf501_LoadEvent48(EvtData *);
-void Evtf502_LoadEvent49(EvtData *);
-void Evtf482_LoadEvent50(EvtData *);
-void Evtf483_LoadEvent52(EvtData *);
-void Evtf503_LoadEvent53(EvtData *);
-void Evtf484_LoadEvent55(EvtData *);
-void Evtf485_LoadEvent56(EvtData *);
-void Evtf491_LoadEvent60(EvtData *);
-void Evtf486_LoadEvent61(EvtData *);
-void Evtf504_LoadEvent63(EvtData *);
-void Evtf487_LoadEvent64(EvtData *);
-void Evtf488_LoadEvent65(EvtData *);
-void Evtf489_LoadEvent66(EvtData *);
-void Evtf450_LoadEvent68(EvtData *);
-void Evtf505_LoadEvent69(EvtData *);
-void Evtf451_LoadEvent70(EvtData *);
-void Evtf490_LoadEvent71(EvtData *);
-void Evtf452_LoadEvent72(EvtData *);
-void Evtf453_LoadEvent73(EvtData *);
-void Evtf506_LoadEvent74(EvtData *);
-void Evtf454_LoadEvent75(EvtData *);
-void Evtf455_LoadEvent76(EvtData *);
-void Evtf507_LoadEvent77(EvtData *);
-void Evtf508_LoadEvent78(EvtData *);
-void Evtf456_LoadEvent79(EvtData *);
-void Evtf457_LoadEvent80(EvtData *);
-void Evtf458_LoadEvent81(EvtData *);
-void Evtf509_LoadEvent82(EvtData *);
-void Evtf459_LoadEvent83(EvtData *);
-void Evtf510_LoadEvent84(EvtData *);
-void Evtf511_LoadEvent85(EvtData *);
-void Evtf512_LoadEvent86(EvtData *);
-void Evtf513_LoadEvent87(EvtData *);
-void Evtf514_LoadEvent88(EvtData *);
-void Evtf515_LoadEvent89(EvtData *);
-void Evtf516_LoadEvent90(EvtData *);
-void Evtf517_LoadEvent91(EvtData *);
-void Evtf518_LoadEvent92(EvtData *);
-void Evtf519_LoadEvent93(EvtData *);
-void Evtf521_LoadEvent94(EvtData *);
+void Objf254_LoadEvent23(Object *);
+void Objf255_LoadEvent33(Object *);
+void Objf257_LoadEvent37(Object *);
+void Objf260_LoadEvent42(Object *);
+void Objf259_LoadEvent44(Object *);
+void Objf262_LoadEvent51(Object *);
+void Objf263_LoadEvent54(Object *);
+void Objf264_LoadEvent57(Object *);
+void Noop_800b6da0(Object *);
+void Noop_800b6da8(Object *);
+void Objf267_LoadEvent62(Object *);
+void Objf268_LoadEvent67(Object *);
+void Objf460_LoadEvent01(Object *);
+void Objf461_LoadEvent02(Object *);
+void Objf462_LoadEvent04(Object *);
+void Objf463_LoadEvent08(Object *);
+void Objf464_LoadEvent09(Object *);
+void Objf492_LoadEvent10(Object *);
+void Objf465_LoadEvent11(Object *);
+void Objf466_LoadEvent12(Object *);
+void Objf467_LoadEvent13(Object *);
+void Objf494_LoadEvent15(Object *);
+void Objf495_LoadEvent17(Object *);
+void Objf493_LoadEvent18(Object *);
+void Objf468_LoadEvent19(Object *);
+void Objf523_LoadEvent07(Object *);
+void Objf524_LoadEvent20(Object *);
+void Objf469_LoadEvent21(Object *);
+void Objf470_LoadEvent22(Object *);
+void Objf471_LoadEvent24(Object *);
+void Objf520_LoadEvent25(Object *);
+void Objf522_LoadEvent26(Object *);
+void Objf496_LoadEvent27(Object *);
+void Objf472_LoadEvent28(Object *);
+void Objf473_LoadEvent29(Object *);
+void Objf474_LoadEvent30(Object *);
+void Objf475_LoadEvent31(Object *);
+void Objf497_LoadEvent32(Object *);
+void Objf476_LoadEvent34(Object *);
+void Objf477_LoadEvent35(Object *);
+void Objf478_LoadEvent36(Object *);
+void Objf498_LoadEvent38(Object *);
+void Objf479_LoadEvent39(Object *);
+void Objf480_LoadEvent40(Object *);
+void Objf481_LoadEvent41(Object *);
+void Objf499_LoadEvent43(Object *);
+void Objf500_LoadEvent46(Object *);
+void Objf525_LoadEvent47(Object *);
+void Objf501_LoadEvent48(Object *);
+void Objf502_LoadEvent49(Object *);
+void Objf482_LoadEvent50(Object *);
+void Objf483_LoadEvent52(Object *);
+void Objf503_LoadEvent53(Object *);
+void Objf484_LoadEvent55(Object *);
+void Objf485_LoadEvent56(Object *);
+void Objf491_LoadEvent60(Object *);
+void Objf486_LoadEvent61(Object *);
+void Objf504_LoadEvent63(Object *);
+void Objf487_LoadEvent64(Object *);
+void Objf488_LoadEvent65(Object *);
+void Objf489_LoadEvent66(Object *);
+void Objf450_LoadEvent68(Object *);
+void Objf505_LoadEvent69(Object *);
+void Objf451_LoadEvent70(Object *);
+void Objf490_LoadEvent71(Object *);
+void Objf452_LoadEvent72(Object *);
+void Objf453_LoadEvent73(Object *);
+void Objf506_LoadEvent74(Object *);
+void Objf454_LoadEvent75(Object *);
+void Objf455_LoadEvent76(Object *);
+void Objf507_LoadEvent77(Object *);
+void Objf508_LoadEvent78(Object *);
+void Objf456_LoadEvent79(Object *);
+void Objf457_LoadEvent80(Object *);
+void Objf458_LoadEvent81(Object *);
+void Objf509_LoadEvent82(Object *);
+void Objf459_LoadEvent83(Object *);
+void Objf510_LoadEvent84(Object *);
+void Objf511_LoadEvent85(Object *);
+void Objf512_LoadEvent86(Object *);
+void Objf513_LoadEvent87(Object *);
+void Objf514_LoadEvent88(Object *);
+void Objf515_LoadEvent89(Object *);
+void Objf516_LoadEvent90(Object *);
+void Objf517_LoadEvent91(Object *);
+void Objf518_LoadEvent92(Object *);
+void Objf519_LoadEvent93(Object *);
+void Objf521_LoadEvent94(Object *);
 
-void Evtf417_LoadEvent03(EvtData *evt) {
+void Objf417_LoadEvent03(Object *obj) {
    LoadEvent(3);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf418_LoadEvent06(EvtData *evt) {
+void Objf418_LoadEvent06(Object *obj) {
    LoadEvent(6);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf419_Noop(void) {}
+void Objf419_Noop(void) {}
 
-void Evtf252_LoadEvent05(EvtData *evt) {
+void Objf252_LoadEvent05(Object *obj) {
    LoadEvent(5);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf251_LoadEvent14(EvtData *evt) {
+void Objf251_LoadEvent14(Object *obj) {
    LoadEvent(14);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf250_350_LoadEvent16(EvtData *evt) {
+void Objf250_350_LoadEvent16(Object *obj) {
    LoadEvent(16);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf416_LoadEvent00(EvtData *evt) {
+void Objf416_LoadEvent00(Object *obj) {
    LoadEvent(0);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
 void LoadEvent(s32 num) {
@@ -185,33 +185,33 @@ void LoadEvent(s32 num) {
    }
 }
 
-void Evtf254_LoadEvent23(EvtData *evt) {
+void Objf254_LoadEvent23(Object *obj) {
    LoadEvent(23);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf255_LoadEvent33(EvtData *evt) {
+void Objf255_LoadEvent33(Object *obj) {
    LoadEvent(33);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf257_LoadEvent37(EvtData *evt) {
+void Objf257_LoadEvent37(Object *obj) {
    LoadEvent(37);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf260_LoadEvent42(EvtData *evt) {
+void Objf260_LoadEvent42(Object *obj) {
    LoadEvent(42);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf259_LoadEvent44(EvtData *evt) {
+void Objf259_LoadEvent44(Object *obj) {
    LoadEvent(44);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf262_LoadEvent51(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf262_LoadEvent51(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       LoadText(CDF_SIBAIB_DAT, gText, gTextPointers);
       gState.inEvent = 1;
@@ -229,12 +229,12 @@ void Evtf262_LoadEvent51(EvtData *evt) {
       SetupEventEntity(gAnimSet_80101fc0, gAnimSet_80101fc0, gEvtEntityDataPointers[7], 9, 6);
       LoadSeqSet(34);
       FinishLoadingSeq();
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf263_LoadEvent54(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf263_LoadEvent54(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       LoadText(CDF_SIBAIC_DAT, gText, gTextPointers);
       gState.inEvent = 1;
@@ -249,12 +249,12 @@ void Evtf263_LoadEvent54(EvtData *evt) {
       SetupEventEntity(gAnimSet_80101fc0, gAnimSet_80101fc0, gEvtEntityDataPointers[4], 6, 6);
       LoadSeqSet(28);
       FinishLoadingSeq();
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf264_LoadEvent57(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf264_LoadEvent57(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       LoadText(CDF_SIBAID_DAT, gText, gTextPointers);
       gState.inEvent = 1;
@@ -273,16 +273,16 @@ void Evtf264_LoadEvent57(EvtData *evt) {
       SetupEventEntity(gAnimSet_80101fc0, gAnimSet_80101fc0, gEvtEntityDataPointers[8], 15, 15);
       LoadSeqSet(17);
       FinishLoadingSeq();
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Noop_800b6da0(EvtData *evt) { evt->functionIndex = EVTF_NULL; }
+void Noop_800b6da0(Object *obj) { obj->functionIndex = OBJF_NULL; }
 
-void Noop_800b6da8(EvtData *evt) { evt->functionIndex = EVTF_NULL; }
+void Noop_800b6da8(Object *obj) { obj->functionIndex = OBJF_NULL; }
 
-void Evtf267_LoadEvent62(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf267_LoadEvent62(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       LoadText(CDF_SIBAIG_DAT, gText, gTextPointers);
       gState.inEvent = 1;
@@ -294,14 +294,14 @@ void Evtf267_LoadEvent62(EvtData *evt) {
       SetupEventEntity(gAnimSet_80101fc0, gAnimSet_80101fc0, gEvtEntityDataPointers[1], 2, 3);
       SetupEventEntity(gAnimSet_80101fc0, gAnimSet_80101fc0, gEvtEntityDataPointers[2], 18, 0);
       SetupEventEntity(gAnimSet_80101fc0, gAnimSet_80101fc0, gEvtEntityDataPointers[3], 16, 17);
-      evt->state++;
+      obj->state++;
       LoadSeqSet(27);
       FinishLoadingSeq();
    }
 }
 
-void Evtf268_LoadEvent67(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf268_LoadEvent67(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       LoadText(CDF_SIBAIH_DAT, gText, gTextPointers);
       gState.inEvent = 1;
@@ -324,12 +324,12 @@ void Evtf268_LoadEvent67(EvtData *evt) {
       SetupEventEntity(gAnimSet_80101fc0, gAnimSet_80101fc0, gEvtEntityDataPointers[12], 0, 0);
       LoadSeqSet(27);
       FinishLoadingSeq();
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf460_LoadEvent01(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf460_LoadEvent01(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -353,17 +353,17 @@ void Evtf460_LoadEvent01(EvtData *evt) {
       SetupEventEntity(gAnimSet_801042a8, gAnimSet_800f2db4, gEvtEntityDataPointers[11], 12, 12);
       SetupEventEntity(gAnimSet_801042a8, gAnimSet_800f2db4, gEvtEntityDataPointers[12], 11, 11);
       SetupEventEntity(gAnimSet_801042a8, gAnimSet_800f2db4, gEvtEntityDataPointers[13], 0, 0);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf461_LoadEvent02(EvtData *evt) {
+void Objf461_LoadEvent02(Object *obj) {
    LoadEvent(2);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf462_LoadEvent04(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf462_LoadEvent04(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -392,12 +392,12 @@ void Evtf462_LoadEvent04(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[112], gAnimSet_800f2db4, gEvtEntityDataPointers[16], 4, 4);
       SetupEventEntity(gUnitAnimSets[112], gAnimSet_800f2db4, gEvtEntityDataPointers[17], 4, 4);
       SetupEventEntity(gUnitAnimSets[112], gAnimSet_800f2db4, gEvtEntityDataPointers[18], 4, 4);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf463_LoadEvent08(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf463_LoadEvent08(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -421,22 +421,22 @@ void Evtf463_LoadEvent08(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[113], gAnimSet_800f2db4, gEvtEntityDataPointers[11], 3, 3);
       SetupEventEntity(gUnitAnimSets[113], gAnimSet_800f2db4, gEvtEntityDataPointers[12], 3, 3);
       SetupEventEntity(gAnimSet_801042a8, gAnimSet_800f2db4, gEvtEntityDataPointers[13], 0, 0);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf464_LoadEvent09(EvtData *evt) {
+void Objf464_LoadEvent09(Object *obj) {
    LoadEvent(9);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf492_LoadEvent10(EvtData *evt) {
+void Objf492_LoadEvent10(Object *obj) {
    LoadEvent(10);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf465_LoadEvent11(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf465_LoadEvent11(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -464,22 +464,22 @@ void Evtf465_LoadEvent11(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[114], gAnimSet_800f2db4, gEvtEntityDataPointers[15], 8, 8);
       SetupEventEntity(gUnitAnimSets[114], gAnimSet_800f2db4, gEvtEntityDataPointers[16], 8, 8);
       SetupEventEntity(gUnitAnimSets[114], gAnimSet_800f2db4, gEvtEntityDataPointers[17], 0, 0);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf466_LoadEvent12(EvtData *evt) {
+void Objf466_LoadEvent12(Object *obj) {
    LoadEvent(12);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf467_LoadEvent13(EvtData *evt) {
+void Objf467_LoadEvent13(Object *obj) {
    LoadEvent(13);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf494_LoadEvent15(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf494_LoadEvent15(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -502,12 +502,12 @@ void Evtf494_LoadEvent15(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[116], gAnimSet_800f2db4, gEvtEntityDataPointers[10], 7, 7);
       SetupEventEntity(gUnitAnimSets[116], gAnimSet_800f2db4, gEvtEntityDataPointers[11], 7, 7);
       SetupEventEntity(gUnitAnimSets[116], gAnimSet_800f2db4, gEvtEntityDataPointers[12], 7, 7);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf495_LoadEvent17(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf495_LoadEvent17(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -537,17 +537,17 @@ void Evtf495_LoadEvent17(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[102], gAnimSet_800f2db4, gEvtEntityDataPointers[17], 9, 9);
       SetupEventEntity(gUnitAnimSets[102], gAnimSet_800f2db4, gEvtEntityDataPointers[18], 9, 9);
       SetupEventEntity(gUnitAnimSets[102], gAnimSet_800f2db4, gEvtEntityDataPointers[19], 9, 9);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf493_LoadEvent18(EvtData *evt) {
+void Objf493_LoadEvent18(Object *obj) {
    LoadEvent(18);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf468_LoadEvent19(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf468_LoadEvent19(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -580,12 +580,12 @@ void Evtf468_LoadEvent19(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[119], gAnimSet_800f2db4, gEvtEntityDataPointers[20], 10, 10);
       SetupEventEntity(gUnitAnimSets[119], gAnimSet_800f2db4, gEvtEntityDataPointers[21], 10, 10);
       SetupEventEntity(gUnitAnimSets[119], gAnimSet_800f2db4, gEvtEntityDataPointers[22], 10, 10);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf523_LoadEvent07(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf523_LoadEvent07(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -607,12 +607,12 @@ void Evtf523_LoadEvent07(EvtData *evt) {
       SetupEventEntity(gAnimSet_8010488c, gAnimSet_800f2db4, gEvtEntityDataPointers[9], 11, 12);
       SetupEventEntity(gAnimSet_8010488c, gAnimSet_800f2db4, gEvtEntityDataPointers[10], 7, 8);
       SetupEventEntity(gAnimSet_8010488c, gAnimSet_800f2db4, gEvtEntityDataPointers[11], 9, 10);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf524_LoadEvent20(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf524_LoadEvent20(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -640,12 +640,12 @@ void Evtf524_LoadEvent20(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[65], gAnimSet_800f2db4, gEvtEntityDataPointers[15], 13, 13);
       SetupEventEntity(gAnimSet_8010488c, gAnimSet_800f2db4, gEvtEntityDataPointers[16], 0, 0);
       SetupEventEntity(gAnimSet_8010488c, gAnimSet_800f2db4, gEvtEntityDataPointers[17], 7, 7);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf469_LoadEvent21(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf469_LoadEvent21(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -680,17 +680,17 @@ void Evtf469_LoadEvent21(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[22], 11, 11);
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[23], 11, 11);
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[24], 11, 11);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf470_LoadEvent22(EvtData *evt) {
+void Objf470_LoadEvent22(Object *obj) {
    LoadEvent(22);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf471_LoadEvent24(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf471_LoadEvent24(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -725,22 +725,22 @@ void Evtf471_LoadEvent24(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[123], gAnimSet_800f2db4, gEvtEntityDataPointers[22], 13, 13);
       SetupEventEntity(gUnitAnimSets[123], gAnimSet_800f2db4, gEvtEntityDataPointers[23], 13, 13);
       SetupEventEntity(gUnitAnimSets[123], gAnimSet_800f2db4, gEvtEntityDataPointers[24], 13, 13);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf520_LoadEvent25(EvtData *evt) {
+void Objf520_LoadEvent25(Object *obj) {
    LoadEvent(25);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf522_LoadEvent26(EvtData *evt) {
+void Objf522_LoadEvent26(Object *obj) {
    LoadEvent(26);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf496_LoadEvent27(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf496_LoadEvent27(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -777,17 +777,17 @@ void Evtf496_LoadEvent27(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[123], gAnimSet_800f2db4, gEvtEntityDataPointers[24], 13, 13);
       SetupEventEntity(gUnitAnimSets[77], gAnimSet_800f2db4, gEvtEntityDataPointers[25], 14, 14);
       SetupEventEntity(gUnitAnimSets[77], gAnimSet_800f2db4, gEvtEntityDataPointers[26], 14, 14);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf472_LoadEvent28(EvtData *evt) {
+void Objf472_LoadEvent28(Object *obj) {
    LoadEvent(28);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf473_LoadEvent29(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf473_LoadEvent29(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -820,22 +820,22 @@ void Evtf473_LoadEvent29(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[123], gAnimSet_800f2db4, gEvtEntityDataPointers[20], 14, 14);
       SetupEventEntity(gUnitAnimSets[123], gAnimSet_800f2db4, gEvtEntityDataPointers[21], 14, 14);
       SetupEventEntity(gUnitAnimSets[123], gAnimSet_800f2db4, gEvtEntityDataPointers[22], 14, 14);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf474_LoadEvent30(EvtData *evt) {
+void Objf474_LoadEvent30(Object *obj) {
    LoadEvent(30);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf475_LoadEvent31(EvtData *evt) {
+void Objf475_LoadEvent31(Object *obj) {
    LoadEvent(31);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf497_LoadEvent32(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf497_LoadEvent32(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -866,12 +866,12 @@ void Evtf497_LoadEvent32(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[18], 3, 3);
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[19], 3, 3);
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[20], 3, 3);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf476_LoadEvent34(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf476_LoadEvent34(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -901,12 +901,12 @@ void Evtf476_LoadEvent34(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[81], gAnimSet_800f2db4, gEvtEntityDataPointers[17], 17, 18);
       SetupEventEntity(gUnitAnimSets[81], gAnimSet_800f2db4, gEvtEntityDataPointers[18], 17, 18);
       SetupEventEntity(gAnimSet_8010488c, gAnimSet_800f2db4, gEvtEntityDataPointers[19], 0, 0);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf477_LoadEvent35(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf477_LoadEvent35(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -925,17 +925,17 @@ void Evtf477_LoadEvent35(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[73], gAnimSet_800f2db4, gEvtEntityDataPointers[6], 1, 1);
       SetupEventEntity(gUnitAnimSets[73], gAnimSet_800f2db4, gEvtEntityDataPointers[7], 1, 1);
       SetupEventEntity(gUnitAnimSets[73], gAnimSet_800f2db4, gEvtEntityDataPointers[8], 1, 1);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf478_LoadEvent36(EvtData *evt) {
+void Objf478_LoadEvent36(Object *obj) {
    LoadEvent(36);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf498_LoadEvent38(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf498_LoadEvent38(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -959,16 +959,16 @@ void Evtf498_LoadEvent38(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[93], gAnimSet_800f2db4, gEvtEntityDataPointers[11], 2, 2);
       SetupEventEntity(gUnitAnimSets[93], gAnimSet_800f2db4, gEvtEntityDataPointers[12], 2, 2);
       SetupEventEntity(gUnitAnimSets[93], gAnimSet_800f2db4, gEvtEntityDataPointers[13], 2, 2);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf479_LoadEvent39(EvtData *evt) {
+void Objf479_LoadEvent39(Object *obj) {
    LoadEvent(39);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
-void Evtf480_LoadEvent40(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf480_LoadEvent40(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1001,17 +1001,17 @@ void Evtf480_LoadEvent40(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[79], gAnimSet_800f2db4, gEvtEntityDataPointers[20], 11, 11);
       SetupEventEntity(gUnitAnimSets[78], gAnimSet_800f2db4, gEvtEntityDataPointers[21], 12, 12);
       SetupEventEntity(gAnimSet_80104f18, gAnimSet_800f2db4, gEvtEntityDataPointers[22], 0, 0);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf481_LoadEvent41(EvtData *evt) {
+void Objf481_LoadEvent41(Object *obj) {
    LoadEvent(41);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf499_LoadEvent43(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf499_LoadEvent43(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1038,12 +1038,12 @@ void Evtf499_LoadEvent43(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[62], gAnimSet_800f2db4, gEvtEntityDataPointers[14], 5, 5);
       SetupEventEntity(gUnitAnimSets[79], gAnimSet_800f2db4, gEvtEntityDataPointers[15], 8, 8);
       SetupEventEntity(gUnitAnimSets[78], gAnimSet_800f2db4, gEvtEntityDataPointers[16], 11, 11);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf500_LoadEvent46(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf500_LoadEvent46(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1069,17 +1069,17 @@ void Evtf500_LoadEvent46(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[13], 8, 8);
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[14], 8, 8);
       SetupEventEntity(gUnitAnimSets[120], gAnimSet_800f2db4, gEvtEntityDataPointers[15], 8, 8);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf525_LoadEvent47(EvtData *evt) {
+void Objf525_LoadEvent47(Object *obj) {
    LoadEvent(47);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf501_LoadEvent48(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf501_LoadEvent48(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1093,12 +1093,12 @@ void Evtf501_LoadEvent48(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[4], gAnimSet_800f2db4, gEvtEntityDataPointers[1], 3, 3);
       SetupEventEntity(gUnitAnimSets[9], gAnimSet_800f2db4, gEvtEntityDataPointers[2], 8, 8);
       SetupEventEntity(gUnitAnimSets[12], gAnimSet_800f2db4, gEvtEntityDataPointers[3], 11, 11);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf502_LoadEvent49(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf502_LoadEvent49(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1129,22 +1129,22 @@ void Evtf502_LoadEvent49(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[62], gAnimSet_800f2db4, gEvtEntityDataPointers[18], 17, 17);
       SetupEventEntity(gUnitAnimSets[62], gAnimSet_800f2db4, gEvtEntityDataPointers[19], 17, 17);
       SetupEventEntity(gUnitAnimSets[62], gAnimSet_800f2db4, gEvtEntityDataPointers[20], 17, 17);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf482_LoadEvent50(EvtData *evt) {
+void Objf482_LoadEvent50(Object *obj) {
    LoadEvent(50);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf483_LoadEvent52(EvtData *evt) {
+void Objf483_LoadEvent52(Object *obj) {
    LoadEvent(52);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf503_LoadEvent53(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf503_LoadEvent53(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1183,12 +1183,12 @@ void Evtf503_LoadEvent53(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[81], gAnimSet_800f2db4, gEvtEntityDataPointers[26], 15, 15);
       SetupEventEntity(gUnitAnimSets[81], gAnimSet_800f2db4, gEvtEntityDataPointers[27], 15, 15);
       SetupEventEntity(gUnitAnimSets[68], gAnimSet_800f2db4, gEvtEntityDataPointers[28], 18, 18);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf484_LoadEvent55(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf484_LoadEvent55(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1233,17 +1233,17 @@ void Evtf484_LoadEvent55(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[76], gAnimSet_800f2db4, gEvtEntityDataPointers[32], 12, 12);
       SetupEventEntity(gUnitAnimSets[76], gAnimSet_800f2db4, gEvtEntityDataPointers[33], 12, 12);
       SetupEventEntity(gAnimSet_801053cc, gAnimSet_800f2db4, gEvtEntityDataPointers[34], 0, 0);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf485_LoadEvent56(EvtData *evt) {
+void Objf485_LoadEvent56(Object *obj) {
    LoadEvent(56);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf491_LoadEvent60(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf491_LoadEvent60(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1280,17 +1280,17 @@ void Evtf491_LoadEvent60(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[64], gAnimSet_800f2db4, gEvtEntityDataPointers[24], 13, 13);
       SetupEventEntity(gUnitAnimSets[64], gAnimSet_800f2db4, gEvtEntityDataPointers[25], 13, 13);
       SetupEventEntity(gUnitAnimSets[64], gAnimSet_800f2db4, gEvtEntityDataPointers[26], 13, 13);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf486_LoadEvent61(EvtData *evt) {
+void Objf486_LoadEvent61(Object *obj) {
    LoadEvent(61);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf504_LoadEvent63(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf504_LoadEvent63(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1328,17 +1328,17 @@ void Evtf504_LoadEvent63(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[69], gAnimSet_800f2db4, gEvtEntityDataPointers[25], 14, 14);
       SetupEventEntity(gUnitAnimSets[69], gAnimSet_800f2db4, gEvtEntityDataPointers[26], 14, 14);
       SetupEventEntity(gUnitAnimSets[69], gAnimSet_800f2db4, gEvtEntityDataPointers[27], 14, 14);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf487_LoadEvent64(EvtData *evt) {
+void Objf487_LoadEvent64(Object *obj) {
    LoadEvent(64);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf488_LoadEvent65(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf488_LoadEvent65(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1384,22 +1384,22 @@ void Evtf488_LoadEvent65(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[80], gAnimSet_800f2db4, gEvtEntityDataPointers[33], 15, 15);
       SetupEventEntity(gUnitAnimSets[124], gAnimSet_800f2db4, gEvtEntityDataPointers[34], 16, 16);
       SetupEventEntity(gUnitAnimSets[124], gAnimSet_800f2db4, gEvtEntityDataPointers[35], 16, 16);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf489_LoadEvent66(EvtData *evt) {
+void Objf489_LoadEvent66(Object *obj) {
    LoadEvent(66);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf450_LoadEvent68(EvtData *evt) {
+void Objf450_LoadEvent68(Object *obj) {
    LoadEvent(68);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf505_LoadEvent69(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf505_LoadEvent69(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1435,17 +1435,17 @@ void Evtf505_LoadEvent69(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[80], gAnimSet_800f2db4, gEvtEntityDataPointers[23], 15, 15);
       SetupEventEntity(gUnitAnimSets[124], gAnimSet_800f2db4, gEvtEntityDataPointers[24], 16, 16);
       SetupEventEntity(gUnitAnimSets[124], gAnimSet_800f2db4, gEvtEntityDataPointers[25], 16, 16);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf451_LoadEvent70(EvtData *evt) {
+void Objf451_LoadEvent70(Object *obj) {
    LoadEvent(70);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf490_LoadEvent71(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf490_LoadEvent71(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1485,22 +1485,22 @@ void Evtf490_LoadEvent71(EvtData *evt) {
       SetupEventEntity(gAnimSet_80105b10, gAnimSet_800f2db4, gEvtEntityDataPointers[27], 19, 19);
       SetupEventEntity(gAnimSet_80105b10, gAnimSet_800f2db4, gEvtEntityDataPointers[28], 19, 19);
       SetupEventEntity(gAnimSet_80105b10, gAnimSet_800f2db4, gEvtEntityDataPointers[29], 19, 19);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf452_LoadEvent72(EvtData *evt) {
+void Objf452_LoadEvent72(Object *obj) {
    LoadEvent(72);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf453_LoadEvent73(EvtData *evt) {
+void Objf453_LoadEvent73(Object *obj) {
    LoadEvent(73);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf506_LoadEvent74(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf506_LoadEvent74(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1540,22 +1540,22 @@ void Evtf506_LoadEvent74(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[124], gAnimSet_800f2db4, gEvtEntityDataPointers[27], 16, 16);
       SetupEventEntity(gUnitAnimSets[124], gAnimSet_800f2db4, gEvtEntityDataPointers[28], 16, 16);
       SetupEventEntity(gAnimSet_80105b10, gAnimSet_800f2db4, gEvtEntityDataPointers[29], 18, 18);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf454_LoadEvent75(EvtData *evt) {
+void Objf454_LoadEvent75(Object *obj) {
    LoadEvent(75);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf455_LoadEvent76(EvtData *evt) {
+void Objf455_LoadEvent76(Object *obj) {
    LoadEvent(76);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf507_LoadEvent77(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf507_LoadEvent77(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1578,12 +1578,12 @@ void Evtf507_LoadEvent77(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[11], gAnimSet_800f2db4, gEvtEntityDataPointers[10], 10, 10);
       SetupEventEntity(gUnitAnimSets[12], gAnimSet_800f2db4, gEvtEntityDataPointers[11], 11, 11);
       SetupEventEntity(gAnimSet_80105b10, gAnimSet_800f2db4, gEvtEntityDataPointers[12], 18, 19);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf508_LoadEvent78(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf508_LoadEvent78(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1628,27 +1628,27 @@ void Evtf508_LoadEvent78(EvtData *evt) {
       SetupEventEntity(gAnimSet_80105d00, gAnimSet_800f2db4, gEvtEntityDataPointers[32], 18, 18);
       SetupEventEntity(gAnimSet_80105d00, gAnimSet_800f2db4, gEvtEntityDataPointers[33], 18, 18);
       SetupEventEntity(gAnimSet_80105d00, gAnimSet_800f2db4, gEvtEntityDataPointers[34], 18, 18);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf456_LoadEvent79(EvtData *evt) {
+void Objf456_LoadEvent79(Object *obj) {
    LoadEvent(79);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf457_LoadEvent80(EvtData *evt) {
+void Objf457_LoadEvent80(Object *obj) {
    LoadEvent(80);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf458_LoadEvent81(EvtData *evt) {
+void Objf458_LoadEvent81(Object *obj) {
    LoadEvent(81);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf509_LoadEvent82(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf509_LoadEvent82(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1680,17 +1680,17 @@ void Evtf509_LoadEvent82(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[127], gAnimSet_800f2db4, gEvtEntityDataPointers[19], 13, 13);
       SetupEventEntity(gUnitAnimSets[127], gAnimSet_800f2db4, gEvtEntityDataPointers[20], 13, 13);
       SetupEventEntity(gAnimSet_80105b10, gAnimSet_800f2db4, gEvtEntityDataPointers[21], 0, 0);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf459_LoadEvent83(EvtData *evt) {
+void Objf459_LoadEvent83(Object *obj) {
    LoadEvent(83);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf510_LoadEvent84(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf510_LoadEvent84(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1735,12 +1735,12 @@ void Evtf510_LoadEvent84(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[72], gAnimSet_800f2db4, gEvtEntityDataPointers[32], 19, 19);
       SetupEventEntity(gUnitAnimSets[72], gAnimSet_800f2db4, gEvtEntityDataPointers[33], 19, 19);
       SetupEventEntity(gUnitAnimSets[72], gAnimSet_800f2db4, gEvtEntityDataPointers[34], 19, 19);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf511_LoadEvent85(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf511_LoadEvent85(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1778,12 +1778,12 @@ void Evtf511_LoadEvent85(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[62], gAnimSet_800f2db4, gEvtEntityDataPointers[25], 14, 14);
       SetupEventEntity(gUnitAnimSets[62], gAnimSet_800f2db4, gEvtEntityDataPointers[26], 14, 14);
       SetupEventEntity(gUnitAnimSets[62], gAnimSet_800f2db4, gEvtEntityDataPointers[27], 14, 14);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf512_LoadEvent86(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf512_LoadEvent86(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1807,27 +1807,27 @@ void Evtf512_LoadEvent86(EvtData *evt) {
       SetupEventEntity(gAnimSet_801063f4, gAnimSet_800f2db4, gEvtEntityDataPointers[11], 13, 13);
       SetupEventEntity(gAnimSet_801063f4, gAnimSet_800f2db4, gEvtEntityDataPointers[12], 14, 15);
       SetupEventEntity(gAnimSet_801063f4, gAnimSet_800f2db4, gEvtEntityDataPointers[13], 16, 16);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf513_LoadEvent87(EvtData *evt) {
+void Objf513_LoadEvent87(Object *obj) {
    LoadEvent(87);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf514_LoadEvent88(EvtData *evt) {
+void Objf514_LoadEvent88(Object *obj) {
    LoadEvent(88);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf515_LoadEvent89(EvtData *evt) {
+void Objf515_LoadEvent89(Object *obj) {
    LoadEvent(89);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf516_LoadEvent90(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf516_LoadEvent90(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1870,17 +1870,17 @@ void Evtf516_LoadEvent90(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[96], gAnimSet_800f2db4, gEvtEntityDataPointers[30], 17, 17);
       SetupEventEntity(gUnitAnimSets[96], gAnimSet_800f2db4, gEvtEntityDataPointers[31], 17, 17);
       SetupEventEntity(gUnitAnimSets[96], gAnimSet_800f2db4, gEvtEntityDataPointers[32], 17, 17);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf517_LoadEvent91(EvtData *evt) {
+void Objf517_LoadEvent91(Object *obj) {
    LoadEvent(91);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf518_LoadEvent92(EvtData *evt) {
-   if (evt->state == 0) {
+void Objf518_LoadEvent92(Object *obj) {
+   if (obj->state == 0) {
       gPlayerControlSuppressed = 1;
       gState.inEvent = 1;
       gState.eventResumeLocation = 0;
@@ -1917,17 +1917,17 @@ void Evtf518_LoadEvent92(EvtData *evt) {
       SetupEventEntity(gUnitAnimSets[130], gAnimSet_800f2db4, gEvtEntityDataPointers[24], 17, 17);
       SetupEventEntity(gUnitAnimSets[96], gAnimSet_800f2db4, gEvtEntityDataPointers[25], 18, 18);
       SetupEventEntity(gUnitAnimSets[96], gAnimSet_800f2db4, gEvtEntityDataPointers[26], 18, 18);
-      evt->state++;
+      obj->state++;
    }
 }
 
-void Evtf519_LoadEvent93(EvtData *evt) {
+void Objf519_LoadEvent93(Object *obj) {
    LoadEvent(93);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-void Evtf521_LoadEvent94(EvtData *evt) {
+void Objf521_LoadEvent94(Object *obj) {
    gState.textSpeed = 1;
    LoadEvent(94);
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }

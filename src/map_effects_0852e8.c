@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "field.h"
 #include "state.h"
@@ -18,48 +18,48 @@ s32 InEventScene(void) {
 }
 
 void SetupMapExtras(void) {
-   extern EvtData *D_801233CC;
-   EvtData *evt;
+   extern Object *D_801233CC;
+   Object *obj;
    s32 i;
 
-   evt = Evt_GetUnused();
-   evt->functionIndex = EVTF_CAMERA_TBD_277;
-   D_801233CC = evt;
+   obj = Obj_GetUnused();
+   obj->functionIndex = OBJF_CAMERA_TBD_277;
+   D_801233CC = obj;
 
    if (gState.mapNum == 11) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP11;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP11;
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_HEAVY_RAINFALL;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_HEAVY_RAINFALL;
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_DRAWBRIDGE_BUTTON;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_DRAWBRIDGE_BUTTON;
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_CHIMNEY_SMOKE;
-      evt->x1.n = CV(18.375);
-      evt->z1.n = CV(2.375);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_CHIMNEY_SMOKE;
+      obj->x1.n = CV(18.375);
+      obj->z1.n = CV(2.375);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_CHIMNEY_SMOKE;
-      evt->x1.n = CV(13.375);
-      evt->z1.n = CV(10.625);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_CHIMNEY_SMOKE;
+      obj->x1.n = CV(13.375);
+      obj->z1.n = CV(10.625);
    }
 
    if (gState.mapNum == 13) {
       if (InEventScene() == 1) {
-         evt = Evt_GetUnused();
-         evt->functionIndex = EVTF_MAP13_BRIDGE_EXPLOSION_IN_SCENE;
+         obj = Obj_GetUnused();
+         obj->functionIndex = OBJF_MAP13_BRIDGE_EXPLOSION_IN_SCENE;
       } else {
-         evt = Evt_GetUnused();
-         evt->functionIndex = EVTF_MAP13_BRIDGE_EXPLOSION_IN_BATTLE;
+         obj = Obj_GetUnused();
+         obj->functionIndex = OBJF_MAP13_BRIDGE_EXPLOSION_IN_BATTLE;
       }
    }
 
    if (!InEventScene() && gState.mapNum == 14) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP14_SAND;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP14_SAND;
    }
 
    if (gState.mapNum == 15 && !InEventScene()) {
@@ -68,36 +68,36 @@ void SetupMapExtras(void) {
    }
 
    if (gState.mapNum == 17) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP17_BUTTON;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP17_BUTTON;
    }
 
    if (gState.mapNum == 17) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP17_FLOODGATE;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP17_FLOODGATE;
    }
 
    if (gState.mapNum == 19) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP19;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP19;
    }
 
    if (gState.mapNum == 26) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP26;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP26;
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_DRAWBRIDGE_BUTTON;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_DRAWBRIDGE_BUTTON;
    }
 
    if (gState.mapNum == 27) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP27_BUTTONS;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP27_BUTTONS;
    }
 
    if (gState.mapNum == 28) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP28_BUTTON;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP28_BUTTON;
 
       for (i = 194; i < 197; i++) {
          gGfxSubTextures[GFX_MAP_TEXTURES_OFS + i][3] = 24;
@@ -109,125 +109,125 @@ void SetupMapExtras(void) {
    }
 
    if (gState.mapNum == 29) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP29;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP29;
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_DRAWBRIDGE_BUTTON;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_DRAWBRIDGE_BUTTON;
    }
 
    if (gState.mapNum == 32) {
-      evt = Evt_GetUnused();
-      evt->x1.n = CV(58.0);
-      evt->z1.n = CV(4.0);
-      evt->y1.n = CV(6.75);
-      evt->functionIndex = EVTF_MAP32_SMOKESTACK;
+      obj = Obj_GetUnused();
+      obj->x1.n = CV(58.0);
+      obj->z1.n = CV(4.0);
+      obj->y1.n = CV(6.75);
+      obj->functionIndex = OBJF_MAP32_SMOKESTACK;
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP32_CAR_RELEASE;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP32_CAR_RELEASE;
    }
 
    if (gState.mapNum == 33) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP33_LAVA_PIT_PLATFORM;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP33_LAVA_PIT_PLATFORM;
    }
 
    if (gState.mapNum == 35) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP35_BUTTON;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP35_BUTTON;
    }
 
    if (gState.mapNum == 36 && !InEventScene()) {
       // Leena shielding villager
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP36_LEENA;
-      evt->x1.n = CV(7.5);
-      evt->z1.n = CV(6.5);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP36_LEENA;
+      obj->x1.n = CV(7.5);
+      obj->z1.n = CV(6.5);
       gMapUnitsPtr[6][7].s.team = TEAM_NEUTRAL;
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP36_VILLAGER;
-      evt->x1.n = CV(7.5);
-      evt->z1.n = CV(7.5);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP36_VILLAGER;
+      obj->x1.n = CV(7.5);
+      obj->z1.n = CV(7.5);
       gMapUnitsPtr[7][7].s.team = TEAM_NEUTRAL;
    }
 
    if (gState.mapNum == 39 && !InEventScene()) {
       // Leena raising submerged platforms
       Map39_Setup();
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP39;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP39;
    }
 
    if (gState.mapNum == 40) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP40_BARRICADE;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP40_BARRICADE;
       gGfxSubTextures[GFX_MAP_TEXTURE_232][3] = 40;
       gGfxSubTextures[GFX_MAP_TEXTURE_233][3] = 40;
    }
 
    if (gState.mapNum == 38) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_MAP38_FLOODGATE;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP38_FLOODGATE;
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FLAME;
-      evt->x1.n = CV(20.5);
-      evt->z1.n = CV(11.5);
-      evt->y1.n = CV(1.5);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FLAME;
+      obj->x1.n = CV(20.5);
+      obj->z1.n = CV(11.5);
+      obj->y1.n = CV(1.5);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FLAME;
-      evt->x1.n = CV(18.5);
-      evt->z1.n = CV(12.5);
-      evt->y1.n = CV(1.5);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FLAME;
+      obj->x1.n = CV(18.5);
+      obj->z1.n = CV(12.5);
+      obj->y1.n = CV(1.5);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FLAME;
-      evt->x1.n = CV(17.5);
-      evt->z1.n = CV(12.5);
-      evt->y1.n = CV(1.5);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FLAME;
+      obj->x1.n = CV(17.5);
+      obj->z1.n = CV(12.5);
+      obj->y1.n = CV(1.5);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FLAME;
-      evt->x1.n = CV(13.0);
-      evt->z1.n = CV(2.0);
-      evt->y1.n = CV(3.0);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FLAME;
+      obj->x1.n = CV(13.0);
+      obj->z1.n = CV(2.0);
+      obj->y1.n = CV(3.0);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FLAME;
-      evt->x1.n = CV(11.0);
-      evt->z1.n = CV(3.0);
-      evt->y1.n = CV(3.0);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FLAME;
+      obj->x1.n = CV(11.0);
+      obj->z1.n = CV(3.0);
+      obj->y1.n = CV(3.0);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FLAME;
-      evt->x1.n = CV(3.0);
-      evt->z1.n = CV(13.0);
-      evt->y1.n = CV(3.0);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FLAME;
+      obj->x1.n = CV(3.0);
+      obj->z1.n = CV(13.0);
+      obj->y1.n = CV(3.0);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_FLAME;
-      evt->x1.n = CV(1.0);
-      evt->z1.n = CV(14.0);
-      evt->y1.n = CV(3.0);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_FLAME;
+      obj->x1.n = CV(1.0);
+      obj->z1.n = CV(14.0);
+      obj->y1.n = CV(3.0);
    }
 
    if (gState.mapNum == 42) {
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_CHIMNEY_SMOKE;
-      evt->x1.n = CV(2.375);
-      evt->z1.n = CV(9.625);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_CHIMNEY_SMOKE;
+      obj->x1.n = CV(2.375);
+      obj->z1.n = CV(9.625);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_CHIMNEY_SMOKE;
-      evt->x1.n = CV(19.375);
-      evt->z1.n = CV(3.375);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_CHIMNEY_SMOKE;
+      obj->x1.n = CV(19.375);
+      obj->z1.n = CV(3.375);
 
-      evt = Evt_GetUnused();
-      evt->functionIndex = EVTF_CHIMNEY_SMOKE;
-      evt->x1.n = CV(17.625);
-      evt->z1.n = CV(14.625);
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_CHIMNEY_SMOKE;
+      obj->x1.n = CV(17.625);
+      obj->z1.n = CV(14.625);
    }
 }
 
@@ -369,51 +369,51 @@ void AdjustAreaElevation_FromOrigin(s32 x, s32 z, s16 amount) {
    }
 }
 
-#undef EVTF
-#define EVTF 399
-void Evtf399_Map11(EvtData *evt) {
-   switch (evt->state) {
+#undef OBJF
+#define OBJF 399
+void Objf399_Map11(Object *obj) {
+   switch (obj->state) {
    case 0:
       gTerrainPtr[3][8].s.terrain = TERRAIN_NO_ENTRY;
       gTerrainPtr[4][8].s.terrain = TERRAIN_NO_ENTRY;
       gMapRowPointers[3][8].height = 9;
       gMapRowPointers[4][8].height = 9;
-      evt->state++;
+      obj->state++;
 
       if (gState.mapState.s.field_0x0 != 0) {
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
          return;
       }
 
    // fallthrough
    case 1:
       if (gState.mapState.s.field_0x0 == 1) {
-         evt->state2 = 48;
+         obj->state2 = 48;
          gCameraRotation.vy &= 0xfff;
-         AssignFromMainCamera(&EVT.camera);
+         AssignFromMainCamera(&OBJ.camera);
          gPlayerControlSuppressed = 1;
          PerformAudioCommand(AUDIO_CMD_PREPARE_XA(33));
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 2:
-      EVT.dstRotY = GetBestViewOfTarget(11, 1, 1);
+      OBJ.dstRotY = GetBestViewOfTarget(11, 1, 1);
       gCameraRotation.vy &= 0xfff;
-      EVT.dstRotY = func_800A96A8(gCameraRotation.vy, DEG(135));
-      evt->state++;
+      OBJ.dstRotY = func_800A96A8(gCameraRotation.vy, DEG(135));
+      obj->state++;
 
    // fallthrough
    case 3:
-      if (--evt->state2 <= 0) {
-         gCameraRotation.vy = EVT.dstRotY;
+      if (--obj->state2 <= 0) {
+         gCameraRotation.vy = OBJ.dstRotY;
          gCameraRotation.vx = DEG(33.75);
-         evt->state3 = 2;
-         evt->state++;
+         obj->state3 = 2;
+         obj->state++;
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(33));
       }
       PanCamera(CV(11.5), CV(2.0), CV(1.0), 2);
-      gCameraRotation.vy += (EVT.dstRotY - gCameraRotation.vy) >> 2;
+      gCameraRotation.vy += (OBJ.dstRotY - gCameraRotation.vy) >> 2;
       gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
       gCameraZoom.vz += (DEG(33.75) - gCameraZoom.vz) >> 2;
       break;
@@ -423,39 +423,39 @@ void Evtf399_Map11(EvtData *evt) {
       gTerrainPtr[1][11].s.elevation = -gMapRowPointers[1][11].vertices[0].vy >> 4;
       gCameraPos.vy += 8;
 
-      if (--evt->state3 <= 0) {
-         evt->state3 = 32;
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state3 = 32;
+         obj->state++;
       }
       break;
 
    case 5:
-      if (--evt->state3 <= 0) {
+      if (--obj->state3 <= 0) {
          gState.mapState.s.field_0x0 = 2;
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 6:
       if (gState.mapState.s.field_0x0 == 3) {
          gCameraRotation.vy &= 0xfff;
-         EVT.camera.rotY = func_800A96A8(gCameraRotation.vy, EVT.camera.rotY);
-         evt->state3 = 32;
-         evt->state++;
+         OBJ.camera.rotY = func_800A96A8(gCameraRotation.vy, OBJ.camera.rotY);
+         obj->state3 = 32;
+         obj->state++;
       }
       break;
 
    case 7:
-      if (--evt->state3 <= 0) {
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state++;
       }
-      EaseOutCamera(&EVT.camera, 2);
+      EaseOutCamera(&OBJ.camera, 2);
       break;
 
    case 8:
-      if (--evt->state3 <= 0) {
-         evt->functionIndex = EVTF_NULL;
-         AssignToMainCamera(&EVT.camera);
+      if (--obj->state3 <= 0) {
+         obj->functionIndex = OBJF_NULL;
+         AssignToMainCamera(&OBJ.camera);
          gPlayerControlSuppressed = 0;
          gState.signal = 0;
       }
@@ -463,9 +463,9 @@ void Evtf399_Map11(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 753
-void Evtf753_IncrementMapState0(EvtData *evt) {
+#undef OBJF
+#define OBJF 753
+void Objf753_IncrementMapState0(Object *obj) {
    gState.mapState.s.field_0x0++;
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }

@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "field.h"
 #include "state.h"
@@ -8,7 +8,7 @@
 #include "audio.h"
 
 //...
-void func_800985F0(EvtData *evt);
+void func_800985F0(Object *obj);
 //...
 
 // The tile models so far are just boxes; that should be ok to embed, but anything more complex
@@ -310,177 +310,177 @@ void Map13_ExplodeBridgeTile(s32 z, s32 x, s32 idx) {
    static MapTileModel *baseTileModels[4] = {&sMapTileModel_800fff88, &sMapTileModel_801000b8,
                                              &sMapTileModel_801000b8, &sMapTileModel_800fff88};
 
-   EvtData *explodingTile;
+   Object *explodingTile;
 
    idx &= 3;
    s_tileModels_80123e54[idx] = *baseTileModels[idx];
 
-   explodingTile = Evt_GetUnused();
-   explodingTile->functionIndex = EVTF_EXPLODING_TILE;
-   // Unused? It looks like Evtf653_ExplodingTile maintains its own working copy.
-   explodingTile->d.evtf653.tileModel_unused = &s_tileModels_80123e54[idx];
-   explodingTile->d.evtf653.tileModel = baseTileModels[idx];
-   explodingTile->d.evtf653.riverVelocity = -16;
-   explodingTile->d.evtf653.translation.vx = x * CV(1.0) + CV(0.5);
-   explodingTile->d.evtf653.translation.vy = CV(2.0);
-   explodingTile->d.evtf653.translation.vz = z * CV(1.0) + CV(0.5);
-   explodingTile->d.evtf653.translation.pad = 0;
+   explodingTile = Obj_GetUnused();
+   explodingTile->functionIndex = OBJF_EXPLODING_TILE;
+   // Unused? It looks like Objf653_ExplodingTile maintains its own working copy.
+   explodingTile->d.objf653.tileModel_unused = &s_tileModels_80123e54[idx];
+   explodingTile->d.objf653.tileModel = baseTileModels[idx];
+   explodingTile->d.objf653.riverVelocity = -16;
+   explodingTile->d.objf653.translation.vx = x * CV(1.0) + CV(0.5);
+   explodingTile->d.objf653.translation.vy = CV(2.0);
+   explodingTile->d.objf653.translation.vz = z * CV(1.0) + CV(0.5);
+   explodingTile->d.objf653.translation.pad = 0;
 }
 
-#undef EVTF
-#define EVTF 361
-void Evtf361_Map13_BridgeExplosion_Scene(EvtData *evt) {
+#undef OBJF
+#define OBJF 361
+void Objf361_Map13_BridgeExplosion_Scene(Object *obj) {
    s32 i;
    s32 end;
-   EvtData *explosion;
+   Object *explosion;
    s8 unused[8];
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.currentX = 21;
-      evt->x1.n = CV(21.5);
-      evt->z1.n = CV(4.5);
-      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
-      evt->mem = 0;
+      OBJ.currentX = 21;
+      obj->x1.n = CV(21.5);
+      obj->z1.n = CV(4.5);
+      obj->y1.n = GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi);
+      obj->mem = 0;
 
       if (gState.mapState.s.field_0x0 != 0) {
          end = gState.mapState.s.field_0x0;
          for (i = 0; i < end; i++) {
-            Map13_RemoveBridgeSection(EVT.currentX--);
-            evt->mem++;
-            evt->x1.n -= CV(1.0);
+            Map13_RemoveBridgeSection(OBJ.currentX--);
+            obj->mem++;
+            obj->x1.n -= CV(1.0);
          }
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
-      if (gState.mapState.s.field_0x0 > evt->mem) {
-         evt->state3 = 0;
-         evt->state++;
+      if (gState.mapState.s.field_0x0 > obj->mem) {
+         obj->state3 = 0;
+         obj->state++;
       }
       break;
 
    case 2:
-      evt->state++;
+      obj->state++;
       break;
 
    case 3:
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 4:
-      if (--evt->state3 <= 0) {
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state++;
       }
       break;
 
    case 5:
-      evt->state++;
-      evt->z1.n = CV(0.5);
+      obj->state++;
+      obj->z1.n = CV(0.5);
 
       for (i = 0; i < 4; i++) {
          if ((rand() & 0xfff) < 0x800) {
-            Map13_ExplodeBridgeTile(i + 2, EVT.currentX, i);
+            Map13_ExplodeBridgeTile(i + 2, OBJ.currentX, i);
          }
       }
 
       for (i = 0; i < 4; i++) {
-         if (gTerrainPtr[i + 2][EVT.currentX].raw != 0) {
-            gTileStateGridPtr[i + 2][EVT.currentX].action = TA_X16;
+         if (gTerrainPtr[i + 2][OBJ.currentX].raw != 0) {
+            gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_X16;
          }
       }
 
       for (i = 0; i < 4; i++) {
-         explosion = Evt_GetUnused();
-         explosion->functionIndex = EVTF_MAP13_EXPLOSION_PILLAR;
-         explosion->x1.n = EVT.currentX * CV(1.0) + CV(0.5);
+         explosion = Obj_GetUnused();
+         explosion->functionIndex = OBJF_MAP13_EXPLOSION_PILLAR;
+         explosion->x1.n = OBJ.currentX * CV(1.0) + CV(0.5);
          explosion->y1.n = CV(2.0);
          explosion->z1.n = (i + 2) * CV(1.0) + CV(0.5);
       }
 
-      Map13_RemoveBridgeSection(EVT.currentX);
+      Map13_RemoveBridgeSection(OBJ.currentX);
 
    // fallthrough
    case 6:
-      if (--evt->state3 <= 0) {
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state++;
       }
       break;
 
    case 7:
-      if (--evt->state3 <= 0) {
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state++;
       }
       break;
 
    case 8:
-      EVT.currentX--;
-      evt->mem++;
-      evt->x1.n -= CV(1.0);
-      evt->state3 = 256;
+      OBJ.currentX--;
+      obj->mem++;
+      obj->x1.n -= CV(1.0);
+      obj->state3 = 256;
       gState.field_0x96 = 0;
-      evt->state = 1;
+      obj->state = 1;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 288
-void Evtf288_Map13_BridgeExplosion_Battle(EvtData *evt) {
+#undef OBJF
+#define OBJF 288
+void Objf288_Map13_BridgeExplosion_Battle(Object *obj) {
    s32 i;
    s32 end;
    s32 numHit;
-   EvtData *explosion;
+   Object *explosion;
    s8 unused[8];
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.currentX = 21;
-      evt->x1.n = CV(21.5);
-      evt->z1.n = CV(4.5);
-      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
-      evt->mem = 0;
+      OBJ.currentX = 21;
+      obj->x1.n = CV(21.5);
+      obj->z1.n = CV(4.5);
+      obj->y1.n = GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi);
+      obj->mem = 0;
 
       if (gState.mapState.s.field_0x0 != 0) {
          end = gState.mapState.s.field_0x0;
 
          for (i = 0; i < end; i++) {
-            Map13_RemoveBridgeSection(EVT.currentX--);
-            evt->mem++;
-            evt->x1.n -= CV(1.0);
+            Map13_RemoveBridgeSection(OBJ.currentX--);
+            obj->mem++;
+            obj->x1.n -= CV(1.0);
 
-            if (EVT.currentX < 4) {
+            if (OBJ.currentX < 4) {
                break;
             }
          }
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
-      if (gState.mapState.s.field_0x0 > evt->mem) {
-         if (EVT.currentX < 4) {
+      if (gState.mapState.s.field_0x0 > obj->mem) {
+         if (OBJ.currentX < 4) {
             gState.field_0x96 = 0;
             break;
          }
 
-         evt->state3 = 64;
-         evt->state++;
+         obj->state3 = 64;
+         obj->state++;
          numHit = 0;
-         EVT.hitPlayerUnit = 0;
+         OBJ.hitPlayerUnit = 0;
 
          for (i = 0; i < 4; i++) {
-            if (gMapUnitsPtr[i + 2][EVT.currentX].s.team == TEAM_PLAYER) {
+            if (gMapUnitsPtr[i + 2][OBJ.currentX].s.team == TEAM_PLAYER) {
                numHit++;
             }
          }
 
          if (numHit != 0) {
-            EVT.hitPlayerUnit = 1;
+            OBJ.hitPlayerUnit = 1;
          }
 
-         if (EVT.hitPlayerUnit) {
+         if (OBJ.hitPlayerUnit) {
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(18));
          } else {
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(19));
@@ -490,170 +490,170 @@ void Evtf288_Map13_BridgeExplosion_Battle(EvtData *evt) {
       break;
 
    case 2:
-      EVT.dstRotY_unused = GetBestViewOfTarget(evt->z1.s.hi, evt->x1.s.hi, 1);
+      OBJ.dstRotY_unused = GetBestViewOfTarget(obj->z1.s.hi, obj->x1.s.hi, 1);
       gCameraRotation.vy &= 0xfff;
-      AssignFromMainCamera(&EVT.camera);
+      AssignFromMainCamera(&OBJ.camera);
       gPlayerControlSuppressed = 1;
-      evt->state3 = 48;
-      evt->state++;
+      obj->state3 = 48;
+      obj->state++;
 
    // fallthrough
    case 3:
-      gCameraRotation.vy += (EVT.camera.rotX - gCameraRotation.vy) >> 2;
+      gCameraRotation.vy += (OBJ.camera.rotX - gCameraRotation.vy) >> 2;
       gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
       gCameraZoom.vz += (768 - gCameraZoom.vz) >> 2;
-      PanCamera(evt->x1.n, evt->y1.n, evt->z1.n, 2);
+      PanCamera(obj->x1.n, obj->y1.n, obj->z1.n, 2);
 
-      if (EVT.hitPlayerUnit && evt->state3 == 16) {
+      if (OBJ.hitPlayerUnit && obj->state3 == 16) {
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(18));
       }
-      if (!EVT.hitPlayerUnit && evt->state3 == 16) {
+      if (!OBJ.hitPlayerUnit && obj->state3 == 16) {
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(19));
       }
 
-      if (--evt->state3 <= 0) {
-         PositionCamera(evt->x1.n, evt->y1.n, evt->z1.n);
+      if (--obj->state3 <= 0) {
+         PositionCamera(obj->x1.n, obj->y1.n, obj->z1.n);
          gCameraRotation.vx = CV(1.5);
-         gCameraRotation.vy = EVT.camera.rotX;
+         gCameraRotation.vy = OBJ.camera.rotX;
          gCameraZoom.vz = 768;
 
-         if (EVT.hitPlayerUnit) {
-            evt->state++;
+         if (OBJ.hitPlayerUnit) {
+            obj->state++;
 
             for (i = 0; i < 4; i++) {
-               explosion = Evt_GetUnused();
-               explosion->functionIndex = EVTF_MAP13_EXPLOSION_PILLAR;
-               explosion->x1.n = EVT.currentX * CV(1.0) + CV(0.5);
+               explosion = Obj_GetUnused();
+               explosion->functionIndex = OBJF_MAP13_EXPLOSION_PILLAR;
+               explosion->x1.n = OBJ.currentX * CV(1.0) + CV(0.5);
                explosion->y1.n = CV(2.0);
                explosion->z1.n = (i + 2) * CV(1.0) + CV(0.5);
 
-               explosion = Evt_GetUnused();
-               explosion->functionIndex = EVTF_MAP13_EXPLOSION_PILLAR;
-               explosion->x1.n = EVT.currentX * CV(1.0) + CV(0.5);
+               explosion = Obj_GetUnused();
+               explosion->functionIndex = OBJF_MAP13_EXPLOSION_PILLAR;
+               explosion->x1.n = OBJ.currentX * CV(1.0) + CV(0.5);
                explosion->y1.n = CV(2.0);
                explosion->z1.n = (i + 2) * CV(1.0) + CV(0.5);
             }
-            evt->state3 = 32;
+            obj->state3 = 32;
          } else {
             for (i = 0; i < 4; i++) {
-               Map13_ExplodeBridgeTile(i + 2, EVT.currentX, i);
-               if (gMapUnitsPtr[i + 2][EVT.currentX].s.unitIdx != UNIT_NULL) {
-                  gTileStateGridPtr[i + 2][EVT.currentX].action = TA_X16;
+               Map13_ExplodeBridgeTile(i + 2, OBJ.currentX, i);
+               if (gMapUnitsPtr[i + 2][OBJ.currentX].s.unitIdx != UNIT_NULL) {
+                  gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_X16;
                }
             }
-            Map13_RemoveBridgeSection(EVT.currentX);
-            evt->state += 3;
-            evt->state3 = 96;
+            Map13_RemoveBridgeSection(OBJ.currentX);
+            obj->state += 3;
+            obj->state3 = 96;
          }
       }
 
       break;
 
    case 4:
-      if (--evt->state3 <= 0) {
-         evt->state2 = 0;
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state2 = 0;
+         obj->state++;
       }
       break;
 
    case 5:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         EVT.iterator = 0;
-         evt->state2++;
+         OBJ.iterator = 0;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         i = EVT.iterator;
-         if (gMapUnitsPtr[i + 2][EVT.currentX].raw != 0) {
+         i = OBJ.iterator;
+         if (gMapUnitsPtr[i + 2][OBJ.currentX].raw != 0) {
             gState.msgFinished = 0;
-            gTileStateGridPtr[i + 2][EVT.currentX].action = TA_X20;
-            evt->state2 += 2;
+            gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_X20;
+            obj->state2 += 2;
          } else {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
-         if (++EVT.iterator >= 4) {
+         if (++OBJ.iterator >= 4) {
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(19));
-            evt->state2 += 3;
-            evt->state3 = 0;
+            obj->state2 += 3;
+            obj->state3 = 0;
          } else {
-            evt->state2 = 1;
+            obj->state2 = 1;
          }
          break;
 
       case 3:
          if (gState.msgFinished) {
-            evt->state2++;
-            if (++EVT.iterator >= 4) {
+            obj->state2++;
+            if (++OBJ.iterator >= 4) {
                PerformAudioCommand(AUDIO_CMD_PREPARE_XA(19));
-               evt->state2 = 5;
-               evt->state3 = 0;
+               obj->state2 = 5;
+               obj->state3 = 0;
             }
          }
          break;
 
       case 4:
-         evt->state2 = 1;
+         obj->state2 = 1;
          break;
 
       case 5:
-         if (++evt->state3 >= 45) {
-            evt->state2++;
+         if (++obj->state3 >= 45) {
+            obj->state2++;
          }
-         if (evt->state3 == 40) {
+         if (obj->state3 == 40) {
             PerformAudioCommand(AUDIO_CMD_PLAY_XA(19));
          }
          break;
 
       case 6:
          for (i = 0; i < 4; i++) {
-            if (gMapUnitsPtr[i + 2][EVT.currentX].raw != 0) {
-               gTileStateGridPtr[i + 2][EVT.currentX].action = TA_X16;
+            if (gMapUnitsPtr[i + 2][OBJ.currentX].raw != 0) {
+               gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_X16;
             }
-            Map13_ExplodeBridgeTile(i + 2, EVT.currentX, i);
+            Map13_ExplodeBridgeTile(i + 2, OBJ.currentX, i);
          }
-         Map13_RemoveBridgeSection(EVT.currentX);
-         evt->state++;
-         evt->state3 = 96;
+         Map13_RemoveBridgeSection(OBJ.currentX);
+         obj->state++;
+         obj->state3 = 96;
          break;
-      } // switch (evt->state2) (via state:5)
+      } // switch (obj->state2) (via state:5)
 
       break;
 
    case 6:
-      if (--evt->state3 <= 0) {
-         evt->state3 = 48;
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state3 = 48;
+         obj->state++;
       }
       break;
 
    case 7:
-      EaseOutCamera(&EVT.camera, 3);
+      EaseOutCamera(&OBJ.camera, 3);
 
-      if (--evt->state3 <= 0) {
-         AssignToMainCamera(&EVT.camera);
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         AssignToMainCamera(&OBJ.camera);
+         obj->state++;
       }
       break;
 
    case 8:
-      EVT.currentX--;
-      evt->mem++;
-      evt->x1.n -= CV(1.0);
-      evt->state3 = 256;
+      OBJ.currentX--;
+      obj->mem++;
+      obj->x1.n -= CV(1.0);
+      obj->state3 = 256;
       gState.field_0x96 = 0;
-      evt->state = 1;
+      obj->state = 1;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 085
-void Evtf085_Map13_ExplosionPillar(EvtData *evt) {
+#undef OBJF
+#define OBJF 085
+void Objf085_Map13_ExplosionPillar(Object *obj) {
    static s16 explosionAnimData[26] = {0, GFX_EXPLOSION_1,  2, GFX_EXPLOSION_2,  2, GFX_EXPLOSION_3,
                                        2, GFX_EXPLOSION_4,  2, GFX_EXPLOSION_5,  2, GFX_EXPLOSION_6,
                                        2, GFX_EXPLOSION_7,  2, GFX_EXPLOSION_8,  2, GFX_EXPLOSION_9,
@@ -661,90 +661,90 @@ void Evtf085_Map13_ExplosionPillar(EvtData *evt) {
                                        0, GFX_NULL};
 
    s32 i;
-   EvtData *explosion;
+   Object *explosion;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       for (i = 0; i < 5; i++) {
-         explosion = Evt_GetUnused();
-         explosion->functionIndex = EVTF_EXPLOSION;
-         explosion->x1.n = evt->x1.n;
-         explosion->z1.n = evt->z1.n;
-         explosion->y1.n = evt->y1.n;
+         explosion = Obj_GetUnused();
+         explosion->functionIndex = OBJF_EXPLOSION;
+         explosion->x1.n = obj->x1.n;
+         explosion->z1.n = obj->z1.n;
+         explosion->y1.n = obj->y1.n;
          explosion->y2.n = i * CV(0.375);
          explosion->y3.n = i * CV(-0.03125);
          explosion->d.sprite.animData = explosionAnimData;
          explosion->d.sprite.boxIdx = 6;
          explosion->state = 1;
       }
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 297
-void Evtf297_SplashDroplets(EvtData *evt) {
-   switch (evt->state) {
+#undef OBJF
+#define OBJF 297
+void Objf297_SplashDroplets(Object *obj) {
+   switch (obj->state) {
    case 0:
-      evt->d.sprite.gfxIdx = GFX_DOTS;
-      evt->d.sprite.boxIdx = 4;
-      evt->state2 = 32;
-      evt->state++;
+      obj->d.sprite.gfxIdx = GFX_DOTS;
+      obj->d.sprite.boxIdx = 4;
+      obj->state2 = 32;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->y1.n += evt->y2.n;
-      evt->y2.n += evt->y3.n;
-      AddEvtPrim6(gGraphicsPtr->ot, evt, 0);
+      obj->y1.n += obj->y2.n;
+      obj->y2.n += obj->y3.n;
+      AddObjPrim6(gGraphicsPtr->ot, obj, 0);
 
-      if (--evt->state2 <= 0) {
-         evt->functionIndex = EVTF_NULL;
+      if (--obj->state2 <= 0) {
+         obj->functionIndex = OBJF_NULL;
       }
-      if (evt->y1.n < GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi)) {
-         evt->functionIndex = EVTF_NULL;
+      if (obj->y1.n < GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi)) {
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 298
-void Evtf298_SplashWithDroplets(EvtData *evt) {
+#undef OBJF
+#define OBJF 298
+void Objf298_SplashWithDroplets(Object *obj) {
    static s16 splashAnimData[20] = {
        0, GFX_SPLASH_1, 2, GFX_SPLASH_2, 2, GFX_SPLASH_3, 2, GFX_SPLASH_4, 2, GFX_SPLASH_5,
        2, GFX_SPLASH_6, 2, GFX_SPLASH_7, 2, GFX_SPLASH_8, 2, GFX_NULL,     0, GFX_NULL};
 
    s32 i;
-   EvtData *droplets;
+   Object *droplets;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->d.sprite.animData = splashAnimData;
-      evt->d.sprite.boxIdx = 4;
-      evt->y3.n = CV(-0.015625);
+      obj->d.sprite.animData = splashAnimData;
+      obj->d.sprite.boxIdx = 4;
+      obj->y3.n = CV(-0.015625);
 
       for (i = 0; i < 8; i++) {
-         droplets = Evt_GetUnused();
-         droplets->functionIndex = EVTF_SPLASH_DROPLETS;
-         droplets->x1.n = evt->x1.n;
-         droplets->z1.n = evt->z1.n;
-         droplets->y1.n = evt->y1.n;
-         droplets->y2.n = (evt->y2.n / 16) * (i + 1);
+         droplets = Obj_GetUnused();
+         droplets->functionIndex = OBJF_SPLASH_DROPLETS;
+         droplets->x1.n = obj->x1.n;
+         droplets->z1.n = obj->z1.n;
+         droplets->y1.n = obj->y1.n;
+         droplets->y2.n = (obj->y2.n / 16) * (i + 1);
          droplets->y3.n = CV(-0.03125);
       }
 
-      evt->d.sprite.semiTrans = 2;
-      evt->state++;
+      obj->d.sprite.semiTrans = 2;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->y2.n += evt->y3.n;
-      UpdateEvtAnimation(evt);
-      AddEvtPrim6(gGraphicsPtr->ot, evt, 0);
+      obj->y2.n += obj->y3.n;
+      UpdateObjAnimation(obj);
+      AddObjPrim6(gGraphicsPtr->ot, obj, 0);
 
-      if (evt->d.sprite.animFinished) {
-         evt->functionIndex = EVTF_NULL;
+      if (obj->d.sprite.animFinished) {
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }
@@ -803,46 +803,46 @@ void Map15_RestoreWaterTiles(void) {
    }
 }
 
-#undef EVTF
-#define EVTF 089
-void Evtf089_Map15_Scn17_Cinematic(EvtData *evt) {
+#undef OBJF
+#define OBJF 089
+void Objf089_Map15_Scn17_Cinematic(Object *obj) {
    // Spawned by EVDATA17.DAT
-   EvtData *evt_s1;
-   EvtData *evt_a0;
-   EvtData *pEvt;
+   Object *obj_s1;
+   Object *obj_a0;
+   Object *pObj;
    s32 i, j;
    s16 camPosX, camPosY, camRotY;
    s32 flag;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      if (++evt->state3 >= 0) {
-         evt->state++;
+      if (++obj->state3 >= 0) {
+         obj->state++;
          gState.fieldRenderingDisabled = 1;
 
-         evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_MAP15_OCEAN;
-         EVT.ocean = evt_s1;
-         evt->state3 = 0;
+         obj_s1 = Obj_GetUnused();
+         obj_s1->functionIndex = OBJF_MAP15_OCEAN;
+         OBJ.ocean = obj_s1;
+         obj->state3 = 0;
          gPlayerControlSuppressed = 1;
 
-         evt_a0 = Evt_GetUnused();
-         evt_a0->functionIndex = EVTF_NOOP;
-         EVT.focus = evt_a0;
+         obj_a0 = Obj_GetUnused();
+         obj_a0->functionIndex = OBJF_NOOP;
+         OBJ.focus = obj_a0;
       }
       break;
 
    case 1:
-      evt->x1.n = CV(60.0);
-      evt->z1.n = CV(30.0);
-      evt->y1.n = CV(14.0);
-      evt->x2.n = evt->x1.n + CV(16.0);
-      evt->z2.n = CV(12.0);
-      evt->y2.n = CV(2.0);
+      obj->x1.n = CV(60.0);
+      obj->z1.n = CV(30.0);
+      obj->y1.n = CV(14.0);
+      obj->x2.n = obj->x1.n + CV(16.0);
+      obj->z2.n = CV(12.0);
+      obj->y2.n = CV(2.0);
 
-      AssignFromMainCamera(&EVT.camera);
-      EVT.todo_x24 = 0xc00;
-      evt->state++;
+      AssignFromMainCamera(&OBJ.camera);
+      OBJ.todo_x24 = 0xc00;
+      obj->state++;
       break;
 
    case 2:
@@ -862,40 +862,40 @@ void Evtf089_Map15_Scn17_Cinematic(EvtData *evt) {
       TransMatrix(&gCameraMatrix, &gCameraZoom);
       SetRotMatrix(&gCameraMatrix);
       SetTransMatrix(&gCameraMatrix);
-      gCameraPos.vx += EVT.todo_x24;
+      gCameraPos.vx += OBJ.todo_x24;
 
-      if (EVT.todo_x24 >= 0x200) {
-         EVT.todo_x24 -= 8;
-      } else if (EVT.todo_x24 >= 0x40) {
-         EVT.todo_x24 -= 4;
-      } else if (EVT.todo_x24 >= 1) {
-         EVT.todo_x24 -= 1;
-         EVT.todo_x24 += -(EVT.todo_x24) >> 4;
+      if (OBJ.todo_x24 >= 0x200) {
+         OBJ.todo_x24 -= 8;
+      } else if (OBJ.todo_x24 >= 0x40) {
+         OBJ.todo_x24 -= 4;
+      } else if (OBJ.todo_x24 >= 1) {
+         OBJ.todo_x24 -= 1;
+         OBJ.todo_x24 += -(OBJ.todo_x24) >> 4;
       } else {
-         evt->state++;
+         obj->state++;
       }
 
       RotTrans(&gCameraPos, (VECTOR *)gCameraMatrix.t, &flag);
       SetTransMatrix(&gCameraMatrix);
 
       // Temporary sprite used to render the stand-ins at their faux positions
-      evt_s1 = Evt_GetUnused();
-      evt_s1->functionIndex = EVTF_NOOP;
+      obj_s1 = Obj_GetUnused();
+      obj_s1->functionIndex = OBJF_NOOP;
 
-      pEvt = &gEvtDataArray[0];
-      for (i = 0; i < EVT_DATA_CT; i++) {
-         if (pEvt->functionIndex == EVTF_MAP15_PIRATE_STAND_IN) {
-            evt_a0 = pEvt->d.entitySpawn.entitySpriteParam;
-            evt_a0->d.sprite.hidden = 1;
-            CopyEvtData(evt_a0, evt_s1);
-            evt_s1->functionIndex = EVTF_NOOP;
-            evt_s1->d.sprite.hidden = 0;
-            RenderUnitSprite(gGraphicsPtr->ot, evt_s1, 0);
+      pObj = &gObjectArray[0];
+      for (i = 0; i < OBJ_DATA_CT; i++) {
+         if (pObj->functionIndex == OBJF_MAP15_PIRATE_STAND_IN) {
+            obj_a0 = pObj->d.entitySpawn.entitySpriteParam;
+            obj_a0->d.sprite.hidden = 1;
+            CopyObject(obj_a0, obj_s1);
+            obj_s1->functionIndex = OBJF_NOOP;
+            obj_s1->d.sprite.hidden = 0;
+            RenderUnitSprite(gGraphicsPtr->ot, obj_s1, 0);
          }
-         pEvt++;
+         pObj++;
       }
 
-      evt_s1->functionIndex = EVTF_NULL;
+      obj_s1->functionIndex = OBJF_NULL;
 
       // Pirate's ship
       for (i = 12; i <= gMapMaxZ; i++) {
@@ -909,66 +909,66 @@ void Evtf089_Map15_Scn17_Cinematic(EvtData *evt) {
       gCameraPos.vx = camPosX;
       gCameraRotation.vy = camRotY;
 
-      evt->x3.n = 0x1000 - EVT.todo_x24;
-      evt->x2.n = (EVT.todo_x24 << 3) + evt->x3.n;
-      evt->x1.n -= CV(0.0625);
-      evt->z1.n -= CV(0.046875);
-      evt->y1.n -= CV(0.015625);
+      obj->x3.n = 0x1000 - OBJ.todo_x24;
+      obj->x2.n = (OBJ.todo_x24 << 3) + obj->x3.n;
+      obj->x1.n -= CV(0.0625);
+      obj->z1.n -= CV(0.046875);
+      obj->y1.n -= CV(0.015625);
 
-      evt_a0 = EVT.focus;
-      evt_a0->x1.n = evt->x2.n;
-      evt_a0->y1.n = evt->y2.n;
-      evt_a0->z1.n = evt->z2.n;
+      obj_a0 = OBJ.focus;
+      obj_a0->x1.n = obj->x2.n;
+      obj_a0->y1.n = obj->y2.n;
+      obj_a0->z1.n = obj->z2.n;
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt->state3 = 0;
-         evt_a0->x1.n = evt->x2.n;
-         evt_a0->y1.n = evt->y2.n;
-         evt_a0->z1.n = evt->z2.n;
-         gState.focus = evt_a0;
-         evt->state2++;
+         obj->state3 = 0;
+         obj_a0->x1.n = obj->x2.n;
+         obj_a0->y1.n = obj->y2.n;
+         obj_a0->z1.n = obj->z2.n;
+         gState.focus = obj_a0;
+         obj->state2++;
          break;
       case 1:
-         func_800985F0(evt);
-         if (++evt->state3 >= 48) {
-            evt->state2++;
+         func_800985F0(obj);
+         if (++obj->state3 >= 48) {
+            obj->state2++;
          }
          break;
       case 2:
-         func_800985F0(evt);
+         func_800985F0(obj);
          break;
       }
 
-      if (--evt->mem <= 0) {
+      if (--obj->mem <= 0) {
          for (i = 0; i < 1; i++) {
-            evt_s1 = Evt_GetUnused();
-            evt_s1->functionIndex = EVTF_MAP15_HULL_SPLASH;
-            evt_s1->x1.n = (i + 4) * CV(1.0) + (EVT.todo_x24 << 3);
-            evt_s1->z1.n = (i + 15) * CV(1.0);
-            evt_s1->y1.n = CV(0.5);
-            evt_s1->x2.n = CV(-0.1875);
-            evt_s1->x3.n = CV(0.03125);
-            evt_s1->z2.n = CV(0.25);
-            evt_s1->z3.n = i - 3;
+            obj_s1 = Obj_GetUnused();
+            obj_s1->functionIndex = OBJF_MAP15_HULL_SPLASH;
+            obj_s1->x1.n = (i + 4) * CV(1.0) + (OBJ.todo_x24 << 3);
+            obj_s1->z1.n = (i + 15) * CV(1.0);
+            obj_s1->y1.n = CV(0.5);
+            obj_s1->x2.n = CV(-0.1875);
+            obj_s1->x3.n = CV(0.03125);
+            obj_s1->z2.n = CV(0.25);
+            obj_s1->z3.n = i - 3;
          }
-         evt->mem = 4;
+         obj->mem = 4;
       }
 
-      if (evt->state == 3) {
-         evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_NOOP;
+      if (obj->state == 3) {
+         obj_s1 = Obj_GetUnused();
+         obj_s1->functionIndex = OBJF_NOOP;
 
-         pEvt = &gEvtDataArray[0];
-         for (i = 0; i < EVT_DATA_CT; i++) {
-            if (pEvt->functionIndex == EVTF_MAP15_PIRATE_STAND_IN) {
-               evt_a0 = pEvt->d.entitySpawn.entitySpriteParam;
-               evt_a0->d.sprite.hidden = 0;
-               pEvt->functionIndex = EVTF_NULL;
+         pObj = &gObjectArray[0];
+         for (i = 0; i < OBJ_DATA_CT; i++) {
+            if (pObj->functionIndex == OBJF_MAP15_PIRATE_STAND_IN) {
+               obj_a0 = pObj->d.entitySpawn.entitySpriteParam;
+               obj_a0->d.sprite.hidden = 0;
+               pObj->functionIndex = OBJF_NULL;
             }
-            pEvt++;
+            pObj++;
          }
-         evt_s1->functionIndex = EVTF_NULL;
+         obj_s1->functionIndex = OBJF_NULL;
       }
 
       break;
@@ -979,8 +979,8 @@ void Evtf089_Map15_Scn17_Cinematic(EvtData *evt) {
             RenderMapTile(gGraphicsPtr->ot, &gMapRowPointers[i][j], GRID_COLOR_NONE);
          }
       }
-      evt->state2 = 0;
-      evt->state++;
+      obj->state2 = 0;
+      obj->state++;
       break;
 
    case 4:
@@ -992,117 +992,117 @@ void Evtf089_Map15_Scn17_Cinematic(EvtData *evt) {
          }
       }
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt->state3 = 0;
-         evt->state2++;
+         obj->state3 = 0;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (++evt->state3 >= 48) {
-            evt->state2++;
+         if (++obj->state3 >= 48) {
+            obj->state2++;
          }
          break;
 
       case 2:
-         evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_MAP15_PLANK;
+         obj_s1 = Obj_GetUnused();
+         obj_s1->functionIndex = OBJF_MAP15_PLANK;
          // Tile-based coords
-         evt_s1->x1.n = 7;
-         evt_s1->z1.n = 11;
-         EVT.plank = evt_s1;
-         EVT.dstRotY = GetBestViewOfTarget(11, 7, 1);
-         evt->state3 = 0;
-         evt->state2++;
+         obj_s1->x1.n = 7;
+         obj_s1->z1.n = 11;
+         OBJ.plank = obj_s1;
+         OBJ.dstRotY = GetBestViewOfTarget(11, 7, 1);
+         obj->state3 = 0;
+         obj->state2++;
          break;
 
       case 3:
-         evt_a0 = EVT.focus;
-         evt_a0->x1.n = CV(7.0);
-         evt_a0->y1.n = CV(2.0);
-         evt_a0->z1.n = CV(11.0);
+         obj_a0 = OBJ.focus;
+         obj_a0->x1.n = CV(7.0);
+         obj_a0->y1.n = CV(2.0);
+         obj_a0->z1.n = CV(11.0);
 
-         gCameraRotation.vy += (EVT.dstRotY - gCameraRotation.vy) >> 3;
+         gCameraRotation.vy += (OBJ.dstRotY - gCameraRotation.vy) >> 3;
          gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
          gCameraZoom.vz += (384 - gCameraZoom.vz) >> 3;
 
-         if (evt->state3 == 16) {
+         if (obj->state3 == 16) {
             gState.fieldRenderingDisabled = 0;
             Map15_RestoreWaterTiles();
          }
 
-         if (evt->state3 == 17) {
-            evt_s1 = EVT.ocean;
-            evt_s1->functionIndex = EVTF_NULL;
+         if (obj->state3 == 17) {
+            obj_s1 = OBJ.ocean;
+            obj_s1->functionIndex = OBJF_NULL;
          }
 
-         if (++evt->state3 >= 48) {
-            evt->state2++;
+         if (++obj->state3 >= 48) {
+            obj->state2++;
          }
 
          break;
 
       case 4:
-         evt_s1 = EVT.plank;
-         if (evt_s1->functionIndex != EVTF_MAP15_PLANK) {
-            evt->state3 = 0;
-            evt->state2++;
+         obj_s1 = OBJ.plank;
+         if (obj_s1->functionIndex != OBJF_MAP15_PLANK) {
+            obj->state3 = 0;
+            obj->state2++;
          }
          break;
 
       case 5:
-         evt_s1 = Evt_GetUnused();
-         evt_s1->functionIndex = EVTF_MAP15_PLANK;
+         obj_s1 = Obj_GetUnused();
+         obj_s1->functionIndex = OBJF_MAP15_PLANK;
          // Tile-based coords
-         evt_s1->x1.n = 14;
-         evt_s1->z1.n = 11;
-         EVT.plank = evt_s1;
-         EVT.dstRotY += DEG(90);
-         evt->state3 = 0;
-         evt->state2++;
+         obj_s1->x1.n = 14;
+         obj_s1->z1.n = 11;
+         OBJ.plank = obj_s1;
+         OBJ.dstRotY += DEG(90);
+         obj->state3 = 0;
+         obj->state2++;
          break;
 
       case 6:
-         evt_a0 = EVT.focus;
-         evt_a0->x1.n = CV(14.0);
-         evt_a0->y1.n = CV(2.0);
-         evt_a0->z1.n = CV(11.0);
+         obj_a0 = OBJ.focus;
+         obj_a0->x1.n = CV(14.0);
+         obj_a0->y1.n = CV(2.0);
+         obj_a0->z1.n = CV(11.0);
 
-         gCameraRotation.vy += (EVT.dstRotY - gCameraRotation.vy) >> 3;
+         gCameraRotation.vy += (OBJ.dstRotY - gCameraRotation.vy) >> 3;
          gCameraZoom.vz += (384 - gCameraZoom.vz) >> 3;
-         if (++evt->state3 >= 48) {
-            evt->state2++;
+         if (++obj->state3 >= 48) {
+            obj->state2++;
          }
          break;
 
       case 7:
-         evt_s1 = EVT.plank;
-         if (evt_s1->functionIndex != EVTF_MAP15_PLANK) {
-            evt->state3 = 0;
-            evt->state2++;
+         obj_s1 = OBJ.plank;
+         if (obj_s1->functionIndex != OBJF_MAP15_PLANK) {
+            obj->state3 = 0;
+            obj->state2++;
          }
          break;
 
       case 8:
-         if (++evt->state3 >= 48) {
-            evt->state2 = 0;
-            evt->state++;
+         if (++obj->state3 >= 48) {
+            obj->state2 = 0;
+            obj->state++;
          }
          break;
-      } // switch (evt->state2) (via state:4)
+      } // switch (obj->state2) (via state:4)
 
       break;
 
    case 5:
       gState.fieldRenderingDisabled = 0;
       gState.signal = 0;
-      evt_a0 = EVT.focus;
-      gState.eventCameraPan.x = evt_a0->x1.n;
-      gState.eventCameraPan.y = evt_a0->y1.n;
-      gState.eventCameraPan.z = evt_a0->z1.n;
-      evt_a0->functionIndex = EVTF_NULL;
+      obj_a0 = OBJ.focus;
+      gState.eventCameraPan.x = obj_a0->x1.n;
+      gState.eventCameraPan.y = obj_a0->y1.n;
+      gState.eventCameraPan.z = obj_a0->z1.n;
+      obj_a0->functionIndex = OBJF_NULL;
       gState.focus = NULL;
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 
@@ -1133,14 +1133,14 @@ void Map15_GetChunkBrightness(s32 nearness, s16 sideIdx, CVECTOR *dstColor) {
 }
 
 void Map15_RenderOceanChunk(s32 x, s32 y, s32 z, s32 xsize, s32 zsize) {
-   EvtData *chunk;
+   Object *chunk;
    CVECTOR color;
    s32 otz;
    s32 sxy, p, flag;
    POLY_FT4 *poly;
 
-   chunk = Evt_GetUnused();
-   chunk->functionIndex = EVTF_NOOP;
+   chunk = Obj_GetUnused();
+   chunk->functionIndex = OBJF_NOOP;
 
    chunk->x1.n = x;
    chunk->z1.n = -z;
@@ -1182,12 +1182,12 @@ void Map15_RenderOceanChunk(s32 x, s32 y, s32 z, s32 xsize, s32 zsize) {
    setUVWH(poly, 0, 0, 255, 255);
    addPrim(&gGraphicsPtr->ot[2], poly);
 
-   chunk->functionIndex = EVTF_NULL;
+   chunk->functionIndex = OBJF_NULL;
 }
 
-#undef EVTF
-#define EVTF 299
-void Evtf299_Map15_Ocean(EvtData *evt) {
+#undef OBJF
+#define OBJF 299
+void Objf299_Map15_Ocean(Object *obj) {
    extern DR_MODE s_drawModes_80123e24[2][2];
 
    RECT rect;
@@ -1195,23 +1195,23 @@ void Evtf299_Map15_Ocean(EvtData *evt) {
    s32 ix, iz;
    s8 unused[8];
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       Map15_HideWaterTiles();
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->state2++;
-      evt->state2 %= 2;
+      obj->state2++;
+      obj->state2 %= 2;
 
       rect.x = 0;
       rect.y = 0;
       rect.w = 0;
       rect.h = 0;
       tpage = GetTPage(0, 0, 576, 256);
-      SetDrawMode(&s_drawModes_80123e24[0][evt->state2], 0, 0, tpage, &rect);
-      AddPrim(&gGraphicsPtr->ot[2], &s_drawModes_80123e24[0][evt->state2]);
+      SetDrawMode(&s_drawModes_80123e24[0][obj->state2], 0, 0, tpage, &rect);
+      AddPrim(&gGraphicsPtr->ot[2], &s_drawModes_80123e24[0][obj->state2]);
 
       for (iz = -1; iz < 4; iz++) {
          for (ix = -1; ix < 15; ix++) {
@@ -1225,10 +1225,10 @@ void Evtf299_Map15_Ocean(EvtData *evt) {
       rect.w = 32;
       rect.h = 32;
       tpage = GetTPage(0, 0, 576, 256);
-      SetDrawMode(&s_drawModes_80123e24[1][evt->state2], 0, 0, tpage, &rect);
-      AddPrim(&gGraphicsPtr->ot[2], &s_drawModes_80123e24[1][evt->state2]);
+      SetDrawMode(&s_drawModes_80123e24[1][obj->state2], 0, 0, tpage, &rect);
+      AddPrim(&gGraphicsPtr->ot[2], &s_drawModes_80123e24[1][obj->state2]);
 
-      // Copy the animated water drawn by EVTF_MAP_OBJECT_WATER_2
+      // Copy the animated water drawn by OBJF_MAP_OBJECT_WATER_2
       rect.x = 332;
       rect.y = 0;
       rect.w = 32 >> 2;
@@ -1297,9 +1297,9 @@ static MapTileModel sMapTileModel_8010039c = {
     .height = 8,
 };
 
-#undef EVTF
-#define EVTF 364
-void Evtf364_Map15_Plank(EvtData *evt) {
+#undef OBJF
+#define OBJF 364
+void Objf364_Map15_Plank(Object *obj) {
    static const s16 textureGfx[4] = {GFX_MAP_TEXTURE_14, GFX_MAP_TEXTURE_153, GFX_MAP_TEXTURE_153,
                                      GFX_NULL};
    s32 i, j, k;
@@ -1309,7 +1309,7 @@ void Evtf364_Map15_Plank(EvtData *evt) {
    SVECTOR position;
    MapTileModel *pTileModel;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       for (i = 0; i < 3; i++) {
          j = textureGfx[i];
@@ -1322,22 +1322,22 @@ void Evtf364_Map15_Plank(EvtData *evt) {
          gGfxTPageIds[GFX_TILED_DYN_163 + i] = gGfxTPageIds[j];
       }
 
-      evt->z3.n = 16;
-      evt->state++;
+      obj->z3.n = 16;
+      obj->state++;
 
    // fallthrough
    case 1:
-      if (--evt->z3.n < 0) {
+      if (--obj->z3.n < 0) {
          mapTile1 = sMapTileModel_8010039c;
          pTileModel = &mapTile1;
 
          for (i = 0; i < 8; i++) {
-            pTileModel->vertices[i].vx += evt->x1.n * 32 + 16;
-            pTileModel->vertices[i].vz += evt->z1.n * 32 + 16;
+            pTileModel->vertices[i].vx += obj->x1.n * 32 + 16;
+            pTileModel->vertices[i].vz += obj->z1.n * 32 + 16;
             pTileModel->vertices[i].vy -= 48;
          }
 
-         for (i = 0; i < evt->state3; i++) {
+         for (i = 0; i < obj->state3; i++) {
             RenderMapTile(gGraphicsPtr->ot, pTileModel, GRID_COLOR_NONE);
             for (k = 0; k < 8; k++) {
                pTileModel->vertices[k].vz -= 32;
@@ -1348,15 +1348,15 @@ void Evtf364_Map15_Plank(EvtData *evt) {
 
          j = 0;
          for (i = 0; i < 4; i++) {
-            mapTile2.vertices[mapTile2.faces[2][i]].vz += 32 - (evt->state2 - j);
+            mapTile2.vertices[mapTile2.faces[2][i]].vz += 32 - (obj->state2 - j);
          }
 
          rotation.vx = 0;
          rotation.vz = rand() % 15 - 7;
          rotation.vy = 0;
-         position.vx = evt->x1.n * CV(1.0) + CV(0.5);
+         position.vx = obj->x1.n * CV(1.0) + CV(0.5);
          position.vy = CV(1.5);
-         position.vz = (evt->z1.n - evt->state3) * CV(1.0) + CV(0.5);
+         position.vz = (obj->z1.n - obj->state3) * CV(1.0) + CV(0.5);
          RotTransMapTile(&mapTile2, &rotation, &position, &mapTile2);
 
          mapTile2.gfx[5] = GFX_TILED_DYN_163;
@@ -1367,22 +1367,22 @@ void Evtf364_Map15_Plank(EvtData *evt) {
          mapTile2.gfx[3] = GFX_TILED_DYN_165;
 
          gGfxSubTextures[GFX_TILED_DYN_163][0] =
-             gGfxSubTextures[GFX_MAP_TEXTURE_14][0] - ((evt->state2 >> 1) - 16);
-         gGfxSubTextures[GFX_TILED_DYN_163][2] = evt->state2 >> 1;
+             gGfxSubTextures[GFX_MAP_TEXTURE_14][0] - ((obj->state2 >> 1) - 16);
+         gGfxSubTextures[GFX_TILED_DYN_163][2] = obj->state2 >> 1;
          gGfxSubTextures[GFX_TILED_DYN_164][0] =
-             gGfxSubTextures[GFX_MAP_TEXTURE_153][0] - ((evt->state2 >> 1) - 16);
-         gGfxSubTextures[GFX_TILED_DYN_164][2] = evt->state2 >> 1;
-         gGfxSubTextures[GFX_TILED_DYN_165][2] = evt->state2 >> 1;
+             gGfxSubTextures[GFX_MAP_TEXTURE_153][0] - ((obj->state2 >> 1) - 16);
+         gGfxSubTextures[GFX_TILED_DYN_164][2] = obj->state2 >> 1;
+         gGfxSubTextures[GFX_TILED_DYN_165][2] = obj->state2 >> 1;
 
          RenderMapTile(gGraphicsPtr->ot, &mapTile2, GRID_COLOR_NONE);
 
-         evt->state2 += 2;
-         if (evt->state2 >= 33) {
-            evt->state2 = 0;
-            if (++evt->state3 >= 4) {
-               Map15_RaisePlank(evt->x1.n, evt->z1.n);
-               evt->state3 = 16;
-               evt->state++;
+         obj->state2 += 2;
+         if (obj->state2 >= 33) {
+            obj->state2 = 0;
+            if (++obj->state3 >= 4) {
+               Map15_RaisePlank(obj->x1.n, obj->z1.n);
+               obj->state3 = 16;
+               obj->state++;
             }
          }
       }
@@ -1390,96 +1390,96 @@ void Evtf364_Map15_Plank(EvtData *evt) {
       break;
 
    case 2:
-      if (--evt->state3 <= 0) {
-         evt->state++;
+      if (--obj->state3 <= 0) {
+         obj->state++;
       } else {
-         i = rand() % evt->state3;
-         i -= evt->state3 / 2;
+         i = rand() % obj->state3;
+         i -= obj->state3 / 2;
          gCameraPos.vz += i;
       }
       break;
 
    case 3:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 086
-void Evtf086_Map15_HullSplash(EvtData *evt) {
+#undef OBJF
+#define OBJF 086
+void Objf086_Map15_HullSplash(Object *obj) {
    static s16 splashAnimData[20] = {
        3, GFX_SPLASH_1, 2, GFX_SPLASH_2, 2, GFX_SPLASH_3, 2, GFX_SPLASH_4, 2, GFX_SPLASH_5,
        2, GFX_SPLASH_6, 2, GFX_SPLASH_7, 2, GFX_SPLASH_8, 2, GFX_NULL,     0, GFX_NULL};
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->d.sprite.animData = splashAnimData;
-      evt->state++;
+      obj->d.sprite.animData = splashAnimData;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->x1.n += evt->x2.n;
-      evt->x2.n += evt->x3.n;
-      evt->z1.n += evt->z2.n;
-      evt->z2.n += evt->z3.n;
+      obj->x1.n += obj->x2.n;
+      obj->x2.n += obj->x3.n;
+      obj->z1.n += obj->z2.n;
+      obj->z2.n += obj->z3.n;
 
-      if (evt->z2.n <= 0) {
-         evt->z3.n = 0;
+      if (obj->z2.n <= 0) {
+         obj->z3.n = 0;
       }
 
-      UpdateEvtAnimation(evt);
-      AddEvtPrim6(gGraphicsPtr->ot, evt, 0);
+      UpdateObjAnimation(obj);
+      AddObjPrim6(gGraphicsPtr->ot, obj, 0);
 
-      if (evt->d.sprite.animFinished) {
-         evt->functionIndex = EVTF_NULL;
+      if (obj->d.sprite.animFinished) {
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 755
-void Evtf755_Map15_PirateStandIn(void) {
+#undef OBJF
+#define OBJF 755
+void Objf755_Map15_PirateStandIn(void) {
    // Spawned by EVDATA17.DAT as stand-ins for pirate sprites
 }
 
-void func_800985F0(EvtData *evt) {
+void func_800985F0(Object *obj) {
    s32 dx, dy, dz;
    s32 dist;
    s16 zoom;
 
-   PositionCamera(evt->x2.n, evt->y2.n, evt->z2.n);
-   gCameraRotation.vy = ratan2(evt->z2.n - evt->z1.n, evt->x2.n - evt->x1.n) + DEG(270);
+   PositionCamera(obj->x2.n, obj->y2.n, obj->z2.n);
+   gCameraRotation.vy = ratan2(obj->z2.n - obj->z1.n, obj->x2.n - obj->x1.n) + DEG(270);
 
-   dx = evt->x1.n - evt->x2.n;
-   dz = evt->z1.n - evt->z2.n;
+   dx = obj->x1.n - obj->x2.n;
+   dz = obj->z1.n - obj->z2.n;
    dist = SquareRoot0(dx * dx + dz * dz);
-   gCameraRotation.vx = -ratan2(evt->y2.n - evt->y1.n, dist);
+   gCameraRotation.vx = -ratan2(obj->y2.n - obj->y1.n, dist);
 
-   dy = evt->y1.n - evt->y2.n;
+   dy = obj->y1.n - obj->y2.n;
    zoom = SquareRoot0(dist * dist + dy * dy) >> 3;
    gCameraZoom.vz = zoom;
 }
 
-void func_800986F0(EvtData *evt) {
+void func_800986F0(Object *obj) {
    s32 dx, dy, dz;
    s32 dist;
    s16 zoom;
    s16 rot;
 
-   PanCamera(evt->x2.n, evt->y2.n, evt->z2.n, 2);
-   rot = ratan2(evt->z2.n - evt->z1.n, evt->x2.n - evt->x1.n) + DEG(270);
+   PanCamera(obj->x2.n, obj->y2.n, obj->z2.n, 2);
+   rot = ratan2(obj->z2.n - obj->z1.n, obj->x2.n - obj->x1.n) + DEG(270);
    gCameraRotation.vy += (rot - gCameraRotation.vy) >> 2;
 
-   dx = evt->x1.n - evt->x2.n;
-   dz = evt->z1.n - evt->z2.n;
+   dx = obj->x1.n - obj->x2.n;
+   dz = obj->z1.n - obj->z2.n;
    dist = SquareRoot0(dx * dx + dz * dz);
 
-   rot = -ratan2(evt->y2.n - evt->y1.n, dist);
+   rot = -ratan2(obj->y2.n - obj->y1.n, dist);
    gCameraRotation.vx += (rot - gCameraRotation.vx) >> 2;
 
-   dy = evt->y1.n - evt->y2.n;
+   dy = obj->y1.n - obj->y2.n;
    zoom = SquareRoot0(dist * dist + dy * dy) >> 3;
    gCameraZoom.vz += (zoom - gCameraZoom.vz) >> 2;
 }

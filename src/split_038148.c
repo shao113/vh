@@ -1,6 +1,6 @@
 #include "common.h"
 #include "units.h"
-#include "evt.h"
+#include "object.h"
 #include "window.h"
 #include "battle.h"
 #include "state.h"
@@ -25,14 +25,14 @@ u8 s_penalized_80123290;
 s32 s_totalReward_80123294;
 s32 s_currentReward_80123298;
 
-#undef EVTF
-#define EVTF 594
-void Evtf594_BattleResults(EvtData *evt) {
+#undef OBJF
+#define OBJF 594
+void Objf594_BattleResults(Object *obj) {
    static u8 goldBuffer[15] = "\x81\x40\x81\x40\x81\x40\x81\x40\x81\x40\x81\x40\x82\x66";
    s32 i;
-   EvtData *rewardEvt;
+   Object *rewardObj;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       CommitPartyStatus();
       DrawWindow(0x3e, 0, 180, 144, 36, 76, 16, WBS_CROSSED, 0);
@@ -42,18 +42,18 @@ void Evtf594_BattleResults(EvtData *evt) {
       DisplayCustomWindow(0x3c, 0, 1, 2, 0, 0);
       DisplayCustomWindow(0x3d, 0, 1, 2, 0, 0);
       s_delay_8012328c = 15;
-      evt->state++;
+      obj->state++;
       break;
 
    case 1:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          if (--s_delay_8012328c == 0) {
             s_slot_80123288 = 0;
             s_i_80123284 = 0;
             s_penalized_80123290 = 0;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -62,7 +62,7 @@ void Evtf594_BattleResults(EvtData *evt) {
          while (gSlainUnits[s_i_80123284].count == 0 || gSlainUnits[s_i_80123284].reward == 0) {
             s_i_80123284++;
             if (s_i_80123284 == 20) {
-               evt->state2 += 2;
+               obj->state2 += 2;
                return;
             }
          }
@@ -85,23 +85,23 @@ void Evtf594_BattleResults(EvtData *evt) {
          if (s_slot_80123288 >= 32) {
             // Clear existing if too many
             s_slot_80123288 = 0;
-            Evt_ResetByFunction(EVTF_BATTLE_RESULTS_UNIT);
+            Obj_ResetByFunction(OBJF_BATTLE_RESULTS_UNIT);
          }
-         rewardEvt = Evt_GetUnused();
-         rewardEvt->functionIndex = EVTF_BATTLE_RESULTS_UNIT;
-         rewardEvt->d.evtf593.unitId = gSlainUnits[s_i_80123284].unitId;
-         rewardEvt->d.evtf593.slot = s_slot_80123288++;
+         rewardObj = Obj_GetUnused();
+         rewardObj->functionIndex = OBJF_BATTLE_RESULTS_UNIT;
+         rewardObj->d.objf593.unitId = gSlainUnits[s_i_80123284].unitId;
+         rewardObj->d.objf593.slot = s_slot_80123288++;
          if (s_penalized_80123290) {
-            rewardEvt->d.evtf593.isPenalty = 1;
+            rewardObj->d.objf593.isPenalty = 1;
          }
          s_currentReward_80123298 = gSlainUnits[s_i_80123284].reward;
          s_delay_8012328c = 10;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 2:
          if (--s_delay_8012328c == 0) {
-            evt->state2--;
+            obj->state2--;
          }
          break;
 
@@ -113,14 +113,14 @@ void Evtf594_BattleResults(EvtData *evt) {
             }
          }
          s_i_80123284 = 0;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 4:
          while (!gPartyMemberSlain[s_i_80123284]) {
             s_i_80123284++;
             if (s_i_80123284 == 12) {
-               evt->state2 += 2;
+               obj->state2 += 2;
                return;
             }
          }
@@ -128,38 +128,38 @@ void Evtf594_BattleResults(EvtData *evt) {
          if (s_slot_80123288 >= 32) {
             // Clear existing if too many
             s_slot_80123288 = 0;
-            Evt_ResetByFunction(EVTF_BATTLE_RESULTS_UNIT);
+            Obj_ResetByFunction(OBJF_BATTLE_RESULTS_UNIT);
          }
-         rewardEvt = Evt_GetUnused();
-         rewardEvt->functionIndex = EVTF_BATTLE_RESULTS_UNIT;
-         rewardEvt->d.evtf593.unitId = gSpriteStripUnitIds[s_i_80123284];
-         rewardEvt->d.evtf593.slot = s_slot_80123288++;
-         rewardEvt->d.evtf593.isPenalty = 1;
+         rewardObj = Obj_GetUnused();
+         rewardObj->functionIndex = OBJF_BATTLE_RESULTS_UNIT;
+         rewardObj->d.objf593.unitId = gSpriteStripUnitIds[s_i_80123284];
+         rewardObj->d.objf593.slot = s_slot_80123288++;
+         rewardObj->d.objf593.isPenalty = 1;
          s_currentReward_80123298 -= gBattlePenalties[gState.mapNum];
          s_delay_8012328c = 10;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 5:
          if (--s_delay_8012328c == 0) {
-            evt->state2--;
+            obj->state2--;
          }
          break;
 
       case 6:
          gState.gold += s_totalReward_80123294;
-         evt->state++;
+         obj->state++;
 
       // fallthrough
       case 7:
          gSignal2 = 1;
          break;
-      } // switch (evt->state2) (via state:1)
+      } // switch (obj->state2) (via state:1)
 
       break;
-   } // switch (evt->state)
+   } // switch (obj->state)
 
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
       s_totalReward_80123294 = 0;
       s_currentReward_80123298 = 0;
@@ -167,7 +167,7 @@ void Evtf594_BattleResults(EvtData *evt) {
       EmbedIntAsSjis(s_totalReward_80123294, goldBuffer, 6);
       DrawSjisText(12, 229, 10, 2, 0, goldBuffer);
       DisplayCustomWindow(0x3f, 0, 1, 2, 0, 0);
-      evt->state3++;
+      obj->state3++;
    // fallthrough
    case 1:
       if (s_currentReward_80123298 != 0) {
@@ -182,41 +182,41 @@ void Evtf594_BattleResults(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 593
-void Evtf593_BattleResultsUnit(EvtData *evt) {
+#undef OBJF
+#define OBJF 593
+void Objf593_BattleResultsUnit(Object *obj) {
    s32 i;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       PerformAudioCommand(AUDIO_CMD_PLAY_SFX(239));
-      EVT.unitClut = gUnitClutIds[EVT.unitId];
+      OBJ.unitClut = gUnitClutIds[OBJ.unitId];
 
       // Find matching sprite strip
       i = 0;
-      while (gSpriteStripUnitIds[i] != EVT.unitId) {
+      while (gSpriteStripUnitIds[i] != OBJ.unitId) {
          i++;
       }
-      EVT.unitGfxIdx = GFX_STRIP_SPRITES_OFS + i;
+      OBJ.unitGfxIdx = GFX_STRIP_SPRITES_OFS + i;
 
-      i = EVT.slot;
-      evt->x1.n = (i % 8) * 32 + 28;
-      evt->y1.n = (i / 8) * 30 + 57;
-      evt->x3.n = evt->x1.n + 33;
-      evt->y3.n = evt->y1.n + 33;
-      EVT.otOfs = 2;
-      evt->state++;
+      i = OBJ.slot;
+      obj->x1.n = (i % 8) * 32 + 28;
+      obj->y1.n = (i / 8) * 30 + 57;
+      obj->x3.n = obj->x1.n + 33;
+      obj->y3.n = obj->y1.n + 33;
+      OBJ.otOfs = 2;
+      obj->state++;
 
    // fallthrough
    case 1:
-      if (EVT.isPenalty) {
-         EVT.clut = CLUT_NULL;
-         EVT.gfxIdx = GFX_RED_X;
-         AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
+      if (OBJ.isPenalty) {
+         OBJ.clut = CLUT_NULL;
+         OBJ.gfxIdx = GFX_RED_X;
+         AddObjPrim_Gui(gGraphicsPtr->ot, obj);
       }
-      EVT.gfxIdx = EVT.unitGfxIdx;
-      EVT.clut = EVT.unitClut;
-      AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
+      OBJ.gfxIdx = OBJ.unitGfxIdx;
+      OBJ.clut = OBJ.unitClut;
+      AddObjPrim_Gui(gGraphicsPtr->ot, obj);
    }
 }
 

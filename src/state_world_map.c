@@ -2,7 +2,7 @@
 #include "state.h"
 #include "cd_files.h"
 #include "audio.h"
-#include "evt.h"
+#include "object.h"
 
 s32 State_WorldMap(void) {
    s32 i;
@@ -16,7 +16,7 @@ s32 State_WorldMap(void) {
          PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(22));
       }
       gState.primary = STATE_6;
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
 
       for (i = 1; i < PARTY_CT; i++) {
          SyncPartyUnit(i);
@@ -110,11 +110,11 @@ s32 State_WorldMap(void) {
          break;
       }
 
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_FULLSCREEN_IMAGE;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_FULLSCREEN_IMAGE;
 
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_WORLD_MAP;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_WORLD_MAP;
 
       gState.secondary++;
       break;

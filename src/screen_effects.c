@@ -1,15 +1,15 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "state.h"
 #include "graphics.h"
 
-void SetScreenEffectOrdering(s16 otOfs) { gState.screenEffect->d.evtf369.otOfs = otOfs; }
+void SetScreenEffectOrdering(s16 otOfs) { gState.screenEffect->d.objf369.otOfs = otOfs; }
 
 void Noop_800a8b0c(void) {}
 
-#undef EVTF
-#define EVTF 369
-void Evtf369_ScreenEffect(EvtData *evt) {
+#undef OBJF
+#define OBJF 369
+void Objf369_ScreenEffect(Object *obj) {
    extern DR_MODE s_drawModes1_80124804[2];
    extern DR_MODE s_drawModes2_8012481c[2];
    extern POLY_F4 s_polys_801247d4[2];
@@ -23,20 +23,20 @@ void Evtf369_ScreenEffect(EvtData *evt) {
    DR_MODE *pDrawMode;
    // state2: abr
 
-   evt->mem = (evt->mem + 1) & 1;
-   otOfs = EVT.otOfs + (OT_SIZE - 3);
+   obj->mem = (obj->mem + 1) & 1;
+   otOfs = OBJ.otOfs + (OT_SIZE - 3);
    if (otOfs > (OT_SIZE - 2)) {
       otOfs = (OT_SIZE - 2);
    }
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      EVT.semiTrans = 1;
+      OBJ.semiTrans = 1;
       pPoly = &s_polys_801247d4[0];
 
       for (i = 0; i < 2; i++) {
          SetPolyF4(pPoly);
-         if (EVT.semiTrans != 0) {
+         if (OBJ.semiTrans != 0) {
             setSemiTrans(pPoly, 1);
          } else {
             setSemiTrans(pPoly, 0);
@@ -47,98 +47,98 @@ void Evtf369_ScreenEffect(EvtData *evt) {
          SetDrawMode(&s_drawModes2_8012481c[i], 0, 0, GetTPage(0, 0, 640, 0), NULL);
       }
 
-      EVT.intensity = 0;
-      LO(EVT.speed) = 2; //?
+      OBJ.intensity = 0;
+      LO(OBJ.speed) = 2; //?
       break;
 
    case 1:
-      if (evt->state2 == 0) {
+      if (obj->state2 == 0) {
          break;
       }
       for (i = 0; i < 2; i++) {
-         SetDrawMode(&s_drawModes1_80124804[i], 0, 0, GetTPage(0, evt->state2, 640, 0), NULL);
+         SetDrawMode(&s_drawModes1_80124804[i], 0, 0, GetTPage(0, obj->state2, 640, 0), NULL);
       }
 
-      EVT.speed = evt->state3;
-      EVT.intensity = 0;
-      evt->state++;
+      OBJ.speed = obj->state3;
+      OBJ.intensity = 0;
+      obj->state++;
 
    // fallthrough
    case 2:
-      EVT.intensity += EVT.speed;
-      if (EVT.intensity >= 255) {
-         EVT.intensity = 255;
-         evt->state2 = 0;
-         evt->state++;
+      OBJ.intensity += OBJ.speed;
+      if (OBJ.intensity >= 255) {
+         OBJ.intensity = 255;
+         obj->state2 = 0;
+         obj->state++;
       }
       break;
 
    case 3:
-      if (evt->state2 == 0) {
+      if (obj->state2 == 0) {
          break;
       }
-      EVT.speed = evt->state3;
-      EVT.intensity = 255;
-      evt->state++;
+      OBJ.speed = obj->state3;
+      OBJ.intensity = 255;
+      obj->state++;
 
    // fallthrough
    case 4:
-      EVT.intensity -= EVT.speed;
-      if (EVT.intensity <= 0) {
-         EVT.intensity = 0;
-         evt->state2 = 0;
-         evt->state = 1;
-         EVT.unused_0x30 = 0;
+      OBJ.intensity -= OBJ.speed;
+      if (OBJ.intensity <= 0) {
+         OBJ.intensity = 0;
+         obj->state2 = 0;
+         obj->state = 1;
+         OBJ.unused_0x30 = 0;
       }
       break;
 
    case 5:
    case 6:
    case 7:
-      r = EVT.color.r;
-      g = EVT.color.g;
-      b = EVT.color.b;
-      r += EVT.rd;
-      g += EVT.gd;
-      b += EVT.bd;
-      if (EVT.rd > 0 && r > EVT.rmax) {
-         r = EVT.rmax;
+      r = OBJ.color.r;
+      g = OBJ.color.g;
+      b = OBJ.color.b;
+      r += OBJ.rd;
+      g += OBJ.gd;
+      b += OBJ.bd;
+      if (OBJ.rd > 0 && r > OBJ.rmax) {
+         r = OBJ.rmax;
       }
-      if (EVT.gd > 0 && g > EVT.gmax) {
-         g = EVT.gmax;
+      if (OBJ.gd > 0 && g > OBJ.gmax) {
+         g = OBJ.gmax;
       }
-      if (EVT.bd > 0 && b > EVT.bmax) {
-         b = EVT.bmax;
+      if (OBJ.bd > 0 && b > OBJ.bmax) {
+         b = OBJ.bmax;
       }
-      if (EVT.rd < 0 && r < EVT.rmax) {
-         r = EVT.rmax;
+      if (OBJ.rd < 0 && r < OBJ.rmax) {
+         r = OBJ.rmax;
       }
-      if (EVT.gd < 0 && g < EVT.gmax) {
-         g = EVT.gmax;
+      if (OBJ.gd < 0 && g < OBJ.gmax) {
+         g = OBJ.gmax;
       }
-      if (EVT.bd < 0 && b < EVT.bmax) {
-         b = EVT.bmax;
+      if (OBJ.bd < 0 && b < OBJ.bmax) {
+         b = OBJ.bmax;
       }
-      EVT.color.r = r;
-      EVT.color.g = g;
-      EVT.color.b = b;
+      OBJ.color.r = r;
+      OBJ.color.g = g;
+      OBJ.color.b = b;
 
-      if (evt->state == 7) {
-         if (r == EVT.rmax && g == EVT.gmax && b == EVT.bmax) {
-            evt->state++;
+      if (obj->state == 7) {
+         if (r == OBJ.rmax && g == OBJ.gmax && b == OBJ.bmax) {
+            obj->state++;
          }
       }
       break;
 
    case 8:
-      EVT.rd = 0;
-      EVT.gd = 0;
-      EVT.bd = 0;
-      evt->state = 0;
+      OBJ.rd = 0;
+      OBJ.gd = 0;
+      OBJ.bd = 0;
+      obj->state = 0;
       break;
    }
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
    case 1:
       break;
@@ -146,15 +146,15 @@ void Evtf369_ScreenEffect(EvtData *evt) {
    case 2:
    case 3:
    case 4:
-      pDrawMode = &s_drawModes2_8012481c[evt->mem];
+      pDrawMode = &s_drawModes2_8012481c[obj->mem];
       addPrim(&gGraphicsPtr->ot[OT_SIZE - 2], pDrawMode);
 
-      pPoly = &s_polys_801247d4[evt->mem];
-      intensity = EVT.intensity;
+      pPoly = &s_polys_801247d4[obj->mem];
+      intensity = OBJ.intensity;
       setRGB0(pPoly, intensity, intensity, intensity);
       addPrim(&gGraphicsPtr->ot[otOfs], pPoly);
 
-      pDrawMode = &s_drawModes1_80124804[evt->mem];
+      pDrawMode = &s_drawModes1_80124804[obj->mem];
       addPrim(&gGraphicsPtr->ot[otOfs], pDrawMode);
 
       break;
@@ -163,26 +163,26 @@ void Evtf369_ScreenEffect(EvtData *evt) {
    case 6:
    case 7:
       pPoly = s_polys_801247d4;
-      if (EVT.semiTrans != 0) {
-         setSemiTrans(&s_polys_801247d4[evt->mem], 1);
+      if (OBJ.semiTrans != 0) {
+         setSemiTrans(&s_polys_801247d4[obj->mem], 1);
       } else {
-         setSemiTrans(&s_polys_801247d4[evt->mem], 0);
+         setSemiTrans(&s_polys_801247d4[obj->mem], 0);
       }
 
-      SetDrawMode(&s_drawModes1_80124804[evt->mem], 0, 0, GetTPage(0, evt->state2, 640, 0), NULL);
+      SetDrawMode(&s_drawModes1_80124804[obj->mem], 0, 0, GetTPage(0, obj->state2, 640, 0), NULL);
 
-      pDrawMode = &s_drawModes2_8012481c[evt->mem];
+      pDrawMode = &s_drawModes2_8012481c[obj->mem];
       addPrim(&gGraphicsPtr->ot[OT_SIZE - 2], pDrawMode);
 
-      r2 = EVT.color.r;
-      g2 = EVT.color.g;
-      b2 = EVT.color.b;
+      r2 = OBJ.color.r;
+      g2 = OBJ.color.g;
+      b2 = OBJ.color.b;
 
-      pPoly = &s_polys_801247d4[evt->mem];
+      pPoly = &s_polys_801247d4[obj->mem];
       setRGB0(pPoly, r2, g2, b2);
       addPrim(&gGraphicsPtr->ot[otOfs], pPoly);
 
-      pDrawMode = &s_drawModes1_80124804[evt->mem];
+      pDrawMode = &s_drawModes1_80124804[obj->mem];
       addPrim(&gGraphicsPtr->ot[otOfs], pDrawMode);
 
       break;
@@ -193,52 +193,52 @@ void Evtf369_ScreenEffect(EvtData *evt) {
 }
 
 void SetScreenEffectIntensity(s32 intensity) {
-   gState.screenEffect->d.evtf369.color.r = intensity;
-   gState.screenEffect->d.evtf369.color.g = intensity;
-   gState.screenEffect->d.evtf369.color.b = intensity;
+   gState.screenEffect->d.objf369.color.r = intensity;
+   gState.screenEffect->d.objf369.color.g = intensity;
+   gState.screenEffect->d.objf369.color.b = intensity;
 }
 
-void Evtf316_Noop(EvtData *evt) {}
+void Objf316_Noop(Object *obj) {}
 
 void FadeOutScreen(s32 abr, s32 speed) {
-   EvtData *screenEffect;
+   Object *screenEffect;
 
    screenEffect = gState.screenEffect;
    screenEffect->state2 = abr;
-   screenEffect->d.evtf369.rd = screenEffect->d.evtf369.gd = screenEffect->d.evtf369.bd = speed;
-   screenEffect->d.evtf369.rmax = screenEffect->d.evtf369.gmax = screenEffect->d.evtf369.bmax = 255;
+   screenEffect->d.objf369.rd = screenEffect->d.objf369.gd = screenEffect->d.objf369.bd = speed;
+   screenEffect->d.objf369.rmax = screenEffect->d.objf369.gmax = screenEffect->d.objf369.bmax = 255;
    screenEffect->state = 6;
 }
 
 void FadeInScreen(s32 abr, s32 speed) {
-   EvtData *screenEffect;
+   Object *screenEffect;
 
    screenEffect = gState.screenEffect;
    screenEffect->state2 = abr;
-   screenEffect->d.evtf369.rd = screenEffect->d.evtf369.gd = screenEffect->d.evtf369.bd = -speed;
-   screenEffect->d.evtf369.rmax = screenEffect->d.evtf369.gmax = screenEffect->d.evtf369.bmax = 0;
+   screenEffect->d.objf369.rd = screenEffect->d.objf369.gd = screenEffect->d.objf369.bd = -speed;
+   screenEffect->d.objf369.rmax = screenEffect->d.objf369.gmax = screenEffect->d.objf369.bmax = 0;
    screenEffect->state = 7;
 }
 
-EvtData *gScreenFade;
+Object *gScreenFade;
 
 void Event_FadeOutScreen(s32 abr, s32 speed) {
    gScreenFade->state = 1;
    gScreenFade->state3 = abr;
-   gScreenFade->d.evtf795.delta = speed;
-   gScreenFade->d.evtf795.max = 255;
+   gScreenFade->d.objf795.delta = speed;
+   gScreenFade->d.objf795.max = 255;
 }
 
 void Event_FadeInScreen(s32 abr, s32 speed) {
    gScreenFade->state = 2;
    gScreenFade->state3 = abr;
-   gScreenFade->d.evtf795.delta = -speed;
-   gScreenFade->d.evtf795.max = 0;
+   gScreenFade->d.objf795.delta = -speed;
+   gScreenFade->d.objf795.max = 0;
 }
 
-#undef EVTF
-#define EVTF 795
-void Evtf795_EventFade(EvtData *evt) {
+#undef OBJF
+#define OBJF 795
+void Objf795_EventFade(Object *obj) {
    //? Why so many elements?
    extern POLY_F4 s_polys_80124834[2][16];
    extern DR_MODE s_drawModes_80124b34[2][32];
@@ -251,55 +251,55 @@ void Evtf795_EventFade(EvtData *evt) {
    u8 b;
    // state3: abr
 
-   evt->mem = (evt->mem + 1) & 1;
+   obj->mem = (obj->mem + 1) & 1;
    otOfs = OT_SIZE - 2;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       break;
 
    case 1:
    case 2:
-      fade = EVT.fade;
-      fade += EVT.delta;
+      fade = OBJ.fade;
+      fade += OBJ.delta;
       finished = 0;
-      if (EVT.delta > 0 && fade > EVT.max) {
-         fade = EVT.max;
+      if (OBJ.delta > 0 && fade > OBJ.max) {
+         fade = OBJ.max;
          finished = 1;
       }
-      if (EVT.delta < 0 && fade < EVT.max) {
-         fade = EVT.max;
+      if (OBJ.delta < 0 && fade < OBJ.max) {
+         fade = OBJ.max;
          finished = 1;
       }
-      EVT.fade = fade;
-      if (evt->state == 2 && finished) {
-         evt->state++;
+      OBJ.fade = fade;
+      if (obj->state == 2 && finished) {
+         obj->state++;
       }
       break;
 
    // fallthrough
    case 3:
-      evt->state = 0;
+      obj->state = 0;
       break;
    }
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 1:
    case 2:
-      pDrawMode = &s_drawModes_80124b34[evt->mem][0];
+      pDrawMode = &s_drawModes_80124b34[obj->mem][0];
       SetDrawMode(pDrawMode, 0, 0, GetTPage(0, 1, 640, 0), NULL);
       AddPrim(&gGraphicsPtr->ot[otOfs], pDrawMode);
 
-      pPoly = &s_polys_80124834[evt->mem][0];
+      pPoly = &s_polys_80124834[obj->mem][0];
       setPolyF4(pPoly);
       setXYWH(pPoly, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
       setSemiTrans(pPoly, 1);
-      b = EVT.fade;
+      b = OBJ.fade;
       setRGB0(pPoly, b, b, b);
       AddPrim(&gGraphicsPtr->ot[otOfs], pPoly);
 
-      pDrawMode = &s_drawModes_80124b34[evt->mem][1];
-      SetDrawMode(pDrawMode, 0, 0, GetTPage(0, evt->state3, 0, 0), NULL);
+      pDrawMode = &s_drawModes_80124b34[obj->mem][1];
+      SetDrawMode(pDrawMode, 0, 0, GetTPage(0, obj->state3, 0, 0), NULL);
       AddPrim(&gGraphicsPtr->ot[otOfs], pDrawMode);
       break;
    }
@@ -321,24 +321,24 @@ s32 func_800A96A8(s32 theta1, s16 theta2) {
    return ret;
 }
 
-#undef EVTF
-#define EVTF 387
-void Evtf387_FullscreenImage(EvtData *evt) {
+#undef OBJF
+#define OBJF 387
+void Objf387_FullscreenImage(Object *obj) {
    extern DR_MODE s_drawModes1_80124e34[2];
    extern DR_MODE s_drawModes2_80124e4c[2];
    extern SPRT s_sprites_80124e64[2][2];
 
    s32 i;
-   EvtData *p;
+   Object *p;
    SPRT *pSprt;
    DR_MODE *pDrawMode;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      for (i = 0; i < EVT_DATA_CT; i++) {
-         p = &gEvtDataArray[i];
-         if (p->functionIndex == EVTF_FULLSCREEN_IMAGE && p != evt) {
-            evt->functionIndex = EVTF_NULL;
+      for (i = 0; i < OBJ_DATA_CT; i++) {
+         p = &gObjectArray[i];
+         if (p->functionIndex == OBJF_FULLSCREEN_IMAGE && p != obj) {
+            obj->functionIndex = OBJF_NULL;
             return;
          }
       }
@@ -363,17 +363,17 @@ void Evtf387_FullscreenImage(EvtData *evt) {
          setClut(&pSprt[1], 768, 248);
          setWH(&pSprt[1], 64, 240);
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
-      evt->mem++;
-      evt->mem %= 2;
-      pSprt = &s_sprites_80124e64[evt->mem][0];
+      obj->mem++;
+      obj->mem %= 2;
+      pSprt = &s_sprites_80124e64[obj->mem][0];
       AddPrim(&gGraphicsPtr->ot[2], &pSprt[1]);
-      AddPrim(&gGraphicsPtr->ot[2], &s_drawModes2_80124e4c[evt->mem]);
+      AddPrim(&gGraphicsPtr->ot[2], &s_drawModes2_80124e4c[obj->mem]);
       AddPrim(&gGraphicsPtr->ot[2], &pSprt[0]);
-      AddPrim(&gGraphicsPtr->ot[2], &s_drawModes1_80124e34[evt->mem]);
+      AddPrim(&gGraphicsPtr->ot[2], &s_drawModes1_80124e34[obj->mem]);
       break;
    }
 }

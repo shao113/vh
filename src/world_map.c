@@ -1,11 +1,11 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "window.h"
 #include "state.h"
 #include "audio.h"
 #include "graphics.h"
 
-void WorldMap_HandleCancel(EvtData *worldMap) {
+void WorldMap_HandleCancel(Object *worldMap) {
    if (gWindowChoice.raw == 0x34ff) {
       gState.choices[0] = GetWindowChoice(0x34) - 1;
       CloseWindow(0x3c);
@@ -14,42 +14,42 @@ void WorldMap_HandleCancel(EvtData *worldMap) {
    }
 }
 
-#undef EVTF
-#define EVTF 579
-s32 Evtf579_WorldMap(EvtData *evt) {
+#undef OBJF
+#define OBJF 579
+s32 Objf579_WorldMap(Object *obj) {
    extern u8 s_worldMapDstState;
 
    s16 markerX, markerY;
-   EvtData *evt_a1;
+   Object *obj_a1;
 
    markerX = 0;
    markerY = 0;
    gWindowChoiceHeight = 18;
    gWindowChoicesTopMargin = 10;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       gState.choices[0] = 0;
       FadeInScreen(2, 10);
       gWindowActiveIdx = 0x34;
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gSignal1 = 1;
-         evt_a1 = Evt_GetUnused();
-         evt_a1->functionIndex = EVTF_WORLD_ACTIONS;
-         evt->state2++;
+         obj_a1 = Obj_GetUnused();
+         obj_a1->functionIndex = OBJF_WORLD_ACTIONS;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (gSignal1 == 0) {
             gWindowActiveIdx = 0x34;
-            evt->state = 2;
-            evt->state2 = 0;
+            obj->state = 2;
+            obj->state2 = 0;
          }
          break;
       }
@@ -61,14 +61,14 @@ s32 Evtf579_WorldMap(EvtData *evt) {
       switch (gState.worldMapState) {
       case 11:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 54, 124, 16, WBS_CROSSED, 2);
             DrawText(12, 11, 20, 3, 1, gStringTable[33]);
             DrawText(12, 29, 20, 3, 0, gStringTable[34]);
             gState.choices[0] = gState.worldMapDestination;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -82,12 +82,12 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 0;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -96,14 +96,14 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 12:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 72, 124, 16, WBS_CROSSED, 3);
             DrawText(12, 11, 20, 3, 1, gStringTable[33]);
             DrawText(12, 29, 20, 3, 0, "#34\n#35");
             gState.choices[0] = gState.worldMapDestination;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -120,18 +120,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 5;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3403) {
                s_worldMapDstState = STATE_26;
                gState.scene = 8;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -140,7 +140,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 13:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 90, 124, 16, WBS_CROSSED, 4);
             DrawText(12, 11, 20, 3, 1, gStringTable[33]);
@@ -149,7 +149,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 3, 0, gStringTable[36]);
             gState.choices[0] = gState.worldMapDestination;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -169,18 +169,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 5;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                s_worldMapDstState = STATE_26;
                gState.scene = 11;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -189,7 +189,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 14:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 108, 124, 16, WBS_CROSSED, 5);
             DrawText(12, 11, 20, 3, 1, gStringTable[33]);
@@ -198,7 +198,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 83, 20, 3, 0, gStringTable[37]);
             gState.choices[0] = gState.worldMapDestination;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -225,18 +225,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 5;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3405) {
                gState.townState = 6;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -245,7 +245,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 15:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 126, 124, 16, WBS_CROSSED, 6);
             DrawText(12, 11, 20, 3, 1, gStringTable[33]);
@@ -254,7 +254,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 83, 20, 3, 0, "#37\n#68");
             gState.choices[0] = gState.worldMapDestination;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -284,24 +284,24 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 5;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3405) {
                gState.townState = 9;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3406) {
                s_worldMapDstState = STATE_26;
                gState.scene = 15;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -310,7 +310,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 16:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 144, 124, 16, WBS_CROSSED, 7);
             DrawText(12, 11, 20, 3, 1, gStringTable[33]);
@@ -321,7 +321,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 119, 20, 3, 0, "#69");
             gState.choices[0] = gState.worldMapDestination;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -354,24 +354,24 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 5;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3405) {
                gState.townState = 10;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3407) {
                s_worldMapDstState = STATE_26;
                gState.scene = 17;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -380,7 +380,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 17:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 108, 124, 16, WBS_CROSSED, 5);
             DrawText(12, 11, 20, 3, 1, gStringTable[33]);
@@ -389,7 +389,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 83, 20, 3, 0, gStringTable[37]);
             gState.choices[0] = gState.worldMapDestination;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -416,18 +416,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 5;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3405) {
                gState.townState = 7;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -436,14 +436,14 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 21:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 54, 10, 166, WBS_CROSSED, 2);
             DrawText(12, 11, 20, 3, 0, gStringTable[38]);
             DrawText(12, 29, 20, 3, 0, gStringTable[39]);
             gState.choices[0] = gState.worldMapDestination - 7;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -457,18 +457,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 11;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3402) {
                s_worldMapDstState = STATE_26;
                gState.scene = 21;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -477,7 +477,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 22:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 72, 10, 148, WBS_CROSSED, 3);
             DrawText(12, 11, 20, 3, 0, gStringTable[38]);
@@ -485,7 +485,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 47, 20, 3, 0, gStringTable[40]);
             gState.choices[0] = gState.worldMapDestination - 7;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -502,18 +502,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 11;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3403) {
                s_worldMapDstState = STATE_26;
                gState.scene = 24;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -522,7 +522,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 23:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 90, 10, 130, WBS_CROSSED, 4);
             DrawText(12, 11, 20, 3, 0, gStringTable[38]);
@@ -530,7 +530,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 3, 0, gStringTable[41]);
             gState.choices[0] = gState.worldMapDestination - 7;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -550,18 +550,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 11;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                s_worldMapDstState = STATE_26;
                gState.scene = 27;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -570,7 +570,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 24:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 90, 10, 130, WBS_CROSSED, 4);
             DrawText(12, 11, 20, 3, 0, gStringTable[38]);
@@ -578,7 +578,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 2, 0, gStringTable[41]);
             gState.choices[0] = gState.worldMapDestination - 7;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -598,18 +598,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 11;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                s_worldMapDstState = STATE_26;
                gState.scene = 29;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -618,7 +618,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 25:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 90, 10, 130, WBS_CROSSED, 4);
             DrawText(12, 11, 20, 3, 0, gStringTable[38]);
@@ -626,7 +626,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 2, 0, gStringTable[41]);
             gState.choices[0] = gState.worldMapDestination - 7;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -646,18 +646,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 11;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                s_worldMapDstState = STATE_26;
                gState.scene = 32;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -666,14 +666,14 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 31:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 54, 10, 16, WBS_CROSSED, 2);
             DrawText(12, 11, 20, 3, 1, gStringTable[42]);
             DrawText(12, 29, 20, 3, 0, gStringTable[43]);
             gState.choices[0] = gState.worldMapDestination - 11;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -687,12 +687,12 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 13;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -701,13 +701,13 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 32:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 54, 10, 16, WBS_CROSSED, 2);
             DrawText(12, 11, 20, 3, 0, "#42\n#43");
             gState.choices[0] = gState.worldMapDestination - 11;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -721,18 +721,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                s_worldMapDstState = STATE_26;
                gState.scene = 38;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 16;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -741,13 +741,13 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 41:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 54, 10, 16, WBS_CROSSED, 2);
             DrawText(12, 11, 20, 3, 0, "#44\n#45");
             gState.choices[0] = gState.worldMapDestination - 13;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -761,18 +761,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 17;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3402) {
                s_worldMapDstState = STATE_26;
                gState.scene = 43;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -781,7 +781,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 42:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 72, 10, 16, WBS_CROSSED, 3);
             DrawText(12, 11, 20, 3, 0, gStringTable[44]);
@@ -789,7 +789,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 47, 20, 3, 0, gStringTable[46]);
             gState.choices[0] = gState.worldMapDestination - 13;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -806,18 +806,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 17;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3403) {
                s_worldMapDstState = STATE_26;
                gState.scene = 46;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -826,7 +826,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 43:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 90, 10, 16, WBS_CROSSED, 4);
             DrawText(12, 11, 20, 3, 0, gStringTable[44]);
@@ -834,7 +834,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 3, 0, gStringTable[47]);
             gState.choices[0] = gState.worldMapDestination - 13;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -854,18 +854,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 17;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                s_worldMapDstState = STATE_26;
                gState.scene = 47;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -874,13 +874,13 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 51:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 54, 10, 16, WBS_CROSSED, 2);
             DrawText(12, 11, 20, 3, 0, "#48\n#49");
             gState.choices[0] = gState.worldMapDestination - 17;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -894,18 +894,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 19;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3402) {
                s_worldMapDstState = STATE_26;
                gState.scene = 55;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -914,7 +914,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 52:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 72, 10, 16, WBS_CROSSED, 3);
             DrawText(12, 11, 20, 3, 0, gStringTable[48]);
@@ -922,7 +922,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 47, 20, 3, 0, gStringTable[50]);
             gState.choices[0] = gState.worldMapDestination - 17;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -939,18 +939,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 19;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3403) {
                gState.townState = 20;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -959,7 +959,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 53:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 108, 10, 16, WBS_CROSSED, 5);
             DrawText(12, 11, 20, 3, 0, gStringTable[48]);
@@ -969,7 +969,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 83, 20, 3, 0, gStringTable[52]);
             gState.choices[0] = gState.worldMapDestination - 17;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -992,24 +992,24 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 19;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3403) {
                gState.townState = 24;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3405) {
                s_worldMapDstState = STATE_26;
                gState.scene = 65;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1018,14 +1018,14 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 61:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 54, 124, 16, WBS_CROSSED, 2);
             DrawText(12, 11, 20, 3, 1, gStringTable[53]);
             DrawText(12, 29, 20, 3, 0, gStringTable[54]);
             gState.choices[0] = gState.worldMapDestination - 22;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1039,12 +1039,12 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 25;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1053,14 +1053,14 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 62:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 72, 124, 16, WBS_CROSSED, 3);
             DrawText(12, 11, 20, 3, 1, gStringTable[53]);
             DrawText(12, 29, 20, 3, 0, "#54\n#55");
             gState.choices[0] = gState.worldMapDestination - 22;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1077,17 +1077,17 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 26;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3403) {
                s_worldMapDstState = STATE_26;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
                gState.scene = 71;
             }
             break;
@@ -1097,7 +1097,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 63:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 90, 10, 16, WBS_CROSSED, 4);
             DrawText(12, 11, 20, 3, 1, gStringTable[53]);
@@ -1106,7 +1106,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 2, 0, gStringTable[56]);
             gState.choices[0] = gState.worldMapDestination - 22;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1126,18 +1126,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 26;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                gState.townState = 27;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1146,7 +1146,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 64:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 108, 124, 120, WBS_CROSSED, 5);
             DrawText(12, 11, 20, 3, 1, gStringTable[53]);
@@ -1155,7 +1155,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 3, 0, "#56\n#57");
             gState.choices[0] = gState.worldMapDestination - 22;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1178,24 +1178,24 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 26;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                gState.townState = 30;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3405) {
                s_worldMapDstState = STATE_26;
                gState.scene = 74;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1204,7 +1204,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 65:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 126, 124, 102, WBS_CROSSED, 6);
             DrawText(12, 11, 20, 3, 1, gStringTable[53]);
@@ -1215,7 +1215,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 101, 20, 3, 0, gStringTable[58]);
             gState.choices[0] = gState.worldMapDestination - 22;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1241,24 +1241,24 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 26;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                gState.townState = 31;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3406) {
                s_worldMapDstState = STATE_26;
                gState.scene = 77;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1267,7 +1267,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 66:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 126, 124, 102, WBS_CROSSED, 6);
             DrawText(12, 11, 20, 3, 1, gStringTable[53]);
@@ -1277,7 +1277,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 83, 20, 3, 1, "#57\n#58");
             gState.choices[0] = gState.worldMapDestination - 22;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1303,18 +1303,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 26;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                s_worldMapDstState = STATE_26;
                gState.scene = 78;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1323,7 +1323,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 67:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 144, 124, 84, WBS_CROSSED, 7);
             DrawText(12, 11, 20, 3, 1, gStringTable[53]);
@@ -1332,7 +1332,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 119, 20, 3, 0, gStringTable[59]);
             gState.choices[0] = gState.worldMapDestination - 22;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1361,18 +1361,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3402) {
                gState.townState = 26;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3407) {
                s_worldMapDstState = STATE_26;
                gState.scene = 82;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1381,13 +1381,13 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 71:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 54, 10, 174, WBS_CROSSED, 2);
             DrawText(12, 11, 20, 2, 0, "#60\n#61");
             gState.choices[0] = gState.worldMapDestination - 29;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1401,18 +1401,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 32;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3402) {
                s_worldMapDstState = STATE_26;
                gState.scene = 84;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1421,7 +1421,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 72:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 72, 10, 156, WBS_CROSSED, 3);
             DrawText(12, 11, 20, 3, 0, gStringTable[60]);
@@ -1429,7 +1429,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 47, 20, 3, 0, gStringTable[62]);
             gState.choices[0] = gState.worldMapDestination - 29;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1446,18 +1446,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 32;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3403) {
                s_worldMapDstState = STATE_26;
                gState.scene = 85;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1466,7 +1466,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 73:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 90, 124, 138, WBS_CROSSED, 4);
             DrawText(12, 11, 20, 3, 0, gStringTable[60]);
@@ -1474,7 +1474,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 3, 0, gStringTable[34]);
             gState.choices[0] = gState.worldMapDestination - 29;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1494,18 +1494,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 32;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                s_worldMapDstState = STATE_26;
                gState.scene = 90;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1514,7 +1514,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
 
       case 74:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             DrawWindow(0x34, 0, 0, 176, 90, 124, 138, WBS_CROSSED, 4);
             DrawText(12, 11, 20, 3, 0, gStringTable[60]);
@@ -1522,7 +1522,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             DrawText(12, 65, 20, 3, 0, gStringTable[34]);
             gState.choices[0] = gState.worldMapDestination - 29;
             DisplayCustomWindowWithSetChoice(0x34, 0, 1, 0, 1, 0, gState.choices[0]);
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -1542,18 +1542,18 @@ s32 Evtf579_WorldMap(EvtData *evt) {
                break;
             }
 
-            WorldMap_HandleCancel(evt);
+            WorldMap_HandleCancel(obj);
             if (gWindowChoice.raw == 0x3401) {
                gState.townState = 32;
                s_worldMapDstState = STATE_7;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             if (gWindowChoice.raw == 0x3404) {
                s_worldMapDstState = STATE_26;
                gState.scene = 92;
-               evt->state = 99;
-               evt->state2 = 0;
+               obj->state = 99;
+               obj->state2 = 0;
             }
             break;
          }
@@ -1561,7 +1561,7 @@ s32 Evtf579_WorldMap(EvtData *evt) {
          break;
       }
 
-      if (evt->state2 != 0) {
+      if (obj->state2 != 0) {
          switch (gState.worldMapDestination) {
          case 0:
             markerX = 37;
@@ -1697,30 +1697,30 @@ s32 Evtf579_WorldMap(EvtData *evt) {
             break;
          }
 
-         evt_a1 = Evt_GetUnused();
-         evt_a1->d.sprite.gfxIdx = GFX_MAP_MARKER;
-         evt_a1->d.sprite.otOfs = 50;
-         evt_a1->x1.n = markerX - 15;
-         evt_a1->x3.n = markerX + 15;
-         evt_a1->y1.n = markerY - 15;
-         evt_a1->y3.n = markerY + 15;
-         AddEvtPrim_Gui(gGraphicsPtr->ot, evt_a1);
+         obj_a1 = Obj_GetUnused();
+         obj_a1->d.sprite.gfxIdx = GFX_MAP_MARKER;
+         obj_a1->d.sprite.otOfs = 50;
+         obj_a1->x1.n = markerX - 15;
+         obj_a1->x3.n = markerX + 15;
+         obj_a1->y1.n = markerY - 15;
+         obj_a1->y3.n = markerY + 15;
+         AddObjPrim_Gui(gGraphicsPtr->ot, obj_a1);
       }
       break;
 
    case 99:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gWindowActiveIdx = 0;
          PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
          FadeOutScreen(2, 6);
-         EVT.timer = 50;
-         evt->state2++;
+         OBJ.timer = 50;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             gState.primary = s_worldMapDstState;
             gState.secondary = 0;
             gState.state3 = 0;

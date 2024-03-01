@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "field.h"
 #include "state.h"
@@ -9,8 +9,8 @@
 
 void Map35_RemoveBridgeTile(s32, s32);
 void Map35_RemoveBridge(void);
-void Evtf652_Map35_Button(EvtData *);
-void Evtf702_FlamingRock(EvtData *);
+void Objf652_Map35_Button(Object *);
+void Objf702_FlamingRock(Object *);
 
 static MapTileModel sMapTileModel_80100e9c = {
 #include "assets/80100e9c.inc"
@@ -38,12 +38,12 @@ void Map35_RemoveBridge(void) {
    }
 }
 
-#undef EVTF
-#define EVTF 652
-void Evtf652_Map35_Button(EvtData *evt) {
+#undef OBJF
+#define OBJF 652
+void Objf652_Map35_Button(Object *obj) {
    extern MapTileModel s_tileModel_801246a4;
 
-   EvtData *evt_s0;
+   Object *obj_s0;
    s32 i, j, k;
    s32 avail;
    s32 alt;
@@ -51,37 +51,37 @@ void Evtf652_Map35_Button(EvtData *evt) {
    s8 unused[16];
    s32 casualties;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       if (gState.mapState.s.field_0x0 != 0) {
          DepressButton(18, 8);
          Map35_RemoveBridge();
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
          return;
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
       if (gState.mapState.s.field_0x0 != 0) {
          gPlayerControlSuppressed = 1;
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 2:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gCameraRotation.vy &= 0xfff;
-         AssignFromMainCamera(&EVT.camera);
-         evt_s0 = Evt_GetUnused();
-         evt_s0->functionIndex = EVTF_BUTTON_DEPRESS;
-         evt_s0->z1.s.hi = 8;
-         evt_s0->x1.s.hi = 18;
-         EVT.buttonDepress = evt_s0;
+         AssignFromMainCamera(&OBJ.camera);
+         obj_s0 = Obj_GetUnused();
+         obj_s0->functionIndex = OBJF_BUTTON_DEPRESS;
+         obj_s0->z1.s.hi = 8;
+         obj_s0->x1.s.hi = 18;
+         OBJ.buttonDepress = obj_s0;
          casualties = 0;
-         EVT.hitPlayerUnit = 0;
+         OBJ.hitPlayerUnit = 0;
          for (j = 9; j <= 13; j++) {
             for (i = 7; i <= 8; i++) {
                if (gMapUnitsPtr[i][j].s.team == TEAM_PLAYER) {
@@ -90,22 +90,22 @@ void Evtf652_Map35_Button(EvtData *evt) {
             }
          }
          if (casualties != 0) {
-            EVT.hitPlayerUnit = 1;
+            OBJ.hitPlayerUnit = 1;
          }
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
-         evt_s0 = EVT.buttonDepress;
-         if (evt_s0->state == 99) {
-            evt->state2++;
+         obj_s0 = OBJ.buttonDepress;
+         if (obj_s0->state == 99) {
+            obj->state2++;
          }
          break;
 
       case 2:
-         evt->state++;
-         evt->state2 = 0;
-         if (EVT.hitPlayerUnit) {
+         obj->state++;
+         obj->state2 = 0;
+         if (OBJ.hitPlayerUnit) {
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(19));
          } else {
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(37));
@@ -117,24 +117,24 @@ void Evtf652_Map35_Button(EvtData *evt) {
 
    case 3:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt->x1.n = CV(11.0);
-         evt->z1.n = CV(8.0);
-         evt->y1.n = CV(3.5);
-         evt_s0 = Evt_GetUnused();
-         evt_s0->functionIndex = EVTF_CAMERA_TBD_026;
-         evt_s0->d.evtf026.target = evt;
-         evt_s0->d.evtf026.zoom = 512;
-         evt->state3 = 0;
-         evt->state2++;
+         obj->x1.n = CV(11.0);
+         obj->z1.n = CV(8.0);
+         obj->y1.n = CV(3.5);
+         obj_s0 = Obj_GetUnused();
+         obj_s0->functionIndex = OBJF_CAMERA_TBD_026;
+         obj_s0->d.objf026.target = obj;
+         obj_s0->d.objf026.zoom = 512;
+         obj->state3 = 0;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (++evt->state3 >= 32) {
-            evt->state2 = 0;
-            evt->state3 = 0;
-            evt->state++;
+         if (++obj->state3 >= 32) {
+            obj->state2 = 0;
+            obj->state3 = 0;
+            obj->state++;
          }
          break;
 
@@ -145,7 +145,7 @@ void Evtf652_Map35_Button(EvtData *evt) {
       break;
 
    case 4:
-      if (!EVT.hitPlayerUnit) {
+      if (!OBJ.hitPlayerUnit) {
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(37));
       }
 
@@ -156,21 +156,21 @@ void Evtf652_Map35_Button(EvtData *evt) {
       }
 
       alt = 0;
-      if (!EVT.hitPlayerUnit) {
+      if (!OBJ.hitPlayerUnit) {
          for (j = 9; j <= 13; j++) {
             for (i = 7; i <= 8; i++) {
                if (gMapUnitsPtr[i][j].raw != 0) {
                   gTileStateGridPtr[i][j].action = TA_X16;
                }
                if (alt != 0) {
-                  evt_s0 = Evt_GetUnused();
-                  evt_s0->functionIndex = EVTF_EXPLODING_TILE;
-                  evt_s0->d.evtf653.translation.vx = j * CV(1.0);
-                  evt_s0->d.evtf653.translation.vy = CV(2.5);
-                  evt_s0->d.evtf653.translation.vz = i * CV(1.0);
-                  evt_s0->d.evtf653.tileModel = &sMapTileModel_80100e9c;
-                  evt_s0->d.evtf653.riverVelocity = CV(0.0625);
-                  evt_s0->state3 = (rand() >> 2) % 48;
+                  obj_s0 = Obj_GetUnused();
+                  obj_s0->functionIndex = OBJF_EXPLODING_TILE;
+                  obj_s0->d.objf653.translation.vx = j * CV(1.0);
+                  obj_s0->d.objf653.translation.vy = CV(2.5);
+                  obj_s0->d.objf653.translation.vz = i * CV(1.0);
+                  obj_s0->d.objf653.tileModel = &sMapTileModel_80100e9c;
+                  obj_s0->d.objf653.riverVelocity = CV(0.0625);
+                  obj_s0->state3 = (rand() >> 2) % 48;
                   alt = 0;
                } else {
                   alt++;
@@ -179,26 +179,26 @@ void Evtf652_Map35_Button(EvtData *evt) {
          }
       }
 
-      evt->state++;
+      obj->state++;
       break;
 
    case 5:
-      if (EVT.hitPlayerUnit) {
-         evt->state++;
-         EVT.todo_x5a = 0;
+      if (OBJ.hitPlayerUnit) {
+         obj->state++;
+         OBJ.todo_x5a = 0;
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(115));
       } else {
          gCameraRotation.vy -= DEG(1.40625);
-         if (++evt->state3 >= 64) {
+         if (++obj->state3 >= 64) {
             Map35_RemoveBridge();
-            evt->state3 = 0;
+            obj->state3 = 0;
             gCameraRotation.vy &= 0xfff;
-            evt->state2 = 0;
-            if (EVT.hitPlayerUnit) {
-               evt->state++;
-               EVT.todo_x5a = 0;
+            obj->state2 = 0;
+            if (OBJ.hitPlayerUnit) {
+               obj->state++;
+               OBJ.todo_x5a = 0;
             } else {
-               evt->state += 2;
+               obj->state += 2;
             }
          }
       }
@@ -206,79 +206,79 @@ void Evtf652_Map35_Button(EvtData *evt) {
       break;
 
    case 6:
-      EVT.todo_x5a++;
-      if (--EVT.todo_x54 <= 0 && evt->state2 < 7) {
+      OBJ.todo_x5a++;
+      if (--OBJ.todo_x54 <= 0 && obj->state2 < 7) {
          for (j = 9; j <= 13; j++) {
             for (i = 7; i <= 8; i++) {
-               evt_s0 = Evt_GetUnused();
-               evt_s0->functionIndex = EVTF_SMOKE;
-               evt_s0->x1.n = j * CV(1.0);
-               evt_s0->z1.n = i * CV(1.0) + CV(0.5);
-               evt_s0->y1.n = GetTerrainElevation(evt_s0->z1.s.hi, evt_s0->x1.s.hi);
-               evt_s0->d.sprite.semiTrans = 2;
-               evt_s0->x2.n = -rand() % CV(0.25);
-               evt_s0->z2.n = rand() % CV(0.25) - CV(0.125);
-               evt_s0->y2.n = rand() % CV(0.25);
+               obj_s0 = Obj_GetUnused();
+               obj_s0->functionIndex = OBJF_SMOKE;
+               obj_s0->x1.n = j * CV(1.0);
+               obj_s0->z1.n = i * CV(1.0) + CV(0.5);
+               obj_s0->y1.n = GetTerrainElevation(obj_s0->z1.s.hi, obj_s0->x1.s.hi);
+               obj_s0->d.sprite.semiTrans = 2;
+               obj_s0->x2.n = -rand() % CV(0.25);
+               obj_s0->z2.n = rand() % CV(0.25) - CV(0.125);
+               obj_s0->y2.n = rand() % CV(0.25);
             }
          }
-         EVT.todo_x54 = 16 - (EVT.todo_x5a >> 4);
-         if (EVT.todo_x54 < 4) {
-            EVT.todo_x54 = 4;
+         OBJ.todo_x54 = 16 - (OBJ.todo_x5a >> 4);
+         if (OBJ.todo_x54 < 4) {
+            OBJ.todo_x54 = 4;
          }
       }
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         EVT.tileX = 9;
-         evt->state2++;
+         OBJ.tileX = 9;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         EVT.tileZ = 7;
-         evt->state2++;
+         OBJ.tileZ = 7;
+         obj->state2++;
 
       // fallthrough
       case 2:
-         j = EVT.tileX;
-         i = EVT.tileZ;
+         j = OBJ.tileX;
+         i = OBJ.tileZ;
          if (gMapUnitsPtr[i][j].raw != 0) {
             gState.msgFinished = 0;
             gTileStateGridPtr[i][j].action = TA_X20;
-            evt->state2++;
+            obj->state2++;
          } else {
-            evt->state2 += 2;
+            obj->state2 += 2;
          }
          break;
 
       case 3:
          if (gState.msgFinished) {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 4:
-         EVT.tileZ++;
-         if (EVT.tileZ >= 9) {
-            evt->state2++;
+         OBJ.tileZ++;
+         if (OBJ.tileZ >= 9) {
+            obj->state2++;
          } else {
-            evt->state2 = 2;
+            obj->state2 = 2;
          }
          break;
 
       case 5:
-         EVT.tileX++;
-         if (EVT.tileX >= 14) {
-            evt->state2++;
+         OBJ.tileX++;
+         if (OBJ.tileX >= 14) {
+            obj->state2++;
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(37));
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_8);
-            evt->state3 = 0;
+            obj->state3 = 0;
          } else {
-            evt->state2 = 1;
+            obj->state2 = 1;
          }
          break;
 
       case 6:
-         if (++evt->state3 >= 64) {
+         if (++obj->state3 >= 64) {
             k = 2;
             PerformAudioCommand(AUDIO_CMD_PLAY_XA(37));
             for (j = 9; j <= 13; j++) {
@@ -286,23 +286,23 @@ void Evtf652_Map35_Button(EvtData *evt) {
                   if (gMapUnitsPtr[i][j].raw != 0) {
                      gTileStateGridPtr[i][j].action = TA_X16;
                   }
-                  avail = Evt_CountUnused();
+                  avail = Obj_CountUnused();
                   if (--k <= 0 && avail >= 50) {
-                     evt_s0 = Evt_GetUnused();
-                     evt_s0->functionIndex = EVTF_EXPLODING_TILE;
-                     evt_s0->d.evtf653.translation.vx = j * CV(1.0);
-                     evt_s0->d.evtf653.translation.vy = CV(2.5);
-                     evt_s0->d.evtf653.translation.vz = i * CV(1.0);
-                     evt_s0->d.evtf653.tileModel = &sMapTileModel_80100e9c;
-                     evt_s0->d.evtf653.riverVelocity = CV(0.0625);
-                     evt_s0->state3 = (rand() >> 2) % 48;
+                     obj_s0 = Obj_GetUnused();
+                     obj_s0->functionIndex = OBJF_EXPLODING_TILE;
+                     obj_s0->d.objf653.translation.vx = j * CV(1.0);
+                     obj_s0->d.objf653.translation.vy = CV(2.5);
+                     obj_s0->d.objf653.translation.vz = i * CV(1.0);
+                     obj_s0->d.objf653.tileModel = &sMapTileModel_80100e9c;
+                     obj_s0->d.objf653.riverVelocity = CV(0.0625);
+                     obj_s0->state3 = (rand() >> 2) % 48;
                      k = 1;
                   }
                }
             }
             Map35_RemoveBridge();
-            evt->state3 = 0;
-            evt->state2++;
+            obj->state3 = 0;
+            obj->state2++;
             PerformAudioCommand(AUDIO_CMD_FADE_IN_8_8);
          }
          break;
@@ -310,9 +310,9 @@ void Evtf652_Map35_Button(EvtData *evt) {
       case 7:
          gCameraZoom.vz += 10;
          gCameraRotation.vx += 1;
-         if (++evt->state3 >= 96) {
-            evt->state++;
-            evt->state3 = 0;
+         if (++obj->state3 >= 96) {
+            obj->state++;
+            obj->state3 = 0;
          }
          break;
       }
@@ -320,17 +320,17 @@ void Evtf652_Map35_Button(EvtData *evt) {
       break;
 
    case 7:
-      EaseOutCamera(&EVT.camera, 3);
-      if (++evt->state3 >= 32) {
-         AssignToMainCamera(&EVT.camera);
-         evt->state++;
+      EaseOutCamera(&OBJ.camera, 3);
+      if (++obj->state3 >= 32) {
+         AssignToMainCamera(&OBJ.camera);
+         obj->state++;
       }
       break;
 
    case 8:
       gPlayerControlSuppressed = 0;
       gState.signal = 0;
-      evt->state++;
+      obj->state++;
       break;
 
    case 9:
@@ -338,33 +338,33 @@ void Evtf652_Map35_Button(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 702
-void Evtf702_FlamingRock(EvtData *evt) {
+#undef OBJF
+#define OBJF 702
+void Objf702_FlamingRock(Object *obj) {
    extern s16 gExplosionAnimData_800ffa80[26];
 
    static s16 rockAnimData[12] = {4, GFX_ROCK_1, 2, GFX_ROCK_2, 2, GFX_ROCK_3,
                                   2, GFX_ROCK_4, 2, GFX_NULL,   1, GFX_NULL};
 
    s16 x, y, z;
-   EvtData *particle;
+   Object *particle;
    s32 i, skip;
    POLY_FT4 *poly;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt->state3 = rand() & 7;
-         evt->state2++;
+         obj->state3 = rand() & 7;
+         obj->state2++;
       // fallthrough
       case 1:
-         if (--evt->state3 <= 0) {
-            evt->state3 = 0;
-            evt->state2 = 0;
-            evt->state++;
-            evt->d.sprite.animData = rockAnimData;
+         if (--obj->state3 <= 0) {
+            obj->state3 = 0;
+            obj->state2 = 0;
+            obj->state++;
+            obj->d.sprite.animData = rockAnimData;
          }
          break;
       }
@@ -372,38 +372,38 @@ void Evtf702_FlamingRock(EvtData *evt) {
       break;
 
    case 1:
-      x = evt->x1.n;
-      y = evt->y1.n;
-      z = evt->z1.n;
+      x = obj->x1.n;
+      y = obj->y1.n;
+      z = obj->z1.n;
 
-      evt->y1.n += evt->y2.n;
-      evt->x1.n += evt->x2.n;
-      evt->z1.n += evt->z2.n;
-      evt->y2.n += evt->y3.n;
+      obj->y1.n += obj->y2.n;
+      obj->x1.n += obj->x2.n;
+      obj->z1.n += obj->z2.n;
+      obj->y2.n += obj->y3.n;
 
-      particle = CreatePositionedEvt(evt, EVTF_PARTICLE_710);
-      particle->x1.n = evt->x1.n;
-      particle->z1.n = evt->z1.n;
-      particle->y1.n = evt->y1.n;
+      particle = CreatePositionedObj(obj, OBJF_PARTICLE_710);
+      particle->x1.n = obj->x1.n;
+      particle->z1.n = obj->z1.n;
+      particle->y1.n = obj->y1.n;
       particle->state2 = rand() % 8 + 10;
       particle->d.sprite.animData = gExplosionAnimData_800ffa80;
       particle->mem = 16;
       skip = rand() & 7;
       for (i = 0; i < skip; i++) {
-         UpdateEvtAnimation(particle);
+         UpdateObjAnimation(particle);
       }
 
-      particle->x2.n = -((x - evt->x1.n) >> 2) + ((rand() >> 2) % 10 - 5);
-      particle->z2.n = -((z - evt->z1.n) >> 2) + ((rand() >> 2) % 10 - 5);
-      particle->y2.n = -((y - evt->y1.n) >> 2);
+      particle->x2.n = -((x - obj->x1.n) >> 2) + ((rand() >> 2) % 10 - 5);
+      particle->z2.n = -((z - obj->z1.n) >> 2) + ((rand() >> 2) % 10 - 5);
+      particle->y2.n = -((y - obj->y1.n) >> 2);
 
-      UpdateEvtAnimation(evt);
-      AddEvtPrim6(gGraphicsPtr->ot, evt, 0);
+      UpdateObjAnimation(obj);
+      AddObjPrim6(gGraphicsPtr->ot, obj, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
       setRGB0(poly, 240, 128, 128);
 
-      if (evt->y1.n < GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi)) {
-         evt->functionIndex = EVTF_NULL;
+      if (obj->y1.n < GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi)) {
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }

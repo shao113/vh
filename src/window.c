@@ -1,6 +1,6 @@
 #include "common.h"
 #include "state.h"
-#include "evt.h"
+#include "object.h"
 #include "units.h"
 #include "window.h"
 #include "graphics.h"
@@ -9,18 +9,18 @@
 #include "audio.h"
 #include "battle.h"
 
-s32 WindowIsOffScreen(EvtData *);
+s32 WindowIsOffScreen(Object *);
 void DrawSmallEquipmentWindow(u8);
 void DrawWindow(s16, s16, s16, s16, s16, s16, s16, u8, u8);
 s32 StringToGlyphs(u8 *, u8 *);
 s32 FUN_8001d384(u8 *, u8 *);
 s32 FUN_8001d3fc(u8 *, u8 *);
 void UpdateSkillStatusWindow(UnitStatus *);
-void Evtf574_DisplayIcon(EvtData *);
+void Objf574_DisplayIcon(Object *);
 void ClearIcons(void);
 void UpdateCompactUnitInfoWindow(UnitStatus *, UnitStatus *, u8);
 void UpdateUnitInfoWindow(UnitStatus *);
-void Evtf002_MenuChoice(EvtData *);
+void Objf002_MenuChoice(Object *);
 void DisplayBasicWindow(s32);
 void DisplayBasicWindowWithSetChoice(s32, s32);
 void DisplayCustomWindow(s32, u8, u8, u8, u8, u8);
@@ -29,24 +29,24 @@ void CloseWindow(s32);
 s32 GetWindowChoice(s32);
 s32 GetWindowChoice2(s32);
 void SlideWindowTo(s32, s16, s16);
-void Evtf004_005_408_Window(EvtData *);
+void Objf004_005_408_Window(Object *);
 void DrawGlyphStrip(u8 *, s16, s16, u8);
 void ClearGlyphStripBottom(u8 *, s16, s16);
 void DrawGlyphStripGroup(u8 *, s16);
 u16 DrawEmbossedSjisGlyph(u16, s32, s32, s32, s32);
-void Evtf422_LowerMsgBoxTail(EvtData *);
-void Evtf421_UpperMsgBoxTail(EvtData *);
-void Evtf573_BattleItemsList(EvtData *);
-void Evtf031_BattleSpellsList(EvtData *);
+void Objf422_LowerMsgBoxTail(Object *);
+void Objf421_UpperMsgBoxTail(Object *);
+void Objf573_BattleItemsList(Object *);
+void Objf031_BattleSpellsList(Object *);
 
-s32 WindowIsOffScreen(EvtData *evt) {
-   if (evt->x1.n < 0)
+s32 WindowIsOffScreen(Object *obj) {
+   if (obj->x1.n < 0)
       return 1;
-   if (evt->x1.n > SCREEN_WIDTH)
+   if (obj->x1.n > SCREEN_WIDTH)
       return 1;
-   if (evt->y1.n < 0)
+   if (obj->y1.n < 0)
       return 1;
-   if (evt->y1.n > SCREEN_HEIGHT)
+   if (obj->y1.n > SCREEN_HEIGHT)
       return 1;
    return 0;
 }
@@ -820,7 +820,7 @@ s32 FUN_8001d3fc(u8 *dest, u8 *src) {
 void UpdateSkillStatusWindow(UnitStatus *unit) {
    s32 i;
    s32 a, def;
-   EvtData *icon;
+   Object *icon;
 
    for (a = 2; a < 26; a++) {
       gGlyphStrip_65[a] = GLYPH_BG;
@@ -906,40 +906,40 @@ void UpdateSkillStatusWindow(UnitStatus *unit) {
    gGlyphStrip_5C[16] = GLYPH_BG;
    IntToGlyphs(unit->level, &gGlyphStrip_5C[15]);
 
-   icon = Evt_GetLastUnused();
-   icon->functionIndex = EVTF_DISPLAY_ICON;
+   icon = Obj_GetLastUnused();
+   icon->functionIndex = OBJF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->weapon;
    icon->x1.n = 117;
    icon->y1.n = 128;
 
-   icon = Evt_GetLastUnused();
-   icon->functionIndex = EVTF_DISPLAY_ICON;
+   icon = Obj_GetLastUnused();
+   icon->functionIndex = OBJF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->helmet;
    icon->x1.n = 117;
    icon->y1.n = 146;
 
-   icon = Evt_GetLastUnused();
-   icon->functionIndex = EVTF_DISPLAY_ICON;
+   icon = Obj_GetLastUnused();
+   icon->functionIndex = OBJF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->armor;
    icon->x1.n = 117;
    icon->y1.n = 164;
 }
 
-void Evtf574_DisplayIcon(EvtData *evt) {
-   evt->x3.n = evt->x1.n + 15;
-   evt->y3.n = evt->y1.n + 15;
-   AddEvtPrim_Gui(gGraphicsPtr->ot, evt);
+void Objf574_DisplayIcon(Object *obj) {
+   obj->x3.n = obj->x1.n + 15;
+   obj->y3.n = obj->y1.n + 15;
+   AddObjPrim_Gui(gGraphicsPtr->ot, obj);
 }
 
 void ClearIcons(void) {
-   EvtData *p;
+   Object *p;
    s32 i;
 
-   p = gEvtDataArray;
+   p = gObjectArray;
 
-   for (i = 0; i < EVT_DATA_CT; i++) {
-      if (p->functionIndex == EVTF_DISPLAY_ICON) {
-         p->functionIndex = EVTF_NULL;
+   for (i = 0; i < OBJ_DATA_CT; i++) {
+      if (p->functionIndex == OBJF_DISPLAY_ICON) {
+         p->functionIndex = OBJF_NULL;
       }
       p++;
    }
@@ -948,7 +948,7 @@ void ClearIcons(void) {
 void UpdateCompactUnitInfoWindow(UnitStatus *unit, UnitStatus *unused, u8 param_3) {
    s32 i, px, full, rem;
    s32 terrainBonus;
-   EvtData *sprite;
+   Object *sprite;
    u8 *pTop;
    u8 *pMid;
    u8 *pBtm;
@@ -1044,7 +1044,7 @@ void UpdateCompactUnitInfoWindow(UnitStatus *unit, UnitStatus *unused, u8 param_
 void UpdateUnitInfoWindow(UnitStatus *unit) {
    s32 i, px, full, rem;
    s32 terrainBonus;
-   EvtData *sprite;
+   Object *sprite;
    u8 *firstRow, *secondRow, *thirdRow, *fourthRow;
 
    firstRow = gGlyphStrip_52;
@@ -1139,7 +1139,7 @@ void UpdateUnitInfoWindow(UnitStatus *unit) {
    }
 }
 
-void Evtf002_MenuChoice(EvtData *evt) {
+void Objf002_MenuChoice(Object *obj) {
    if (gWindowChoice.s.windowId != (s8)gWindowActiveIdx) {
       gWindowChoice.s.choice = 0;
       gWindowChoice.s.windowId = gWindowActiveIdx;
@@ -1171,20 +1171,20 @@ void DisplayCustomWindow(s32 windowId, u8 effect, u8 translucentHighlight, u8 ot
 
 void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHighlight, u8 otOfs,
                                       u8 disableWraparound, u8 clut, u8 choiceIdx) {
-   EvtData *window;
+   Object *window;
    s16 restored1, restored2, restored3;
 
    gWindowChoice.raw = 0;
    CloseWindow(windowId);
-   window = Evt_GetLastUnusedSkippingTail(20);
+   window = Obj_GetLastUnusedSkippingTail(20);
 
-   window->functionIndex = EVTF_WINDOW_TBD_004;
-   window->d.evtf004.windowId = windowId;
-   window->d.evtf004.effect = effect;
-   window->d.evtf004.translucentHighlight = translucentHighlight;
-   window->d.evtf004.otOfs = otOfs;
-   window->d.evtf004.disableWraparound = disableWraparound;
-   window->d.evtf004.clut = clut;
+   window->functionIndex = OBJF_WINDOW_TBD_004;
+   window->d.objf004.windowId = windowId;
+   window->d.objf004.effect = effect;
+   window->d.objf004.translucentHighlight = translucentHighlight;
+   window->d.objf004.otOfs = otOfs;
+   window->d.objf004.disableWraparound = disableWraparound;
+   window->d.objf004.clut = clut;
    window->state2 = choiceIdx;
 
    switch (windowId) {
@@ -1196,13 +1196,13 @@ void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHig
    case 0x03:
       window->x1.n = 140;
       window->y1.n = 120;
-      window->functionIndex = EVTF_WINDOW_TBD_005;
+      window->functionIndex = OBJF_WINDOW_TBD_005;
       break;
    case 0x1b:
       SaveRestorePos(&restored1, &restored2, 1);
       window->x1.n = restored1 - 64;
       window->y1.n = restored2 - 13;
-      HI_H(window->d.evtf004.todo_x30) = 1;
+      HI_H(window->d.objf004.todo_x30) = 1;
       break;
    case 0x1c:
       SaveRestoreHp(&restored1, &restored2, &restored3, 1);
@@ -1252,30 +1252,30 @@ void DisplayCustomWindowWithSetChoice(s32 windowId, u8 effect, u8 translucentHig
    case 0x44:
    case 0x45:
    case 0x46:
-      window->functionIndex = EVTF_WINDOW_TBD_005;
+      window->functionIndex = OBJF_WINDOW_TBD_005;
       window->x1.n = gWindowDisplayX[windowId];
       window->y1.n = gWindowDisplayY[windowId];
-      window->d.evtf004.choicesTopMargin = gWindowChoicesTopMargin;
-      window->d.evtf004.highlightHeight = gWindowChoiceHeight;
-      window->d.evtf004.choiceCt = gWindowChoicesCount;
-      window->d.evtf004.choiceHeight = gWindowChoiceHeight;
+      window->d.objf004.choicesTopMargin = gWindowChoicesTopMargin;
+      window->d.objf004.highlightHeight = gWindowChoiceHeight;
+      window->d.objf004.choiceCt = gWindowChoicesCount;
+      window->d.objf004.choiceHeight = gWindowChoiceHeight;
    }
 
-   window->d.evtf004.halfWidth =
-       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.evtf004.windowId][2] / 2;
-   window->d.evtf004.halfHeight =
-       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.evtf004.windowId][3] / 2;
+   window->d.objf004.halfWidth =
+       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.objf004.windowId][2] / 2;
+   window->d.objf004.halfHeight =
+       gGfxSubTextures[GFX_WINDOW_TBD_657 + window->d.objf004.windowId][3] / 2;
 }
 
 void CloseWindow(s32 windowId) {
    s32 i;
-   EvtData *p = &gEvtDataArray[0];
+   Object *p = &gObjectArray[0];
 
-   for (i = 0; i < EVT_DATA_CT; i++, p++) {
-      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
-          p->d.evtf004.windowId == windowId) {
-         p->d.evtf004.windowId = 99;
-         p->functionIndex = EVTF_CLOSED_WINDOW;
+   for (i = 0; i < OBJ_DATA_CT; i++, p++) {
+      if ((p->functionIndex == OBJF_WINDOW_TBD_004 || p->functionIndex == OBJF_WINDOW_TBD_005) &&
+          p->d.objf004.windowId == windowId) {
+         p->d.objf004.windowId = 99;
+         p->functionIndex = OBJF_CLOSED_WINDOW;
          p->state = 99;
          p->state3 = 0;
 
@@ -1290,11 +1290,11 @@ void CloseWindow(s32 windowId) {
 
 s32 GetWindowChoice(s32 windowId) {
    s32 i;
-   EvtData *p = &gEvtDataArray[0];
+   Object *p = &gObjectArray[0];
 
-   for (i = 0; i < EVT_DATA_CT; i++, p++) {
-      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
-          p->d.evtf004.windowId == windowId) {
+   for (i = 0; i < OBJ_DATA_CT; i++, p++) {
+      if ((p->functionIndex == OBJF_WINDOW_TBD_004 || p->functionIndex == OBJF_WINDOW_TBD_005) &&
+          p->d.objf004.windowId == windowId) {
          return p->state2 + 1;
       }
    }
@@ -1304,11 +1304,11 @@ s32 GetWindowChoice(s32 windowId) {
 
 s32 GetWindowChoice2(s32 windowId) {
    s32 i;
-   EvtData *p = &gEvtDataArray[0];
+   Object *p = &gObjectArray[0];
 
-   for (i = 0; i < EVT_DATA_CT; i++, p++) {
-      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
-          p->d.evtf004.windowId == windowId && p->state == 2) {
+   for (i = 0; i < OBJ_DATA_CT; i++, p++) {
+      if ((p->functionIndex == OBJF_WINDOW_TBD_004 || p->functionIndex == OBJF_WINDOW_TBD_005) &&
+          p->d.objf004.windowId == windowId && p->state == 2) {
          return p->state2 + 1;
       }
    }
@@ -1317,137 +1317,137 @@ s32 GetWindowChoice2(s32 windowId) {
 }
 
 void SlideWindowTo(s32 windowId, s16 x, s16 y) {
-   // Initiates a slide to specified location; actual movement is done by Evtf004_005_408_Window
+   // Initiates a slide to specified location; actual movement is done by Objf004_005_408_Window
    s32 i;
-   EvtData *p = &gEvtDataArray[0];
+   Object *p = &gObjectArray[0];
 
-   for (i = 0; i < EVT_DATA_CT; i++, p++) {
-      if ((p->functionIndex == EVTF_WINDOW_TBD_004 || p->functionIndex == EVTF_WINDOW_TBD_005) &&
-          p->d.evtf004.windowId == windowId) {
+   for (i = 0; i < OBJ_DATA_CT; i++, p++) {
+      if ((p->functionIndex == OBJF_WINDOW_TBD_004 || p->functionIndex == OBJF_WINDOW_TBD_005) &&
+          p->d.objf004.windowId == windowId) {
          // Convert specified top-left point to window center point
-         p->x3.n = x + p->d.evtf004.halfWidth;
-         p->y3.n = y + p->d.evtf004.halfHeight;
+         p->x3.n = x + p->d.objf004.halfWidth;
+         p->y3.n = y + p->d.objf004.halfHeight;
          return;
       }
    }
 }
 
-#undef EVTF
-#define EVTF 004
-void Evtf004_005_408_Window(EvtData *evt) {
+#undef OBJF
+#define OBJF 004
+void Objf004_005_408_Window(Object *obj) {
    // TODO: todo_x2c, todo_x30 (highlight location)
-   // evt->state3: effectState
-   // evt->x3: destX
-   // evt->y3: destY
-   EvtData *window;
-   EvtData *highlight;
+   // obj->state3: effectState
+   // obj->x3: destX
+   // obj->y3: destY
+   Object *window;
+   Object *highlight;
    s8 unused[8];
 
-   window = EVT.window;
-   highlight = EVT.highlight;
+   window = OBJ.window;
+   highlight = OBJ.highlight;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->x1.n += EVT.halfWidth;
+      obj->x1.n += OBJ.halfWidth;
 
-      if (EVT.windowId == 0x1c) {
-         EVT.halfWidth >>= 1;
-         evt->x1.n -= EVT.halfWidth;
+      if (OBJ.windowId == 0x1c) {
+         OBJ.halfWidth >>= 1;
+         obj->x1.n -= OBJ.halfWidth;
       }
 
-      if (evt->functionIndex == EVTF_WINDOW_TBD_004) {
-         DrawGlyphStripGroup(gGlyphStripGroups[EVT.windowId], GFX_WINDOW_TBD_657 + EVT.windowId);
+      if (obj->functionIndex == OBJF_WINDOW_TBD_004) {
+         DrawGlyphStripGroup(gGlyphStripGroups[OBJ.windowId], GFX_WINDOW_TBD_657 + OBJ.windowId);
       }
 
-      EVT.todo_x3a = EVT.halfHeight + (EVT.halfHeight >> 1);
-      evt->y1.n += EVT.halfHeight;
+      OBJ.todo_x3a = OBJ.halfHeight + (OBJ.halfHeight >> 1);
+      obj->y1.n += OBJ.halfHeight;
 
-      window = Evt_GetUnused();
-      window->functionIndex = EVTF_NOOP;
-      window->d.sprite2.clut = EVT.clut;
-      window->d.sprite2.semiTrans = EVT.translucentHighlight;
-      if (EVT.otOfs == 0) {
-         EVT.otOfs = 3;
+      window = Obj_GetUnused();
+      window->functionIndex = OBJF_NOOP;
+      window->d.sprite2.clut = OBJ.clut;
+      window->d.sprite2.semiTrans = OBJ.translucentHighlight;
+      if (OBJ.otOfs == 0) {
+         OBJ.otOfs = 3;
       }
-      window->d.sprite2.otOfs = EVT.otOfs;
-      window->d.sprite2.gfxIdx = GFX_WINDOW_TBD_657 + EVT.windowId;
-      EVT.window = window;
+      window->d.sprite2.otOfs = OBJ.otOfs;
+      window->d.sprite2.gfxIdx = GFX_WINDOW_TBD_657 + OBJ.windowId;
+      OBJ.window = window;
 
-      highlight = Evt_GetUnused();
-      highlight->functionIndex = EVTF_NOOP;
-      highlight->d.sprite.semiTrans = EVT.translucentHighlight;
-      highlight->d.sprite.otOfs = EVT.otOfs;
+      highlight = Obj_GetUnused();
+      highlight->functionIndex = OBJF_NOOP;
+      highlight->d.sprite.semiTrans = OBJ.translucentHighlight;
+      highlight->d.sprite.otOfs = OBJ.otOfs;
       highlight->d.sprite.gfxIdx = GFX_WINDOW_TBD_657;
       highlight->d.sprite.hidden = 1;
-      EVT.highlight = highlight;
+      OBJ.highlight = highlight;
 
-      evt->mem = EVT.effect;
-      if (evt->x3.n == 0) {
-         evt->x3.n = evt->x1.n;
+      obj->mem = OBJ.effect;
+      if (obj->x3.n == 0) {
+         obj->x3.n = obj->x1.n;
       }
-      if (evt->y3.n == 0) {
-         evt->y3.n = evt->y1.n;
+      if (obj->y3.n == 0) {
+         obj->y3.n = obj->y1.n;
       }
 
-      evt->state++;
+      obj->state++;
    // fallthrough
    case 1:
       //@3a5c
-      switch (evt->mem) {
+      switch (obj->mem) {
       case 0:
-         EVT.relQuadX0 = -EVT.halfWidth;
-         EVT.relQuadX1 = EVT.halfWidth;
-         EVT.relQuadX2 = -EVT.halfWidth;
-         EVT.relQuadX3 = EVT.halfWidth;
-         EVT.relQuadY0 = -EVT.halfHeight;
-         EVT.relQuadY1 = -EVT.halfHeight;
-         EVT.relQuadY2 = EVT.halfHeight;
-         EVT.relQuadY3 = EVT.halfHeight;
+         OBJ.relQuadX0 = -OBJ.halfWidth;
+         OBJ.relQuadX1 = OBJ.halfWidth;
+         OBJ.relQuadX2 = -OBJ.halfWidth;
+         OBJ.relQuadX3 = OBJ.halfWidth;
+         OBJ.relQuadY0 = -OBJ.halfHeight;
+         OBJ.relQuadY1 = -OBJ.halfHeight;
+         OBJ.relQuadY2 = OBJ.halfHeight;
+         OBJ.relQuadY3 = OBJ.halfHeight;
 
          if (highlight) {
             highlight->d.sprite.hidden = 0;
          }
 
-         EVT.todo_x2c = EVT.choicesTopMargin << 16;
-         evt->state++;
-         evt->state3 = 0;
-         EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+         OBJ.todo_x2c = OBJ.choicesTopMargin << 16;
+         obj->state++;
+         obj->state3 = 0;
+         OBJ.todo_x2c = (obj->state2 * OBJ.choiceHeight + OBJ.choicesTopMargin) << 16;
          break;
       case 1:
       case 2:
 
-         switch (evt->state3) {
+         switch (obj->state3) {
          case 0:
-            EVT.relQuadX1 = EVT.halfWidth << 1;
-            EVT.clut = CLUT_PURPLES;
-            evt->state3++;
+            OBJ.relQuadX1 = OBJ.halfWidth << 1;
+            OBJ.clut = CLUT_PURPLES;
+            obj->state3++;
          // fallthrough
          case 1:
-            if (--EVT.clut != 0) {
-               EVT.relQuadX1 += (EVT.halfWidth - EVT.relQuadX1) >> 1;
-               EVT.relQuadX0 = -EVT.relQuadX1;
-               EVT.relQuadX2 = -EVT.relQuadX1;
-               EVT.relQuadX3 = EVT.relQuadX1;
-               EVT.relQuadY2 += (EVT.halfHeight - EVT.relQuadY2) >> 1;
-               EVT.relQuadY0 = -EVT.relQuadY2;
-               EVT.relQuadY1 = -EVT.relQuadY2;
-               EVT.relQuadY3 = EVT.relQuadY2;
+            if (--OBJ.clut != 0) {
+               OBJ.relQuadX1 += (OBJ.halfWidth - OBJ.relQuadX1) >> 1;
+               OBJ.relQuadX0 = -OBJ.relQuadX1;
+               OBJ.relQuadX2 = -OBJ.relQuadX1;
+               OBJ.relQuadX3 = OBJ.relQuadX1;
+               OBJ.relQuadY2 += (OBJ.halfHeight - OBJ.relQuadY2) >> 1;
+               OBJ.relQuadY0 = -OBJ.relQuadY2;
+               OBJ.relQuadY1 = -OBJ.relQuadY2;
+               OBJ.relQuadY3 = OBJ.relQuadY2;
             } else {
-               EVT.relQuadX0 = -EVT.halfWidth;
-               EVT.relQuadX1 = EVT.halfWidth;
-               EVT.relQuadX2 = -EVT.halfWidth;
-               EVT.relQuadX3 = EVT.halfWidth;
-               EVT.relQuadY0 = -EVT.halfHeight;
-               EVT.relQuadY1 = -EVT.halfHeight;
-               EVT.relQuadY2 = EVT.halfHeight;
-               EVT.relQuadY3 = EVT.halfHeight;
+               OBJ.relQuadX0 = -OBJ.halfWidth;
+               OBJ.relQuadX1 = OBJ.halfWidth;
+               OBJ.relQuadX2 = -OBJ.halfWidth;
+               OBJ.relQuadX3 = OBJ.halfWidth;
+               OBJ.relQuadY0 = -OBJ.halfHeight;
+               OBJ.relQuadY1 = -OBJ.halfHeight;
+               OBJ.relQuadY2 = OBJ.halfHeight;
+               OBJ.relQuadY3 = OBJ.halfHeight;
                if (highlight) {
                   highlight->d.sprite.hidden = 0;
                }
-               EVT.todo_x2c = EVT.choicesTopMargin << 16;
-               evt->state++;
-               evt->state3 = 0;
-               EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+               OBJ.todo_x2c = OBJ.choicesTopMargin << 16;
+               obj->state++;
+               obj->state3 = 0;
+               OBJ.todo_x2c = (obj->state2 * OBJ.choiceHeight + OBJ.choicesTopMargin) << 16;
             }
          }
          break;
@@ -1455,127 +1455,127 @@ void Evtf004_005_408_Window(EvtData *evt) {
       case 4:
       case 5:
 
-         switch (evt->state3) {
+         switch (obj->state3) {
          case 0:
-            EVT.relQuadX0 = EVT.halfWidth;
-            EVT.relQuadX1 = EVT.halfWidth;
-            EVT.relQuadX2 = -EVT.halfWidth;
-            EVT.relQuadX3 = -EVT.halfWidth;
-            EVT.relQuadY0 = EVT.halfHeight;
-            EVT.relQuadY1 = EVT.halfHeight;
-            EVT.relQuadY2 = -EVT.halfHeight;
-            EVT.relQuadY3 = -EVT.halfHeight;
-            EVT.effectX = EVT.halfWidth >> 3;
-            EVT.effectY = EVT.halfHeight >> 3;
-            EVT.clut = CLUT_WINDOW;
-            evt->state3++;
+            OBJ.relQuadX0 = OBJ.halfWidth;
+            OBJ.relQuadX1 = OBJ.halfWidth;
+            OBJ.relQuadX2 = -OBJ.halfWidth;
+            OBJ.relQuadX3 = -OBJ.halfWidth;
+            OBJ.relQuadY0 = OBJ.halfHeight;
+            OBJ.relQuadY1 = OBJ.halfHeight;
+            OBJ.relQuadY2 = -OBJ.halfHeight;
+            OBJ.relQuadY3 = -OBJ.halfHeight;
+            OBJ.effectX = OBJ.halfWidth >> 3;
+            OBJ.effectY = OBJ.halfHeight >> 3;
+            OBJ.clut = CLUT_WINDOW;
+            obj->state3++;
          // fallthrough
          case 1:
-            if (--EVT.clut != 0) {
-               EVT.relQuadX0 = EVT.relQuadX0 - EVT.effectX;
-               EVT.relQuadX3 = EVT.relQuadX3 + EVT.effectX;
-               EVT.relQuadY0 = EVT.relQuadY0 - EVT.effectY;
-               EVT.relQuadY1 = EVT.relQuadY1 - EVT.effectY;
-               EVT.relQuadY2 = EVT.relQuadY2 + EVT.effectY;
-               EVT.relQuadY3 = EVT.relQuadY3 + EVT.effectY;
+            if (--OBJ.clut != 0) {
+               OBJ.relQuadX0 = OBJ.relQuadX0 - OBJ.effectX;
+               OBJ.relQuadX3 = OBJ.relQuadX3 + OBJ.effectX;
+               OBJ.relQuadY0 = OBJ.relQuadY0 - OBJ.effectY;
+               OBJ.relQuadY1 = OBJ.relQuadY1 - OBJ.effectY;
+               OBJ.relQuadY2 = OBJ.relQuadY2 + OBJ.effectY;
+               OBJ.relQuadY3 = OBJ.relQuadY3 + OBJ.effectY;
             } else {
 
-               EVT.relQuadX0 = -EVT.halfWidth;
-               EVT.relQuadX1 = EVT.halfWidth;
-               EVT.relQuadX2 = -EVT.halfWidth;
-               EVT.relQuadX3 = EVT.halfWidth;
-               EVT.relQuadY0 = -EVT.halfHeight;
-               EVT.relQuadY1 = -EVT.halfHeight;
-               EVT.relQuadY2 = EVT.halfHeight;
-               EVT.relQuadY3 = EVT.halfHeight;
+               OBJ.relQuadX0 = -OBJ.halfWidth;
+               OBJ.relQuadX1 = OBJ.halfWidth;
+               OBJ.relQuadX2 = -OBJ.halfWidth;
+               OBJ.relQuadX3 = OBJ.halfWidth;
+               OBJ.relQuadY0 = -OBJ.halfHeight;
+               OBJ.relQuadY1 = -OBJ.halfHeight;
+               OBJ.relQuadY2 = OBJ.halfHeight;
+               OBJ.relQuadY3 = OBJ.halfHeight;
 
                if (highlight) {
                   highlight->d.sprite.hidden = 0;
                }
-               EVT.todo_x2c = EVT.choicesTopMargin << 16;
-               evt->state++;
-               evt->state3 = 0;
-               EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+               OBJ.todo_x2c = OBJ.choicesTopMargin << 16;
+               obj->state++;
+               obj->state3 = 0;
+               OBJ.todo_x2c = (obj->state2 * OBJ.choiceHeight + OBJ.choicesTopMargin) << 16;
             }
          }
          break;
       case 6:
       case 7:
-         EVT.relQuadX0 = -EVT.halfWidth;
-         EVT.relQuadX1 = EVT.halfWidth;
-         EVT.relQuadX2 = -EVT.halfWidth;
-         EVT.relQuadX3 = EVT.halfWidth;
+         OBJ.relQuadX0 = -OBJ.halfWidth;
+         OBJ.relQuadX1 = OBJ.halfWidth;
+         OBJ.relQuadX2 = -OBJ.halfWidth;
+         OBJ.relQuadX3 = OBJ.halfWidth;
 
-         EVT.effectPhase += 0xc0;
-         EVT.relQuadY0 = -(rcos((EVT.effectPhase - 0x400) & 0xfff) * EVT.todo_x3a >> 12);
-         EVT.relQuadY1 = EVT.relQuadY0;
-         EVT.relQuadY2 = -EVT.relQuadY0;
-         EVT.relQuadY3 = -EVT.relQuadY0;
+         OBJ.effectPhase += 0xc0;
+         OBJ.relQuadY0 = -(rcos((OBJ.effectPhase - 0x400) & 0xfff) * OBJ.todo_x3a >> 12);
+         OBJ.relQuadY1 = OBJ.relQuadY0;
+         OBJ.relQuadY2 = -OBJ.relQuadY0;
+         OBJ.relQuadY3 = -OBJ.relQuadY0;
 
          //@3f60
-         if (EVT.effectPhase > 0x400 && -EVT.relQuadY0 < EVT.halfHeight) {
-            EVT.relQuadY0 = -EVT.halfHeight;
-            EVT.relQuadY1 = -EVT.halfHeight;
-            EVT.relQuadY2 = EVT.halfHeight;
-            EVT.relQuadY3 = EVT.halfHeight;
+         if (OBJ.effectPhase > 0x400 && -OBJ.relQuadY0 < OBJ.halfHeight) {
+            OBJ.relQuadY0 = -OBJ.halfHeight;
+            OBJ.relQuadY1 = -OBJ.halfHeight;
+            OBJ.relQuadY2 = OBJ.halfHeight;
+            OBJ.relQuadY3 = OBJ.halfHeight;
             if (highlight) {
                highlight->d.sprite.hidden = 0;
             }
-            EVT.todo_x2c = EVT.choicesTopMargin << 16;
-            evt->state++;
+            OBJ.todo_x2c = OBJ.choicesTopMargin << 16;
+            obj->state++;
             //@3fdc
-            EVT.todo_x2c = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+            OBJ.todo_x2c = (obj->state2 * OBJ.choiceHeight + OBJ.choicesTopMargin) << 16;
          }
          break;
 
       case 8:
-      } // END of switch (evt->mem)  (via state:1)
+      } // END of switch (obj->mem)  (via state:1)
 
       break;
    case 2:
-      if (gWindowActiveIdx == EVT.windowId) {
+      if (gWindowActiveIdx == OBJ.windowId) {
          if (gPadStateNewPresses & PAD_DOWN) {
-            if (EVT.choiceCt > 1 && !WindowIsOffScreen(evt)) {
+            if (OBJ.choiceCt > 1 && !WindowIsOffScreen(obj)) {
                PerformAudioCommand(AUDIO_CMD_PLAY_SFX(237));
             }
-            if (!EVT.disableWraparound && evt->state2 + 1 == EVT.choiceCt) {
+            if (!OBJ.disableWraparound && obj->state2 + 1 == OBJ.choiceCt) {
                // Wrap-around to first choice
-               evt->state2 = 0;
+               obj->state2 = 0;
             } else {
                // Go to next choice
-               evt->state2++;
+               obj->state2++;
             }
          }
          if (gPadStateNewPresses & PAD_UP) {
-            if (EVT.choiceCt > 1 && !WindowIsOffScreen(evt)) {
+            if (OBJ.choiceCt > 1 && !WindowIsOffScreen(obj)) {
                PerformAudioCommand(AUDIO_CMD_PLAY_SFX(237));
             }
-            if (!EVT.disableWraparound && evt->state2 == 0) {
+            if (!OBJ.disableWraparound && obj->state2 == 0) {
                // Wrap-around to last choice
-               evt->state2 = EVT.choiceCt - 1;
+               obj->state2 = OBJ.choiceCt - 1;
             } else {
                // Go to previous choice
-               evt->state2--;
+               obj->state2--;
             }
          }
-         evt->state2 = CLAMP(evt->state2, 0, EVT.choiceCt - 1); //@4110
+         obj->state2 = CLAMP(obj->state2, 0, OBJ.choiceCt - 1); //@4110
       }
-      EVT.todo_x30 = (evt->state2 * EVT.choiceHeight + EVT.choicesTopMargin) << 16;
+      OBJ.todo_x30 = (obj->state2 * OBJ.choiceHeight + OBJ.choicesTopMargin) << 16;
 
       if (gState.vsyncMode == 0) {
-         EVT.todo_x2c += (EVT.todo_x30 - EVT.todo_x2c) >> 1;
+         OBJ.todo_x2c += (OBJ.todo_x30 - OBJ.todo_x2c) >> 1;
       } else {
-         EVT.todo_x2c = EVT.todo_x30;
+         OBJ.todo_x2c = OBJ.todo_x30;
       }
 
-      if (gWindowActiveIdx == EVT.windowId) {
-         gHighlightedChoice = evt->state2 + 1;
+      if (gWindowActiveIdx == OBJ.windowId) {
+         gHighlightedChoice = obj->state2 + 1;
          if (gPadStateNewPresses & PAD_CIRCLE) {
-            gWindowActivatedChoice.s.windowId = EVT.windowId;
-            gWindowActivatedChoice.s.choice = evt->state2 + 1;
+            gWindowActivatedChoice.s.windowId = OBJ.windowId;
+            gWindowActivatedChoice.s.choice = obj->state2 + 1;
          }
          if (gPadStateNewPresses & PAD_X) {
-            gWindowActivatedChoice.s.windowId = EVT.windowId;
+            gWindowActivatedChoice.s.windowId = OBJ.windowId;
             gWindowActivatedChoice.s.choice = -1;
          }
       }
@@ -1583,51 +1583,51 @@ void Evtf004_005_408_Window(EvtData *evt) {
 
    case 99:
 
-      switch (evt->mem) {
+      switch (obj->mem) {
       case 0:
          if (highlight) {
             highlight->d.sprite.hidden = 1;
          }
          //@428c
-         evt->state++;
-         evt->state3 = 0;
-         evt->functionIndex = EVTF_NULL;
-         window->functionIndex = EVTF_NULL;
-         highlight->functionIndex = EVTF_NULL;
+         obj->state++;
+         obj->state3 = 0;
+         obj->functionIndex = OBJF_NULL;
+         window->functionIndex = OBJF_NULL;
+         highlight->functionIndex = OBJF_NULL;
          return;
       case 1:
       case 2:
 
-         switch (evt->state3) {
+         switch (obj->state3) {
          case 0:
-            EVT.relQuadX0 = -EVT.halfWidth;
-            EVT.relQuadX1 = EVT.halfWidth;
-            EVT.relQuadX2 = -EVT.halfWidth;
-            EVT.relQuadX3 = EVT.halfWidth;
-            EVT.relQuadY0 = -EVT.halfHeight;
-            EVT.relQuadY1 = -EVT.halfHeight;
-            EVT.relQuadY2 = EVT.halfHeight;
-            EVT.relQuadY3 = EVT.halfHeight;
-            EVT.clut = CLUT_PURPLES;
-            evt->state3++;
+            OBJ.relQuadX0 = -OBJ.halfWidth;
+            OBJ.relQuadX1 = OBJ.halfWidth;
+            OBJ.relQuadX2 = -OBJ.halfWidth;
+            OBJ.relQuadX3 = OBJ.halfWidth;
+            OBJ.relQuadY0 = -OBJ.halfHeight;
+            OBJ.relQuadY1 = -OBJ.halfHeight;
+            OBJ.relQuadY2 = OBJ.halfHeight;
+            OBJ.relQuadY3 = OBJ.halfHeight;
+            OBJ.clut = CLUT_PURPLES;
+            obj->state3++;
          // fallthrough
          case 1:
-            if (--EVT.clut == CLUT_NULL) {
+            if (--OBJ.clut == CLUT_NULL) {
                if (highlight) {
                   highlight->d.sprite.hidden = 1;
                }
-               evt->state++;
-               evt->state3 = 0;
+               obj->state++;
+               obj->state3 = 0;
             } else {
-               EVT.relQuadY2 += (-EVT.relQuadY2 >> 1);
-               EVT.relQuadY0 = -EVT.relQuadY2;
-               EVT.relQuadY1 = -EVT.relQuadY2;
-               EVT.relQuadY3 = EVT.relQuadY2;
+               OBJ.relQuadY2 += (-OBJ.relQuadY2 >> 1);
+               OBJ.relQuadY0 = -OBJ.relQuadY2;
+               OBJ.relQuadY1 = -OBJ.relQuadY2;
+               OBJ.relQuadY3 = OBJ.relQuadY2;
 
-               EVT.relQuadX1 = EVT.relQuadX1 + EVT.relQuadY2;
-               EVT.relQuadX0 = -EVT.relQuadX1;
-               EVT.relQuadX2 = -EVT.relQuadX1;
-               EVT.relQuadX3 = EVT.relQuadX1;
+               OBJ.relQuadX1 = OBJ.relQuadX1 + OBJ.relQuadY2;
+               OBJ.relQuadX0 = -OBJ.relQuadX1;
+               OBJ.relQuadX2 = -OBJ.relQuadX1;
+               OBJ.relQuadX3 = OBJ.relQuadX1;
             }
          }
 
@@ -1636,64 +1636,64 @@ void Evtf004_005_408_Window(EvtData *evt) {
       case 4:
       case 5:
 
-         switch (evt->state3) {
+         switch (obj->state3) {
          case 0:
-            EVT.relQuadX0 = -EVT.halfWidth;
-            EVT.relQuadX1 = EVT.halfWidth;
-            EVT.relQuadX2 = -EVT.halfWidth;
-            EVT.relQuadX3 = EVT.halfWidth;
-            EVT.relQuadY0 = -EVT.halfHeight;
-            EVT.relQuadY1 = -EVT.halfHeight;
-            EVT.relQuadY2 = EVT.halfHeight;
-            EVT.relQuadY3 = EVT.halfHeight;
-            EVT.effectX = EVT.halfWidth >> 3;
-            EVT.effectY = EVT.halfHeight >> 3;
-            EVT.clut = CLUT_WINDOW;
-            evt->state3++;
+            OBJ.relQuadX0 = -OBJ.halfWidth;
+            OBJ.relQuadX1 = OBJ.halfWidth;
+            OBJ.relQuadX2 = -OBJ.halfWidth;
+            OBJ.relQuadX3 = OBJ.halfWidth;
+            OBJ.relQuadY0 = -OBJ.halfHeight;
+            OBJ.relQuadY1 = -OBJ.halfHeight;
+            OBJ.relQuadY2 = OBJ.halfHeight;
+            OBJ.relQuadY3 = OBJ.halfHeight;
+            OBJ.effectX = OBJ.halfWidth >> 3;
+            OBJ.effectY = OBJ.halfHeight >> 3;
+            OBJ.clut = CLUT_WINDOW;
+            obj->state3++;
          // fallthrough
          case 1:
-            EVT.relQuadX0 = EVT.relQuadX0 + EVT.effectX;
-            EVT.relQuadX3 = EVT.relQuadX3 - EVT.effectX;
-            EVT.relQuadY0 = EVT.relQuadY0 + EVT.effectY;
-            EVT.relQuadY1 = EVT.relQuadY1 + EVT.effectY;
-            EVT.relQuadY2 = EVT.relQuadY2 - EVT.effectY;
-            EVT.relQuadY3 = EVT.relQuadY3 - EVT.effectY;
+            OBJ.relQuadX0 = OBJ.relQuadX0 + OBJ.effectX;
+            OBJ.relQuadX3 = OBJ.relQuadX3 - OBJ.effectX;
+            OBJ.relQuadY0 = OBJ.relQuadY0 + OBJ.effectY;
+            OBJ.relQuadY1 = OBJ.relQuadY1 + OBJ.effectY;
+            OBJ.relQuadY2 = OBJ.relQuadY2 - OBJ.effectY;
+            OBJ.relQuadY3 = OBJ.relQuadY3 - OBJ.effectY;
 
-            if (--EVT.clut == CLUT_NULL) {
+            if (--OBJ.clut == CLUT_NULL) {
                if (highlight) {
                   highlight->d.sprite.hidden = 1;
                }
-               evt->state++;
-               evt->state3 = 0;
+               obj->state++;
+               obj->state3 = 0;
             }
          }
 
          break;
       case 7:
          //@457c
-         switch (evt->state3) {
+         switch (obj->state3) {
          case 0:
-            EVT.relQuadX0 = -EVT.halfWidth;
-            EVT.relQuadX1 = EVT.halfWidth;
-            EVT.relQuadX2 = -EVT.halfWidth;
-            EVT.relQuadX3 = EVT.halfWidth;
-            EVT.relQuadY0 = -EVT.halfHeight;
-            EVT.relQuadY1 = -EVT.halfHeight;
-            EVT.relQuadY2 = EVT.halfHeight;
-            EVT.relQuadY3 = EVT.halfHeight;
-            evt->state3++;
+            OBJ.relQuadX0 = -OBJ.halfWidth;
+            OBJ.relQuadX1 = OBJ.halfWidth;
+            OBJ.relQuadX2 = -OBJ.halfWidth;
+            OBJ.relQuadX3 = OBJ.halfWidth;
+            OBJ.relQuadY0 = -OBJ.halfHeight;
+            OBJ.relQuadY1 = -OBJ.halfHeight;
+            OBJ.relQuadY2 = OBJ.halfHeight;
+            OBJ.relQuadY3 = OBJ.halfHeight;
+            obj->state3++;
          // fallthrough
          case 1:
-            EVT.effectPhase -= 0xc0;
-            EVT.relQuadY0 = -(rcos((EVT.effectPhase - 0x400U) & 0xfff) * EVT.todo_x3a >> 12);
-            EVT.relQuadY1 = EVT.relQuadY0;
-            EVT.relQuadY2 = -EVT.relQuadY0;
-            EVT.relQuadY3 = -EVT.relQuadY0;
+            OBJ.effectPhase -= 0xc0;
+            OBJ.relQuadY0 = -(rcos((OBJ.effectPhase - 0x400U) & 0xfff) * OBJ.todo_x3a >> 12);
+            OBJ.relQuadY1 = OBJ.relQuadY0;
+            OBJ.relQuadY2 = -OBJ.relQuadY0;
+            OBJ.relQuadY3 = -OBJ.relQuadY0;
 
-            if (EVT.effectPhase <= 0) {
-               EVT.clut = CLUT_NULL;
-               evt->state3 = 0;
-               evt->state++;
+            if (OBJ.effectPhase <= 0) {
+               OBJ.clut = CLUT_NULL;
+               obj->state3 = 0;
+               obj->state++;
             }
 
             if (highlight) {
@@ -1704,62 +1704,62 @@ void Evtf004_005_408_Window(EvtData *evt) {
          break;
       case 8:
          break;
-      } // END of SECOND switch (evt->mem) (via state:99)
+      } // END of SECOND switch (obj->mem) (via state:99)
       break;
    case 100:
-      evt->functionIndex = EVTF_NULL;
-      window->functionIndex = EVTF_NULL;
-      highlight->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
+      window->functionIndex = OBJF_NULL;
+      highlight->functionIndex = OBJF_NULL;
       return;
-   } // END of switch (evt->state)
+   } // END of switch (obj->state)
 
    // switchD_8001f2ac_caseD_6: //@46a0
-   evt->x1.n += (evt->x3.n - evt->x1.n) >> 2;
-   evt->y1.n += (evt->y3.n - evt->y1.n) >> 2;
+   obj->x1.n += (obj->x3.n - obj->x1.n) >> 2;
+   obj->y1.n += (obj->y3.n - obj->y1.n) >> 2;
 
-   window->d.sprite2.coords[0].x = evt->x1.n + EVT.relQuadX0;
-   window->d.sprite2.coords[0].y = evt->y1.n + EVT.relQuadY0;
-   window->d.sprite2.coords[1].x = evt->x1.n + EVT.relQuadX1;
-   window->d.sprite2.coords[1].y = evt->y1.n + EVT.relQuadY1;
-   window->d.sprite2.coords[2].x = evt->x1.n + EVT.relQuadX2;
-   window->d.sprite2.coords[2].y = evt->y1.n + EVT.relQuadY2;
-   window->d.sprite2.coords[3].x = evt->x1.n + EVT.relQuadX3;
-   window->d.sprite2.coords[3].y = evt->y1.n + EVT.relQuadY3;
+   window->d.sprite2.coords[0].x = obj->x1.n + OBJ.relQuadX0;
+   window->d.sprite2.coords[0].y = obj->y1.n + OBJ.relQuadY0;
+   window->d.sprite2.coords[1].x = obj->x1.n + OBJ.relQuadX1;
+   window->d.sprite2.coords[1].y = obj->y1.n + OBJ.relQuadY1;
+   window->d.sprite2.coords[2].x = obj->x1.n + OBJ.relQuadX2;
+   window->d.sprite2.coords[2].y = obj->y1.n + OBJ.relQuadY2;
+   window->d.sprite2.coords[3].x = obj->x1.n + OBJ.relQuadX3;
+   window->d.sprite2.coords[3].y = obj->y1.n + OBJ.relQuadY3;
 
-   if (highlight && EVT.choiceCt != 0 && evt->state == 2) {
+   if (highlight && OBJ.choiceCt != 0 && obj->state == 2) {
       //@479c
-      highlight->y1.n = window->d.sprite2.coords[1].y + (EVT.todo_x2c >> 16);
-      highlight->y3.n = highlight->y1.n + EVT.highlightHeight;
+      highlight->y1.n = window->d.sprite2.coords[1].y + (OBJ.todo_x2c >> 16);
+      highlight->y3.n = highlight->y1.n + OBJ.highlightHeight;
       highlight->x1.n = window->d.sprite2.coords[0].x;
       highlight->x3.n = window->d.sprite2.coords[1].x;
 
       gGfxSubTextures[GFX_WINDOW_TBD_657][0] =
-          gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId][0];
+          gGfxSubTextures[GFX_WINDOW_TBD_657 + OBJ.windowId][0];
       gGfxSubTextures[GFX_WINDOW_TBD_657][2] =
-          gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId][2];
-      gGfxTPageCells[GFX_WINDOW_TBD_657] = gGfxTPageCells[GFX_WINDOW_TBD_657 + EVT.windowId];
-      gGfxTPageIds[GFX_WINDOW_TBD_657] = gGfxTPageIds[GFX_WINDOW_TBD_657 + EVT.windowId];
+          gGfxSubTextures[GFX_WINDOW_TBD_657 + OBJ.windowId][2];
+      gGfxTPageCells[GFX_WINDOW_TBD_657] = gGfxTPageCells[GFX_WINDOW_TBD_657 + OBJ.windowId];
+      gGfxTPageIds[GFX_WINDOW_TBD_657] = gGfxTPageIds[GFX_WINDOW_TBD_657 + OBJ.windowId];
       gGfxSubTextures[GFX_WINDOW_TBD_657][1] =
-          (EVT.todo_x2c >> 16) + gGfxSubTextures[GFX_WINDOW_TBD_657 + EVT.windowId][1];
-      gGfxSubTextures[GFX_WINDOW_TBD_657][3] = EVT.highlightHeight;
-      if (EVT.windowId == gWindowActiveIdx) {
+          (OBJ.todo_x2c >> 16) + gGfxSubTextures[GFX_WINDOW_TBD_657 + OBJ.windowId][1];
+      gGfxSubTextures[GFX_WINDOW_TBD_657][3] = OBJ.highlightHeight;
+      if (OBJ.windowId == gWindowActiveIdx) {
          highlight->d.sprite.clut = CLUT_NULL;
       } else {
          highlight->d.sprite.clut = CLUT_INACTIVE_WINDOW;
       }
-      AddEvtPrim_Gui(gGraphicsPtr->ot, highlight);
+      AddObjPrim_Gui(gGraphicsPtr->ot, highlight);
    }
 
-   AddEvtPrim2(gGraphicsPtr->ot, window);
+   AddObjPrim2(gGraphicsPtr->ot, window);
 
-   if (gWindowActiveIdx == EVT.windowId) {
-      gHighlightedChoice = evt->state2 + 1;
+   if (gWindowActiveIdx == OBJ.windowId) {
+      gHighlightedChoice = obj->state2 + 1;
       if (gPadStateNewPresses & PAD_CIRCLE) {
-         gWindowActivatedChoice.s.windowId = EVT.windowId;
-         gWindowActivatedChoice.s.choice = evt->state2 + 1;
+         gWindowActivatedChoice.s.windowId = OBJ.windowId;
+         gWindowActivatedChoice.s.choice = obj->state2 + 1;
       }
       if (gPadStateNewPresses & PAD_X) {
-         gWindowActivatedChoice.s.windowId = EVT.windowId;
+         gWindowActivatedChoice.s.windowId = OBJ.windowId;
          gWindowActivatedChoice.s.choice = -1;
       }
    }
@@ -1936,71 +1936,71 @@ u16 DrawEmbossedSjisGlyph(u16 sjis, s32 x, s32 y, s32 fgc, s32 bgc) {
    return GetTPage(0, 0, x, y);
 }
 
-void Evtf422_LowerMsgBoxTail(EvtData *evt) { Evtf421_UpperMsgBoxTail(evt); }
+void Objf422_LowerMsgBoxTail(Object *obj) { Objf421_UpperMsgBoxTail(obj); }
 
-#undef EVTF
-#define EVTF 421
-void Evtf421_UpperMsgBoxTail(EvtData *evt) {
+#undef OBJF
+#define OBJF 421
+void Objf421_UpperMsgBoxTail(Object *obj) {
    s32 p, flag;
    SVECTOR position;
 
-   RotTransPers(&EVT.sprite->vec, (s32 *)&position, &p, &flag);
-   EVT.left = position.vx - 4;
-   gTempGfxEvt->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_DOWN;
+   RotTransPers(&OBJ.sprite->vec, (s32 *)&position, &p, &flag);
+   OBJ.left = position.vx - 4;
+   gTempGfxObj->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_DOWN;
 
-   if (evt->functionIndex == EVTF_UPPER_MSGBOX_TAIL) {
+   if (obj->functionIndex == OBJF_UPPER_MSGBOX_TAIL) {
       position.vy -= 45;
       if (position.vy < 86) {
          s16 width = 18;
-         if (EVT.left < SCREEN_HALF_WIDTH) {
-            gTempGfxEvt->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_LEFT;
-            EVT.left += width;
+         if (OBJ.left < SCREEN_HALF_WIDTH) {
+            gTempGfxObj->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_LEFT;
+            OBJ.left += width;
          } else {
-            gTempGfxEvt->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_RIGHT;
-            EVT.left -= width;
+            gTempGfxObj->d.sprite.gfxIdx = GFX_MSGBOX_TAIL_RIGHT;
+            OBJ.left -= width;
          }
          position.vy = 99;
       }
-      EVT.top = 78;
-      EVT.bottom = position.vy;
+      OBJ.top = 78;
+      OBJ.bottom = position.vy;
    } else {
-      // EVTF_LOWER_MSGBOX_TAIL:
+      // OBJF_LOWER_MSGBOX_TAIL:
       position.vy += -10;
       if (position.vy > 150) {
          position.vy = 150;
       }
-      EVT.bottom = position.vy;
-      EVT.top = 162;
+      OBJ.bottom = position.vy;
+      OBJ.top = 162;
    }
 
-   gTempGfxEvt->d.sprite.hidden = 0;
-   gTempGfxEvt->d.sprite.clut = CLUT_25;
-   gTempGfxEvt->d.sprite.otOfs = 2;
+   gTempGfxObj->d.sprite.hidden = 0;
+   gTempGfxObj->d.sprite.clut = CLUT_25;
+   gTempGfxObj->d.sprite.otOfs = 2;
 
-   if (gTempGfxEvt->d.sprite.gfxIdx == GFX_MSGBOX_TAIL_DOWN) {
-      gTempGfxEvt->x1.n = EVT.left;
-      gTempGfxEvt->x3.n = EVT.left + 10;
+   if (gTempGfxObj->d.sprite.gfxIdx == GFX_MSGBOX_TAIL_DOWN) {
+      gTempGfxObj->x1.n = OBJ.left;
+      gTempGfxObj->x3.n = OBJ.left + 10;
    } else {
-      gTempGfxEvt->x1.n = EVT.left - 2;
-      gTempGfxEvt->x3.n = EVT.left + 14;
+      gTempGfxObj->x1.n = OBJ.left - 2;
+      gTempGfxObj->x3.n = OBJ.left + 14;
    }
 
-   gTempGfxEvt->y1.n = EVT.top;
-   gTempGfxEvt->y3.n = EVT.bottom;
-   AddEvtPrim_Gui(gGraphicsPtr->ot, gTempGfxEvt);
+   gTempGfxObj->y1.n = OBJ.top;
+   gTempGfxObj->y3.n = OBJ.bottom;
+   AddObjPrim_Gui(gGraphicsPtr->ot, gTempGfxObj);
 }
 
-#undef EVTF
-#define EVTF 573
-void Evtf573_BattleItemsList(EvtData *evt) {
+#undef OBJF
+#define OBJF 573
+void Objf573_BattleItemsList(Object *obj) {
    s32 i;
    UnitStatus *unit;
-   EvtData *icon;
+   Object *icon;
    s32 tmp;
 
-   unit = EVT.unit;
+   unit = OBJ.unit;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       CloseWindow(0x1e);
       gWindowChoiceHeight = 18;
@@ -2015,14 +2015,14 @@ void Evtf573_BattleItemsList(EvtData *evt) {
          DrawSjisText(28, i * 18 + 60, 20, 0, tmp, gItemNamesSjis[unit->items[i]]);
       }
 
-      icon = Evt_GetUnused();
-      icon->functionIndex = EVTF_DISPLAY_ICON;
+      icon = Obj_GetUnused();
+      icon->functionIndex = OBJF_DISPLAY_ICON;
       icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[0];
       icon->x1.n = 79;
       icon->y1.n = 103;
 
-      icon = Evt_GetUnused();
-      icon->functionIndex = EVTF_DISPLAY_ICON;
+      icon = Obj_GetUnused();
+      icon->functionIndex = OBJF_DISPLAY_ICON;
       icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[1];
       icon->x1.n = 79;
       icon->y1.n = 121;
@@ -2030,14 +2030,14 @@ void Evtf573_BattleItemsList(EvtData *evt) {
       DisplayBasicWindow(0x38);
       gWindowActiveIdx = 0x38;
       gClearSavedPadState = 1;
-      evt->state++;
+      obj->state++;
       break;
    case 1:
       if (gWindowChoice.raw == 0x38ff) {
          // Canceled:
          CloseWindow(0x38);
          gSignal2 = 1;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
          CloseWindow(0x3c);
          CloseWindow(0x3d);
          ClearIcons();
@@ -2052,7 +2052,7 @@ void Evtf573_BattleItemsList(EvtData *evt) {
             CloseWindow(0x38);
             gSignal2 = 2;
             gClearSavedPadState = 0;
-            evt->functionIndex = EVTF_NULL;
+            obj->functionIndex = OBJF_NULL;
             CloseWindow(0x3c);
             CloseWindow(0x3d);
             ClearIcons();
@@ -2062,18 +2062,18 @@ void Evtf573_BattleItemsList(EvtData *evt) {
       break;
    }
 
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
-      EVT.item = -1;
+      OBJ.item = -1;
       DrawWindow(0x3c, 0, 0, 288, 36, 14, 192, WBS_CROSSED, 0);
       DisplayBasicWindow(0x3c);
       DisplayBasicWindow(0x3d);
-      evt->state3++;
+      obj->state3++;
       break;
    case 1:
       tmp = unit->items[GetWindowChoice(0x38) - 1];
-      if (EVT.item != tmp) {
-         EVT.item = tmp;
+      if (OBJ.item != tmp) {
+         OBJ.item = tmp;
          DrawWindow(60, 0, 0, 288, 36, 4, 192, WBS_CROSSED, 0);
          DrawText_Internal(12, 10, 35, 2, 0, gItemDescriptions[tmp], 0);
       }
@@ -2081,9 +2081,9 @@ void Evtf573_BattleItemsList(EvtData *evt) {
    }
 }
 
-#undef EVTF
-#define EVTF 031
-void Evtf031_BattleSpellsList(EvtData *evt) {
+#undef OBJF
+#define OBJF 031
+void Objf031_BattleSpellsList(Object *obj) {
    static u8 mpBuffer[9] = "\x82\x6c\x82\x6f\x81\x40\x81\x40\x00";
    UnitStatus *unit;
    s32 spellIdx;
@@ -2091,11 +2091,11 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
    s32 extraTopMargin, extraHeight, shorten;
    s32 numSpells;
    s32 spell;
-   // evt->state2: page number
+   // obj->state2: page number
 
-   unit = EVT.unit;
+   unit = OBJ.unit;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       DrawWindow(0x3e, 400, 200, 72, 36, 214, 140, WBS_CROSSED, 0);
       EmbedIntAsSjis(unit->mp, &mpBuffer[4], 2);
@@ -2144,9 +2144,9 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
          DrawWindow(0x38, 0, 50, 144, 190, 70, 8, WBS_CROSSED, 10);
 
          i = 0;
-         spellIdx = evt->state2 * 10 + 1;
+         spellIdx = obj->state2 * 10 + 1;
 
-         while (spellIdx < evt->state2 * 10 + 1 + 10) {
+         while (spellIdx < obj->state2 * 10 + 1 + 10) {
             DrawText(12, i * 17 + 60, 20, 0, 0, gSpellNames[spellIdx]);
             i++;
             spellIdx++;
@@ -2155,7 +2155,7 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
          DisplayBasicWindow(0x38);
       }
 
-      evt->state++;
+      obj->state++;
       break;
 
    case 1:
@@ -2163,30 +2163,30 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
       if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
          // Paged menu to select from all spells; for debug mode / vandalier
          if (gPadStateNewPresses & PAD_RIGHT) {
-            if (evt->state2 != 6) {
-               evt->state2++; // Next page
+            if (obj->state2 != 6) {
+               obj->state2++; // Next page
             }
             DrawWindow(0x38, 0, 50, 144, 190, 70, 8, WBS_CROSSED, 10);
 
             i = 0;
-            spellIdx = evt->state2 * 10 + 1;
+            spellIdx = obj->state2 * 10 + 1;
 
-            while (spellIdx < evt->state2 * 10 + 1 + 10) {
+            while (spellIdx < obj->state2 * 10 + 1 + 10) {
                DrawText(12, i * 17 + 60, 20, 0, 0, gSpellNames[spellIdx]);
                i++;
                spellIdx++;
             }
          }
          if (gPadStateNewPresses & PAD_LEFT) {
-            if (evt->state2 != 0) {
-               evt->state2--; // Previous page
+            if (obj->state2 != 0) {
+               obj->state2--; // Previous page
             }
             DrawWindow(0x38, 0, 50, 144, 190, 70, 8, WBS_CROSSED, 8);
 
             i = 0;
-            spellIdx = evt->state2 * 10 + 1;
+            spellIdx = obj->state2 * 10 + 1;
 
-            while (spellIdx < evt->state2 * 10 + 1 + 10) {
+            while (spellIdx < obj->state2 * 10 + 1 + 10) {
                DrawText(12, i * 17 + 60, 20, 0, 0, gSpellNames[spellIdx]);
                i++;
                spellIdx++;
@@ -2199,7 +2199,7 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
          CloseWindow(0x38);
          CloseWindow(0x3e);
          gSignal2 = 1;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
          CloseWindow(0x3c);
          CloseWindow(0x3d);
          return;
@@ -2207,7 +2207,7 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
       if (gWindowChoice.s.windowId == 0x38 && gWindowChoice.s.choice != 0) {
          gCurrentSpell = unit->spells[gWindowChoice.s.choice - 1];
          if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
-            gCurrentSpell = gWindowChoice.s.choice + evt->state2 * 10;
+            gCurrentSpell = gWindowChoice.s.choice + obj->state2 * 10;
          }
          if (unit->mp < gSpells[gCurrentSpell].mpCost) {
             gCurrentSpell = SPELL_NULL;
@@ -2217,7 +2217,7 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
             CloseWindow(0x3e);
             gSignal2 = 2;
             gClearSavedPadState = 0;
-            evt->functionIndex = EVTF_NULL;
+            obj->functionIndex = OBJF_NULL;
             CloseWindow(0x3c);
             CloseWindow(0x3d);
             return;
@@ -2226,21 +2226,21 @@ void Evtf031_BattleSpellsList(EvtData *evt) {
       break;
    }
 
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
       DrawWindow(0x3c, 0, 0, 288, 36, 14, 192, WBS_CROSSED, 0);
       DisplayBasicWindow(0x3c);
       DisplayBasicWindow(0x3d);
-      evt->state3++;
+      obj->state3++;
       break;
    case 1:
       spellIdx = GetWindowChoice(0x38);
       spell = unit->spells[spellIdx - 1];
       if (gState.debug || unit->weapon == ITEM_V_HEART_2) {
-         spell = spellIdx + evt->state2 * 10;
+         spell = spellIdx + obj->state2 * 10;
       }
-      if (EVT.spell != spell) {
-         EVT.spell = spell;
+      if (OBJ.spell != spell) {
+         OBJ.spell = spell;
          DrawWindow(60, 0, 0, 288, 36, 4, 192, WBS_CROSSED, 0);
          DrawText_Internal(12, 10, 35, 2, 0, gSpellDescriptions[spell], 0);
       }

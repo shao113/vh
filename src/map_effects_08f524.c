@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "field.h"
 #include "state.h"
@@ -14,119 +14,119 @@ static MapTileModel sMapTileModels_801009bc[4] = {
 #include "assets/801009bc.inc"
 };
 
-#undef EVTF
-#define EVTF 673
-void Evtf673_Map32_Scn63_Cinematic(EvtData *evt) {
-   EvtData *focus;
+#undef OBJF
+#define OBJF 673
+void Objf673_Map32_Scn63_Cinematic(Object *obj) {
+   Object *focus;
 
-   focus = EVT.focus;
+   focus = OBJ.focus;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      AssignFromMainCamera(&EVT.camera);
+      AssignFromMainCamera(&OBJ.camera);
       gPlayerControlSuppressed = 1;
-      evt->state++;
-      evt->x1.n = CV(108.0);
-      evt->z1.n = CV(4.0);
-      evt->y1.n = CV(8.0);
-      evt->x2.n = CV(60.0);
-      evt->z2.n = CV(4.0);
-      evt->y2.n = CV(2.5);
+      obj->state++;
+      obj->x1.n = CV(108.0);
+      obj->z1.n = CV(4.0);
+      obj->y1.n = CV(8.0);
+      obj->x2.n = CV(60.0);
+      obj->z2.n = CV(4.0);
+      obj->y2.n = CV(2.5);
       PerformAudioCommand(AUDIO_CMD_PLAY_XA(84));
-      focus = Evt_GetUnused();
-      focus->functionIndex = EVTF_NOOP;
-      EVT.focus = focus;
-      focus->x1.n = evt->x2.n;
-      focus->z1.n = evt->z2.n;
-      focus->y1.n = evt->y2.n;
+      focus = Obj_GetUnused();
+      focus->functionIndex = OBJF_NOOP;
+      OBJ.focus = focus;
+      focus->x1.n = obj->x2.n;
+      focus->z1.n = obj->z2.n;
+      focus->y1.n = obj->y2.n;
       gState.focus = focus;
-      func_800985F0(evt);
+      func_800985F0(obj);
       break;
 
    case 1:
-      func_800986F0(evt);
-      focus->x1.n = evt->x2.n;
-      focus->z1.n = evt->z2.n;
-      focus->y1.n = evt->y2.n;
-      evt->state++;
+      func_800986F0(obj);
+      focus->x1.n = obj->x2.n;
+      focus->z1.n = obj->z2.n;
+      focus->y1.n = obj->y2.n;
+      obj->state++;
 
    // fallthrough
    case 2:
-      evt->x1.n -= CV(0.5);
-      evt->y1.n += CV(0.0625);
-      func_800986F0(evt);
-      focus->x1.n = evt->x2.n;
-      focus->z1.n = evt->z2.n;
-      focus->y1.n = evt->y2.n;
+      obj->x1.n -= CV(0.5);
+      obj->y1.n += CV(0.0625);
+      func_800986F0(obj);
+      focus->x1.n = obj->x2.n;
+      focus->z1.n = obj->z2.n;
+      focus->y1.n = obj->y2.n;
 
-      if (++evt->mem >= 64) {
-         evt->state++;
-         evt->z3.n = CV(16.0);
-         evt->state3 = 0;
+      if (++obj->mem >= 64) {
+         obj->state++;
+         obj->z3.n = CV(16.0);
+         obj->state3 = 0;
       }
       break;
 
    case 3:
-      evt->x1.n = evt->x2.n + (evt->z3.n * rcos(evt->state3) >> 12);
-      evt->z1.n = evt->z2.n + (evt->z3.n * rsin(evt->state3) >> 12);
-      evt->y1.n -= CV(0.015625);
-      evt->x2.n -= CV(0.25);
+      obj->x1.n = obj->x2.n + (obj->z3.n * rcos(obj->state3) >> 12);
+      obj->z1.n = obj->z2.n + (obj->z3.n * rsin(obj->state3) >> 12);
+      obj->y1.n -= CV(0.015625);
+      obj->x2.n -= CV(0.25);
 
-      if (evt->x2.n < CV(7.0)) {
-         evt->x2.n = CV(7.0);
+      if (obj->x2.n < CV(7.0)) {
+         obj->x2.n = CV(7.0);
       }
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt->z3.n -= CV(0.25);
-         if (evt->z3.n <= CV(5.5)) {
-            EVT.unused_0x3C = 0;
-            evt->state2++;
+         obj->z3.n -= CV(0.25);
+         if (obj->z3.n <= CV(5.5)) {
+            OBJ.unused_0x3C = 0;
+            obj->state2++;
          }
          break;
 
       case 1:
-         evt->z3.n += CV(0.375);
-         if (evt->z3.n >= CV(24.0)) {
-            evt->state2++;
+         obj->z3.n += CV(0.375);
+         if (obj->z3.n >= CV(24.0)) {
+            obj->state2++;
          }
          break;
 
       case 2:
-         evt->z3.n -= CV(0.0625);
-         if (evt->z3.n <= CV(16.5)) {
-            evt->state2++;
+         obj->z3.n -= CV(0.0625);
+         if (obj->z3.n <= CV(16.5)) {
+            obj->state2++;
          }
          break;
       }
 
-      func_800986F0((EvtData *)evt);
-      focus->x1.n = evt->x2.n;
-      focus->z1.n = evt->z2.n;
-      focus->y1.n = evt->y2.n;
-      evt->state3 -= 8;
+      func_800986F0((Object *)obj);
+      focus->x1.n = obj->x2.n;
+      focus->z1.n = obj->z2.n;
+      focus->y1.n = obj->y2.n;
+      obj->state3 -= 8;
 
-      if (++evt->mem >= 512) {
-         evt->mem = 0;
-         evt->state++;
+      if (++obj->mem >= 512) {
+         obj->mem = 0;
+         obj->state++;
       }
       break;
 
    case 4:
-      EaseOutCamera(&EVT.camera, 3);
-      if (++evt->mem >= 64) {
-         evt->state++;
+      EaseOutCamera(&OBJ.camera, 3);
+      if (++obj->mem >= 64) {
+         obj->state++;
       }
       break;
 
    case 5:
-      AssignToMainCamera(&EVT.camera);
+      AssignToMainCamera(&OBJ.camera);
       gState.focus = NULL;
-      evt->state++;
+      obj->state++;
       break;
 
    case 6:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 
@@ -156,9 +156,9 @@ void Map32_RemoveCar(s32 idx) {
    }
 }
 
-#undef EVTF
-#define EVTF 650
-void Evtf650_Map32_CarRelease(EvtData *evt) {
+#undef OBJF
+#define OBJF 650
+void Objf650_Map32_CarRelease(Object *obj) {
    extern void ShiftTile(MapTileModel *, s16, s16);
 
    static s32 audioCommands[5] = {AUDIO_CMD_PLAY_XA(85), AUDIO_CMD_PLAY_XA(85),
@@ -167,8 +167,8 @@ void Evtf650_Map32_CarRelease(EvtData *evt) {
 
    s32 i, j, k;
    s16 startX, endX;
-   EvtData *evt_s0;
-   EvtData *unitSprite;
+   Object *obj_s0;
+   Object *unitSprite;
    UnitStatus *unit;
    SVECTOR translation;
    SVECTOR rotation = {0, 0, 0};
@@ -178,48 +178,48 @@ void Evtf650_Map32_CarRelease(EvtData *evt) {
    s16 savedCamPosX, savedCamPosY;
    s32 flag;
 
-   startX = EVT.startX / CV(1.0);
-   endX = EVT.endX / CV(1.0);
+   startX = OBJ.startX / CV(1.0);
+   endX = OBJ.endX / CV(1.0);
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       for (i = 0; i < ARRAY_COUNT(sMapTileModels_801009bc); i++) {
          UpdateMapTileLighting(&sMapTileModels_801009bc[i]);
       }
       if (gState.mapState.s.field_0x0 != 0) {
          Map32_RemoveCar(gState.mapState.s.field_0x0 - 1);
-         EVT.startX = sCarXPositions[gState.mapState.s.field_0x0 - 1];
-         EVT.carIdx = gState.mapState.s.field_0x0;
+         OBJ.startX = sCarXPositions[gState.mapState.s.field_0x0 - 1];
+         OBJ.carIdx = gState.mapState.s.field_0x0;
       } else {
-         EVT.startX = CV(2.0);
-         EVT.carIdx = 0;
-         EVT.endX = 0;
+         OBJ.startX = CV(2.0);
+         OBJ.carIdx = 0;
+         OBJ.endX = 0;
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
-      if (gState.mapState.s.field_0x0 > EVT.carIdx && EVT.carIdx <= 3) {
-         AssignFromMainCamera(&EVT.camera);
-         evt->x1.n = sCarXPositions[EVT.carIdx];
-         evt->z1.n = CV(6.0);
-         evt->y1.n = CV(4.0);
+      if (gState.mapState.s.field_0x0 > OBJ.carIdx && OBJ.carIdx <= 3) {
+         AssignFromMainCamera(&OBJ.camera);
+         obj->x1.n = sCarXPositions[OBJ.carIdx];
+         obj->z1.n = CV(6.0);
+         obj->y1.n = CV(4.0);
 
-         evt_s0 = Evt_GetUnused();
-         evt_s0->functionIndex = EVTF_CAMERA_TBD_026;
-         evt_s0->d.evtf026.target = evt;
-         evt_s0->d.evtf026.zoom = 384;
+         obj_s0 = Obj_GetUnused();
+         obj_s0->functionIndex = OBJF_CAMERA_TBD_026;
+         obj_s0->d.objf026.target = obj;
+         obj_s0->d.objf026.zoom = 384;
 
-         evt->state2 = 0;
-         evt->state++;
-         EVT.endX = sCarXPositions[EVT.carIdx];
-         evt->x2.n = 0;
-         evt->x3.n = -3;
-         EVT.todo_x26 = 0;
+         obj->state2 = 0;
+         obj->state++;
+         OBJ.endX = sCarXPositions[OBJ.carIdx];
+         obj->x2.n = 0;
+         obj->x3.n = -3;
+         OBJ.todo_x26 = 0;
 
-         startX = EVT.startX / CV(1.0);
-         endX = EVT.endX / CV(1.0);
-         EVT.hasCasualties = 0;
+         startX = OBJ.startX / CV(1.0);
+         endX = OBJ.endX / CV(1.0);
+         OBJ.hasCasualties = 0;
          k = 0;
          for (i = startX; i < endX; i++) {
             for (j = 0; j < 8; j++) {
@@ -229,53 +229,53 @@ void Evtf650_Map32_CarRelease(EvtData *evt) {
             }
          }
          if (k != 0) {
-            EVT.hasCasualties = 1;
+            OBJ.hasCasualties = 1;
          }
-         if (EVT.hasCasualties) {
+         if (OBJ.hasCasualties) {
             PerformAudioCommand(0x1000 + audioCommands[0]);
          } else {
-            PerformAudioCommand(0x1000 + audioCommands[EVT.carIdx]);
+            PerformAudioCommand(0x1000 + audioCommands[OBJ.carIdx]);
          }
          gPlayerControlSuppressed = 1;
       }
       break;
 
    case 2:
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         if (++evt->state3 >= 32) {
-            evt_s0 = Evt_GetUnused();
-            evt_s0->functionIndex = EVTF_BOUNCE_ZOOM;
-            if (EVT.hasCasualties) {
+         if (++obj->state3 >= 32) {
+            obj_s0 = Obj_GetUnused();
+            obj_s0->functionIndex = OBJF_BOUNCE_ZOOM;
+            if (OBJ.hasCasualties) {
                PerformAudioCommand(audioCommands[0]);
             } else {
-               PerformAudioCommand(audioCommands[EVT.carIdx]);
+               PerformAudioCommand(audioCommands[OBJ.carIdx]);
             }
-            evt->state3 = 0;
-            evt->state2++;
+            obj->state3 = 0;
+            obj->state2++;
          }
          break;
 
       case 1:
-         if (++evt->state3 >= 4) {
+         if (++obj->state3 >= 4) {
             for (i = 0; i < 16; i++) {
-               evt_s0 = CreatePositionedEvt(evt, EVTF_MAP32_SMOKESTACK_PARTICLE);
-               evt_s0->z2.n = rand() % CV(0.37890625) - CV(0.1875);
-               evt_s0->x2.n = rand() % CV(0.015625) + CV(0.109375);
-               evt_s0->y2.n = rand() % CV(0.015625) + CV(0.0078125);
-               evt_s0->z3.n = evt_s0->z2.n >> 2;
-               evt_s0->x3.n = -(rand() % CV(0.015625) + CV(0.125));
-               evt_s0->z1.n = i * CV(0.125) + CV(4.0);
+               obj_s0 = CreatePositionedObj(obj, OBJF_MAP32_SMOKESTACK_PARTICLE);
+               obj_s0->z2.n = rand() % CV(0.37890625) - CV(0.1875);
+               obj_s0->x2.n = rand() % CV(0.015625) + CV(0.109375);
+               obj_s0->y2.n = rand() % CV(0.015625) + CV(0.0078125);
+               obj_s0->z3.n = obj_s0->z2.n >> 2;
+               obj_s0->x3.n = -(rand() % CV(0.015625) + CV(0.125));
+               obj_s0->z1.n = i * CV(0.125) + CV(4.0);
             }
-            evt->state3 = 0;
-            evt->state2++;
+            obj->state3 = 0;
+            obj->state2++;
          }
          break;
 
       case 2:
-         if (++evt->state3 >= 30) {
-            startX = EVT.startX / CV(1.0);
-            endX = EVT.endX / CV(1.0);
+         if (++obj->state3 >= 30) {
+            startX = OBJ.startX / CV(1.0);
+            endX = OBJ.endX / CV(1.0);
             k = 0;
             for (i = startX; i < endX; i++) {
                for (j = 0; j < 8; j++) {
@@ -286,120 +286,120 @@ void Evtf650_Map32_CarRelease(EvtData *evt) {
             }
             if (k != 0) {
                PerformAudioCommand(AUDIO_CMD_FADE_OUT_128_1);
-               evt->state2 += 2;
-               evt->state3 = 0;
+               obj->state2 += 2;
+               obj->state3 = 0;
             } else {
-               evt->state2++;
-               evt->state3 = 0;
+               obj->state2++;
+               obj->state3 = 0;
             }
          }
          break;
 
       case 3:
-         if (++evt->state3 >= 15) {
-            evt->state3 = 0;
-            evt->state2 += 3;
+         if (++obj->state3 >= 15) {
+            obj->state3 = 0;
+            obj->state2 += 3;
          }
          break;
 
       case 4:
-         if (++evt->state3 >= 0) {
-            evt->state2++;
-            evt->state3 = 0;
+         if (++obj->state3 >= 0) {
+            obj->state2++;
+            obj->state3 = 0;
          }
          break;
 
       case 5:
-         startX = EVT.startX / CV(1.0);
-         endX = EVT.endX / CV(1.0);
+         startX = OBJ.startX / CV(1.0);
+         endX = OBJ.endX / CV(1.0);
 
-         switch (evt->state3) {
+         switch (obj->state3) {
          case 0:
-            EVT.tileX = startX;
-            evt->state3++;
+            OBJ.tileX = startX;
+            obj->state3++;
 
          // fallthrough
          case 1:
-            EVT.tileZ = 0;
-            evt->state3++;
+            OBJ.tileZ = 0;
+            obj->state3++;
 
          // fallthrough
          case 2:
-            i = EVT.tileX;
-            j = EVT.tileZ;
+            i = OBJ.tileX;
+            j = OBJ.tileZ;
             if (gMapUnitsPtr[j][i].s.unitIdx != 0) {
                gState.msgFinished = 0;
                gTileStateGridPtr[j][i].action = TA_X20;
-               evt->state3++;
+               obj->state3++;
             } else {
-               evt->state3 += 3;
+               obj->state3 += 3;
             }
             break;
 
          case 3:
             if (gState.msgFinished) {
-               evt->state3++;
+               obj->state3++;
             }
             break;
 
          case 4:
-            evt->state3++;
+            obj->state3++;
 
          // fallthrough
          case 5:
-            EVT.tileZ++;
-            if (EVT.tileZ >= 8) {
-               evt->state3++;
+            OBJ.tileZ++;
+            if (OBJ.tileZ >= 8) {
+               obj->state3++;
             } else {
-               evt->state3 = 2;
+               obj->state3 = 2;
             }
             break;
 
          case 6:
-            EVT.tileX++;
-            if (EVT.tileX >= endX) {
-               EVT.timer = 0;
-               evt->state3++;
-               evt_s0 = Evt_GetUnused();
-               evt_s0->functionIndex = EVTF_CAMERA_TBD_026;
-               evt_s0->d.evtf026.target = evt;
-               evt_s0->d.evtf026.zoom = 384;
-               PerformAudioCommand(0x1000 + audioCommands[EVT.carIdx]); // Prepare XA
+            OBJ.tileX++;
+            if (OBJ.tileX >= endX) {
+               OBJ.timer = 0;
+               obj->state3++;
+               obj_s0 = Obj_GetUnused();
+               obj_s0->functionIndex = OBJF_CAMERA_TBD_026;
+               obj_s0->d.objf026.target = obj;
+               obj_s0->d.objf026.zoom = 384;
+               PerformAudioCommand(0x1000 + audioCommands[OBJ.carIdx]); // Prepare XA
             } else {
-               evt->state3 = 1;
+               obj->state3 = 1;
             }
             break;
 
          case 7:
-            if (++EVT.timer >= 32) {
-               PerformAudioCommand(audioCommands[EVT.carIdx]); // Play XA
+            if (++OBJ.timer >= 32) {
+               PerformAudioCommand(audioCommands[OBJ.carIdx]); // Play XA
                for (i = 0; i < 16; i++) {
-                  evt_s0 = CreatePositionedEvt(evt, EVTF_MAP32_SMOKESTACK_PARTICLE);
-                  evt_s0->z2.n = rand() % CV(0.37890625) - CV(0.1875);
-                  evt_s0->x2.n = rand() % CV(0.015625) + CV(0.109375);
-                  evt_s0->y2.n = rand() % CV(0.015625) + CV(0.0078125);
-                  evt_s0->z3.n = evt_s0->z2.n >> 2;
-                  evt_s0->x3.n = -(rand() % CV(0.015625) + CV(0.125));
-                  evt_s0->z1.n = i * CV(0.125) + CV(4.0);
+                  obj_s0 = CreatePositionedObj(obj, OBJF_MAP32_SMOKESTACK_PARTICLE);
+                  obj_s0->z2.n = rand() % CV(0.37890625) - CV(0.1875);
+                  obj_s0->x2.n = rand() % CV(0.015625) + CV(0.109375);
+                  obj_s0->y2.n = rand() % CV(0.015625) + CV(0.0078125);
+                  obj_s0->z3.n = obj_s0->z2.n >> 2;
+                  obj_s0->x3.n = -(rand() % CV(0.015625) + CV(0.125));
+                  obj_s0->z1.n = i * CV(0.125) + CV(4.0);
                }
-               EVT.timer = 0;
-               evt->state3++;
+               OBJ.timer = 0;
+               obj->state3++;
             }
             break;
 
          case 8:
-            if (++EVT.timer >= 60) {
-               evt->state3 = 0;
-               evt->state2++;
+            if (++OBJ.timer >= 60) {
+               obj->state3 = 0;
+               obj->state2++;
             }
             break;
-         } // switch (evt->state3) (via state:2->state2:5)
+         } // switch (obj->state3) (via state:2->state2:5)
 
          break;
 
       case 6:
-         startX = EVT.startX / CV(1.0);
-         endX = EVT.endX / CV(1.0);
+         startX = OBJ.startX / CV(1.0);
+         endX = OBJ.endX / CV(1.0);
 
          for (i = startX; i < endX; i++) {
             for (j = 0; j < 8; j++) {
@@ -429,19 +429,19 @@ void Evtf650_Map32_CarRelease(EvtData *evt) {
          }
 
          gState.fieldRenderingDisabled = 1;
-         evt->state3 = 0;
-         evt->state2 = 0;
-         evt->state++;
+         obj->state3 = 0;
+         obj->state2 = 0;
+         obj->state++;
 
          break;
-      } // switch (evt->state2) (via state:2)
+      } // switch (obj->state2) (via state:2)
 
       break;
 
    case 3:
       gCameraZoom.vz += 8;
-      startX = EVT.startX / CV(1.0);
-      endX = EVT.endX / CV(1.0);
+      startX = OBJ.startX / CV(1.0);
+      endX = OBJ.endX / CV(1.0);
 
       k = endX + 16;
       if (k > 64) {
@@ -484,7 +484,7 @@ void Evtf650_Map32_CarRelease(EvtData *evt) {
       TransMatrix(&gCameraMatrix, &gCameraZoom);
       SetRotMatrix(&gCameraMatrix);
       SetTransMatrix(&gCameraMatrix);
-      gCameraPos.vx += EVT.todo_x24;
+      gCameraPos.vx += OBJ.todo_x24;
       RotTrans(&gCameraPos, (VECTOR *)gCameraMatrix.t, &flag);
       SetTransMatrix(&gCameraMatrix);
 
@@ -495,33 +495,33 @@ void Evtf650_Map32_CarRelease(EvtData *evt) {
          }
       }
 
-      evt_s0 = Evt_GetUnused();
-      evt_s0->functionIndex = EVTF_NOOP;
+      obj_s0 = Obj_GetUnused();
+      obj_s0->functionIndex = OBJF_NOOP;
 
       for (i = 0; i < UNIT_CT; i++) {
          if (gUnits[i].idx != 0) {
             unit = &gUnits[i];
             unitSprite = unit->sprite;
-            if (unitSprite->x1.n < EVT.endX) {
+            if (unitSprite->x1.n < OBJ.endX) {
                unitSprite->d.sprite.hidden = 1;
-               CopyEvtData(unitSprite, evt_s0);
-               evt_s0->d.sprite.hidden = 0;
-               RenderUnitSprite(gGraphicsPtr->ot, evt_s0, 0);
+               CopyObject(unitSprite, obj_s0);
+               obj_s0->d.sprite.hidden = 0;
+               RenderUnitSprite(gGraphicsPtr->ot, obj_s0, 0);
             }
          }
       }
 
-      evt_s0->functionIndex = EVTF_NULL;
+      obj_s0->functionIndex = OBJF_NULL;
       PopMatrix();
       gCameraPos.vx = savedCamPosX;
-      EVT.todo_x26 += evt->x2.n;
-      evt->x2.n += evt->x3.n;
-      EVT.todo_x24 = EVT.todo_x26 >> 3;
-      if (EVT.todo_x24 > -0x400) {
+      OBJ.todo_x26 += obj->x2.n;
+      obj->x2.n += obj->x3.n;
+      OBJ.todo_x24 = OBJ.todo_x26 >> 3;
+      if (OBJ.todo_x24 > -0x400) {
          break;
       }
 
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 4:
@@ -538,21 +538,21 @@ void Evtf650_Map32_CarRelease(EvtData *evt) {
          }
       }
       gState.fieldRenderingDisabled = 0;
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 5:
-      EaseOutCamera(&EVT.camera, 2);
-      if (++evt->state3 >= 32) {
-         AssignToMainCamera(&EVT.camera);
-         EVT.todo_x24 = 0;
-         EVT.carIdx++;
-         EVT.startX = EVT.endX;
-         evt->state = 1;
-         evt->state3 = 0;
+      EaseOutCamera(&OBJ.camera, 2);
+      if (++obj->state3 >= 32) {
+         AssignToMainCamera(&OBJ.camera);
+         OBJ.todo_x24 = 0;
+         OBJ.carIdx++;
+         OBJ.startX = OBJ.endX;
+         obj->state = 1;
+         obj->state3 = 0;
          gPlayerControlSuppressed = 0;
          gState.field_0x96 = 0;
-         if (EVT.carIdx > 2) {
+         if (OBJ.carIdx > 2) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_4_1);
          }
       }

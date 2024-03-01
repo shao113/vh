@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "field.h"
 #include "state.h"
@@ -10,207 +10,207 @@ void DepressButton(s32 x, s32 z) {
    gTerrainPtr[z][x].s.elevation = -gMapRowPointers[z][x].vertices[0].vy >> 4;
 }
 
-#undef EVTF
-#define EVTF 346
-void Evtf346_ButtonDepress(EvtData *evt) {
-   switch (evt->state) {
+#undef OBJF
+#define OBJF 346
+void Objf346_ButtonDepress(Object *obj) {
+   switch (obj->state) {
    case 0:
-      EVT.dstCamRotY = GetBestViewOfTarget(evt->z1.s.hi, evt->x1.s.hi, 1);
+      OBJ.dstCamRotY = GetBestViewOfTarget(obj->z1.s.hi, obj->x1.s.hi, 1);
       gCameraRotation.vy &= 0xfff;
-      EVT.dstCamRotY = func_800A96A8(gCameraRotation.vy, DEG(135));
-      evt->state2 = 48;
-      evt->y1.n = GetTerrainElevation(evt->z1.s.hi, evt->x1.s.hi);
+      OBJ.dstCamRotY = func_800A96A8(gCameraRotation.vy, DEG(135));
+      obj->state2 = 48;
+      obj->y1.n = GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi);
       PerformAudioCommand(AUDIO_CMD_PREPARE_XA(33));
-      evt->state++;
+      obj->state++;
       break;
 
    case 1:
-      if (--evt->state2 <= 0) {
-         gCameraRotation.vy = EVT.dstCamRotY;
+      if (--obj->state2 <= 0) {
+         gCameraRotation.vy = OBJ.dstCamRotY;
          gCameraRotation.vx = DEG(33.75);
-         evt->state3 = 4;
+         obj->state3 = 4;
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(33));
-         evt->state++;
+         obj->state++;
       }
-      PanCamera(evt->x1.n, evt->y1.n, evt->z1.n, 3);
-      gCameraRotation.vy += (EVT.dstCamRotY - gCameraRotation.vy) >> 3;
+      PanCamera(obj->x1.n, obj->y1.n, obj->z1.n, 3);
+      gCameraRotation.vy += (OBJ.dstCamRotY - gCameraRotation.vy) >> 3;
       gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 3;
       gCameraZoom.vz += (384 - gCameraZoom.vz) >> 3;
       break;
 
    case 2:
-      AdjustFaceElevation(&OBJ_TILE_MODEL(evt), 0, 4);
-      OBJ_TERRAIN(evt).s.elevation = -OBJ_TILE_MODEL(evt).vertices[0].vy >> 4;
-      if (--evt->state3 <= 0) {
-         evt->state3 = 32;
-         evt->state++;
+      AdjustFaceElevation(&OBJ_TILE_MODEL(obj), 0, 4);
+      OBJ_TERRAIN(obj).s.elevation = -OBJ_TILE_MODEL(obj).vertices[0].vy >> 4;
+      if (--obj->state3 <= 0) {
+         obj->state3 = 32;
+         obj->state++;
       }
       break;
 
    case 3:
-      if (--evt->state3 <= 0) {
-         evt->state = 99;
+      if (--obj->state3 <= 0) {
+         obj->state = 99;
       }
       break;
 
    case 99:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 347
-void Evtf347_Map26(EvtData *evt) {
-   EvtData *buttonDepress;
+#undef OBJF
+#define OBJF 347
+void Objf347_Map26(Object *obj) {
+   Object *buttonDepress;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->state++;
+      obj->state++;
       if (gState.mapState.s.field_0x0 != 0) {
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
 
    // fallthrough
    case 1:
       if (gState.mapState.s.field_0x0 == 1) {
-         evt->state2 = 48;
-         AssignFromMainCamera(&EVT.camera);
+         obj->state2 = 48;
+         AssignFromMainCamera(&OBJ.camera);
 
-         buttonDepress = Evt_GetUnused();
-         buttonDepress->functionIndex = EVTF_BUTTON_DEPRESS;
+         buttonDepress = Obj_GetUnused();
+         buttonDepress->functionIndex = OBJF_BUTTON_DEPRESS;
          buttonDepress->x1.n = CV(35.0);
          buttonDepress->z1.n = CV(8.0);
-         EVT.buttonDepress = buttonDepress;
+         OBJ.buttonDepress = buttonDepress;
 
          gPlayerControlSuppressed = 1;
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 2:
-      buttonDepress = EVT.buttonDepress;
+      buttonDepress = OBJ.buttonDepress;
       if (buttonDepress->state == 99) {
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 3:
       gState.mapState.s.field_0x0 = 2;
-      evt->state++;
+      obj->state++;
       break;
 
    case 4:
       if (gState.mapState.s.field_0x0 == 3) {
          gCameraRotation.vy &= 0xfff;
-         EVT.camera.posX = func_800A96A8(gCameraRotation.vy, EVT.camera.posX);
-         evt->state3 = 32;
-         evt->state++;
+         OBJ.camera.posX = func_800A96A8(gCameraRotation.vy, OBJ.camera.posX);
+         obj->state3 = 32;
+         obj->state++;
       }
       break;
 
    case 5:
-      EaseOutCamera(&EVT.camera, 2);
-      if (--evt->state3 <= 0) {
-         AssignToMainCamera(&EVT.camera);
+      EaseOutCamera(&OBJ.camera, 2);
+      if (--obj->state3 <= 0) {
+         AssignToMainCamera(&OBJ.camera);
          gPlayerControlSuppressed = 0;
          gState.signal = 0;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 352
-void Evtf352_Map29(EvtData *evt) {
-   EvtData *buttonDepress;
+#undef OBJF
+#define OBJF 352
+void Objf352_Map29(Object *obj) {
+   Object *buttonDepress;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->state++;
+      obj->state++;
       if (gState.mapState.s.field_0x0 != 0) {
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
       break;
 
    // fallthrough
    case 1:
       if (gState.mapState.s.field_0x0 == 1) {
-         evt->state2 = 48;
-         AssignFromMainCamera(&EVT.camera);
+         obj->state2 = 48;
+         AssignFromMainCamera(&OBJ.camera);
 
-         buttonDepress = Evt_GetUnused();
-         buttonDepress->functionIndex = EVTF_BUTTON_DEPRESS;
+         buttonDepress = Obj_GetUnused();
+         buttonDepress->functionIndex = OBJF_BUTTON_DEPRESS;
          buttonDepress->x1.n = CV(18.0);
          buttonDepress->z1.n = CV(12.0);
-         EVT.buttonDepress = buttonDepress;
+         OBJ.buttonDepress = buttonDepress;
 
          gPlayerControlSuppressed = 1;
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 2:
-      buttonDepress = EVT.buttonDepress;
+      buttonDepress = OBJ.buttonDepress;
       if (buttonDepress->state == 99) {
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 3:
       gState.mapState.s.field_0x0 = 2;
-      evt->state++;
+      obj->state++;
       break;
 
    case 4:
       if (gState.mapState.s.field_0x0 == 3) {
          gCameraRotation.vy &= 0xfff;
-         EVT.camera.posX = func_800A96A8(gCameraRotation.vy, EVT.camera.posX);
-         evt->state3 = 32;
-         evt->state++;
+         OBJ.camera.posX = func_800A96A8(gCameraRotation.vy, OBJ.camera.posX);
+         obj->state3 = 32;
+         obj->state++;
       }
       break;
 
    case 5:
-      EaseOutCamera(&EVT.camera, 2);
-      if (--evt->state3 <= 0) {
-         AssignToMainCamera(&EVT.camera);
+      EaseOutCamera(&OBJ.camera, 2);
+      if (--obj->state3 <= 0) {
+         AssignToMainCamera(&OBJ.camera);
          gPlayerControlSuppressed = 0;
          gState.signal = 0;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 667
-void Evtf667_Map14_LowerSandTile(EvtData *evt) {
+#undef OBJF
+#define OBJF 667
+void Objf667_Map14_LowerSandTile(Object *obj) {
    extern void UpdateTileElevation(u8, u8);
 
    s32 tileZ, tileX;
    s32 i;
    MapTileModel *tileModel;
 
-   tileModel = &OBJ_TILE_MODEL(evt);
-   tileX = evt->x1.s.hi;
-   tileZ = evt->z1.s.hi;
+   tileModel = &OBJ_TILE_MODEL(obj);
+   tileX = obj->x1.s.hi;
+   tileZ = obj->z1.s.hi;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->state3 = 0;
-      evt->state++;
+      obj->state3 = 0;
+      obj->state++;
 
    // fallthrough
    case 1:
-      if (evt->mem > evt->state2) {
-         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, evt->state2);
-         evt->mem -= evt->state2;
+      if (obj->mem > obj->state2) {
+         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, obj->state2);
+         obj->mem -= obj->state2;
       } else {
-         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, evt->mem);
-         evt->mem = 0;
-         evt->state++;
+         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, obj->mem);
+         obj->mem = 0;
+         obj->state++;
       }
       UpdateMapTileLighting(tileModel);
       gTerrainPtr[tileZ][tileX].s.elevation = -gMapRowPointers[tileZ][tileX].vertices[0].vy >> 4;
@@ -222,41 +222,41 @@ void Evtf667_Map14_LowerSandTile(EvtData *evt) {
       }
       UpdateTileElevation(tileZ, tileX);
       UpdateMapTileLighting(tileModel);
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 669
-void Evtf669_Map14_RaiseSandTile(EvtData *evt) {
+#undef OBJF
+#define OBJF 669
+void Objf669_Map14_RaiseSandTile(Object *obj) {
    extern void UpdateTileElevation(u8, u8);
 
    s32 tileZ, tileX;
    s32 i;
    MapTileModel *tileModel;
 
-   tileModel = &OBJ_TILE_MODEL(evt);
-   tileX = evt->x1.s.hi;
-   tileZ = evt->z1.s.hi;
+   tileModel = &OBJ_TILE_MODEL(obj);
+   tileX = obj->x1.s.hi;
+   tileZ = obj->z1.s.hi;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->state3 = 0;
-      evt->state++;
+      obj->state3 = 0;
+      obj->state++;
       for (i = 1; i < 5; i++) {
          tileModel->gfx[i] = GFX_MAP_TEXTURE_1; // Flowing sand
       }
 
    // fallthrough
    case 1:
-      if (evt->mem < evt->state2) {
-         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, evt->state2);
-         evt->mem -= evt->state2;
+      if (obj->mem < obj->state2) {
+         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, obj->state2);
+         obj->mem -= obj->state2;
       } else {
-         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, evt->mem);
-         evt->mem = 0;
-         evt->state++;
+         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, obj->mem);
+         obj->mem = 0;
+         obj->state++;
       }
       UpdateMapTileLighting(tileModel);
       gTerrainPtr[tileZ][tileX].s.elevation = -gMapRowPointers[tileZ][tileX].vertices[0].vy >> 4;
@@ -265,7 +265,7 @@ void Evtf669_Map14_RaiseSandTile(EvtData *evt) {
    case 2:
       UpdateTileElevation(tileZ, tileX);
       UpdateMapTileLighting(tileModel);
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
@@ -290,11 +290,11 @@ void Map14_AdjustSandTile(s32 x, s32 z, s32 amount) {
 }
 
 void Map14_RaiseSandTile(s32 x, s32 z, s32 amount) {
-   EvtData *obj;
+   Object *obj;
 
    if ((x >= 0 && x < 18) && (z >= 0 && z < 18)) {
-      obj = Evt_GetUnused();
-      obj->functionIndex = EVTF_MAP14_RAISE_SAND_TILE;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP14_RAISE_SAND_TILE;
       obj->x1.s.hi = x;
       obj->z1.s.hi = z;
       obj->mem = amount;
@@ -303,11 +303,11 @@ void Map14_RaiseSandTile(s32 x, s32 z, s32 amount) {
 }
 
 void Map14_LowerSandTile(s32 x, s32 z, s32 amount) {
-   EvtData *obj;
+   Object *obj;
 
    if ((x >= 0 && x < 18) && (z >= 0 && z < 18)) {
-      obj = Evt_GetUnused();
-      obj->functionIndex = EVTF_MAP14_LOWER_SAND_TILE;
+      obj = Obj_GetUnused();
+      obj->functionIndex = OBJF_MAP14_LOWER_SAND_TILE;
       obj->x1.s.hi = x;
       obj->z1.s.hi = z;
       obj->mem = amount;
@@ -315,46 +315,46 @@ void Map14_LowerSandTile(s32 x, s32 z, s32 amount) {
    }
 }
 
-#undef EVTF
-#define EVTF 668
-void Evtf668_Map14_RaiseSandMound(EvtData *evt) {
+#undef OBJF
+#define OBJF 668
+void Objf668_Map14_RaiseSandMound(Object *obj) {
    s32 tileZ, tileX;
    s32 i;
    s32 count, offset;
    s32 amount;
    s32 ix, iz;
 
-   tileZ = evt->z1.s.hi;
-   tileX = evt->x1.s.hi;
+   tileZ = obj->z1.s.hi;
+   tileX = obj->x1.s.hi;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      Map14_RaiseSandTile(tileX, tileZ, evt->mem * -16);
-      evt->mem--;
-      EVT.count = 1;
-      EVT.offset = 1;
-      evt->state++;
-      evt->state3 = 0;
+      Map14_RaiseSandTile(tileX, tileZ, obj->mem * -16);
+      obj->mem--;
+      OBJ.count = 1;
+      OBJ.offset = 1;
+      obj->state++;
+      obj->state3 = 0;
       break;
 
    case 1:
-      if (++evt->state3 >= 8) {
-         evt->state3 = 0;
-         evt->state++;
+      if (++obj->state3 >= 8) {
+         obj->state3 = 0;
+         obj->state++;
       }
       break;
 
    case 2:
-      tileZ = evt->z1.s.hi;
-      tileX = evt->x1.s.hi;
-      amount = evt->mem;
+      tileZ = obj->z1.s.hi;
+      tileX = obj->x1.s.hi;
+      amount = obj->mem;
       if (amount <= 0) {
-         evt->state += 2;
+         obj->state += 2;
          return;
       }
 
-      count = EVT.count;
-      offset = EVT.offset;
+      count = OBJ.count;
+      offset = OBJ.offset;
 
       // 1
       iz = tileZ;
@@ -396,21 +396,21 @@ void Evtf668_Map14_RaiseSandMound(EvtData *evt) {
          ix--;
       }
 
-      evt->state++;
+      obj->state++;
       break;
 
    case 3:
-      if (++evt->state3 >= 8) {
-         EVT.count++;
-         EVT.offset++;
-         evt->mem--;
-         evt->state = 2;
-         evt->state3 = 0;
+      if (++obj->state3 >= 8) {
+         OBJ.count++;
+         OBJ.offset++;
+         obj->mem--;
+         obj->state = 2;
+         obj->state3 = 0;
       }
       break;
 
    case 4:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
@@ -471,47 +471,47 @@ void Map14_SetupSandMound(s32 x, s32 z, s32 size) {
    }
 }
 
-#undef EVTF
-#define EVTF 666
-void Evtf666_Map14_LowerSandMound(EvtData *evt) {
+#undef OBJF
+#define OBJF 666
+void Objf666_Map14_LowerSandMound(Object *obj) {
    s32 tileZ, tileX;
    s32 i;
    s32 count, offset;
    s32 amount;
    s32 ix, iz;
 
-   tileZ = evt->z1.s.hi;
-   tileX = evt->x1.s.hi;
-   amount = evt->mem;
+   tileZ = obj->z1.s.hi;
+   tileX = obj->x1.s.hi;
+   amount = obj->mem;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       Map14_LowerSandTile(tileX, tileZ, amount * 16);
-      evt->mem--;
-      EVT.count = 1;
-      EVT.offset = 1;
-      evt->state++;
-      evt->state3 = 0;
+      obj->mem--;
+      OBJ.count = 1;
+      OBJ.offset = 1;
+      obj->state++;
+      obj->state3 = 0;
       break;
 
    case 1:
-      if (++evt->state3 >= 8) {
-         evt->state3 = 0;
-         evt->state++;
+      if (++obj->state3 >= 8) {
+         obj->state3 = 0;
+         obj->state++;
       }
       break;
 
    case 2:
-      tileZ = evt->z1.s.hi;
-      tileX = evt->x1.s.hi;
-      amount = evt->mem;
+      tileZ = obj->z1.s.hi;
+      tileX = obj->x1.s.hi;
+      amount = obj->mem;
       if (amount <= 0) {
-         evt->state += 2;
+         obj->state += 2;
          return;
       }
 
-      count = EVT.count;
-      offset = EVT.offset;
+      count = OBJ.count;
+      offset = OBJ.offset;
 
       // 1
       iz = tileZ;
@@ -553,21 +553,21 @@ void Evtf666_Map14_LowerSandMound(EvtData *evt) {
          ix--;
       }
 
-      evt->state++;
+      obj->state++;
       break;
 
    case 3:
-      if (++evt->state3 >= 8) {
-         EVT.count++;
-         EVT.offset++;
-         evt->mem--;
-         evt->state = 2;
-         evt->state3 = 0;
+      if (++obj->state3 >= 8) {
+         OBJ.count++;
+         OBJ.offset++;
+         obj->mem--;
+         obj->state = 2;
+         obj->state3 = 0;
       }
       break;
 
    case 4:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       break;
    }
 }
@@ -634,171 +634,171 @@ void EaseOutCamera(Camera *camera, s16 smoothness) {
    EaseOutShort(&gCameraPos.vz, camera->posZ, smoothness, 2);
 }
 
-#undef EVTF
-#define EVTF 670
-void Evtf670_Map14_Sand(EvtData *evt) {
-   EvtData *mound;
+#undef OBJF
+#define OBJF 670
+void Objf670_Map14_Sand(Object *obj) {
+   Object *mound;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->state2 = 0;
+      obj->state2 = 0;
       if (gState.mapState.s.field_0x0 == 0) {
          Map14_SetupSandMound(6, 8, 6);
-         evt->z1.s.hi = 8;
-         evt->x1.s.hi = 6;
-         evt->state = 3;
+         obj->z1.s.hi = 8;
+         obj->x1.s.hi = 6;
+         obj->state = 3;
       } else {
-         evt->z1.s.hi = gState.mapState.s.field_0x1;
-         evt->x1.s.hi = gState.mapState.s.field_0x2;
-         Map14_SetupSandMound(evt->x1.s.hi, evt->z1.s.hi, 6);
-         evt->state = 3;
+         obj->z1.s.hi = gState.mapState.s.field_0x1;
+         obj->x1.s.hi = gState.mapState.s.field_0x2;
+         Map14_SetupSandMound(obj->x1.s.hi, obj->z1.s.hi, 6);
+         obj->state = 3;
       }
       break;
 
    case 1:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          if (gState.mapState.s.field_0x0 == 1) {
-            evt->z1.s.hi = gState.mapState.s.field_0x1;
-            evt->x1.s.hi = gState.mapState.s.field_0x2;
-            evt->state2++;
+            obj->z1.s.hi = gState.mapState.s.field_0x1;
+            obj->x1.s.hi = gState.mapState.s.field_0x2;
+            obj->state2++;
          }
          break;
 
       case 1:
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 2:
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 3:
-         mound = Evt_GetUnused();
-         mound->functionIndex = EVTF_MAP14_RAISE_SAND_MOUND;
-         mound->z1.s.hi = evt->z1.s.hi;
-         mound->x1.s.hi = evt->x1.s.hi;
+         mound = Obj_GetUnused();
+         mound->functionIndex = OBJF_MAP14_RAISE_SAND_MOUND;
+         mound->z1.s.hi = obj->z1.s.hi;
+         mound->x1.s.hi = obj->x1.s.hi;
          mound->mem = 6; // size
-         EVT.mound = mound;
-         evt->state2++;
+         OBJ.mound = mound;
+         obj->state2++;
 
       // fallthrough
       case 4:
-         mound = EVT.mound;
-         if (mound->functionIndex != EVTF_MAP14_RAISE_SAND_MOUND) {
-            evt->state3 = 0;
-            evt->state2++;
+         mound = OBJ.mound;
+         if (mound->functionIndex != OBJF_MAP14_RAISE_SAND_MOUND) {
+            obj->state3 = 0;
+            obj->state2++;
          }
          break;
 
       case 5:
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 6:
          gState.field_0x96 = 0;
-         evt->state2 = 0;
-         evt->state++;
+         obj->state2 = 0;
+         obj->state++;
          break;
-      } // switch (evt->state2) (via state:1)
+      } // switch (obj->state2) (via state:1)
 
       break;
 
    case 2:
-      evt->state++;
+      obj->state++;
       break;
 
    case 3:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          if (gState.mapState.s.field_0x0 == 2) {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 1:
-         evt->state3 = 32;
-         evt->state2++;
-         evt->state3 = 0;
+         obj->state3 = 32;
+         obj->state2++;
+         obj->state3 = 0;
 
       // fallthrough
       case 2:
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 3:
-         mound = Evt_GetUnused();
-         mound->functionIndex = EVTF_MAP14_LOWER_SAND_MOUND;
-         mound->z1.s.hi = evt->z1.s.hi;
-         mound->x1.s.hi = evt->x1.s.hi;
+         mound = Obj_GetUnused();
+         mound->functionIndex = OBJF_MAP14_LOWER_SAND_MOUND;
+         mound->z1.s.hi = obj->z1.s.hi;
+         mound->x1.s.hi = obj->x1.s.hi;
          mound->mem = 6;
-         EVT.mound = mound;
-         evt->state2++;
+         OBJ.mound = mound;
+         obj->state2++;
 
       // fallthrough
       case 4:
-         mound = EVT.mound;
-         if (mound->functionIndex != EVTF_MAP14_LOWER_SAND_MOUND) {
-            evt->state3 = 0;
-            evt->state2++;
+         mound = OBJ.mound;
+         if (mound->functionIndex != OBJF_MAP14_LOWER_SAND_MOUND) {
+            obj->state3 = 0;
+            obj->state2++;
          }
          break;
 
       case 5:
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 6:
-         if (--evt->state3 <= 0) {
+         if (--obj->state3 <= 0) {
             gState.field_0x96 = 0;
-            evt->state2 = 0;
-            evt->state++;
+            obj->state2 = 0;
+            obj->state++;
          }
          break;
-      } // switch (evt->state2) (via state:3)
+      } // switch (obj->state2) (via state:3)
 
       break;
 
    case 4:
-      evt->state = 1;
+      obj->state = 1;
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 708
-void Evtf708_709_Map14_Unused(EvtData *evt) {
-   EvtData *sand;
+#undef OBJF
+#define OBJF 708
+void Objf708_709_Map14_Unused(Object *obj) {
+   Object *sand;
 
-   switch (evt->functionIndex) {
-   case EVTF_MAP14_UNUSED_708:
+   switch (obj->functionIndex) {
+   case OBJF_MAP14_UNUSED_708:
       gState.mapState.s.field_0x0 = 2;
       break;
-   case EVTF_MAP14_UNUSED_709:
-      sand = Evt_GetUnused();
-      sand->functionIndex = EVTF_MAP14_SAND;
+   case OBJF_MAP14_UNUSED_709:
+      sand = Obj_GetUnused();
+      sand->functionIndex = OBJF_MAP14_SAND;
       gState.mapState.s.field_0x0 = 1;
       gState.mapState.s.field_0x1 = 6;
       gState.mapState.s.field_0x2 = 8;
       break;
    }
 
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }
 
-#undef EVTF
-#define EVTF 752
-void Evtf752_Map14_Scn15_SandMoundSpawner(EvtData *evt) {
-   EvtData *entitySprite;
-   EvtData *mound;
+#undef OBJF
+#define OBJF 752
+void Objf752_Map14_Scn15_SandMoundSpawner(Object *obj) {
+   Object *entitySprite;
+   Object *mound;
 
-   entitySprite = evt->d.entitySpawn.entitySpriteParam;
-   mound = Evt_GetUnused();
-   mound->functionIndex = EVTF_MAP14_RAISE_SAND_MOUND;
+   entitySprite = obj->d.entitySpawn.entitySpriteParam;
+   mound = Obj_GetUnused();
+   mound->functionIndex = OBJF_MAP14_RAISE_SAND_MOUND;
    mound->z1.s.hi = entitySprite->z1.s.hi;
    mound->x1.s.hi = entitySprite->x1.s.hi;
    mound->mem = 6;
-   evt->functionIndex = EVTF_NULL;
+   obj->functionIndex = OBJF_NULL;
 }

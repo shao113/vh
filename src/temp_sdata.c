@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "state.h"
 #include "graphics.h"
 #include "audio.h"

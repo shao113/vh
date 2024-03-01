@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "cd_files.h"
 #include "state.h"
 #include "graphics.h"
@@ -816,9 +816,9 @@ void CDInit(void) {
 
 void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
    extern TILE s_blackScreen_80123918;
-   EvtData *nowLoading;
-   EvtData *logo;
-   EvtData *faerie;
+   Object *nowLoading;
+   Object *logo;
+   Object *faerie;
    s32 faerieFrameTimer;
    s32 faerieFrameToggle;
 
@@ -841,24 +841,24 @@ void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
       s_blackScreen_80123918.w = SCREEN_WIDTH;
       s_blackScreen_80123918.h = SCREEN_HEIGHT;
 
-      nowLoading = Evt_GetUnused();
-      nowLoading->functionIndex = EVTF_NOOP;
+      nowLoading = Obj_GetUnused();
+      nowLoading->functionIndex = OBJF_NOOP;
       nowLoading->d.sprite.gfxIdx = GFX_NOW_LOADING;
       nowLoading->x1.n = 120;
       nowLoading->y1.n = 95;
       nowLoading->x3.n = nowLoading->x1.n + 80;
       nowLoading->y3.n = nowLoading->y1.n + 50;
 
-      logo = Evt_GetUnused();
-      logo->functionIndex = EVTF_NOOP;
+      logo = Obj_GetUnused();
+      logo->functionIndex = OBJF_NOOP;
       logo->d.sprite.gfxIdx = GFX_VANDAL_HEARTS;
       logo->x1.n = 156;
       logo->y1.n = 184;
       logo->x3.n = logo->x1.n + 128;
       logo->y3.n = logo->y1.n + 32;
 
-      faerie = Evt_GetUnused();
-      faerie->functionIndex = EVTF_NOOP;
+      faerie = Obj_GetUnused();
+      faerie->functionIndex = OBJF_NOOP;
       faerie->x1.n = 24;
       faerie->y1.n = 192;
       faerie->x3.n = faerie->x1.n + 24;
@@ -889,9 +889,9 @@ void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
             faerie->d.sprite.gfxIdx = GFX_FAERIE_1 + faerieFrameToggle;
             faerieFrameTimer = 0;
          }
-         AddEvtPrim_Gui(gGraphicsPtr->ot, nowLoading);
-         AddEvtPrim_Gui(gGraphicsPtr->ot, logo);
-         AddEvtPrim_Gui(gGraphicsPtr->ot, faerie);
+         AddObjPrim_Gui(gGraphicsPtr->ot, nowLoading);
+         AddObjPrim_Gui(gGraphicsPtr->ot, logo);
+         AddObjPrim_Gui(gGraphicsPtr->ot, faerie);
          AddPrim(&gGraphicsPtr->ot[OT_SIZE - 1], &s_blackScreen_80123918);
          DrawSync(0);
          VSync(0);
@@ -901,9 +901,9 @@ void LoadCdFile(s32 cdfIdx, s32 showLoadingScreen) {
          ContinueLoadingCdFile();
       } while (GetCdFileLoadStatus() != 0);
 
-      faerie->functionIndex = EVTF_NULL;
-      logo->functionIndex = EVTF_NULL;
-      nowLoading->functionIndex = EVTF_NULL;
+      faerie->functionIndex = OBJF_NULL;
+      logo->functionIndex = OBJF_NULL;
+      nowLoading->functionIndex = OBJF_NULL;
    }
 }
 

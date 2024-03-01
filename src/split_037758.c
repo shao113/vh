@@ -1,6 +1,6 @@
 #include "common.h"
 #include "state.h"
-#include "evt.h"
+#include "object.h"
 #include "audio.h"
 #include "cd_files.h"
 #include "graphics.h"
@@ -35,7 +35,7 @@ void State_Movie(void) {
    switch (gState.secondary) {
    case 0:
       FadeInScreen(2, 0xff);
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       gState.vsyncMode = 0;
       gState.fieldRenderingDisabled = 1;
       gState.inEvent = 0;
@@ -187,7 +187,7 @@ void State_ChapterComplete(void) {
    switch (gState.secondary) {
    case 0:
       FadeInScreen(2, 10);
-      Evt_ResetFromIdx10();
+      Obj_ResetFromIdx10();
       gState.vsyncMode = 0;
       gClearSavedPadState = 1;
       gState.fieldRenderingDisabled = 1;
@@ -210,8 +210,8 @@ void State_ChapterComplete(void) {
          break;
       }
 
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = EVTF_FULLSCREEN_IMAGE;
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = OBJF_FULLSCREEN_IMAGE;
       gState.secondary++;
       break;
 

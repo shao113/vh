@@ -2,7 +2,7 @@
 #include "state.h"
 #include "units.h"
 #include "graphics.h"
-#include "evt.h"
+#include "object.h"
 #include "field.h"
 #include "battle.h"
 #include "cd_files.h"
@@ -18,7 +18,7 @@ void SetDefaultStatsForParty(void);
 void PopulateUnitSpellList(UnitStatus *);
 void SetupPartyBattleUnit(u8, u8, u8, u8);
 void SyncPartyUnit(u8);
-void Evtf424_BattleEnder(EvtData *);
+void Objf424_BattleEnder(Object *);
 void func_8005AA7C(void);
 void SetupBattleUnit(s16, u8, u8, s8, u8, u8, u8, u8, u8);
 void CreateBattleUnitForUnit(UnitStatus *);
@@ -269,7 +269,7 @@ void PopulateUnitSpellList(UnitStatus *unit) {
 
 void SetupPartyBattleUnit(u8 partyIdx, u8 z, u8 x, u8 direction) {
    UnitStatus *unit;
-   EvtData *battler;
+   Object *battler;
    s32 tmp;
    s32 i;
    u8 level;
@@ -278,12 +278,12 @@ void SetupPartyBattleUnit(u8 partyIdx, u8 z, u8 x, u8 direction) {
    if (gState.mapNum > 5 || gPartyMembers[partyIdx].inParty) {
       unit = CreateUnitInNextSlot();
 
-      battler = Evt_GetUnused();
+      battler = Obj_GetUnused();
       unit->battler = battler;
-      battler->functionIndex = EVTF_BATTLE_UNIT;
-      battler->d.evtf014.unit = unit;
-      battler->d.evtf014.unitIdx = unit->idx;
-      battler->d.evtf014.team = TEAM_PLAYER;
+      battler->functionIndex = OBJF_BATTLE_UNIT;
+      battler->d.objf014.unit = unit;
+      battler->d.objf014.unitIdx = unit->idx;
+      battler->d.objf014.team = TEAM_PLAYER;
 
       unit->stripIdx = partyIdx + 1;
       unit->name = gUnitInfo[gSpriteStripUnitIds[partyIdx - 1]].name;
@@ -410,58 +410,58 @@ void SyncPartyUnit(u8 partyIdx) {
    CalculateUnitStats(unit);
 }
 
-#undef EVTF
-#define EVTF 424
-void Evtf424_BattleEnder(EvtData *evt) {
-   EvtData *newEvt;
+#undef OBJF
+#define OBJF 424
+void Objf424_BattleEnder(Object *obj) {
+   Object *newObj;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       if (gState.debug && (gPadStateNewPresses & PAD_START)) {
          CommitPartyStatus();
-         EVT.timer = 1;
-         evt->state = 3;
-         evt->state2 = 3;
+         OBJ.timer = 1;
+         obj->state = 3;
+         obj->state2 = 3;
       }
       if (gState.battleEval == BATTLE_EVAL_NONE) {
          break;
       }
       if (gState.battleEval == BATTLE_EVAL_DEFEAT) {
-         evt->state = 2;
+         obj->state = 2;
       }
       if (gState.battleEval == BATTLE_EVAL_VICTORY) {
-         evt->state = 1;
+         obj->state = 1;
       }
       break;
 
    case 1:
       gClearSavedPadState = 1;
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
          PerformAudioCommand(AUDIO_CMD_FADE_OUT_128_1);
-         EVT.timer = 20;
-         evt->state2++;
+         OBJ.timer = 20;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_STOP_ALL);
-            EVT.timer = 4;
-            evt->state2++;
+            OBJ.timer = 4;
+            obj->state2++;
          }
          break;
 
       case 2:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             LoadSeqSet(1);
             FinishLoadingSeq();
             PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(23));
-            newEvt = Evt_GetUnused();
-            newEvt->functionIndex = EVTF_BATTLE_VICTORY;
-            evt->state += 2;
-            evt->state2 = 0;
+            newObj = Obj_GetUnused();
+            newObj->functionIndex = OBJF_BATTLE_VICTORY;
+            obj->state += 2;
+            obj->state2 = 0;
          }
          break;
       }
@@ -471,30 +471,30 @@ void Evtf424_BattleEnder(EvtData *evt) {
    case 2:
       gClearSavedPadState = 1;
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
-         EVT.timer = 30;
-         evt->state2++;
+         OBJ.timer = 30;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_STOP_ALL);
-            EVT.timer = 4;
-            evt->state2++;
+            OBJ.timer = 4;
+            obj->state2++;
          }
          break;
 
       case 2:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             LoadSeqSet(1);
             FinishLoadingSeq();
             PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(24));
-            newEvt = Evt_GetUnused();
-            newEvt->functionIndex = EVTF_BATTLE_DEFEAT;
-            evt->state += 2;
-            evt->state2 = 0;
+            newObj = Obj_GetUnused();
+            newObj->functionIndex = OBJF_BATTLE_DEFEAT;
+            obj->state += 2;
+            obj->state2 = 0;
          }
          break;
       }
@@ -503,15 +503,15 @@ void Evtf424_BattleEnder(EvtData *evt) {
 
    case 3:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gSignal2 = 0;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (gSignal2 != 0) {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -519,13 +519,13 @@ void Evtf424_BattleEnder(EvtData *evt) {
          if (gPadStateNewPresses & PAD_CIRCLE) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
             FadeOutScreen(2, 4);
-            EVT.timer = 75;
-            evt->state2++;
+            OBJ.timer = 75;
+            obj->state2++;
          }
          break;
 
       case 3:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             gState.secondary = 0;
             gState.state3 = 0;
@@ -723,38 +723,38 @@ void Evtf424_BattleEnder(EvtData *evt) {
          }    // timer
 
          break;
-      } // switch (evt->state2) (via state:3)
+      } // switch (obj->state2) (via state:3)
 
       break;
 
    case 4:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gSignal2 = 0;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (gSignal2 != 0) {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
          if (PressedCircleOrX()) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
-            EVT.timer = 90;
-            evt->state2++;
+            OBJ.timer = 90;
+            obj->state2++;
          }
          break;
 
       case 3:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             gPlayerControlSuppressed = 1;
-            newEvt = Evt_GetUnused();
-            newEvt->functionIndex = EVTF_FILE_LOAD_DIALOG_376;
-            evt->state2++;
+            newObj = Obj_GetUnused();
+            newObj->functionIndex = OBJF_FILE_LOAD_DIALOG_376;
+            obj->state2++;
          }
          break;
 
@@ -801,7 +801,7 @@ void SetupBattleUnit(s16 stripIdx, u8 z, u8 x, s8 level, u8 team, u8 direction, 
                      u8 expMulti, u8 to_x1d) {
    extern UnitStatus *gTempUnitPtr;
 
-   EvtData *battler;
+   Object *battler;
    s32 i;
 
    if (gSpriteStripUnitIds[stripIdx] == UNIT_ID_LEENA) {
@@ -810,20 +810,20 @@ void SetupBattleUnit(s16 stripIdx, u8 z, u8 x, s8 level, u8 team, u8 direction, 
       gTempUnitPtr = CreateUnitInNextSlot();
    }
 
-   battler = Evt_GetUnused();
+   battler = Obj_GetUnused();
    gTempUnitPtr->battler = battler;
-   battler->functionIndex = EVTF_BATTLE_UNIT;
-   battler->d.evtf014.unit = gTempUnitPtr;
-   battler->d.evtf014.unitIdx = gTempUnitPtr->idx;
-   battler->d.evtf014.team = team;
+   battler->functionIndex = OBJF_BATTLE_UNIT;
+   battler->d.objf014.unit = gTempUnitPtr;
+   battler->d.objf014.unitIdx = gTempUnitPtr->idx;
+   battler->d.objf014.team = team;
 
    if (gState.mapNum == 8) {
       // Demo battle
-      battler->d.evtf014.team = (rand() % 70) + 2;
+      battler->d.objf014.team = (rand() % 70) + 2;
    }
    if (gState.mapNum == 9 && x > 8) {
       // Test battle
-      battler->d.evtf014.team = TEAM_PLAYER;
+      battler->d.objf014.team = TEAM_PLAYER;
    }
 
    gTempUnitPtr->stripIdx = stripIdx + 2;
@@ -831,7 +831,7 @@ void SetupBattleUnit(s16 stripIdx, u8 z, u8 x, s8 level, u8 team, u8 direction, 
    gTempUnitPtr->unitType = gUnitInfo[gSpriteStripUnitIds[stripIdx]].unitType;
    if (gTempUnitPtr->unitType == UNIT_TYPE_MAGE_TOWER ||
        (gTempUnitPtr->name == 30 || gTempUnitPtr->name == 31)) {
-      battler->d.evtf014.team = TEAM_PLAYER;
+      battler->d.objf014.team = TEAM_PLAYER;
    }
 
    gTempUnitPtr->class = gUnitInfo[gSpriteStripUnitIds[stripIdx]].class;
@@ -920,14 +920,14 @@ void SetupBattleUnit(s16 stripIdx, u8 z, u8 x, s8 level, u8 team, u8 direction, 
 }
 
 void CreateBattleUnitForUnit(UnitStatus *unit) {
-   EvtData *battler;
+   Object *battler;
 
-   battler = Evt_GetUnused();
+   battler = Obj_GetUnused();
    unit->battler = battler;
-   battler->functionIndex = EVTF_BATTLE_UNIT;
-   battler->d.evtf014.unit = unit;
-   battler->d.evtf014.unitIdx = unit->idx;
-   battler->d.evtf014.team = unit->team;
+   battler->functionIndex = OBJF_BATTLE_UNIT;
+   battler->d.objf014.unit = unit;
+   battler->d.objf014.unitIdx = unit->idx;
+   battler->d.objf014.team = unit->team;
    battler->x1.s.hi = unit->tileX;
    battler->z1.s.hi = unit->tileZ;
    battler->x1.s.lo = CV(0.5);
@@ -1080,24 +1080,24 @@ void SetupSprites(void) {
 }
 
 void SetupMap(void) {
-   EvtData *newEvt;
+   Object *newObj;
 
-   newEvt = Evt_GetUnused();
-   newEvt->functionIndex = EVTF_BATTLE_MAP_CURSOR_CONTROL;
-   newEvt = Evt_GetUnused();
-   newEvt->functionIndex = EVTF_BATTLE_MAP_CURSOR;
-   newEvt = Evt_GetUnused();
-   newEvt->functionIndex = EVTF_COMPASS;
-   newEvt = Evt_GetUnused();
-   newEvt->functionIndex = EVTF_PANORAMA;
-   newEvt = Evt_GetUnused();
-   newEvt->functionIndex = EVTF_BATTLE_MGR;
-   newEvt = Evt_GetUnused();
-   newEvt->functionIndex = EVTF_FIELD_INFO;
-   newEvt = Evt_GetUnused();
-   newEvt->functionIndex = EVTF_BATTLE_OPTIONS;
-   newEvt = Evt_GetUnused();
-   newEvt->functionIndex = EVTF_SETUP_MAP_OBJECTS;
+   newObj = Obj_GetUnused();
+   newObj->functionIndex = OBJF_BATTLE_MAP_CURSOR_CONTROL;
+   newObj = Obj_GetUnused();
+   newObj->functionIndex = OBJF_BATTLE_MAP_CURSOR;
+   newObj = Obj_GetUnused();
+   newObj->functionIndex = OBJF_COMPASS;
+   newObj = Obj_GetUnused();
+   newObj->functionIndex = OBJF_PANORAMA;
+   newObj = Obj_GetUnused();
+   newObj->functionIndex = OBJF_BATTLE_MGR;
+   newObj = Obj_GetUnused();
+   newObj->functionIndex = OBJF_FIELD_INFO;
+   newObj = Obj_GetUnused();
+   newObj->functionIndex = OBJF_BATTLE_OPTIONS;
+   newObj = Obj_GetUnused();
+   newObj->functionIndex = OBJF_SETUP_MAP_OBJECTS;
 
    SetupMapExtras();
 }

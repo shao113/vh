@@ -1,6 +1,6 @@
 #include "common.h"
 #include "graphics.h"
-#include "evt.h"
+#include "object.h"
 #include "state.h"
 #include "glyphs.h"
 
@@ -8,11 +8,11 @@ s32 CopySjisString(u8 *, u8 *);
 s32 DecodeLineOfText(u8 *, u8 *);
 void LoadText(s32, u8 *, u8 **);
 s32 DrawSjisGlyph(u16, s32, s32, s32);
-s32 MsgBox_DrawSjisGlyph(EvtData *, u16);
-s32 MsgBox_DrawFontGlyph(EvtData *, s16);
+s32 MsgBox_DrawSjisGlyph(Object *, u16);
+s32 MsgBox_DrawFontGlyph(Object *, s16);
 s32 ParseDigits(u8 *, s32 *);
-void MsgBox_Clear(EvtData *);
-void Evtf351_MsgBoxText(EvtData *);
+void MsgBox_Clear(Object *);
+void Objf351_MsgBoxText(Object *);
 u8 GetGlyphIdxForAsciiChar(u8);
 void DrawFontGlyph(u8, s32, s32, s32);
 void DrawText_Internal(s32, s32, s32, s32, s32, u8 *, s32);
@@ -21,7 +21,7 @@ void DrawText(s32, s32, s32, s32, s32, u8 *);
 void DrawSjisText(s32, s32, s32, s32, s32, u8 *);
 void MsgBox_SetText(s32, s32, s32);
 void MsgBox_SetText2(s32, s32, s32);
-void Evtf798_ResetInputState(EvtData *);
+void Objf798_ResetInputState(Object *);
 
 u8 *gStringTable[100] = {
 #include "assets/8010102c.inc"
@@ -224,18 +224,18 @@ s32 DrawSjisGlyph(u16 sjis, s32 x, s32 y, s32 color) {
 static u8 sMsgBoxVramOffsets[6][4] = {{0, 0, -8, 108}, {0, 0, 72, 108},   {0, 0, -8, 108},
                                       {0, 0, 72, 108}, {0, 100, -8, 108}, {0, 100, 72, 108}};
 
-s32 MsgBox_DrawSjisGlyph(EvtData *msg, u16 sjis) {
+s32 MsgBox_DrawSjisGlyph(Object *msg, u16 sjis) {
    // x3: column, y3: row
-   if (msg->x3.n < msg->d.evtf351.pregapChars) {
+   if (msg->x3.n < msg->d.objf351.pregapChars) {
       DrawSjisGlyph(sjis, 512 + msg->x3.n * (12 >> 2) + msg->x1.n,
-                    msg->y3.n * (msg->d.evtf351.lineSpacing + 15) + msg->y1.n +
-                        sMsgBoxVramOffsets[msg->d.evtf351.type * 2][1],
+                    msg->y3.n * (msg->d.objf351.lineSpacing + 15) + msg->y1.n +
+                        sMsgBoxVramOffsets[msg->d.objf351.type * 2][1],
                     0);
       return 0;
-   } else if (msg->x3.n < msg->d.evtf351.maxCharsPerLine) {
-      DrawSjisGlyph(sjis, 576 + (msg->x3.n - msg->d.evtf351.pregapChars) * (12 >> 2),
-                    msg->y3.n * (msg->d.evtf351.lineSpacing + 15) + msg->y1.n +
-                        sMsgBoxVramOffsets[msg->d.evtf351.type * 2 + 1][1],
+   } else if (msg->x3.n < msg->d.objf351.maxCharsPerLine) {
+      DrawSjisGlyph(sjis, 576 + (msg->x3.n - msg->d.objf351.pregapChars) * (12 >> 2),
+                    msg->y3.n * (msg->d.objf351.lineSpacing + 15) + msg->y1.n +
+                        sMsgBoxVramOffsets[msg->d.objf351.type * 2 + 1][1],
                     0);
       return 0;
    } else {
@@ -243,18 +243,18 @@ s32 MsgBox_DrawSjisGlyph(EvtData *msg, u16 sjis) {
    }
 }
 
-s32 MsgBox_DrawFontGlyph(EvtData *msg, s16 idx) {
+s32 MsgBox_DrawFontGlyph(Object *msg, s16 idx) {
    // x3: column, y3: row
-   if (msg->x3.n < msg->d.evtf351.pregapChars) {
+   if (msg->x3.n < msg->d.objf351.pregapChars) {
       DrawFontGlyph(idx, 512 + msg->x3.n * (8 >> 2) + msg->x1.n,
-                    msg->y3.n * (msg->d.evtf351.lineSpacing + 15) + msg->y1.n +
-                        sMsgBoxVramOffsets[msg->d.evtf351.type * 2][1],
+                    msg->y3.n * (msg->d.objf351.lineSpacing + 15) + msg->y1.n +
+                        sMsgBoxVramOffsets[msg->d.objf351.type * 2][1],
                     0);
       return 0;
-   } else if (msg->x3.n < msg->d.evtf351.maxCharsPerLine) {
-      DrawFontGlyph(idx, 576 + (msg->x3.n - msg->d.evtf351.pregapChars) * (8 >> 2),
-                    msg->y3.n * (msg->d.evtf351.lineSpacing + 15) + msg->y1.n +
-                        sMsgBoxVramOffsets[msg->d.evtf351.type * 2 + 1][1],
+   } else if (msg->x3.n < msg->d.objf351.maxCharsPerLine) {
+      DrawFontGlyph(idx, 576 + (msg->x3.n - msg->d.objf351.pregapChars) * (8 >> 2),
+                    msg->y3.n * (msg->d.objf351.lineSpacing + 15) + msg->y1.n +
+                        sMsgBoxVramOffsets[msg->d.objf351.type * 2 + 1][1],
                     0);
       return 0;
    } else {
@@ -280,18 +280,18 @@ s32 ParseDigits(u8 *str, s32 *output) {
    return n;
 }
 
-void MsgBox_Clear(EvtData *msg) {
-   EvtData *buttonIcon;
+void MsgBox_Clear(Object *msg) {
+   Object *buttonIcon;
 
-   buttonIcon = msg->d.evtf351.buttonIcon;
-   buttonIcon->functionIndex = EVTF_NULL;
-   msg->functionIndex = EVTF_NULL;
+   buttonIcon = msg->d.objf351.buttonIcon;
+   buttonIcon->functionIndex = OBJF_NULL;
+   msg->functionIndex = OBJF_NULL;
    gState.msgBoxFinished = 1;
 }
 
-#undef EVTF
-#define EVTF 351
-void Evtf351_MsgBoxText(EvtData *evt) {
+#undef OBJF
+#define OBJF 351
+void Objf351_MsgBoxText(Object *obj) {
    static s16 buttonIconAnimData1[12] = {2, GFX_MSGBOX_BUTTON_1,
                                          3, GFX_MSGBOX_BUTTON_2,
                                          3, GFX_MSGBOX_BUTTON_3,
@@ -312,7 +312,7 @@ void Evtf351_MsgBoxText(EvtData *evt) {
    static s32 textSpeeds[8] = {0x80, 0x100, 0x400, 0x400, 0x400, 0x400, 0x400, 0x400};
 
    s16 buttonIconX, buttonIconY;
-   EvtData *buttonIcon;
+   Object *buttonIcon;
    RECT rect;
    u8 *p;
    s32 maxCharsPerLine;
@@ -320,78 +320,78 @@ void Evtf351_MsgBoxText(EvtData *evt) {
    s32 n;
    u32 sjis;
 
-   maxCharsPerLine = EVT.maxCharsPerLine;
+   maxCharsPerLine = OBJ.maxCharsPerLine;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       gState.msgBoxFinished = 0;
       gState.field_0x31d = 0;
-      evt->state3 = 1;
-      EVT.todo_x48 = 0;
+      obj->state3 = 1;
+      OBJ.todo_x48 = 0;
 
-      EVT.textSpeed = textSpeeds[gState.textSpeed & 7];
+      OBJ.textSpeed = textSpeeds[gState.textSpeed & 7];
       if (gState.vsyncMode != 2) {
-         EVT.textSpeed >>= 1;
+         OBJ.textSpeed >>= 1;
       }
 
-      EVT.maxCharsPerLine = 26;
-      EVT.lineSpacing = 1;
-      EVT.maxRows = 3;
+      OBJ.maxCharsPerLine = 26;
+      OBJ.lineSpacing = 1;
+      OBJ.maxRows = 3;
 
-      buttonIconX = buttonIconPositions[EVT.type - 1].x;
-      buttonIconY = buttonIconPositions[EVT.type - 1].y;
+      buttonIconX = buttonIconPositions[OBJ.type - 1].x;
+      buttonIconY = buttonIconPositions[OBJ.type - 1].y;
 
-      switch (EVT.type) {
+      switch (OBJ.type) {
       case 0:
       case 1:
-         evt->x1.n = 64 >> 2;
-         evt->y1.n = 8;
-         EVT.pregapChars = (240 - evt->x1.n * 4) / 8;
+         obj->x1.n = 64 >> 2;
+         obj->y1.n = 8;
+         OBJ.pregapChars = (240 - obj->x1.n * 4) / 8;
          break;
       case 2:
-         evt->x1.n = 12 >> 2;
-         evt->y1.n = 8;
-         EVT.pregapChars = (240 - evt->x1.n * 4) / 8;
+         obj->x1.n = 12 >> 2;
+         obj->y1.n = 8;
+         OBJ.pregapChars = (240 - obj->x1.n * 4) / 8;
          break;
       case 3:
-         evt->x1.n = 80 >> 2;
-         evt->y1.n = 22;
-         EVT.pregapChars = (248 - evt->x1.n * 4) / 8;
-         EVT.type = 1;
+         obj->x1.n = 80 >> 2;
+         obj->y1.n = 22;
+         OBJ.pregapChars = (248 - obj->x1.n * 4) / 8;
+         OBJ.type = 1;
          break;
       case 4:
-         evt->x1.n = 24 >> 2;
-         evt->y1.n = 22;
-         EVT.pregapChars = (248 - evt->x1.n * 4) / 8;
-         EVT.type = 2;
+         obj->x1.n = 24 >> 2;
+         obj->y1.n = 22;
+         OBJ.pregapChars = (248 - obj->x1.n * 4) / 8;
+         OBJ.type = 2;
          break;
       case 5:
-         evt->x1.n = 80 >> 2;
-         evt->y1.n = 22;
-         EVT.pregapChars = (248 - evt->x1.n * 4) / 8;
-         EVT.type = 1;
+         obj->x1.n = 80 >> 2;
+         obj->y1.n = 22;
+         OBJ.pregapChars = (248 - obj->x1.n * 4) / 8;
+         OBJ.type = 1;
          break;
       case 6:
-         evt->x1.n = 80 >> 2;
-         evt->y1.n = 22;
-         EVT.pregapChars = (248 - evt->x1.n * 4) / 8;
-         EVT.type = 1;
+         obj->x1.n = 80 >> 2;
+         obj->y1.n = 22;
+         OBJ.pregapChars = (248 - obj->x1.n * 4) / 8;
+         OBJ.type = 1;
          break;
       }
 
-      evt->x3.n = 0; // current column
-      evt->y3.n = 0; // current row
-      EVT.textSpeedAccum = 0;
-      if (EVT.textSpeed == 0) {
-         EVT.textSpeed = 0x100;
+      obj->x3.n = 0; // current column
+      obj->y3.n = 0; // current row
+      OBJ.textSpeedAccum = 0;
+      if (OBJ.textSpeed == 0) {
+         OBJ.textSpeed = 0x100;
       }
-      if (EVT.pregapChars > EVT.maxCharsPerLine) {
-         EVT.pregapChars = EVT.maxCharsPerLine;
+      if (OBJ.pregapChars > OBJ.maxCharsPerLine) {
+         OBJ.pregapChars = OBJ.maxCharsPerLine;
       }
 
-      buttonIcon = Evt_GetUnused();
-      buttonIcon->functionIndex = EVTF_NOOP;
-      EVT.buttonIcon = buttonIcon;
+      buttonIcon = Obj_GetUnused();
+      buttonIcon->functionIndex = OBJF_NOOP;
+      OBJ.buttonIcon = buttonIcon;
       if (gState.vsyncMode == 2) {
          buttonIcon->d.sprite.animData = buttonIconAnimData1;
       } else {
@@ -405,106 +405,106 @@ void Evtf351_MsgBoxText(EvtData *evt) {
       buttonIcon->x3.n = buttonIconX + 16;
       buttonIcon->y3.n = buttonIconY + 16;
 
-      EVT.textPtr = gState.currentTextPointers[EVT.textPtrIdx];
-      EVT.todo_x44 = 0;
+      OBJ.textPtr = gState.currentTextPointers[OBJ.textPtrIdx];
+      OBJ.todo_x44 = 0;
 
-      EVT.rect.x = evt->x1.n + 512;
-      if (EVT.type == 1) {
-         EVT.rect.y = evt->y1.n;
-      } else if (EVT.type == 2) {
-         EVT.rect.y = evt->y1.n + 100;
+      OBJ.rect.x = obj->x1.n + 512;
+      if (OBJ.type == 1) {
+         OBJ.rect.y = obj->y1.n;
+      } else if (OBJ.type == 2) {
+         OBJ.rect.y = obj->y1.n + 100;
       }
-      EVT.rect.w = 64 + (EVT.maxCharsPerLine - EVT.pregapChars) * (12 >> 2) - evt->x1.n; //
-      EVT.rect.w = 64 + (EVT.maxCharsPerLine - EVT.pregapChars) * (8 >> 2) - evt->x1.n;
-      EVT.rect.h = (EVT.lineSpacing + 15) * EVT.maxRows;
-      rect.x = EVT.rect.x;
-      rect.y = EVT.rect.y;
-      rect.w = EVT.rect.w;
-      rect.h = EVT.rect.h;
+      OBJ.rect.w = 64 + (OBJ.maxCharsPerLine - OBJ.pregapChars) * (12 >> 2) - obj->x1.n; //
+      OBJ.rect.w = 64 + (OBJ.maxCharsPerLine - OBJ.pregapChars) * (8 >> 2) - obj->x1.n;
+      OBJ.rect.h = (OBJ.lineSpacing + 15) * OBJ.maxRows;
+      rect.x = OBJ.rect.x;
+      rect.y = OBJ.rect.y;
+      rect.w = OBJ.rect.w;
+      rect.h = OBJ.rect.h;
       ClearImage(&rect, 0, 0, 0);
-      evt->state++;
+      obj->state++;
       break;
 
    case 1:
-      if (--evt->state3 > 0) {
+      if (--obj->state3 > 0) {
          break;
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 2:
-      p = EVT.textPtr;
+      p = OBJ.textPtr;
       if (gPadStateNewPresses & PAD_X) {
-         EVT.textSpeedAccum += 0x4000;
+         OBJ.textSpeedAccum += 0x4000;
       }
-      if (EVT.todo_x44 == 0 && (gPadStateNewPresses & PAD_CIRCLE)) {
-         EVT.todo_x44 = 1;
+      if (OBJ.todo_x44 == 0 && (gPadStateNewPresses & PAD_CIRCLE)) {
+         OBJ.todo_x44 = 1;
       }
-      if (EVT.todo_x45 != 0 && !(gPadState & PAD_CIRCLE)) {
-         EVT.todo_x44 = 0;
+      if (OBJ.todo_x45 != 0 && !(gPadState & PAD_CIRCLE)) {
+         OBJ.todo_x44 = 0;
       }
-      if ((gPadState & PAD_CIRCLE) && (EVT.todo_x44 != 0)) {
-         EVT.textSpeedAccum += 0x200;
-         if (EVT.textSpeedAccum > 0x4000) {
-            EVT.textSpeedAccum = 0x4000;
+      if ((gPadState & PAD_CIRCLE) && (OBJ.todo_x44 != 0)) {
+         OBJ.textSpeedAccum += 0x200;
+         if (OBJ.textSpeedAccum > 0x4000) {
+            OBJ.textSpeedAccum = 0x4000;
          }
       } else {
-         EVT.textSpeedAccum += EVT.textSpeed;
+         OBJ.textSpeedAccum += OBJ.textSpeed;
       }
 
-      while ((EVT.textSpeedAccum >> 8) > 0) {
+      while ((OBJ.textSpeedAccum >> 8) > 0) {
          if (*p == '\0') {
             // NUL
-            if (EVT.readingFromStringTable) {
+            if (OBJ.readingFromStringTable) {
                // End of string table string; resume from after insertion point
-               EVT.textPtr = EVT.textResumePtr;
-               p = EVT.textPtr;
-               EVT.readingFromStringTable = 0;
+               OBJ.textPtr = OBJ.textResumePtr;
+               p = OBJ.textPtr;
+               OBJ.readingFromStringTable = 0;
             } else {
                gState.field_0x31d = 1;
-               evt->state = 5;
+               obj->state = 5;
                return;
             }
          } else if ((*p >= 0x81 && *p <= 0x9f) || (*p >= 0xe0 && *p <= 0xfc)) {
             // SJIS
-            if (evt->x3.n > maxCharsPerLine) {
-               evt->x3.n = EVT.indentChars;
-               evt->y3.n++;
-               if (evt->y3.n >= EVT.maxRows) {
+            if (obj->x3.n > maxCharsPerLine) {
+               obj->x3.n = OBJ.indentChars;
+               obj->y3.n++;
+               if (obj->y3.n >= OBJ.maxRows) {
                   gState.field_0x31d = 1;
-                  evt->state = 4;
+                  obj->state = 4;
                   return;
                }
             }
             sjis = (p[0] << 8) | p[1];
-            MsgBox_DrawSjisGlyph(evt, sjis);
-            EVT.textPtr += 2;
+            MsgBox_DrawSjisGlyph(obj, sjis);
+            OBJ.textPtr += 2;
             p += 2;
-            evt->x3.n++;
-            EVT.textSpeedAccum -= 0x100;
-            if (sjis > 0x823f && EVT.todo_x48 == 0) {
+            obj->x3.n++;
+            OBJ.textSpeedAccum -= 0x100;
+            if (sjis > 0x823f && OBJ.todo_x48 == 0) {
                if (gState.vsyncMode != 2) {
                   n = 6;
                } else {
                   n = 3;
                }
-               gState.msgTextWaitTimer[EVT.type] = n;
+               gState.msgTextWaitTimer[OBJ.type] = n;
             }
          } else {
             // ASCII
             switch (*p) {
             case '\n':
-               evt->x3.n = EVT.indentChars;
-               evt->y3.n++;
-               EVT.textPtr++;
+               obj->x3.n = OBJ.indentChars;
+               obj->y3.n++;
+               OBJ.textPtr++;
                p++;
-               if (evt->y3.n >= EVT.maxRows) {
+               if (obj->y3.n >= OBJ.maxRows) {
                   if (*p == '\0') {
                      gState.field_0x31d = 1;
-                     evt->state = 5;
+                     obj->state = 5;
                   } else {
                      gState.field_0x31d = 1;
-                     evt->state = 4;
+                     obj->state = 4;
                   }
                   return;
                }
@@ -513,33 +513,33 @@ void Evtf351_MsgBoxText(EvtData *evt) {
             case '$':
                // Command code, e.g. $T for a timed delay
                p++;
-               EVT.textPtr++;
+               OBJ.textPtr++;
 
                switch (*p) {
                case 'W':
                case 'w':
                   // Wait for button press
                   p++;
-                  EVT.textPtr++;
+                  OBJ.textPtr++;
                   if (*p == '\n') {
-                     EVT.textPtr++;
+                     OBJ.textPtr++;
                   }
                   gState.field_0x31d = 1;
-                  evt->state = 4;
+                  obj->state = 4;
                   return;
 
                case 'F':
                case 'f':
                   //? Flag for e.g. event entity animation?
                   gState.field_0x31d = 1;
-                  EVT.textPtr++;
+                  OBJ.textPtr++;
                   return;
 
                case 'P':
                case 'p':
                   gState.field_0x31d = 1;
-                  evt->state = 6;
-                  EVT.textPtr++;
+                  obj->state = 6;
+                  OBJ.textPtr++;
                   return;
 
                case 'S':
@@ -548,9 +548,9 @@ void Evtf351_MsgBoxText(EvtData *evt) {
                   p++;
                   n = ParseDigits(p, &parsedInt);
                   // ParseDigits returns numDigits+1 (which is used to skip past the 'S' here)
-                  EVT.textPtr += n;
-                  p = EVT.textPtr;
-                  EVT.textSpeed = parsedInt;
+                  OBJ.textPtr += n;
+                  p = OBJ.textPtr;
+                  OBJ.textSpeed = parsedInt;
                   continue;
 
                case 'T':
@@ -558,18 +558,18 @@ void Evtf351_MsgBoxText(EvtData *evt) {
                   // Delay
                   p++;
                   n = ParseDigits(p, &parsedInt);
-                  EVT.textPtr += n;
-                  p = EVT.textPtr;
-                  evt->state3 = parsedInt;
-                  evt->state = 3;
+                  OBJ.textPtr += n;
+                  p = OBJ.textPtr;
+                  obj->state3 = parsedInt;
+                  obj->state = 3;
                   return;
 
                case 'O':
                case 'o':
-                  EVT.todo_x48++;
-                  EVT.todo_x48 %= 2;
+                  OBJ.todo_x48++;
+                  OBJ.todo_x48 %= 2;
                   p++;
-                  EVT.textPtr++;
+                  OBJ.textPtr++;
                   continue;
                }
 
@@ -579,33 +579,33 @@ void Evtf351_MsgBoxText(EvtData *evt) {
                p++;
                if (*p != '#') {
                   // Single # specifies an index into the string table
-                  EVT.readingFromStringTable = 1;
+                  OBJ.readingFromStringTable = 1;
                   n = ParseDigits(p, &parsedInt);
                   p += n - 1;
-                  EVT.textResumePtr = p;
+                  OBJ.textResumePtr = p;
                   s_stringTable_80123348 = gStringTable;
-                  EVT.textPtr = gStringTable[parsedInt];
-                  p = EVT.textPtr;
+                  OBJ.textPtr = gStringTable[parsedInt];
+                  p = OBJ.textPtr;
                   continue;
                }
                // Double # indicates escaped #; fall-through to handle
-               EVT.textPtr++;
+               OBJ.textPtr++;
 
             // fallthrough
             default:
-               MsgBox_DrawFontGlyph(evt, GetGlyphIdxForAsciiChar(*p));
+               MsgBox_DrawFontGlyph(obj, GetGlyphIdxForAsciiChar(*p));
                if (*p >= 'A' && *p <= 'z') {
                   if (gState.vsyncMode != 2) {
                      n = 6;
                   } else {
                      n = 3;
                   }
-                  gState.msgTextWaitTimer[EVT.type] = n;
+                  gState.msgTextWaitTimer[OBJ.type] = n;
                }
                p++;
-               EVT.textPtr++;
-               evt->x3.n++;
-               EVT.textSpeedAccum -= 0x100;
+               OBJ.textPtr++;
+               obj->x3.n++;
+               OBJ.textSpeedAccum -= 0x100;
                break;
             }
          }
@@ -613,40 +613,40 @@ void Evtf351_MsgBoxText(EvtData *evt) {
       break;
 
    case 3:
-      if (--evt->state3 <= 0 || (gPadStateNewPresses & PAD_X) ||
+      if (--obj->state3 <= 0 || (gPadStateNewPresses & PAD_X) ||
           (gPadStateNewPresses & PAD_CIRCLE)) {
-         evt->state = 2;
+         obj->state = 2;
       }
       break;
 
    case 4:
-      buttonIcon = EVT.buttonIcon;
-      UpdateEvtAnimation(buttonIcon);
-      AddEvtPrim_Gui(gGraphicsPtr->ot, buttonIcon);
+      buttonIcon = OBJ.buttonIcon;
+      UpdateObjAnimation(buttonIcon);
+      AddObjPrim_Gui(gGraphicsPtr->ot, buttonIcon);
       if ((gPadStateNewPresses & PAD_CIRCLE) || (gPadStateNewPresses & PAD_X)) {
-         rect.x = EVT.rect.x;
-         rect.y = EVT.rect.y;
-         rect.w = EVT.rect.w;
-         rect.h = EVT.rect.h;
+         rect.x = OBJ.rect.x;
+         rect.y = OBJ.rect.y;
+         rect.w = OBJ.rect.w;
+         rect.h = OBJ.rect.h;
          ClearImage(&rect, 0, 0, 0);
-         evt->state3 = 1;
-         evt->state = 1;
-         evt->x3.n = 0;
-         evt->y3.n = 0;
+         obj->state3 = 1;
+         obj->state = 1;
+         obj->x3.n = 0;
+         obj->y3.n = 0;
          gState.field_0x31d = 1;
-         EVT.textSpeedAccum = 0;
-         EVT.todo_x44 = 0;
+         OBJ.textSpeedAccum = 0;
+         OBJ.todo_x44 = 0;
       }
       break;
 
    case 5:
       if ((gPadStateNewPresses & PAD_CIRCLE) || (gPadStateNewPresses & PAD_X)) {
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 6:
-      MsgBox_Clear(evt);
+      MsgBox_Clear(obj);
       break;
    }
 }
@@ -913,47 +913,47 @@ void DrawSjisText(s32 x, s32 y, s32 maxCharsPerLine, s32 lineSpacing, s32 color,
 
 void MsgBox_SetText(s32 type, s32 textPtrIdx, s32 textSpeed) {
    s32 i;
-   EvtData *p;
-   EvtData *msg;
+   Object *p;
+   Object *msg;
 
-   p = gEvtDataArray;
-   for (i = 0; i < EVT_DATA_CT; i++) {
-      if (p->functionIndex == EVTF_MSGBOX_TEXT) {
+   p = gObjectArray;
+   for (i = 0; i < OBJ_DATA_CT; i++) {
+      if (p->functionIndex == OBJF_MSGBOX_TEXT) {
          MsgBox_Clear(p);
       }
       p++;
    }
 
-   msg = Evt_GetUnused();
-   msg->functionIndex = EVTF_MSGBOX_TEXT;
-   msg->d.evtf351.type = type;
-   msg->d.evtf351.textPtrIdx = textPtrIdx;
-   msg->d.evtf351.textSpeed = textSpeed;
+   msg = Obj_GetUnused();
+   msg->functionIndex = OBJF_MSGBOX_TEXT;
+   msg->d.objf351.type = type;
+   msg->d.objf351.textPtrIdx = textPtrIdx;
+   msg->d.objf351.textSpeed = textSpeed;
 }
 
 void MsgBox_SetText2(s32 type, s32 textPtrIdx, s32 textSpeed) {
    s32 i;
-   EvtData *p;
-   EvtData *msg;
+   Object *p;
+   Object *msg;
 
-   p = gEvtDataArray;
-   for (i = 0; i < EVT_DATA_CT; i++) {
-      if (p->functionIndex == EVTF_MSGBOX_TEXT) {
+   p = gObjectArray;
+   for (i = 0; i < OBJ_DATA_CT; i++) {
+      if (p->functionIndex == OBJF_MSGBOX_TEXT) {
          MsgBox_Clear(p);
       }
       p++;
    }
 
-   msg = Evt_GetLastUnused();
-   msg->functionIndex = EVTF_MSGBOX_TEXT;
-   msg->d.evtf351.type = type;
-   msg->d.evtf351.textPtrIdx = textPtrIdx;
-   msg->d.evtf351.textSpeed = textSpeed;
+   msg = Obj_GetLastUnused();
+   msg->functionIndex = OBJF_MSGBOX_TEXT;
+   msg->d.objf351.type = type;
+   msg->d.objf351.textPtrIdx = textPtrIdx;
+   msg->d.objf351.textSpeed = textSpeed;
 }
 
-#undef EVTF
-#define EVTF 798
-void Evtf798_ResetInputState(EvtData *evt) {
+#undef OBJF
+#define OBJF 798
+void Objf798_ResetInputState(Object *obj) {
    gPadStateNewPresses = 0;
    gPadState = 0;
 }

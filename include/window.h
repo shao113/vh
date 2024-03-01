@@ -25,7 +25,7 @@ extern s16 gWindowDisplayY[16];
 extern WindowChoice gWindowChoice;
 extern WindowChoice gWindowActivatedChoice;
 
-s32 WindowIsOffScreen(struct EvtData *);
+s32 WindowIsOffScreen(struct Object *);
 // void DrawSmallEquipmentWindow(u8);
 void DrawWindow(s16, s16, s16, s16, s16, s16, s16, u8, u8);
 s32 StringToGlyphs(u8 *, u8 *);

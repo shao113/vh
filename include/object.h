@@ -1,396 +1,392 @@
-#ifndef EVT_H
-#define EVT_H
+#ifndef OBJ_H
+#define OBJ_H
 
 #include "common.h"
 #include "graphics.h"
 
-// TODO: I've been procrastinating on this, but I really need to re-evaluate the "evt" naming, since
-// they drive the entire game; substituting evt->obj seems reasonable and should be mostly painless;
-// Also need to start cleaning up a bunch of other naming inconsistencies.
+#define OBJ_DATA_CT 350
+#define OBJ_DATA_LAST_IDX 349
 
-#define EVT_DATA_CT 350
-#define EVT_DATA_LAST_IDX 349
+#define OBJ_HELPER_2(x) obj->d.objf##x
+#define OBJ_HELPER_1(x) OBJ_HELPER_2(x)
+#define OBJ OBJ_HELPER_1(OBJF)
+#define OBJF 000
 
-#define EVT_HELPER_2(x) evt->d.evtf##x
-#define EVT_HELPER_1(x) EVT_HELPER_2(x)
-#define EVT EVT_HELPER_1(EVTF)
-#define EVTF 000
+typedef enum ObjFunctionIdx {
+   OBJF_NULL = 0,
+   OBJF_NOOP = 1, // Used for sprites, data stores, ...
+   OBJF_MENU_CHOICE = 2,
+   OBJF_BATTLE_ACTIONS = 3,
+   OBJF_WINDOW_TBD_004 = 4,
+   OBJF_WINDOW_TBD_005 = 5,
+   OBJF_LOGO = 6,
+   OBJF_APPLY_POISON = 7,
+   OBJF_BATTLE_PORTRAIT = 8,
+   OBJF_ITEM_ICON_MGR = 9,
+   OBJF_BATTLE_MGR = 13,
+   OBJF_BATTLE_UNIT = 14,
+   OBJF_TARGETING_ATTACK = 15,
+   OBJF_CHOOSE_DONE_DIRECTION = 16,
+   OBJF_CAMERA_TBD_017 = 17,
+   OBJF_COMPASS = 19,
+   OBJF_PUSHED_BOULDER = 20,
+   OBJF_UNIT_ATTACKING = 21,
+   OBJF_PROJECTILE = 22,
+   OBJF_RANGED_TARGET_CAMERA = 23,
+   OBJF_BOUNCE_ZOOM = 24,
+   OBJF_OVERHEAD_MAP_VIEW = 25,
+   OBJF_CAMERA_TBD_026 = 26,
+   OBJF_TARGETING_SPELL = 27,
+   OBJF_UNIT_CASTING = 28,
+   OBJF_PROJECTILE_INDIRECT = 29, // Unused? maybe to open chest w/ ranged attacker?
+   OBJF_FIELD_INFO = 30,
+   OBJF_BATTLE_SPELLS_LIST = 31,
+   OBJF_DISPLAY_DAMAGE = 32,
+   OBJF_DISPLAY_DAMAGE_2 = 33,
+   OBJF_MAP_OBJECT_TREE = 35,
+   OBJF_MAP_OBJECT_GRAVE_MARKER = 36,
+   OBJF_MAP_OBJECT_FOUNTAIN = 37,
+   OBJF_MAP_OBJECT_LAMP_POST = 38,
+   OBJF_MAP_OBJECT_FLAG = 39,
+   OBJF_MAP_OBJECT_CHEST = 40,
+   OBJF_MAP_OBJECT_FLOWING_SAND = 42,
+   OBJF_SETUP_MAP_OBJECTS = 43,
+   OBJF_BLOOD_SPURT_PARTICLE_OFFSET = 45,
+   OBJF_MAP_OBJECT_CRATE = 46,
+   OBJF_BATTLE_MAP_CURSOR = 47,
+   OBJF_PUSH = 48,
+   OBJF_BATTLE_MAP_CURSOR_CONTROL = 49,
+   OBJF_UNIT_SPRITES_DECODER = 50,
+   OBJF_FLOATING_DAMAGE_TEXT = 51,
+   OBJF_ATTACK_INFO_MARKER = 52,
+   OBJF_STRETCH_WARP_SPRITE = 62,
+   OBJF_CIRCLE = 77,
+   OBJF_DAMAGE_FX2 = 78,
+   OBJF_SLAY_FX3 = 79,
+   OBJF_ROMAN_FIRE_FLAME = 81,
+   OBJF_AVALANCHE_DUST_CLOUD = 84,
+   OBJF_MAP13_EXPLOSION_PILLAR = 85,
+   OBJF_MAP15_HULL_SPLASH = 86,
+   OBJF_FX_TBD_088 = 88,
+   OBJF_DAGGER_STORM_FX2 = 90,
+   OBJF_DAGGER_STORM_DAGGER = 91,
+   OBJF_MOOD_RING_RING = 95,
+   OBJF_MOOD_RING_FX2 = 96,
+   OBJF_MAP20_SCN30_ARROW = 98,
+   OBJF_FX_TBD_099 = 99,
+   OBJF_HEALING_FX2 = 100,
+   OBJF_HEALING_SPARKLE = 101,
+   OBJF_POISON_FX2 = 102,
+   OBJF_POISON_BUBBLES = 103,
+   OBJF_MAGIC_CHARGE_GLYPH_RING = 107,
+   OBJF_HARMFUL_WAVE_RING = 109,
+   OBJF_CASTING_STAT_BUFF = 110,
+   OBJF_FAERIE_SPARKLE = 116,
+   OBJF_FAERIE_SPARKLE_TRAIL = 117,
+   OBJF_FAERIE_TARGET = 118,
+   OBJF_FX_TBD_119 = 119,
+   OBJF_SLAY_UNIT = 131,
+   OBJF_FX_TBD_132 = 132,
+   OBJF_FX_TBD_133 = 133,
+   OBJF_FX_TBD_134 = 134,
+   OBJF_FX_TBD_136 = 136,
+   OBJF_FX_TBD_137 = 137,
+   OBJF_FX_TBD_138 = 138,
+   OBJF_FX_TBD_139 = 139,
+   OBJF_FX_TBD_140 = 140,
+   OBJF_FX_TBD_141 = 141,
+   OBJF_FX_TBD_142 = 142,
+   OBJF_HOLY_LIGHTNING_FX2 = 144,
+   OBJF_HOLY_LIGHTNING_ELECTRIC_ORB = 145,
+   OBJF_FX_TBD_147 = 147,
+   OBJF_FX_TBD_148 = 148,
+   OBJF_FLASHING_UNIT_SPRITE = 149,
+   OBJF_SPELLBIND_GLYPH = 155,
+   OBJF_DELTA_MIRAGE_RAY = 157,
+   OBJF_EXPLOSION_RAYS = 159,
+   OBJF_ICE_STORM_TARGET = 160,
+   OBJF_ICE_STORM_SPLASH = 162,
+   OBJF_STONE_SHOWER_ROCK = 164,
+   OBJF_STONE_SHOWER_FX2 = 165,
+   OBJF_RAINBOW_SWIRL = 167,
+   OBJF_RAINBOW_STROKE_RAINBOW_SWIRL = 168,
+   OBJF_HOMING_RAY = 171,
+   OBJF_HOLY_PRESSURE_CUBE = 172,
+   OBJF_FIRE_GEM_BEAM = 173,
+   OBJF_THUNDER_FLASH_RAY = 179,
+   OBJF_FX_TBD_183 = 183,
+   OBJF_AVALANCHE_ROCK = 185,
+   OBJF_FX_TBD_186 = 186,
+   OBJF_DARK_FIRE_RAY = 188,
+   OBJF_MAGIC_ARROW_ARROW = 191,
+   OBJF_DARK_STAR_FX2 = 193,
+   OBJF_ROLLING_THUNDER_FX2 = 195,
+   OBJF_ROLLING_THUNDER_ORB_PAIR = 196,
+   OBJF_ROLLING_THUNDER_CASTING_BOLT = 198,
+   OBJF_UNIT_STRUCK = 201,
+   OBJF_UNIT_BLOCKING = 202,
+   OBJF_BLOCKING_IMPACT_PARTICLE = 203,
+   OBJF_SUMMON_CREST = 204,
+   OBJF_BLOOD_SPURT = 205,
+   OBJF_BLOOD_SPURT_PARTICLE = 206,
+   OBJF_AVALANCHE_BOULDER = 211,
+   OBJF_HOLY_LIGHTNING_CASTING_BOLT = 212,
+   OBJF_DUST_CLOUD_SPAWNER = 213,
+   OBJF_DUST_CLOUD = 214,
+   OBJF_CLOUD = 215,
+   OBJF_EXPLOSION_FX2 = 220,
+   OBJF_FX_TBD_223 = 223,
+   OBJF_THUNDER_BALL_INITIAL_ORB = 225,
+   OBJF_THUNDER_BALL_CHILD_ORB = 226,
+   OBJF_MAP36_LEENA = 256,
+   OBJF_MAP36_VILLAGER = 258,
+   OBJF_FX_TBD_269 = 269,
+   OBJF_STAT_RAISED = 272,
+   OBJF_OUTWARD_RAY = 273,
+   OBJF_CAMERA_TBD_277 = 277,
+   OBJF_FAINT_SPARKLES = 278,
+   OBJF_ICE_STORM_CAMERA = 279,
+   OBJF_DARK_HURRICANE_TARGET = 280,
+   OBJF_DARK_HURRICANE_FX2 = 281,
+   OBJF_DARK_HURRICANE_FX3 = 282,
+   OBJF_DARK_HURRICANE_CLOUD = 283,
+   OBJF_CASTING_FX = 285,
+   OBJF_MAP13_BRIDGE_EXPLOSION_IN_BATTLE = 288,
+   OBJF_CHIMNEY_SMOKE_RING = 289,
+   OBJF_REVEAL_CHEST_ITEM = 290,
+   OBJF_CHEST_IMPACT = 291,
+   OBJF_BLUE_ITEM_SPARKLE = 292,
+   OBJF_REVEAL_HIDDEN_ITEM = 294,
+   OBJF_SMOKE = 295, //?
+   OBJF_MAP17_SPRAY_PARTICLE = 296,
+   OBJF_SPLASH_DROPLETS = 297,
+   OBJF_SPLASH_WITH_DROPLETS = 298,
+   OBJF_MAP15_OCEAN = 299,
+   OBJF_MAP32_SMOKESTACK = 300,
+   OBJF_MAP32_SMOKESTACK_PARTICLE = 301,
+   OBJF_CHIMNEY_SMOKE = 302,
+   OBJF_MAP31_SCN61_XENO_FLAME = 304,
+   OBJF_EXTRA_HEALING_FX2 = 306, // + Hyper Healing
+   OBJF_EVIL_STREAM_FX3 = 307,
+   OBJF_EXPLOSION = 309,
+   OBJF_LIFE_ORB_BEAM = 310,
+   OBJF_BUBBLE_SWIRL_BUBBLE = 312,
+   OBJF_INWARD_RAY = 314,
+   OBJF_VERTICAL_RAY = 315,
+   OBJF_AVALANCHE_FX3 = 317,
+   OBJF_FX_TBD_323 = 323,
+   OBJF_EVIL_STREAM_FX2 = 324,
+   OBJF_MAP43_SCN93_MAGIC_STONE_FX = 328,
+   OBJF_SALAMANDER_HEAD = 335,
+   OBJF_SALAMANDER_SEGMENT = 336,
+   OBJF_DAGGER_STORM_BLOOD_SPLATTER = 337,
+   OBJF_AVALANCHE_RUBBLE = 339,
+   OBJF_FILE_SAVE_DIALOG = 341,
+   OBJF_FILE_SAVE_DIALOG_IBS = 342,
+   OBJF_ROMAN_FIRE_FX2 = 344,
+   OBJF_ROMAN_FIRE_FX3 = 345,
+   OBJF_BUTTON_DEPRESS = 346,
+   OBJF_MAP26 = 347,
+   OBJF_RUBBLE = 349,
+   OBJF_MSGBOX_TEXT = 351,
+   OBJF_MAP29 = 352,
+   OBJF_MAP19_ELEVATOR_355 = 355,
+   OBJF_MAP19_ELEVATOR_356 = 356,
+   OBJF_MAP19 = 357,
+   OBJF_MAP19_ELEVATOR = 358,
+   OBJF_PHASE_SHIFT_MAP_SCALER = 359,
+   OBJF_FILE_LOAD_DIALOG_360 = 360,
+   OBJF_MAP13_BRIDGE_EXPLOSION_IN_SCENE = 361,
+   OBJF_DRAWBRIDGE_BUTTON = 362,
+   OBJF_MAP15_PLANK = 364,
+   OBJF_MAP17_FLOODGATE = 365,
+   OBJF_MAP17_BUTTON = 366,
+   OBJF_MAP17_DRAINING_WATER = 368,
+   OBJF_SCREEN_EFFECT = 369,
+   OBJF_MAGE_OIL_FX2 = 370,
+   OBJF_RESTORE_8_MP_UNK_FX2 = 371,
+   OBJF_MAGIC_CHARGE_FX2 = 372, // + Mage Gem
+   OBJF_FILE_LOAD_DIALOG = 373,
+   OBJF_FILE_LOAD_DIALOG_IBS = 374,
+   OBJF_FLAME_BREATH_PARTICLE = 375,
+   OBJF_FILE_LOAD_DIALOG_376 = 376,
+   OBJF_EVIL_STREAM_ROCK = 379,
+   OBJF_LEVEL_UP_FX = 380,
+   OBJF_FLAME_BREATH = 382,
+   OBJF_SPARKLE = 383,
+   OBJF_REVEAL_MIMIC = 385,
+   OBJF_HEALING_SPARKLE_386 = 386,
+   OBJF_FULLSCREEN_IMAGE = 387,
+   OBJF_DARK_HURRICANE_VORTEX = 389,
+   OBJF_DARK_HURRICANE_VORTEX_LAYER = 390,
+   OBJF_DYNAMO_HUM_ELECTRIC_ORB = 395,
+   OBJF_DYNAMO_HUM_ORB_ELECTRICITY = 396,
+   OBJF_FX_TBD_398 = 398,
+   OBJF_MAP11 = 399,
+   OBJF_AI_TBD_400 = 400,
+   OBJF_AI_TBD_401 = 401,
+   OBJF_AI_TBD_402 = 402,
+   OBJF_AI_TBD_403 = 403,
+   OBJF_AI_TBD_404 = 404,
+   OBJF_PANORAMA = 405,
+   OBJF_SHOP_OR_DEPOT = 406,
+   OBJF_NOOP_407 = 407,
+   OBJF_CLOSED_WINDOW = 408,
+   OBJF_EVENT_ENTITY = 409,
+   OBJF_EVENT_ZOOM = 410,
+   OBJF_MAP_OBJECT_VILE_BOG = 411,
+   OBJF_EVENT_CAMERA = 412,
+   OBJF_MSGBOX_PORTRAIT = 413,
+   OBJF_DEBUG_MENU = 414,
+   OBJF_MAP_OBJECT_TORCH = 415,
+   OBJF_BATTLE_VICTORY = 420,
+   OBJF_UPPER_MSGBOX_TAIL = 421,
+   OBJF_LOWER_MSGBOX_TAIL = 422,
+   OBJF_BATTLE_DEFEAT = 423,
+   OBJF_BATTLE_ENDER = 424,
+   OBJF_BATTLE_OPTIONS = 425,
+   OBJF_EVALUATE_BATTLE_10 = 426,
+   OBJF_EVALUATE_BATTLE_11 = 427,
+   OBJF_EVALUATE_BATTLE_12 = 428,
+   OBJF_EVALUATE_BATTLE_13 = 429,
+   OBJF_EVALUATE_BATTLE_14 = 430,
+   OBJF_EVALUATE_BATTLE_15 = 431,
+   OBJF_EVALUATE_BATTLE_16 = 432,
+   OBJF_EVALUATE_BATTLE_17 = 433,
+   OBJF_EVALUATE_BATTLE_STD = 434,
+   OBJF_EVALUATE_BATTLE_19 = 435,
+   OBJF_EVALUATE_BATTLE_20 = 436,
+   OBJF_EVALUATE_BATTLE_21 = 437,
+   OBJF_EVALUATE_BATTLE_08 = 438,
+   OBJF_EVALUATE_BATTLE_23 = 439,
+   OBJF_EVALUATE_BATTLE_26 = 442,
+   OBJF_EVALUATE_BATTLE_27 = 443,
+   OBJF_EVALUATE_BATTLE_28 = 444,
+   OBJF_EVALUATE_BATTLE_29 = 445,
+   OBJF_BATTLE_VICTORY_PARTICLE = 446,
+   OBJF_UNIT_PORTRAIT = 447,
+   OBJF_MAP_OBJECT_FLOWING_WATER = 449,
+   OBJF_EVALUATE_BATTLE_32 = 552,
+   OBJF_EVALUATE_BATTLE_33 = 553,
+   OBJF_EVALUATE_BATTLE_35 = 555,
+   OBJF_EVALUATE_BATTLE_37 = 557,
+   OBJF_EVALUATE_BATTLE_38 = 558,
+   OBJF_EVALUATE_BATTLE_39 = 559,
+   OBJF_EVALUATE_BATTLE_40 = 560,
+   OBJF_EVALUATE_BATTLE_42 = 562,
+   OBJF_EVALUATE_BATTLE_43 = 563,
+   OBJF_MAP_OBJECT_WATER_1 = 564,
+   OBJF_MAP_OBJECT_WATER_2 = 565,
+   OBJF_MAP_OBJECT_LAVA_1 = 566,
+   OBJF_OPENING_CHEST = 567,
+   OBJF_MAP_OBJECT_RAIL = 568,
+   OBJF_MAP_OBJECT_LAVA_2 = 569,
+   OBJF_AI_TBD_570 = 570,
+   OBJF_LEVEL_UP = 571,
+   OBJF_MAP_OBJECT_LAVA_3 = 572,
+   OBJF_BATTLE_ITEMS_LIST = 573,
+   OBJF_DISPLAY_ICON = 574,
+   OBJF_STATUS_PORTRAIT = 575,
+   OBJF_TAVERN = 576,
+   OBJF_DYNAMIC_ICON = 577,
+   OBJF_DOJO = 578,
+   OBJF_WORLD_MAP = 579,
+   OBJF_TOWN = 580,
+   OBJF_AUDIO_CMD = 581,
+   OBJF_MAIN_MENU_JPN = 582,
+   OBJF_BATTLE_PLAYER_EVENT = 585,
+   OBJF_BATTLE_MSGBOX = 586,
+   OBJF_BATTLE_ENEMY_EVENT = 587,
+   OBJF_CAMERA_TBD_588 = 588,
+   OBJF_AI_TBD_589 = 589,
+   OBJF_BATTLE_TURN_TICKER = 590,
+   OBJF_MAP_OBJECT_BOULDER = 591,
+   OBJF_BATTLE_TURN_START = 592,
+   OBJF_BATTLE_RESULTS_UNIT = 593,
+   OBJF_BATTLE_RESULTS = 594,
+   OBJF_STATUS_WINDOW = 595,
+   OBJF_STATUS_WINDOW_MGR = 596,
+   OBJF_BATTLE_INTRO = 597,
+   OBJF_WORLD_ACTIONS = 598,
+   OBJF_MAP32_CAR_RELEASE = 650,
+   OBJF_MAP33_LAVA_PIT_PLATFORM = 651,
+   OBJF_MAP35_BUTTON = 652,
+   OBJF_EXPLODING_TILE = 653,
+   OBJF_MAP38_WASH_AWAY_UNIT = 654,
+   OBJF_MAP38_RAISE_FLOODGATE = 655,
+   OBJF_MAP39 = 656,
+   OBJF_MAP38_FLOODGATE = 657,
+   OBJF_MAP38_FLOODWATER = 658,
+   OBJF_SPLASH = 659,
+   OBJF_FLAME = 661,
+   OBJF_MAP28_OPEN_DOOR = 662,
+   OBJF_MAP28_BUTTON = 663,
+   OBJF_MAP27_OPEN_CELL_DOOR = 664,
+   OBJF_MAP27_BUTTONS = 665,
+   OBJF_MAP14_LOWER_SAND_MOUND = 666,
+   OBJF_MAP14_LOWER_SAND_TILE = 667,
+   OBJF_MAP14_RAISE_SAND_MOUND = 668,
+   OBJF_MAP14_RAISE_SAND_TILE = 669,
+   OBJF_MAP14_SAND = 670,
+   OBJF_MAP39_SPLASHING_TILE = 672,
+   OBJF_LEENA_FORCEFIELD = 675,
+   OBJF_HEAVY_RAINFALL = 676,
+   OBJF_RAINFALL_DROP = 677,
+   OBJF_RIPPLE = 678,
+   OBJF_STAT_BUFF_FX = 681,
+   OBJF_ADJUST_FACE_ELEVATION = 683,
+   OBJF_SLIDING_FACE = 684,
+   OBJF_ROCK_SPURT = 685,
+   OBJF_ROCK_SPURT_PARTICLE_2 = 686,
+   OBJF_LIGHT_RAINFALL = 687,
+   OBJF_MAGIC_STONE_EXPLOSION = 690,
+   OBJF_DYNAMO_HUM_COLORED_BOLT = 700,
+   OBJF_FLAMING_ROCK = 702,
+   OBJF_MAP40_BARRICADE = 703,
+   OBJF_MAP14_UNUSED_708 = 708,
+   OBJF_MAP14_UNUSED_709 = 709,
+   OBJF_PARTICLE_710 = 710, // Generic animated particle?
+   OBJF_SPELLBIND_FX2 = 715,
+   OBJF_SPELLBIND_FX3 = 716,
+   OBJF_TBD_717 = 717,
+   OBJF_TBD_718 = 718,
+   OBJF_TBD_732 = 732,
+   OBJF_STAT_BUFF_ICON = 733,
+   OBJF_SPARKLE_DUST = 735,
+   OBJF_REMOVE_PARALYSIS_BUBBLE = 736,
+   OBJF_REMOVE_PARALYSIS = 737,
+   OBJF_MAP40_LOWER_BARRICADE = 738,
+   OBJF_PARTICLE_739 = 739,
+   OBJF_REMOVE_PARALYSIS_SPARKLES = 740,
+   OBJF_ENTITY_BLOCKING = 746,
+   OBJF_WYRMFANG_FLAMES_CW = 747,
+   OBJF_WYRMFANG_FLAMES_CCW = 748,
+   OBJF_WYRMFANG_FLAME = 749,
+   OBJF_MAP33_SCN65_LOWER_PLATFORM = 750,
+   OBJF_MAP33_LOWER_PLATFORM = 751,
+   OBJF_MAP15_PIRATE_STAND_IN = 755,
+   OBJF_PUSHED_OBJECT_SPLASH = 757,
+   OBJF_ROCK_SPURT_PARTICLE = 759,
+   OBJF_ELITE_MELEE_SPARKLES = 760,
+   OBJF_REVEAL_USED_ITEM = 761,
+   OBJF_BOULDER_RUBBLE = 763,
+   OBJF_PROJECTILE_TRAIL_POISON = 764,
+   OBJF_PROJECTILE_TRAIL_EXPLOSION = 765,
+   OBJF_PROJECTILE_TRAIL_SMOKE = 766,
+   OBJF_PROJECTILE_TRAIL_SPARKLES = 767,
+   OBJF_ITEM_SPELL = 770,
+   OBJF_HEALING_PLUS_FX2 = 791,
+   OBJF_ULTRA_HEALING_FX2 = 792,
+   OBJF_SUPREME_HEALING_FX2 = 793, // + Holy H2O
+   OBJF_FADE = 795,
+   OBJF_FX_TBD_799 = 799,
+   OBJF_FX_TBD_800 = 800,
+   OBJF_FX_TBD_801 = 801,
+   OBJF_FX_TBD_802 = 802,
+   OBJF_FX_TBD_803 = 803,
+} ObjFunctionIdx;
 
-typedef enum EvtFunctionIdx {
-   EVTF_NULL = 0,
-   EVTF_NOOP = 1, // Used for sprites, data stores, ...
-   EVTF_MENU_CHOICE = 2,
-   EVTF_BATTLE_ACTIONS = 3,
-   EVTF_WINDOW_TBD_004 = 4,
-   EVTF_WINDOW_TBD_005 = 5,
-   EVTF_LOGO = 6,
-   EVTF_APPLY_POISON = 7,
-   EVTF_BATTLE_PORTRAIT = 8,
-   EVTF_ITEM_ICON_MGR = 9,
-   EVTF_BATTLE_MGR = 13,
-   EVTF_BATTLE_UNIT = 14,
-   EVTF_TARGETING_ATTACK = 15,
-   EVTF_CHOOSE_DONE_DIRECTION = 16,
-   EVTF_CAMERA_TBD_017 = 17,
-   EVTF_COMPASS = 19,
-   EVTF_PUSHED_BOULDER = 20,
-   EVTF_UNIT_ATTACKING = 21,
-   EVTF_PROJECTILE = 22,
-   EVTF_RANGED_TARGET_CAMERA = 23,
-   EVTF_BOUNCE_ZOOM = 24,
-   EVTF_OVERHEAD_MAP_VIEW = 25,
-   EVTF_CAMERA_TBD_026 = 26,
-   EVTF_TARGETING_SPELL = 27,
-   EVTF_UNIT_CASTING = 28,
-   EVTF_PROJECTILE_INDIRECT = 29, // Unused? maybe to open chest w/ ranged attacker?
-   EVTF_FIELD_INFO = 30,
-   EVTF_BATTLE_SPELLS_LIST = 31,
-   EVTF_DISPLAY_DAMAGE = 32,
-   EVTF_DISPLAY_DAMAGE_2 = 33,
-   EVTF_MAP_OBJECT_TREE = 35,
-   EVTF_MAP_OBJECT_GRAVE_MARKER = 36,
-   EVTF_MAP_OBJECT_FOUNTAIN = 37,
-   EVTF_MAP_OBJECT_LAMP_POST = 38,
-   EVTF_MAP_OBJECT_FLAG = 39,
-   EVTF_MAP_OBJECT_CHEST = 40,
-   EVTF_MAP_OBJECT_FLOWING_SAND = 42,
-   EVTF_SETUP_MAP_OBJECTS = 43,
-   EVTF_BLOOD_SPURT_PARTICLE_OFFSET = 45,
-   EVTF_MAP_OBJECT_CRATE = 46,
-   EVTF_BATTLE_MAP_CURSOR = 47,
-   EVTF_PUSH = 48,
-   EVTF_BATTLE_MAP_CURSOR_CONTROL = 49,
-   EVTF_UNIT_SPRITES_DECODER = 50,
-   EVTF_FLOATING_DAMAGE_TEXT = 51,
-   EVTF_ATTACK_INFO_MARKER = 52,
-   EVTF_STRETCH_WARP_SPRITE = 62,
-   EVTF_CIRCLE = 77,
-   EVTF_DAMAGE_FX2 = 78,
-   EVTF_SLAY_FX3 = 79,
-   EVTF_ROMAN_FIRE_FLAME = 81,
-   EVTF_AVALANCHE_DUST_CLOUD = 84,
-   EVTF_MAP13_EXPLOSION_PILLAR = 85,
-   EVTF_MAP15_HULL_SPLASH = 86,
-   EVTF_FX_TBD_088 = 88,
-   EVTF_DAGGER_STORM_FX2 = 90,
-   EVTF_DAGGER_STORM_DAGGER = 91,
-   EVTF_MOOD_RING_RING = 95,
-   EVTF_MOOD_RING_FX2 = 96,
-   EVTF_MAP20_SCN30_ARROW = 98,
-   EVTF_FX_TBD_099 = 99,
-   EVTF_HEALING_FX2 = 100,
-   EVTF_HEALING_SPARKLE = 101,
-   EVTF_POISON_FX2 = 102,
-   EVTF_POISON_BUBBLES = 103,
-   EVTF_MAGIC_CHARGE_GLYPH_RING = 107,
-   EVTF_HARMFUL_WAVE_RING = 109,
-   EVTF_CASTING_STAT_BUFF = 110,
-   EVTF_FAERIE_SPARKLE = 116,
-   EVTF_FAERIE_SPARKLE_TRAIL = 117,
-   EVTF_FAERIE_TARGET = 118,
-   EVTF_FX_TBD_119 = 119,
-   EVTF_SLAY_UNIT = 131,
-   EVTF_FX_TBD_132 = 132,
-   EVTF_FX_TBD_133 = 133,
-   EVTF_FX_TBD_134 = 134,
-   EVTF_FX_TBD_136 = 136,
-   EVTF_FX_TBD_137 = 137,
-   EVTF_FX_TBD_138 = 138,
-   EVTF_FX_TBD_139 = 139,
-   EVTF_FX_TBD_140 = 140,
-   EVTF_FX_TBD_141 = 141,
-   EVTF_FX_TBD_142 = 142,
-   EVTF_HOLY_LIGHTNING_FX2 = 144,
-   EVTF_HOLY_LIGHTNING_ELECTRIC_ORB = 145,
-   EVTF_FX_TBD_147 = 147,
-   EVTF_FX_TBD_148 = 148,
-   EVTF_FLASHING_UNIT_SPRITE = 149,
-   EVTF_SPELLBIND_GLYPH = 155,
-   EVTF_DELTA_MIRAGE_RAY = 157,
-   EVTF_EXPLOSION_RAYS = 159,
-   EVTF_ICE_STORM_TARGET = 160,
-   EVTF_ICE_STORM_SPLASH = 162,
-   EVTF_STONE_SHOWER_ROCK = 164,
-   EVTF_STONE_SHOWER_FX2 = 165,
-   EVTF_RAINBOW_SWIRL = 167,
-   EVTF_RAINBOW_STROKE_RAINBOW_SWIRL = 168,
-   EVTF_HOMING_RAY = 171,
-   EVTF_HOLY_PRESSURE_CUBE = 172,
-   EVTF_FIRE_GEM_BEAM = 173,
-   EVTF_THUNDER_FLASH_RAY = 179,
-   EVTF_FX_TBD_183 = 183,
-   EVTF_AVALANCHE_ROCK = 185,
-   EVTF_FX_TBD_186 = 186,
-   EVTF_DARK_FIRE_RAY = 188,
-   EVTF_MAGIC_ARROW_ARROW = 191,
-   EVTF_DARK_STAR_FX2 = 193,
-   EVTF_ROLLING_THUNDER_FX2 = 195,
-   EVTF_ROLLING_THUNDER_ORB_PAIR = 196,
-   EVTF_ROLLING_THUNDER_CASTING_BOLT = 198,
-   EVTF_UNIT_STRUCK = 201,
-   EVTF_UNIT_BLOCKING = 202,
-   EVTF_BLOCKING_IMPACT_PARTICLE = 203,
-   EVTF_SUMMON_CREST = 204,
-   EVTF_BLOOD_SPURT = 205,
-   EVTF_BLOOD_SPURT_PARTICLE = 206,
-   EVTF_AVALANCHE_BOULDER = 211,
-   EVTF_HOLY_LIGHTNING_CASTING_BOLT = 212,
-   EVTF_DUST_CLOUD_SPAWNER = 213,
-   EVTF_DUST_CLOUD = 214,
-   EVTF_CLOUD = 215,
-   EVTF_EXPLOSION_FX2 = 220,
-   EVTF_FX_TBD_223 = 223,
-   EVTF_THUNDER_BALL_INITIAL_ORB = 225,
-   EVTF_THUNDER_BALL_CHILD_ORB = 226,
-   EVTF_MAP36_LEENA = 256,
-   EVTF_MAP36_VILLAGER = 258,
-   EVTF_FX_TBD_269 = 269,
-   EVTF_STAT_RAISED = 272,
-   EVTF_OUTWARD_RAY = 273,
-   EVTF_CAMERA_TBD_277 = 277,
-   EVTF_FAINT_SPARKLES = 278,
-   EVTF_ICE_STORM_CAMERA = 279,
-   EVTF_DARK_HURRICANE_TARGET = 280,
-   EVTF_DARK_HURRICANE_FX2 = 281,
-   EVTF_DARK_HURRICANE_FX3 = 282,
-   EVTF_DARK_HURRICANE_CLOUD = 283,
-   EVTF_CASTING_FX = 285,
-   EVTF_MAP13_BRIDGE_EXPLOSION_IN_BATTLE = 288,
-   EVTF_CHIMNEY_SMOKE_RING = 289,
-   EVTF_REVEAL_CHEST_ITEM = 290,
-   EVTF_CHEST_IMPACT = 291,
-   EVTF_BLUE_ITEM_SPARKLE = 292,
-   EVTF_REVEAL_HIDDEN_ITEM = 294,
-   EVTF_SMOKE = 295, //?
-   EVTF_MAP17_SPRAY_PARTICLE = 296,
-   EVTF_SPLASH_DROPLETS = 297,
-   EVTF_SPLASH_WITH_DROPLETS = 298,
-   EVTF_MAP15_OCEAN = 299,
-   EVTF_MAP32_SMOKESTACK = 300,
-   EVTF_MAP32_SMOKESTACK_PARTICLE = 301,
-   EVTF_CHIMNEY_SMOKE = 302,
-   EVTF_MAP31_SCN61_XENO_FLAME = 304,
-   EVTF_EXTRA_HEALING_FX2 = 306, // + Hyper Healing
-   EVTF_EVIL_STREAM_FX3 = 307,
-   EVTF_EXPLOSION = 309,
-   EVTF_LIFE_ORB_BEAM = 310,
-   EVTF_BUBBLE_SWIRL_BUBBLE = 312,
-   EVTF_INWARD_RAY = 314,
-   EVTF_VERTICAL_RAY = 315,
-   EVTF_AVALANCHE_FX3 = 317,
-   EVTF_FX_TBD_323 = 323,
-   EVTF_EVIL_STREAM_FX2 = 324,
-   EVTF_MAP43_SCN93_MAGIC_STONE_FX = 328,
-   EVTF_SALAMANDER_HEAD = 335,
-   EVTF_SALAMANDER_SEGMENT = 336,
-   EVTF_DAGGER_STORM_BLOOD_SPLATTER = 337,
-   EVTF_AVALANCHE_RUBBLE = 339,
-   EVTF_FILE_SAVE_DIALOG = 341,
-   EVTF_FILE_SAVE_DIALOG_IBS = 342,
-   EVTF_ROMAN_FIRE_FX2 = 344,
-   EVTF_ROMAN_FIRE_FX3 = 345,
-   EVTF_BUTTON_DEPRESS = 346,
-   EVTF_MAP26 = 347,
-   EVTF_RUBBLE = 349,
-   EVTF_MSGBOX_TEXT = 351,
-   EVTF_MAP29 = 352,
-   EVTF_MAP19_ELEVATOR_355 = 355,
-   EVTF_MAP19_ELEVATOR_356 = 356,
-   EVTF_MAP19 = 357,
-   EVTF_MAP19_ELEVATOR = 358,
-   EVTF_PHASE_SHIFT_MAP_SCALER = 359,
-   EVTF_FILE_LOAD_DIALOG_360 = 360,
-   EVTF_MAP13_BRIDGE_EXPLOSION_IN_SCENE = 361,
-   EVTF_DRAWBRIDGE_BUTTON = 362,
-   EVTF_MAP15_PLANK = 364,
-   EVTF_MAP17_FLOODGATE = 365,
-   EVTF_MAP17_BUTTON = 366,
-   EVTF_MAP17_DRAINING_WATER = 368,
-   EVTF_SCREEN_EFFECT = 369,
-   EVTF_MAGE_OIL_FX2 = 370,
-   EVTF_RESTORE_8_MP_UNK_FX2 = 371,
-   EVTF_MAGIC_CHARGE_FX2 = 372, // + Mage Gem
-   EVTF_FILE_LOAD_DIALOG = 373,
-   EVTF_FILE_LOAD_DIALOG_IBS = 374,
-   EVTF_FLAME_BREATH_PARTICLE = 375,
-   EVTF_FILE_LOAD_DIALOG_376 = 376,
-   EVTF_EVIL_STREAM_ROCK = 379,
-   EVTF_LEVEL_UP_FX = 380,
-   EVTF_FLAME_BREATH = 382,
-   EVTF_SPARKLE = 383,
-   EVTF_REVEAL_MIMIC = 385,
-   EVTF_HEALING_SPARKLE_386 = 386,
-   EVTF_FULLSCREEN_IMAGE = 387,
-   EVTF_DARK_HURRICANE_VORTEX = 389,
-   EVTF_DARK_HURRICANE_VORTEX_LAYER = 390,
-   EVTF_DYNAMO_HUM_ELECTRIC_ORB = 395,
-   EVTF_DYNAMO_HUM_ORB_ELECTRICITY = 396,
-   EVTF_FX_TBD_398 = 398,
-   EVTF_MAP11 = 399,
-   EVTF_AI_TBD_400 = 400,
-   EVTF_AI_TBD_401 = 401,
-   EVTF_AI_TBD_402 = 402,
-   EVTF_AI_TBD_403 = 403,
-   EVTF_AI_TBD_404 = 404,
-   EVTF_PANORAMA = 405,
-   EVTF_SHOP_OR_DEPOT = 406,
-   EVTF_NOOP_407 = 407,
-   EVTF_CLOSED_WINDOW = 408,
-   EVTF_EVENT_ENTITY = 409,
-   EVTF_EVENT_ZOOM = 410,
-   EVTF_MAP_OBJECT_VILE_BOG = 411,
-   EVTF_EVENT_CAMERA = 412,
-   EVTF_MSGBOX_PORTRAIT = 413,
-   EVTF_DEBUG_MENU = 414,
-   EVTF_MAP_OBJECT_TORCH = 415,
-   EVTF_BATTLE_VICTORY = 420,
-   EVTF_UPPER_MSGBOX_TAIL = 421,
-   EVTF_LOWER_MSGBOX_TAIL = 422,
-   EVTF_BATTLE_DEFEAT = 423,
-   EVTF_BATTLE_ENDER = 424,
-   EVTF_BATTLE_OPTIONS = 425,
-   EVTF_EVALUATE_BATTLE_10 = 426,
-   EVTF_EVALUATE_BATTLE_11 = 427,
-   EVTF_EVALUATE_BATTLE_12 = 428,
-   EVTF_EVALUATE_BATTLE_13 = 429,
-   EVTF_EVALUATE_BATTLE_14 = 430,
-   EVTF_EVALUATE_BATTLE_15 = 431,
-   EVTF_EVALUATE_BATTLE_16 = 432,
-   EVTF_EVALUATE_BATTLE_17 = 433,
-   EVTF_EVALUATE_BATTLE_STD = 434,
-   EVTF_EVALUATE_BATTLE_19 = 435,
-   EVTF_EVALUATE_BATTLE_20 = 436,
-   EVTF_EVALUATE_BATTLE_21 = 437,
-   EVTF_EVALUATE_BATTLE_08 = 438,
-   EVTF_EVALUATE_BATTLE_23 = 439,
-   EVTF_EVALUATE_BATTLE_26 = 442,
-   EVTF_EVALUATE_BATTLE_27 = 443,
-   EVTF_EVALUATE_BATTLE_28 = 444,
-   EVTF_EVALUATE_BATTLE_29 = 445,
-   EVTF_BATTLE_VICTORY_PARTICLE = 446,
-   EVTF_UNIT_PORTRAIT = 447,
-   EVTF_MAP_OBJECT_FLOWING_WATER = 449,
-   EVTF_EVALUATE_BATTLE_32 = 552,
-   EVTF_EVALUATE_BATTLE_33 = 553,
-   EVTF_EVALUATE_BATTLE_35 = 555,
-   EVTF_EVALUATE_BATTLE_37 = 557,
-   EVTF_EVALUATE_BATTLE_38 = 558,
-   EVTF_EVALUATE_BATTLE_39 = 559,
-   EVTF_EVALUATE_BATTLE_40 = 560,
-   EVTF_EVALUATE_BATTLE_42 = 562,
-   EVTF_EVALUATE_BATTLE_43 = 563,
-   EVTF_MAP_OBJECT_WATER_1 = 564,
-   EVTF_MAP_OBJECT_WATER_2 = 565,
-   EVTF_MAP_OBJECT_LAVA_1 = 566,
-   EVTF_OPENING_CHEST = 567,
-   EVTF_MAP_OBJECT_RAIL = 568,
-   EVTF_MAP_OBJECT_LAVA_2 = 569,
-   EVTF_AI_TBD_570 = 570,
-   EVTF_LEVEL_UP = 571,
-   EVTF_MAP_OBJECT_LAVA_3 = 572,
-   EVTF_BATTLE_ITEMS_LIST = 573,
-   EVTF_DISPLAY_ICON = 574,
-   EVTF_STATUS_PORTRAIT = 575,
-   EVTF_TAVERN = 576,
-   EVTF_DYNAMIC_ICON = 577,
-   EVTF_DOJO = 578,
-   EVTF_WORLD_MAP = 579,
-   EVTF_TOWN = 580,
-   EVTF_AUDIO_CMD = 581,
-   EVTF_MAIN_MENU_JPN = 582,
-   EVTF_BATTLE_PLAYER_EVENT = 585,
-   EVTF_BATTLE_MSGBOX = 586,
-   EVTF_BATTLE_ENEMY_EVENT = 587,
-   EVTF_CAMERA_TBD_588 = 588,
-   EVTF_AI_TBD_589 = 589,
-   EVTF_BATTLE_TURN_TICKER = 590,
-   EVTF_MAP_OBJECT_BOULDER = 591,
-   EVTF_BATTLE_TURN_START = 592,
-   EVTF_BATTLE_RESULTS_UNIT = 593,
-   EVTF_BATTLE_RESULTS = 594,
-   EVTF_STATUS_WINDOW = 595,
-   EVTF_STATUS_WINDOW_MGR = 596,
-   EVTF_BATTLE_INTRO = 597,
-   EVTF_WORLD_ACTIONS = 598,
-   EVTF_MAP32_CAR_RELEASE = 650,
-   EVTF_MAP33_LAVA_PIT_PLATFORM = 651,
-   EVTF_MAP35_BUTTON = 652,
-   EVTF_EXPLODING_TILE = 653,
-   EVTF_MAP38_WASH_AWAY_UNIT = 654,
-   EVTF_MAP38_RAISE_FLOODGATE = 655,
-   EVTF_MAP39 = 656,
-   EVTF_MAP38_FLOODGATE = 657,
-   EVTF_MAP38_FLOODWATER = 658,
-   EVTF_SPLASH = 659,
-   EVTF_FLAME = 661,
-   EVTF_MAP28_OPEN_DOOR = 662,
-   EVTF_MAP28_BUTTON = 663,
-   EVTF_MAP27_OPEN_CELL_DOOR = 664,
-   EVTF_MAP27_BUTTONS = 665,
-   EVTF_MAP14_LOWER_SAND_MOUND = 666,
-   EVTF_MAP14_LOWER_SAND_TILE = 667,
-   EVTF_MAP14_RAISE_SAND_MOUND = 668,
-   EVTF_MAP14_RAISE_SAND_TILE = 669,
-   EVTF_MAP14_SAND = 670,
-   EVTF_MAP39_SPLASHING_TILE = 672,
-   EVTF_LEENA_FORCEFIELD = 675,
-   EVTF_HEAVY_RAINFALL = 676,
-   EVTF_RAINFALL_DROP = 677,
-   EVTF_RIPPLE = 678,
-   EVTF_STAT_BUFF_FX = 681,
-   EVTF_ADJUST_FACE_ELEVATION = 683,
-   EVTF_SLIDING_FACE = 684,
-   EVTF_ROCK_SPURT = 685,
-   EVTF_ROCK_SPURT_PARTICLE_2 = 686,
-   EVTF_LIGHT_RAINFALL = 687,
-   EVTF_MAGIC_STONE_EXPLOSION = 690,
-   EVTF_DYNAMO_HUM_COLORED_BOLT = 700,
-   EVTF_FLAMING_ROCK = 702,
-   EVTF_MAP40_BARRICADE = 703,
-   EVTF_MAP14_UNUSED_708 = 708,
-   EVTF_MAP14_UNUSED_709 = 709,
-   EVTF_PARTICLE_710 = 710, // Generic animated particle?
-   EVTF_SPELLBIND_FX2 = 715,
-   EVTF_SPELLBIND_FX3 = 716,
-   EVTF_TBD_717 = 717,
-   EVTF_TBD_718 = 718,
-   EVTF_TBD_732 = 732,
-   EVTF_STAT_BUFF_ICON = 733,
-   EVTF_SPARKLE_DUST = 735,
-   EVTF_REMOVE_PARALYSIS_BUBBLE = 736,
-   EVTF_REMOVE_PARALYSIS = 737,
-   EVTF_MAP40_LOWER_BARRICADE = 738,
-   EVTF_PARTICLE_739 = 739,
-   EVTF_REMOVE_PARALYSIS_SPARKLES = 740,
-   EVTF_ENTITY_BLOCKING = 746,
-   EVTF_WYRMFANG_FLAMES_CW = 747,
-   EVTF_WYRMFANG_FLAMES_CCW = 748,
-   EVTF_WYRMFANG_FLAME = 749,
-   EVTF_MAP33_SCN65_LOWER_PLATFORM = 750,
-   EVTF_MAP33_LOWER_PLATFORM = 751,
-   EVTF_MAP15_PIRATE_STAND_IN = 755,
-   EVTF_PUSHED_OBJECT_SPLASH = 757,
-   EVTF_ROCK_SPURT_PARTICLE = 759,
-   EVTF_ELITE_MELEE_SPARKLES = 760,
-   EVTF_REVEAL_USED_ITEM = 761,
-   EVTF_BOULDER_RUBBLE = 763,
-   EVTF_PROJECTILE_TRAIL_POISON = 764,
-   EVTF_PROJECTILE_TRAIL_EXPLOSION = 765,
-   EVTF_PROJECTILE_TRAIL_SMOKE = 766,
-   EVTF_PROJECTILE_TRAIL_SPARKLES = 767,
-   EVTF_ITEM_SPELL = 770,
-   EVTF_HEALING_PLUS_FX2 = 791,
-   EVTF_ULTRA_HEALING_FX2 = 792,
-   EVTF_SUPREME_HEALING_FX2 = 793, // + Holy H2O
-   EVTF_FADE = 795,
-   EVTF_FX_TBD_799 = 799,
-   EVTF_FX_TBD_800 = 800,
-   EVTF_FX_TBD_801 = 801,
-   EVTF_FX_TBD_802 = 802,
-   EVTF_FX_TBD_803 = 803,
-} EvtFunctionIdx;
-
-typedef struct EvtData_Sprite {
+typedef struct Object_Sprite {
    /* :0x24 */ s8 hidden;
    /* :0x25 */ s8 facingLeft;
    /* :0x26 */ s8 animInitialized;
@@ -413,11 +409,11 @@ typedef struct EvtData_Sprite {
    /* :0x5A */ s16 animYOfs;
    /* :0x5C */ s8 animSingleAxis;
    /* :0x5D */ u8 unk_0x5D[3];
-} EvtData_Sprite;
+} Object_Sprite;
 
-/* TBD - Sprites passed to AddEvtPrim2 use a different coord layout (xy), and sometimes use other
+/* TBD - Sprites passed to AddObjPrim2 use a different coord layout (xy), and sometimes use other
  * fields for their own data. */
-typedef struct EvtData_Sprite2 {
+typedef struct Object_Sprite2 {
    /* :0x24 */ s8 hidden;
    /* :0x25 */ u8 unk_0x25[3];
    /* :0x28 */ s16 gfxIdx;
@@ -429,21 +425,21 @@ typedef struct EvtData_Sprite2 {
    /* :0x34 */ u8 unk_0x34[8];
    /* :0x3C */ SVectorXY coords[4];
    /* :0x4C */ u8 unk_0x4C[20];
-} EvtData_Sprite2;
+} Object_Sprite2;
 
 /* Data Store (Union) */
-typedef union EvtData_DataStore {
+typedef union Object_DataStore {
    s8 bytes[60];
    s16 shorts[30];
    s32 ints[15];
-   struct EvtData *evts[15];
+   struct Object *objs[15];
    void *pointers[15];
    Cylinder cylinder;
    SVECTOR svectors[7];
-} EvtData_DataStore;
+} Object_DataStore;
 
 /* Battle - Actions */
-typedef struct EvtData_003 {
+typedef struct Object_003 {
    /* :0x24 */ s8 range;
    /* :0x25 */ s8 performedSubaction; // Whether unit has committed to a turn by using examine/push
    /* :0x26 */ u8 unk_0x26;
@@ -454,10 +450,10 @@ typedef struct EvtData_003 {
    /* :0x2E */ u8 unk_0x2E[30];
    /* :0x4C */ s8 timer;
    /* :0x4D */ u8 unk_0x4D[19];
-} EvtData_003;
+} Object_003;
 
 /* Window (incomplete) */
-typedef struct EvtData_004_005_408 {
+typedef struct Object_004_005_408 {
    /* :0x24 */ s32 effectPhase;
    /* :0x28 */ s16 clut;
    /* :0x2A */ s16 choicesTopMargin;
@@ -480,74 +476,74 @@ typedef struct EvtData_004_005_408 {
    /* :0x4A */ s16 relQuadY2;
    /* :0x4C */ s16 relQuadX3;
    /* :0x4E */ s16 relQuadY3;
-   /* :0x50 */ struct EvtData *highlight;
-   /* :0x54 */ struct EvtData *window;
+   /* :0x50 */ struct Object *highlight;
+   /* :0x54 */ struct Object *window;
    /* :0x58 */ s16 effectX;
    /* :0x5A */ s16 effectY;
    /* :0x5C */ s8 effect;
    /* :0x5D */ s8 translucentHighlight;
    /* :0x5E */ s8 otOfs;
    /* :0x5F */ s8 disableWraparound;
-} EvtData_004_005_408;
+} Object_004_005_408;
 
 /* Apply Poison */
-typedef struct EvtData_007 {
+typedef struct Object_007 {
    /* :0x24 */ struct UnitStatus *unit;
    /* :0x28 */ s8 timer;
    /* :0x29 */ u8 unk_0x29[55];
-} EvtData_007;
+} Object_007;
 
 /* Battle Portrait */
-typedef struct EvtData_008 {
+typedef struct Object_008 {
    /* :0x24 */ s8 windowId;
    /* :0x25 */ s8 flipped;
    /* :0x26 */ u8 unk_0x26[2];
-   /* :0x28 */ struct EvtData *window;
-   /* :0x2C */ struct EvtData *sprite;
+   /* :0x28 */ struct Object *window;
+   /* :0x2C */ struct Object *sprite;
    /* :0x30 */ s16 portraitId;
    /* :0x32 */ u8 unk_0x32[46];
-} EvtData_008;
+} Object_008;
 
 /* Item Icon Manager */
-typedef struct EvtData_009 {
+typedef struct Object_009 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *shopOrDepot; // evtf406
-} EvtData_009;
+   /* :0x5C */ struct Object *shopOrDepot; // objf406
+} Object_009;
 
 /* Battle Manager */
-typedef struct EvtData_013 {
+typedef struct Object_013 {
    /* :0x24 */ struct UnitStatus *unit;
-   /* :0x28 */ struct EvtData *unitSprite;
+   /* :0x28 */ struct Object *unitSprite;
    /* :0x2C */ s8 timer;
    /* :0x2D */ s8 todo_x2d;
    /* :0x2E */ u8 unk_0x2E[50];
-} EvtData_013;
+} Object_013;
 
 /* Battle Unit */
-typedef struct EvtData_014 {
+typedef struct Object_014 {
    /* :0x24 */ u8 team;
    /* :0x25 */ u8 unitIdx;
    /* :0x26 */ s8 pathIdx;
    /* :0x27 */ s8 animIdx;
    /* :0x28 */ struct UnitStatus *unit;
    /* :0x2C */ u8 **animSet;
-   /* :0x30 */ struct EvtData *sprite;
+   /* :0x30 */ struct Object *sprite;
    /* :0x34 */ s8 timer;
    /* :0x35 */ u8 unk_0x35;
    /* :0x36 */ s16 direction;
    /* :0x38 */ u8 unk_0x38[40];
-} EvtData_014;
+} Object_014;
 
 /* Choose Done Direction */
-typedef struct EvtData_016 {
+typedef struct Object_016 {
    /* :0x24 */ struct UnitStatus *unit;
    /* :0x28 */ s16 angle;
    /* :0x2A */ u8 unk_0x2A[54];
-} EvtData_016;
+} Object_016;
 
 /* Camera - TBD */
-typedef struct EvtData_017 {
-   /* :0x24 */ struct EvtData *sprite;
+typedef struct Object_017 {
+   /* :0x24 */ struct Object *sprite;
    /* :0x28 */ s16 camSavedX;
    /* :0x2A */ s16 camSavedZ;
    /* :0x2C */ s16 camSavedY;
@@ -562,11 +558,11 @@ typedef struct EvtData_017 {
    /* :0x3E */ s16 geomOfsY;
    /* :0x40 */ s16 dstGeomOfsY;
    /* :0x42 */ u8 unk_0x42[30];
-} EvtData_017;
+} Object_017;
 
 /* Pushed Boulder */
-typedef struct EvtData_020 {
-   /* :0x24 */ struct EvtData *unitSprite;
+typedef struct Object_020 {
+   /* :0x24 */ struct Object *unitSprite;
    /* :0x28 */ s16 savedCamX;
    /* :0x2A */ s16 savedCamZ;
    /* :0x2C */ s16 savedCamY;
@@ -576,25 +572,25 @@ typedef struct EvtData_020 {
    /* :0x36 */ u8 unk_0x36[4];
    /* :0x3A */ s16 timer;
    /* :0x3C */ u8 unk_0x3C[36];
-} EvtData_020;
+} Object_020;
 
 /* Unit Attacking */
-typedef struct EvtData_021 {
+typedef struct Object_021 {
    /* :0x24 */ struct UnitStatus *attacker;
    /* :0x28 */ struct UnitStatus *defender;
-   /* :0x2C */ struct EvtData *attackerSprite;
-   /* :0x30 */ struct EvtData *defenderSprite;
+   /* :0x2C */ struct Object *attackerSprite;
+   /* :0x30 */ struct Object *defenderSprite;
    /* :0x34 */ s8 countering;
    /* :0x35 */ u8 unk_0x35[3];
    /* :0x38 */ s8 timer;
    /* :0x39 */ s8 mapSizeX;
    /* :0x3A */ s8 mapSizeZ;
    /* :0x3B */ u8 unk_0x3B[37];
-} EvtData_021;
+} Object_021;
 
 /* Projectile */
-typedef struct EvtData_022_029 {
-   /* :0x24 */ struct EvtData *sprite;
+typedef struct Object_022_029 {
+   /* :0x24 */ struct Object *sprite;
    /* :0x28 */ s16 xMid;
    /* :0x2A */ s16 zMid;
    /* :0x2C */ s16 xzMidDist;
@@ -604,28 +600,28 @@ typedef struct EvtData_022_029 {
    /* :0x34 */ u8 unk_0x34[4];
    /* :0x38 */ s16 zRot;
    /* :0x3A */ u8 unk_0x3A[38];
-} EvtData_022_029;
+} Object_022_029;
 
 /* Camera - Ranged Target */
-typedef struct EvtData_023 {
-   /* :0x24 */ struct EvtData *targetSprite;
+typedef struct Object_023 {
+   /* :0x24 */ struct Object *targetSprite;
    /* :0x28 */ s16 yRotDst;
    /* :0x2A */ s16 delay;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_023;
+} Object_023;
 
 /* Camera - Bounce Zoom */
-typedef struct EvtData_024 {
+typedef struct Object_024 {
    /* :0x24 */ s16 soft;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ s16 todo_x2a;
    /* :0x2C */ s16 savedZoom;
    /* :0x2E */ u8 unk_0x2E[50];
-} EvtData_024;
+} Object_024;
 
 /* Overhead Map View */
-typedef struct EvtData_025 {
+typedef struct Object_025 {
    /* :0x24 */ s16 camSavedRotX;
    /* :0x26 */ s16 camSavedRotY;
    /* :0x28 */ s16 camSavedZoom;
@@ -634,11 +630,11 @@ typedef struct EvtData_025 {
    /* :0x2E */ s16 camSavedZ;
    /* :0x30 */ s8 delay;
    /* :0x31 */ u8 unk_0x31[47];
-} EvtData_025;
+} Object_025;
 
 /* Camera - TBD */
-typedef struct EvtData_026_588 {
-   /* :0x24 */ struct EvtData *target;
+typedef struct Object_026_588 {
+   /* :0x24 */ struct Object *target;
    /* :0x28 */ s8 type;
    /* :0x29 */ u8 unk_0x29;
    /* :0x2A */ s16 zoom;
@@ -653,52 +649,52 @@ typedef struct EvtData_026_588 {
    /* :0x42 */ u8 unk_0x42[2];
    /* :0x44 */ s8 todo_x44;
    /* :0x45 */ u8 unk_0x45[27];
-} EvtData_026_588;
+} Object_026_588;
 
 /* Targeting Spell */
-typedef struct EvtData_027 {
+typedef struct Object_027 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ struct UnitStatus *caster;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_027;
+} Object_027;
 
 /* Unit Casting Spell */
-typedef struct EvtData_028 {
+typedef struct Object_028 {
    /* :0x24 */ s8 timer;
    /* :0x25 */ s8 mapSizeX;
    /* :0x26 */ s8 mapSizeZ;
    /* :0x27 */ u8 unk_0x27[57];
-} EvtData_028;
+} Object_028;
 
 /* Unit/Field Info */
-typedef struct EvtData_030 {
+typedef struct Object_030 {
    /* :0x24 */ s8 previousTerrain;
    /* :0x25 */ u8 unk_0x25[3];
    /* :0x28 */ s8 unitIdx;
    /* :0x29 */ u8 unk_0x29[55];
-} EvtData_030;
+} Object_030;
 
 /* Battle Spells List */
-typedef struct EvtData_031 {
+typedef struct Object_031 {
    /* :0x24 */ struct UnitStatus *unit;
    /* :0x28 */ s8 spell;
    /* :0x29 */ u8 unk_0x29[55];
-} EvtData_031;
+} Object_031;
 
 /* Display Damage */
-typedef struct EvtData_032_033 {
-   /* :0x24 */ struct EvtData *barFg;
-   /* :0x28 */ struct EvtData *barBg;
+typedef struct Object_032_033 {
+   /* :0x24 */ struct Object *barFg;
+   /* :0x28 */ struct Object *barBg;
    /* :0x2C */ s16 barDstX3;
    /* :0x2E */ s16 timer;
    /* :0x30 */ s32 maxHp;
    /* :0x34 */ s32 prevHp;
    /* :0x38 */ s32 curHp;
    /* :0x3C */ u8 unk_0x3C[36];
-} EvtData_032_033;
+} Object_032_033;
 
 /* Map Object - Chest */
-typedef struct EvtData_040 {
+typedef struct Object_040 {
    /* :0x24 */ s8 item;
    /* :0x25 */ u8 unk_0x25[3];
    /* :0x28 */ s16 lidAngle;
@@ -714,10 +710,10 @@ typedef struct EvtData_040 {
    /* :0x5A */ s16 lid_todo_x5a;
    /* :0x5C */ s16 lid_todo_x5c;
    /* :0x5E */ s16 lid_todo_x5e;
-} EvtData_040;
+} Object_040;
 
 /* Map Object - Crate */
-typedef struct EvtData_046 {
+typedef struct Object_046 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s8 stack;
    /* :0x29 */ u8 unk_0x29;
@@ -725,10 +721,10 @@ typedef struct EvtData_046 {
    /* :0x2C */ u8 unk_0x2C[48];
    /* :0x5C */ s8 terrain;
    /* :0x5D */ u8 unk_0x5D[3];
-} EvtData_046;
+} Object_046;
 
 /* Push */
-typedef struct EvtData_048 {
+typedef struct Object_048 {
    /* :0x24 */ struct UnitStatus *unit;
    /* :0x28 */ s8 stack;
    /* :0x29 */ u8 unk_0x29;
@@ -740,10 +736,10 @@ typedef struct EvtData_048 {
    /* :0x32 */ u8 unk_0x32[42];
    /* :0x5C */ s8 timer;
    /* :0x5D */ u8 unk_0x5D[3];
-} EvtData_048;
+} Object_048;
 
 /* Unit Sprites Decoder */
-typedef struct EvtData_050 {
+typedef struct Object_050 {
    /* :0x24 */ u8 unk_0x24[24];
    /* :0x3C */ s32 remainingBytes;
    /* :0x40 */ u16 encodingBits;
@@ -756,11 +752,11 @@ typedef struct EvtData_050 {
    /* :0x58 */ s16 vramX;
    /* :0x5A */ s16 vramY;
    /* :0x5C */ u8 unk_0x5C[4];
-} EvtData_050;
+} Object_050;
 
 /* Floating Damage Text */
 /* TODO: Rename stuff to also account for restoration. */
-typedef struct EvtData_051 {
+typedef struct Object_051 {
    /* :0x24 */ s16 damage;
    /* :0x26 */ s16 clut;
    /* :0x28 */ s16 phase;
@@ -771,130 +767,130 @@ typedef struct EvtData_051 {
    /* :0x50 */ s16 ones;
    /* :0x52 */ s16 numDigits;
    /* :0x54 */ u8 unk_0x54[4];
-   /* :0x58 */ struct EvtData *unitSprite;
-   /* :0x5C */ struct EvtData *digitSprite;
-} EvtData_051;
+   /* :0x58 */ struct Object *unitSprite;
+   /* :0x5C */ struct Object *digitSprite;
+} Object_051;
 
 /* Attack Info Marker */
-typedef struct EvtData_052 {
+typedef struct Object_052 {
    /* :0x24 */ s16 type;
    /* :0x26 */ s16 clut;
    /* :0x28 */ s16 angle;
    /* :0x2A */ s16 timer;
    /* :0x2C */ u8 unk_0x2C[44];
-   /* :0x58 */ struct EvtData *unitSprite;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_052;
+   /* :0x58 */ struct Object *unitSprite;
+   /* :0x5C */ struct Object *sprite;
+} Object_052;
 
 /* Debug - VRAM */
-typedef struct EvtData_059 {
+typedef struct Object_059 {
    /* :0x24 */ s16 widthIdx;
    /* :0x26 */ s16 heightIdx;
    /* :0x28 */ s16 width;
    /* :0x2A */ s16 height;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_059;
+} Object_059;
 
 /* Stretch Warp Sprite */
-typedef struct EvtData_062 {
+typedef struct Object_062 {
    /* :0x24 */ s16 speed;
    /* :0x26 */ s16 phase;
    /* :0x28 */ u8 unk_0x28[40];
-   /* :0x50 */ struct EvtData *sprite;
+   /* :0x50 */ struct Object *sprite;
    /* :0x54 */ u8 unk_0x54[12];
-} EvtData_062;
+} Object_062;
 
 /* Fade From Black */
-typedef struct EvtData_070 {
+typedef struct Object_070 {
    /* :0x24 */ s16 speed;
    /* :0x26 */ u8 unk_0x26[38];
    /* :0x4C */ s16 fade;
    /* :0x4E */ u8 unk_0x4E[18];
-} EvtData_070;
+} Object_070;
 
 /* Fade To Black */
-typedef struct EvtData_071 {
+typedef struct Object_071 {
    /* :0x24 */ s16 speed;
    /* :0x26 */ u8 unk_0x26[38];
    /* :0x4C */ s16 fade;
    /* :0x4E */ u8 unk_0x4E[18];
-} EvtData_071;
+} Object_071;
 
 /* Fade From White */
-typedef struct EvtData_072 {
+typedef struct Object_072 {
    /* :0x24 */ s16 speed;
    /* :0x26 */ u8 unk_0x26[38];
    /* :0x4C */ s16 fade;
    /* :0x4E */ u8 unk_0x4E[18];
-} EvtData_072;
+} Object_072;
 
 /* Fade To White */
-typedef struct EvtData_073 {
+typedef struct Object_073 {
    /* :0x24 */ s16 speed;
    /* :0x26 */ u8 unk_0x26[38];
    /* :0x4C */ s16 fade;
    /* :0x4E */ u8 unk_0x4E[18];
-} EvtData_073;
+} Object_073;
 
 /* Fade In Sprite */
-typedef struct EvtData_074 {
+typedef struct Object_074 {
    /* :0x24 */ s16 speed;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 fade;
    /* :0x2A */ u8 unk_0x2A[50];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_074;
+   /* :0x5C */ struct Object *sprite;
+} Object_074;
 
 /* Fade Out Sprite */
-typedef struct EvtData_075 {
+typedef struct Object_075 {
    /* :0x24 */ s16 speed;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 fade;
    /* :0x2A */ u8 unk_0x2A[50];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_075;
+   /* :0x5C */ struct Object *sprite;
+} Object_075;
 
 /* FX - Circles (TBD) */
-typedef struct EvtData_076 {
+typedef struct Object_076 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[40];
    /* :0x4E */ s16 todo_x4e;
    /* :0x50 */ s16 todo_x50;
    /* :0x52 */ u8 unk_0x52[14];
-} EvtData_076;
+} Object_076;
 
 /* FX - Circle (TBD) */
-typedef struct EvtData_077 {
+typedef struct Object_077 {
    /* :0x24 */ s16 fade;
    /* :0x26 */ u8 unk_0x26[38];
    /* :0x4C */ s16 angle;
    /* :0x4E */ s16 todo_x4e;
    /* :0x50 */ s16 todo_x50;
    /* :0x52 */ u8 unk_0x52[14];
-} EvtData_077;
+} Object_077;
 
 /* Damage - FX2 */
-typedef struct EvtData_078 {
+typedef struct Object_078 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_078;
+} Object_078;
 
 /* Slay - FX3 */
-typedef struct EvtData_079 {
+typedef struct Object_079 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_079;
+} Object_079;
 
 /* Roman Fire - FX1 */
-typedef struct EvtData_080 {
+typedef struct Object_080 {
    /* :0x24 */ u8 unk_0x24[48];
-   /* :0x54 */ struct EvtData *target;
-   /* :0x58 */ struct EvtData *cam;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_080;
+   /* :0x54 */ struct Object *target;
+   /* :0x58 */ struct Object *cam;
+   /* :0x5C */ struct Object *sprite;
+} Object_080;
 
 /* FX - TBD */
-typedef struct EvtData_082 {
+typedef struct Object_082 {
    /* :0x24 */ s16 radius;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 theta1;
@@ -902,25 +898,25 @@ typedef struct EvtData_082 {
    /* :0x2C */ s16 theta3;
    /* :0x2E */ s16 theta4;
    /* :0x30 */ u8 unk_0x30[40];
-   /* :0x58 */ struct EvtData *todo_x58;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_082;
+   /* :0x58 */ struct Object *todo_x58;
+   /* :0x5C */ struct Object *sprite;
+} Object_082;
 
 /* Map 20 - Scene 30 - Arrow Spawner */
-typedef struct EvtData_087 {
+typedef struct Object_087 {
    /* :0x24 */ union {
-      struct EvtData *entitySpriteParam;
+      struct Object *entitySpriteParam;
       struct {
          s16 z, y;
       } velocity;
    } variant_0x24;
    /* :0x28 */ s16 yAccel;
    /* :0x2A */ u8 unk_0x2A[50];
-   /* :0x5C */ struct EvtData *entitySprite;
-} EvtData_087;
+   /* :0x5C */ struct Object *entitySprite;
+} Object_087;
 
 /* FX - TBD */
-typedef struct EvtData_088 {
+typedef struct Object_088 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -928,52 +924,52 @@ typedef struct EvtData_088 {
    /* :0x2E */ u8 unk_0x2E[14];
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ u8 unk_0x54[12];
-} EvtData_088;
+} Object_088;
 
 /* Map 15 - Scene 17 - Cinematic */
-typedef struct EvtData_089 {
+typedef struct Object_089 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ Camera camera;
    /* :0x36 */ u8 unk_0x36[26];
-   /* :0x50 */ struct EvtData *focus;
-   /* :0x54 */ struct EvtData *ocean;
+   /* :0x50 */ struct Object *focus;
+   /* :0x54 */ struct Object *ocean;
    /* :0x58 */ s16 dstRotY;
    /* :0x5A */ u8 unk_0x5A[2];
-   /* :0x5C */ struct EvtData *plank;
-} EvtData_089;
+   /* :0x5C */ struct Object *plank;
+} Object_089;
 
 /* Dagger Storm - FX2 */
-typedef struct EvtData_090 {
+typedef struct Object_090 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ u8 unk_0x2A[50];
    /* :0x5C */ s16 fatal;
    /* :0x5E */ u8 unk_0x5E[2];
-} EvtData_090;
+} Object_090;
 
 /* Dagger Storm - Dagger */
-typedef struct EvtData_091 {
+typedef struct Object_091 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ u8 unk_0x2A[18];
    /* :0x3C */ SVectorXZY positions[4];
    /* :0x54 */ u8 unk_0x54[4];
-   /* :0x58 */ struct EvtData *targetSprite;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_091;
+   /* :0x58 */ struct Object *targetSprite;
+   /* :0x5C */ struct Object *sprite;
+} Object_091;
 
 /* Mood Ring - FX1 */
-typedef struct EvtData_094 {
+typedef struct Object_094 {
    /* :0x24 */ u8 unk_0x24[52];
    /* :0x58 */ s8 launchingOutward;
    /* :0x59 */ u8 unk_0x59[7];
-} EvtData_094;
+} Object_094;
 
 /* Mood Ring - Ring */
-typedef struct EvtData_095 {
+typedef struct Object_095 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx_unused;
    /* :0x2A */ u8 unk_0x2A[10];
@@ -984,25 +980,25 @@ typedef struct EvtData_095 {
    /* :0x54 */ s16 theta;
    /* :0x56 */ s16 radius;
    /* :0x58 */ u8 unk_0x58[4];
-   /* :0x5C */ struct EvtData *parent; // evtf094
-} EvtData_095;
+   /* :0x5C */ struct Object *parent; // objf094
+} Object_095;
 
 /* Mood Ring - FX2 */
-typedef struct EvtData_096 {
+typedef struct Object_096 {
    /* :0x24 */ s16 fatal;
    /* :0x26 */ u8 unk_0x26[54];
-   /* :0x5C */ struct EvtData *targetSprite;
-} EvtData_096;
+   /* :0x5C */ struct Object *targetSprite;
+} Object_096;
 
 /* Mood Ring - FX3 */
-typedef struct EvtData_097 {
+typedef struct Object_097 {
    /* :0x24 */ s16 fatal;
    /* :0x26 */ u8 unk_0x26[54];
-   /* :0x5C */ struct EvtData *targetSprite;
-} EvtData_097;
+   /* :0x5C */ struct Object *targetSprite;
+} Object_097;
 
 /* Map 20 - Scene 30 - Arrow */
-typedef struct EvtData_098 {
+typedef struct Object_098 {
    /* :0x24 */ s8 hidden;
    /* :0x25 */ u8 unk_0x25[3];
    /* :0x28 */ s16 gfxIdx;
@@ -1012,10 +1008,10 @@ typedef struct EvtData_098 {
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ SVectorXZY pos;
    /* :0x5A */ u8 unk_0x5A[6];
-} EvtData_098;
+} Object_098;
 
 /* FX - TBD */
-typedef struct EvtData_099 {
+typedef struct Object_099 {
    /* :0x24 */ s16 theta1;
    /* :0x26 */ s16 theta2;
    /* :0x28 */ s16 todo_x28;
@@ -1024,72 +1020,72 @@ typedef struct EvtData_099 {
    /* :0x2E */ u8 unk_0x2E[2];
    /* :0x30 */ s16 todo_x30;
    /* :0x32 */ u8 unk_0x32[42];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_099;
+   /* :0x5C */ struct Object *sprite;
+} Object_099;
 
 /* Healing - FX2 */
 // Used for: Healing, Self Healing, Herb, Megaherb, Moon Pie
-typedef struct EvtData_100 {
+typedef struct Object_100 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[18];
-   /* :0x38 */ struct EvtData *unitSprite;
+   /* :0x38 */ struct Object *unitSprite;
    /* :0x3C */ u8 unk_0x3C[32];
-   /* :0x5C */ struct EvtData *dataStore;
-} EvtData_100;
+   /* :0x5C */ struct Object *dataStore;
+} Object_100;
 
 /* Healing Sparkle */
-typedef struct EvtData_101 {
+typedef struct Object_101 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ s16 todo_x2a;
    /* :0x2C */ u8 unk_0x2C[44];
-   /* :0x58 */ struct EvtData *sprite;
-   /* :0x5C */ struct EvtData *parent;
-} EvtData_101;
+   /* :0x58 */ struct Object *sprite;
+   /* :0x5C */ struct Object *parent;
+} Object_101;
 
 /* Poison - FX2 */
-typedef struct EvtData_102_227 {
+typedef struct Object_102_227 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[18];
-   /* :0x38 */ struct EvtData *unitSprite;
+   /* :0x38 */ struct Object *unitSprite;
    /* :0x3C */ u8 unk_0x3C[32];
-   /* :0x5C */ struct EvtData *dataStore;
-} EvtData_102_227;
+   /* :0x5C */ struct Object *dataStore;
+} Object_102_227;
 
 /* Poison Bubbles */
-typedef struct EvtData_103 {
+typedef struct Object_103 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ s16 todo_x2a;
    /* :0x2C */ u8 unk_0x2C[44];
-   /* :0x58 */ struct EvtData *sprite;
-   /* :0x5C */ struct EvtData *parent;
-} EvtData_103;
+   /* :0x58 */ struct Object *sprite;
+   /* :0x5C */ struct Object *parent;
+} Object_103;
 
 /* Cure - FX2 */
-typedef struct EvtData_104 {
+typedef struct Object_104 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[24];
    /* :0x40 */ s16 todo_x40;
    /* :0x42 */ u8 unk_0x42[2];
-   /* :0x44 */ struct EvtData *ringSprite;
+   /* :0x44 */ struct Object *ringSprite;
    /* :0x48 */ u8 unk_0x48[20];
-   /* :0x5C */ struct EvtData *dataStore;
-} EvtData_104;
+   /* :0x5C */ struct Object *dataStore;
+} Object_104;
 
 /* Magic Charge - FX3 */
-typedef struct EvtData_106 {
+typedef struct Object_106 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[52];
-   /* :0x5C */ struct EvtData *glyphRing;
-} EvtData_106;
+   /* :0x5C */ struct Object *glyphRing;
+} Object_106;
 
 /* Magic Charge - Glyph Ring */
-typedef struct EvtData_107 {
+typedef struct Object_107 {
    /* :0x24 */ u8 unk_0x24[12];
    /* :0x30 */ s16 fade;
    /* :0x32 */ s16 fadeTicker;
@@ -1098,27 +1094,27 @@ typedef struct EvtData_107 {
    /* :0x4E */ u8 unk_0x4E[10];
    /* :0x58 */ s16 todo_x58;
    /* :0x5A */ u8 unk_0x5A[6];
-} EvtData_107;
+} Object_107;
 
 /* Harmful Wave - FX2 */
-typedef struct EvtData_108 {
+typedef struct Object_108 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[18];
-   /* :0x38 */ struct EvtData *unitSprite;
+   /* :0x38 */ struct Object *unitSprite;
    /* :0x3C */ u8 unk_0x3C[36];
-} EvtData_108;
+} Object_108;
 
 /* Harmful Wave - Ring */
-typedef struct EvtData_109 {
+typedef struct Object_109 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[38];
    /* :0x4C */ s16 height;
    /* :0x4E */ u8 unk_0x4E[14];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_109;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_109;
 
 /* Casting Stat Buff */
-typedef struct EvtData_110 {
+typedef struct Object_110 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ u8 unk_0x26[10];
    /* :0x30 */ s16 glyphsFade;
@@ -1126,42 +1122,42 @@ typedef struct EvtData_110 {
    /* :0x34 */ u8 unk_0x34[24];
    /* :0x4C */ s16 clut;
    /* :0x4E */ u8 unk_0x4E[10];
-   /* :0x58 */ struct EvtData *buffFx;
+   /* :0x58 */ struct Object *buffFx;
    /* :0x5C */ u8 unk_0x5C[4];
-} EvtData_110;
+} Object_110;
 
 /* Faerie - FX2 */
-typedef struct EvtData_115 {
+typedef struct Object_115 {
    /* :0x24 */ s16 theta;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[4];
    /* :0x2C */ s16 timer;
    /* :0x2E */ u8 unk_0x2E[42];
-   /* :0x58 */ struct EvtData *targetSprite;
-   /* :0x5C */ struct EvtData *faerieSprite;
-} EvtData_115;
+   /* :0x58 */ struct Object *targetSprite;
+   /* :0x5C */ struct Object *faerieSprite;
+} Object_115;
 
 /* Faerie - Sparkle */
-typedef struct EvtData_116 {
+typedef struct Object_116 {
    /* :0x24 */ s16 xOfs;
    /* :0x26 */ s16 zOfs;
    /* :0x28 */ s16 yOfs;
    /* :0x2A */ s16 fade;
    /* :0x2C */ u8 unk_0x2C[48];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_116;
+   /* :0x5C */ struct Object *sprite;
+} Object_116;
 
 /* Faerie - Sparkle Trail */
-typedef struct EvtData_117 {
+typedef struct Object_117 {
    /* :0x24 */ u8 unk_0x24[6];
    /* :0x2A */ s16 fade;
    /* :0x2C */ u8 unk_0x2C[48];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_117;
+   /* :0x5C */ struct Object *sprite;
+} Object_117;
 
 /* Faerie - Target */
-typedef struct EvtData_118 {
-   /* :0x24 */ struct EvtData *targetSprite;
+typedef struct Object_118 {
+   /* :0x24 */ struct Object *targetSprite;
    /* :0x28 */ s16 timer;
    /* :0x2A */ u8 unk_0x2A[2];
    /* :0x2C */ s16 unused_0x2C;
@@ -1169,10 +1165,10 @@ typedef struct EvtData_118 {
    /* :0x4C */ s16 clut;
    /* :0x4E */ s16 fade;
    /* :0x50 */ u8 unk_0x50[16];
-} EvtData_118;
+} Object_118;
 
 /* FX - TBD */
-typedef struct EvtData_119 {
+typedef struct Object_119 {
    /* :0x24 */ s16 type;
    /* :0x26 */ s16 boxIdx;
    /* :0x28 */ s16 clut;
@@ -1184,41 +1180,41 @@ typedef struct EvtData_119 {
    /* :0x34 */ u8 unk_0x34[24];
    /* :0x4C */ s16 timer;
    /* :0x4E */ u8 unk_0x4E[14];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_119;
+   /* :0x5C */ struct Object *sprite;
+} Object_119;
 
 /* Dark Fire - FX1 */
-typedef struct EvtData_122 {
+typedef struct Object_122 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ s16 theta;
    /* :0x28 */ u8 unk_0x28[16];
    /* :0x38 */ s16 savedLightRotZ;
    /* :0x3A */ s16 savedLightRotY;
    /* :0x3C */ u8 unk_0x3C[28];
-   /* :0x58 */ struct EvtData *sprite;
-   /* :0x5C */ struct EvtData *target;
-} EvtData_122;
+   /* :0x58 */ struct Object *sprite;
+   /* :0x5C */ struct Object *target;
+} Object_122;
 
 /* FX - TBD */
-typedef struct EvtData_130 {
+typedef struct Object_130 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[38];
    /* :0x4E */ s16 todo_x4e;
    /* :0x50 */ s16 todo_x50;
    /* :0x52 */ u8 unk_0x52[14];
-} EvtData_130;
+} Object_130;
 
 /* Slay Unit */
-typedef struct EvtData_131 {
+typedef struct Object_131 {
    /* :0x24 */ s16 speed;
    /* :0x26 */ u8 unk_0x26[54];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_131;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_131;
 
 /* FX - TBD */
 /* 132, 134, 136, 138, 140, 142, 799, 800 */
-typedef struct EvtData_132_Etc {
+typedef struct Object_132_Etc {
    /* :0x24 */ s16 phase; // also used as a timer
    /* :0x26 */ u8 unk_0x26[6];
    /* :0x2C */ s16 fade;
@@ -1226,12 +1222,12 @@ typedef struct EvtData_132_Etc {
    /* :0x30 */ u8 unk_0x30[28];
    /* :0x4C */ s16 clut;
    /* :0x4E */ u8 unk_0x4E[2];
-   /* :0x50 */ struct EvtData *unitSprite;
+   /* :0x50 */ struct Object *unitSprite;
    /* :0x54 */ u8 unk_0x54[12];
-} EvtData_132_Etc;
+} Object_132_Etc;
 
 /* FX - TBD */
-typedef struct EvtData_133_Etc {
+typedef struct Object_133_Etc {
    /* :0x24 */ s16 clut;
    /* :0x26 */ s16 semiTrans;
    /* :0x28 */ s16 todo_x28;
@@ -1244,20 +1240,20 @@ typedef struct EvtData_133_Etc {
    /* :0x36 */ u8 unk_0x36[22];
    /* :0x4C */ s16 timer;
    /* :0x4E */ u8 unk_0x4E[14];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_133_Etc;
+   /* :0x5C */ struct Object *sprite;
+} Object_133_Etc;
 
 /* Holy Lightning - FX2 */
-typedef struct EvtData_144 {
+typedef struct Object_144 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ s16 endingFxType;
    /* :0x28 */ u8 unk_0x28[48];
-   /* :0x58 */ struct EvtData *targetFlashingFx;
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_144;
+   /* :0x58 */ struct Object *targetFlashingFx;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_144;
 
 /* Holy Lightning - Electric Orb */
-typedef struct EvtData_145 {
+typedef struct Object_145 {
    /* :0x24 */ s16 fade;
    /* :0x26 */ u8 unk_0x26[14];
    /* :0x34 */ s16 x_1; // TBD
@@ -1276,12 +1272,12 @@ typedef struct EvtData_145 {
    /* :0x52 */ u8 unk_0x52[2];
    /* :0x54 */ s16 x_4;
    /* :0x56 */ s16 z_4;
-   /* :0x58 */ struct EvtData *orbSprite;
-   /* :0x5C */ struct EvtData *lightningSprite;
-} EvtData_145;
+   /* :0x58 */ struct Object *orbSprite;
+   /* :0x5C */ struct Object *lightningSprite;
+} Object_145;
 
 /* FX - TBD */
-typedef struct EvtData_147 {
+typedef struct Object_147 {
    /* :0x24 */ s16 clut;
    /* :0x26 */ u8 unk_0x26[14];
    /* :0x34 */ s16 todo_x34;
@@ -1298,31 +1294,31 @@ typedef struct EvtData_147 {
    /* :0x4E */ s16 todo_x4e;
    /* :0x50 */ s16 todo_x50;
    /* :0x52 */ u8 unk_0x52[10];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_147;
+   /* :0x5C */ struct Object *sprite;
+} Object_147;
 
 /* FX - TBD */
-typedef struct EvtData_148 {
+typedef struct Object_148 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ s16 endingFxType;
    /* :0x28 */ u8 unk_0x28[36];
    /* :0x4C */ s16 clut;
    /* :0x4E */ u8 unk_0x4E[18];
-} EvtData_148;
+} Object_148;
 
 /* Flashing Unit Sprite */
-typedef struct EvtData_149 {
+typedef struct Object_149 {
    /* :0x24 */ s16 clut;
    /* :0x26 */ s16 fadeSpeed;
    /* :0x28 */ u8 unk_0x28[4];
    /* :0x2C */ s16 fade;
    /* :0x2E */ s16 increasing;
    /* :0x30 */ u8 unk_0x30[44];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_149;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_149;
 
 /* Spellbind - Glyph */
-typedef struct EvtData_155 {
+typedef struct Object_155 {
    /* :0x24 */ s16 initialIdx;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 todo_x28;
@@ -1336,10 +1332,10 @@ typedef struct EvtData_155 {
    /* :0x5A */ s16 todo_x5a;
    /* :0x5C */ s16 todo_x5c;
    /* :0x5E */ s16 todo_x5e;
-} EvtData_155;
+} Object_155;
 
 /* Delta Mirage - FX1 */
-typedef struct EvtData_156 {
+typedef struct Object_156 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1349,10 +1345,10 @@ typedef struct EvtData_156 {
    /* :0x32 */ u8 unk_0x32[4];
    /* :0x36 */ s16 todo_x36;
    /* :0x38 */ u8 unk_0x38[40];
-} EvtData_156;
+} Object_156;
 
 /* Delta Mirage - Ray */
-typedef struct EvtData_157 {
+typedef struct Object_157 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1364,18 +1360,18 @@ typedef struct EvtData_157 {
    /* :0x34 */ s16 todo_x34;
    /* :0x36 */ s16 todo_x36;
    /* :0x38 */ u8 unk_0x38[36];
-   /* :0x5C */ struct EvtData *parent;
-} EvtData_157;
+   /* :0x5C */ struct Object *parent;
+} Object_157;
 
 /* Explosion - FX1 */
-typedef struct EvtData_158 {
+typedef struct Object_158 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[54];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_158;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_158;
 
 /* Explosion - Rays */
-typedef struct EvtData_159 {
+typedef struct Object_159 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1403,12 +1399,12 @@ typedef struct EvtData_159 {
    /* :0x54 */ u8 unk_0x54[4];
    /* :0x58 */ s16 todo_x58;
    /* :0x5A */ s16 todo_x5a;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_159;
+   /* :0x5C */ struct Object *sprite;
+} Object_159;
 
 /* Ice Storm - Target */
-typedef struct EvtData_160 {
-   /* :0x24 */ struct EvtData *targetSprite;
+typedef struct Object_160 {
+   /* :0x24 */ struct Object *targetSprite;
    /* :0x28 */ s16 timer;
    /* :0x2A */ u8 unk_0x2A[2];
    /* :0x2C */ s16 todo_x2c;
@@ -1416,36 +1412,36 @@ typedef struct EvtData_160 {
    /* :0x4C */ s16 clut;
    /* :0x4E */ s16 fade;
    /* :0x50 */ u8 unk_0x50[16];
-} EvtData_160;
+} Object_160;
 
 /* Piercing Light - FX1 */
-typedef struct EvtData_161 {
+typedef struct Object_161 {
    /* :0x24 */ u8 unk_0x24[20];
    /* :0x38 */ s16 clut;
    /* :0x3A */ u8 unk_0x3A[34];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_161;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_161;
 
 /* Ice Storm - Splash */
-typedef struct EvtData_162 {
+typedef struct Object_162 {
    /* :0x24 */ s16 xOfs;
    /* :0x26 */ s16 zOfs;
    /* :0x28 */ u8 unk_0x28[2];
    /* :0x2A */ s16 fade;
    /* :0x2C */ u8 unk_0x2C[48];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_162;
+   /* :0x5C */ struct Object *sprite;
+} Object_162;
 
 /* Stone Shower - FX1 */
-typedef struct EvtData_163 {
+typedef struct Object_163 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 timer;
    /* :0x28 */ u8 unk_0x28[52];
-   /* :0x5C */ struct EvtData *dataStore;
-} EvtData_163;
+   /* :0x5C */ struct Object *dataStore;
+} Object_163;
 
 /* Stone Shower - Rock */
-typedef struct EvtData_164 {
+typedef struct Object_164 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1458,20 +1454,20 @@ typedef struct EvtData_164 {
    /* :0x50 */ u8 unk_0x50[4];
    /* :0x54 */ s16 downward;
    /* :0x56 */ u8 unk_0x56[2];
-   /* :0x58 */ struct EvtData *sprite;
-   /* :0x5C */ struct EvtData *parent;
-} EvtData_164;
+   /* :0x58 */ struct Object *sprite;
+   /* :0x5C */ struct Object *parent;
+} Object_164;
 
 /* Stone Shower - FX2 */
-typedef struct EvtData_165 {
+typedef struct Object_165 {
    /* :0x24 */ s16 endingFxType;
    /* :0x26 */ s16 timer;
    /* :0x28 */ u8 unk_0x28[52];
-   /* :0x5C */ struct EvtData *dataStore;
-} EvtData_165;
+   /* :0x5C */ struct Object *dataStore;
+} Object_165;
 
 /* Rainbow Swirl */
-typedef struct EvtData_167 {
+typedef struct Object_167 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1500,11 +1496,11 @@ typedef struct EvtData_167 {
    /* :0x56 */ s16 todo_x56;
    /* :0x58 */ s16 todo_x58;
    /* :0x5A */ s16 todo_x5a;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_167;
+   /* :0x5C */ struct Object *sprite;
+} Object_167;
 
 /* Rainbow Stroke - Rainbow Swirl */
-typedef struct EvtData_168 {
+typedef struct Object_168 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1533,26 +1529,26 @@ typedef struct EvtData_168 {
    /* :0x56 */ s16 todo_x56;
    /* :0x58 */ s16 todo_x58;
    /* :0x5A */ s16 todo_x5a;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_168;
+   /* :0x5C */ struct Object *sprite;
+} Object_168;
 
 /* Evil Stream - FX1 */
-typedef struct EvtData_169 {
+typedef struct Object_169 {
    /* :0x24 */ s16 clut;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[2];
    /* :0x2A */ s16 fade;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_169;
+} Object_169;
 
 /* Piercing Ray, Plasma Wave - FX1 */
-typedef struct EvtData_170 {
+typedef struct Object_170 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_170;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_170;
 
 /* Homing Ray */
-typedef struct EvtData_171 {
+typedef struct Object_171 {
    /* :0x24 */ s16 clut;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1564,18 +1560,18 @@ typedef struct EvtData_171 {
    /* :0x34 */ s16 todo_x34;
    /* :0x36 */ s16 todo_x36;
    /* :0x38 */ u8 unk_0x38[40];
-} EvtData_171;
+} Object_171;
 
 /* Holy Pressure - Cube */
-typedef struct EvtData_172 {
+typedef struct Object_172 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ s16 timer;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_172;
+} Object_172;
 
 /* Fire Gem - Beam */
-typedef struct EvtData_173 {
+typedef struct Object_173 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1584,37 +1580,37 @@ typedef struct EvtData_173 {
    /* :0x2E */ s16 todo_x2e;
    /* :0x30 */ s16 todo_x30;
    /* :0x32 */ u8 unk_0x32[42];
-   /* :0x5C */ struct EvtData *fx;
-} EvtData_173;
+   /* :0x5C */ struct Object *fx;
+} Object_173;
 
 /* Rainbow Storm - FX1 */
-typedef struct EvtData_175 {
+typedef struct Object_175 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ u8 unk_0x26[50];
    /* :0x58 */ s16 iterator;
    /* :0x5A */ u8 unk_0x5A[2];
-   /* :0x5C */ struct EvtData *dataStore;
-} EvtData_175;
+   /* :0x5C */ struct Object *dataStore;
+} Object_175;
 
 /* Rainbow Stroke - FX1 */
-typedef struct EvtData_176 {
+typedef struct Object_176 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ u8 unk_0x26[50];
-   /* :0x58 */ struct EvtData *cam;
-   /* :0x5C */ struct EvtData *fx;
-} EvtData_176;
+   /* :0x58 */ struct Object *cam;
+   /* :0x5C */ struct Object *fx;
+} Object_176;
 
 /* Holy Pressure - FX1 */
-typedef struct EvtData_177 {
+typedef struct Object_177 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[50];
    /* :0x58 */ s16 iterator;
    /* :0x5A */ u8 unk_0x5A[2];
-   /* :0x5C */ struct EvtData *dataStore;
-} EvtData_177;
+   /* :0x5C */ struct Object *dataStore;
+} Object_177;
 
 /* Thunder Flash - FX1 */
-typedef struct EvtData_178 {
+typedef struct Object_178 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 todo_x28;
@@ -1625,10 +1621,10 @@ typedef struct EvtData_178 {
    /* :0x38 */ s16 todo_x38;
    /* :0x3A */ u8 unk_0x3A[36];
    /* :0x5E */ s16 todo_x5e;
-} EvtData_178;
+} Object_178;
 
 /* Thunder Flash - Ray */
-typedef struct EvtData_179 {
+typedef struct Object_179 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1640,11 +1636,11 @@ typedef struct EvtData_179 {
    /* :0x34 */ u8 unk_0x34[2];
    /* :0x36 */ s16 todo_x36;
    /* :0x38 */ u8 unk_0x38[36];
-   /* :0x5C */ struct EvtData *parent;
-} EvtData_179;
+   /* :0x5C */ struct Object *parent;
+} Object_179;
 
 /* Spread Force - FX1 */
-typedef struct EvtData_180 {
+typedef struct Object_180 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 todo_x28;
@@ -1655,20 +1651,20 @@ typedef struct EvtData_180 {
    /* :0x38 */ u8 unk_0x38[32];
    /* :0x58 */ s16 iterator;
    /* :0x5A */ u8 unk_0x5A[2];
-   /* :0x5C */ struct EvtData *dataStore;
-} EvtData_180;
+   /* :0x5C */ struct Object *dataStore;
+} Object_180;
 
 /* FX - TBD */
-typedef struct EvtData_182 {
+typedef struct Object_182 {
    /* :0x24 */ s16 savedZoom;
    /* :0x26 */ s16 theta;
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ u8 unk_0x2A[50];
-   /* :0x5C */ struct EvtData *cam; // evtf026
-} EvtData_182;
+   /* :0x5C */ struct Object *cam; // objf026
+} Object_182;
 
 /* FX - TBD */
-typedef struct EvtData_183 {
+typedef struct Object_183 {
    /* :0x24 */ u8 unk_0x24[2];
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1679,11 +1675,11 @@ typedef struct EvtData_183 {
    /* :0x32 */ u8 unk_0x32[4];
    /* :0x36 */ s16 timer;
    /* :0x38 */ u8 unk_0x38[36];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_183;
+   /* :0x5C */ struct Object *sprite;
+} Object_183;
 
 /* Avalanche - FX1 */
-typedef struct EvtData_184 {
+typedef struct Object_184 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[2];
@@ -1697,30 +1693,30 @@ typedef struct EvtData_184 {
    /* :0x38 */ s16 todo_x38;
    /* :0x3A */ s16 todo_x3a;
    /* :0x3C */ u8 unk_0x3C[4];
-   /* :0x40 */ struct EvtData *cam;      // evtf026
-   /* :0x44 */ struct EvtData *boulder;  // evtf211
-   /* :0x48 */ struct EvtData *rocks[6]; // evtf185
-} EvtData_184;
+   /* :0x40 */ struct Object *cam;      // objf026
+   /* :0x44 */ struct Object *boulder;  // objf211
+   /* :0x48 */ struct Object *rocks[6]; // objf185
+} Object_184;
 
 /* Avalanche - Rock */
-typedef struct EvtData_185 {
+typedef struct Object_185 {
    /* :0x24 */ s16 height;
    /* :0x26 */ s16 theta;
    /* :0x28 */ s16 velocity;
    /* :0x2A */ u8 unk_0x2A[46];
-   /* :0x58 */ struct EvtData *sprite;
-   /* :0x5C */ struct EvtData *parent;
-} EvtData_185;
+   /* :0x58 */ struct Object *sprite;
+   /* :0x5C */ struct Object *parent;
+} Object_185;
 
 /* FX - TBD */
-typedef struct EvtData_186 {
+typedef struct Object_186 {
    /* :0x24 */ u8 unk_0x24[2];
    /* :0x26 */ s16 fxType;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_186;
+} Object_186;
 
 /* Dark Fire - Ray */
-typedef struct EvtData_188 {
+typedef struct Object_188 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1732,11 +1728,11 @@ typedef struct EvtData_188 {
    /* :0x34 */ s16 todo_x34;
    /* :0x36 */ s16 todo_x36;
    /* :0x38 */ u8 unk_0x38[36];
-   /* :0x5C */ struct EvtData *target;
-} EvtData_188;
+   /* :0x5C */ struct Object *target;
+} Object_188;
 
 /* Ice Storm - FX1 */
-typedef struct EvtData_189 {
+typedef struct Object_189 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1745,10 +1741,10 @@ typedef struct EvtData_189 {
    /* :0x2E */ u8 unk_0x2E[46];
    /* :0x5C */ s16 todo_x5c;
    /* :0x5E */ u8 unk_0x5E[2];
-} EvtData_189;
+} Object_189;
 
 /* Magic Arrow - Arrow */
-typedef struct EvtData_191 {
+typedef struct Object_191 {
    /* :0x24 */ s16 clut_unused;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1759,38 +1755,38 @@ typedef struct EvtData_191 {
    /* :0x32 */ u8 unk_0x32[2];
    /* :0x34 */ s16 timer;
    /* :0x36 */ u8 unk_0x36[42];
-} EvtData_191;
+} Object_191;
 
 /* Perfect Guard - FX2 */
-typedef struct EvtData_192 {
+typedef struct Object_192 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ u8 unk_0x26[50];
    /* :0x58 */ s16 todo_x58;
    /* :0x5A */ s16 todo_x5a;
    /* :0x5C */ s16 todo_x5c;
    /* :0x5E */ s16 todo_x5e;
-} EvtData_192;
+} Object_192;
 
 /* Dark Star - FX3 */
-typedef struct EvtData_193 {
+typedef struct Object_193 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[40];
    /* :0x4E */ s16 todo_x4e;
    /* :0x50 */ s16 todo_x50;
    /* :0x52 */ u8 unk_0x52[8];
    /* :0x5A */ s16 endingFxType;
-   /* :0x5C */ struct EvtData *targetSprite;
-} EvtData_193;
+   /* :0x5C */ struct Object *targetSprite;
+} Object_193;
 
 /* Rolling Thunder - FX2 */
-typedef struct EvtData_195 {
+typedef struct Object_195 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ s16 endingFxType;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_195;
+} Object_195;
 
 /* Rolling Thunder - Orb Pair */
-typedef struct EvtData_196 {
+typedef struct Object_196 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 todo_x28;
@@ -1801,24 +1797,24 @@ typedef struct EvtData_196 {
    /* :0x36 */ u8 unk_0x36[22];
    /* :0x4C */ s16 clut;
    /* :0x4E */ u8 unk_0x4E[6];
-   /* :0x54 */ struct EvtData *lightningSprite;
-   /* :0x58 */ struct EvtData *orbSprite;
-   /* :0x5C */ struct EvtData *targetSprite;
-} EvtData_196;
+   /* :0x54 */ struct Object *lightningSprite;
+   /* :0x58 */ struct Object *orbSprite;
+   /* :0x5C */ struct Object *targetSprite;
+} Object_196;
 
 /* Rolling Thunder - FX1 */
-typedef struct EvtData_197 {
+typedef struct Object_197 {
    /* :0x24 */ union {
-      struct EvtData *unitSpriteParam;
+      struct Object *unitSpriteParam;
       s16 timer;
    } variant_0x24;
    /* :0x28 */ u8 unk_0x28[16];
-   /* :0x38 */ struct EvtData *unitSprite;
-   /* :0x3C */ struct EvtData *bolts[9];
-} EvtData_197;
+   /* :0x38 */ struct Object *unitSprite;
+   /* :0x3C */ struct Object *bolts[9];
+} Object_197;
 
 /* Rolling Thunder - Casting Bolt */
-typedef struct EvtData_198 {
+typedef struct Object_198 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1826,42 +1822,42 @@ typedef struct EvtData_198 {
    /* :0x2C */ s16 todo_x2c;
    /* :0x2E */ s16 todo_x2e;
    /* :0x30 */ u8 unk_0x30[40];
-   /* :0x58 */ struct EvtData *sprite;
-   /* :0x5C */ struct EvtData *parent;
-} EvtData_198;
+   /* :0x58 */ struct Object *sprite;
+   /* :0x5C */ struct Object *parent;
+} Object_198;
 
 /* Magic Arrow - FX1 */
-typedef struct EvtData_199 {
+typedef struct Object_199 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_199;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_199;
 
 /* Unit Struck */
-typedef struct EvtData_201 {
+typedef struct Object_201 {
    /* :0x24 */ u8 unk_0x24[8];
    /* :0x2C */ s16 fade;
    /* :0x2E */ s16 flashState;
    /* :0x30 */ u8 unk_0x30[40];
-   /* :0x58 */ struct EvtData *impactSprite;
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_201;
+   /* :0x58 */ struct Object *impactSprite;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_201;
 
 /* Unit Blocking */
-typedef struct EvtData_202_746 {
+typedef struct Object_202_746 {
    /* :0x24 */ union {
-      struct EvtData *entitySpriteParam;
+      struct Object *entitySpriteParam;
       s16 timer;
    } variant_0x24;
    /* :0x28 */ u8 unk_0x28[4];
    /* :0x2C */ s16 fade;
    /* :0x2E */ s16 flashState;
    /* :0x30 */ u8 unk_0x30[40];
-   /* :0x58 */ struct EvtData *unusedSprite;
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_202_746;
+   /* :0x58 */ struct Object *unusedSprite;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_202_746;
 
 /* Blocking Impact */
-typedef struct EvtData_203 {
+typedef struct Object_203 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ u8 unk_0x2A[34];
@@ -1871,11 +1867,11 @@ typedef struct EvtData_203 {
    /* :0x52 */ u8 unk_0x52[6];
    /* :0x58 */ s16 direction;
    /* :0x5A */ u8 unk_0x5A[2];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_203;
+   /* :0x5C */ struct Object *sprite;
+} Object_203;
 
 /* Summon Crest */
-typedef struct EvtData_204 {
+typedef struct Object_204 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[38];
    /* :0x4C */ s16 maskClut;
@@ -1883,21 +1879,21 @@ typedef struct EvtData_204 {
    /* :0x50 */ s16 vramSrcX;
    /* :0x52 */ s16 vramSrcY;
    /* :0x54 */ u8 unk_0x54[8];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_204;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_204;
 
 /* Blood Spurt */
-typedef struct EvtData_205 {
+typedef struct Object_205 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[6];
    /* :0x2C */ s16 fade;
    /* :0x2E */ s16 flashState;
    /* :0x30 */ u8 unk_0x30[44];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_205;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_205;
 
 /* Blood Spurt Particle */
-typedef struct EvtData_206 {
+typedef struct Object_206 {
    /* :0x24 */ SVectorXZY position1;
    /* :0x2A */ s16 position7_x;
    /* :0x2C */ SVectorXZY position2;
@@ -1913,19 +1909,19 @@ typedef struct EvtData_206 {
    /* :0x54 */ u8 unk_0x54[4];
    /* :0x58 */ s16 theta;
    /* :0x5A */ s16 shade;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_206;
+   /* :0x5C */ struct Object *sprite;
+} Object_206;
 
 /* Holy Lightning - FX1 */
-typedef struct EvtData_208 {
+typedef struct Object_208 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[18];
-   /* :0x38 */ struct EvtData *unitSprite;
-   /* :0x3C */ struct EvtData *bolts[9];
-} EvtData_208;
+   /* :0x38 */ struct Object *unitSprite;
+   /* :0x3C */ struct Object *bolts[9];
+} Object_208;
 
 /* Avalanche - Boulder */
-typedef struct EvtData_211 {
+typedef struct Object_211 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ u8 unk_0x26[38];
    /* :0x4C */ s16 todo_x4c;
@@ -1933,10 +1929,10 @@ typedef struct EvtData_211 {
    /* :0x50 */ s16 rotZ;
    /* :0x52 */ s16 rotX;
    /* :0x54 */ u8 unk_0x54[12];
-} EvtData_211;
+} Object_211;
 
 /* Holy Lightning - Casting Bolt */
-typedef struct EvtData_212 {
+typedef struct Object_212 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -1946,28 +1942,28 @@ typedef struct EvtData_212 {
    /* :0x30 */ u8 unk_0x30[28];
    /* :0x4C */ s16 todo_x4c;
    /* :0x4E */ u8 unk_0x4E[10];
-   /* :0x58 */ struct EvtData *sprite;
-   /* :0x5C */ struct EvtData *parent;
-} EvtData_212;
+   /* :0x58 */ struct Object *sprite;
+   /* :0x5C */ struct Object *parent;
+} Object_212;
 
 /* Dust Cloud Spawner */
-typedef struct EvtData_213 {
+typedef struct Object_213 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_213;
+} Object_213;
 
 /* Dust Cloud */
-typedef struct EvtData_214 {
+typedef struct Object_214 {
    /* :0x24 */ s16 theta;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 halfSize;
    /* :0x2A */ u8 unk_0x2A[2];
-   /* :0x2C */ struct EvtData *sprite;
+   /* :0x2C */ struct Object *sprite;
    /* :0x30 */ SVectorXZY positions[8];
-} EvtData_214;
+} Object_214;
 
 /* Cloud (Sand, Dust, etc.) */
-typedef struct EvtData_215 {
+typedef struct Object_215 {
    /* :0x24 */ s16 theta;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ SVectorXZY position1;
@@ -1984,30 +1980,30 @@ typedef struct EvtData_215 {
    /* :0x56 */ s16 position8_y;
    /* :0x58 */ s16 halfSize;
    /* :0x5A */ u8 unk_0x5A[2];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_215;
+   /* :0x5C */ struct Object *sprite;
+} Object_215;
 
 /* Explosion - FX2 */
-typedef struct EvtData_220 {
+typedef struct Object_220 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[50];
    /* :0x5A */ s16 endingFxType;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_220;
+   /* :0x5C */ struct Object *sprite;
+} Object_220;
 
 /* FX - TBD */
-typedef struct EvtData_222 {
+typedef struct Object_222 {
    /* :0x24 */ s16 savedZoom;
    /* :0x26 */ u8 unk_0x26[6];
    /* :0x2C */ s16 fade;
    /* :0x2E */ u8 unk_0x2E[42];
-   /* :0x58 */ struct EvtData *fx;  // evtf223
-   /* :0x5C */ struct EvtData *cam; // evtf026
-} EvtData_222;
+   /* :0x58 */ struct Object *fx;  // objf223
+   /* :0x5C */ struct Object *cam; // objf026
+} Object_222;
 
 /* FX - TBD */
-typedef struct EvtData_223 {
+typedef struct Object_223 {
    /* :0x24 */ u8 unk_0x24[8];
    /* :0x2C */ s16 dx;
    /* :0x2E */ s16 dz;
@@ -2015,18 +2011,18 @@ typedef struct EvtData_223 {
    /* :0x32 */ u8 unk_0x32[4];
    /* :0x36 */ s16 timer;
    /* :0x38 */ u8 unk_0x38[32];
-   /* :0x58 */ struct EvtData *lightningSprite;
-   /* :0x5C */ struct EvtData *orbSprite;
-} EvtData_223;
+   /* :0x58 */ struct Object *lightningSprite;
+   /* :0x5C */ struct Object *orbSprite;
+} Object_223;
 
 /* Thunder Ball - FX1 */
-typedef struct EvtData_224 {
+typedef struct Object_224 {
    /* :0x24 */ s16 savedZoom;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_224;
+} Object_224;
 
 /* Thunder Ball - Initial Orb */
-typedef struct EvtData_225 {
+typedef struct Object_225 {
    /* :0x24 */ u8 unk_0x24[8];
    /* :0x2C */ s16 dx;
    /* :0x2E */ s16 dz;
@@ -2034,12 +2030,12 @@ typedef struct EvtData_225 {
    /* :0x32 */ u8 unk_0x32[4];
    /* :0x36 */ s16 timer;
    /* :0x38 */ u8 unk_0x38[32];
-   /* :0x58 */ struct EvtData *lightningSprite;
-   /* :0x5C */ struct EvtData *orbSprite;
-} EvtData_225;
+   /* :0x58 */ struct Object *lightningSprite;
+   /* :0x5C */ struct Object *orbSprite;
+} Object_225;
 
 /* Thunder Ball - Child Orb */
-typedef struct EvtData_226 {
+typedef struct Object_226 {
    /* :0x24 */ u8 unk_0x24[2];
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[2];
@@ -2050,38 +2046,38 @@ typedef struct EvtData_226 {
    /* :0x32 */ u8 unk_0x32[4];
    /* :0x36 */ s16 timer;
    /* :0x38 */ u8 unk_0x38[32];
-   /* :0x58 */ struct EvtData *lightningSprite;
-   /* :0x5C */ struct EvtData *orbSprite;
-} EvtData_226;
+   /* :0x58 */ struct Object *lightningSprite;
+   /* :0x5C */ struct Object *orbSprite;
+} Object_226;
 
 /* FX - TBD */
-typedef struct EvtData_269 {
+typedef struct Object_269 {
    /* :0x24 */ s16 theta1;
    /* :0x26 */ s16 theta2;
    /* :0x28 */ u8 unk_0x28[44];
-   /* :0x54 */ struct EvtData *sprite;
-   /* :0x58 */ struct EvtData *parent; // evtf270
-   /* :0x5C */ struct EvtData *link;   // evtf269/evtf270
-} EvtData_269;
+   /* :0x54 */ struct Object *sprite;
+   /* :0x58 */ struct Object *parent; // objf270
+   /* :0x5C */ struct Object *link;   // objf269/objf270
+} Object_269;
 
 /* FX - TBD */
-typedef struct EvtData_270 {
+typedef struct Object_270 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ u8 unk_0x28[48];
-   /* :0x58 */ struct EvtData *sprite;
+   /* :0x58 */ struct Object *sprite;
    /* :0x5C */ u8 unk_0x5C[4];
-} EvtData_270;
+} Object_270;
 
 /* Map 36 - Scene 74 - Leena Casting Shield */
-typedef struct EvtData_271 {
-   /* :0x24 */ struct EvtData *entitySprite;
+typedef struct Object_271 {
+   /* :0x24 */ struct Object *entitySprite;
    /* :0x28 */ u8 unk_0x28[52];
-   /* :0x5C */ struct EvtData *dataStore; // cylinder
-} EvtData_271;
+   /* :0x5C */ struct Object *dataStore; // cylinder
+} Object_271;
 
 /* Stat Raised */
-typedef struct EvtData_272 {
+typedef struct Object_272 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[10];
@@ -2093,11 +2089,11 @@ typedef struct EvtData_272 {
    /* :0x56 */ s16 upGfxIdx;
    /* :0x58 */ s16 animRelativeOfs;
    /* :0x5A */ s16 animYOfs;
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_272;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_272;
 
 /* Outward Ray */
-typedef struct EvtData_273 {
+typedef struct Object_273 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -2112,10 +2108,10 @@ typedef struct EvtData_273 {
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ s16 todo_x54;
    /* :0x56 */ u8 unk_0x56[10];
-} EvtData_273;
+} Object_273;
 
 /* FX - TBD */
-typedef struct EvtData_275 {
+typedef struct Object_275 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[6];
@@ -2123,30 +2119,30 @@ typedef struct EvtData_275 {
    /* :0x32 */ u8 unk_0x32[6];
    /* :0x38 */ void *animData;
    /* :0x3C */ u8 unk_0x3C[36];
-} EvtData_275;
+} Object_275;
 
 /* Zoom - TBD */
-typedef struct EvtData_277 {
+typedef struct Object_277 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 dstZoom;
    /* :0x2A */ u8 unk_0x2A[14];
    /* :0x38 */ s16 smoothness;
    /* :0x3A */ u8 unk_0x3A[38];
-} EvtData_277;
+} Object_277;
 
 /* Faint Sparkles */
-typedef struct EvtData_278 {
-   /* :0x24 */ struct EvtData *targetSprite;
+typedef struct Object_278 {
+   /* :0x24 */ struct Object *targetSprite;
    /* :0x28 */ u8 unk_0x28[4];
    /* :0x2C */ s16 clut;
    /* :0x2E */ u8 unk_0x2E[46];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_278;
+   /* :0x5C */ struct Object *sprite;
+} Object_278;
 
 /* Ice Storm - Camera */
-typedef struct EvtData_279 {
-   /* :0x24 */ struct EvtData *targetSprite;
+typedef struct Object_279 {
+   /* :0x24 */ struct Object *targetSprite;
    /* :0x28 */ u8 unk_0x28[2];
    /* :0x2A */ s16 dstZoom;
    /* :0x2C */ s16 dstCamRotX;
@@ -2155,27 +2151,27 @@ typedef struct EvtData_279 {
    /* :0x38 */ s16 dstCamRotY;
    /* :0x3A */ s16 timer;
    /* :0x3C */ u8 unk_0x3C[36];
-} EvtData_279;
+} Object_279;
 
 /* Dark Hurricane - Target */
-typedef struct EvtData_280 {
+typedef struct Object_280 {
    /* :0x24 */ s16 theta;
    /* :0x26 */ u8 unk_0x26[46];
-   /* :0x54 */ struct EvtData *parent; // evtf389
-   /* :0x58 */ struct EvtData *unitSprite;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_280;
+   /* :0x54 */ struct Object *parent; // objf389
+   /* :0x58 */ struct Object *unitSprite;
+   /* :0x5C */ struct Object *sprite;
+} Object_280;
 
 /* Dark Hurricane - FX2 / FX3 */
-typedef struct EvtData_281_282 {
+typedef struct Object_281_282 {
    /* :0x24 */ s16 theta;
    /* :0x26 */ u8 unk_0x26[50];
-   /* :0x58 */ struct EvtData *targetSprite;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_281_282;
+   /* :0x58 */ struct Object *targetSprite;
+   /* :0x5C */ struct Object *sprite;
+} Object_281_282;
 
 /* Dark Hurricane - Cloud */
-typedef struct EvtData_283 {
+typedef struct Object_283 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[10];
@@ -2183,11 +2179,11 @@ typedef struct EvtData_283 {
    /* :0x36 */ u8 unk_0x36[2];
    /* :0x38 */ void *animData;
    /* :0x3C */ u8 unk_0x3C[32];
-   /* :0x5C */ struct EvtData *parent; // evtf389
-} EvtData_283;
+   /* :0x5C */ struct Object *parent; // objf389
+} Object_283;
 
 /* FX - TBD */
-typedef struct EvtData_284 {
+typedef struct Object_284 {
    /* :0x24 */ u8 unk_0x24[8];
    /* :0x2C */ s16 clut;
    /* :0x2E */ u8 unk_0x2E[6];
@@ -2196,16 +2192,16 @@ typedef struct EvtData_284 {
    /* :0x38 */ void *animData;
    /* :0x3C */ Quad quad;
    /* :0x5C */ u8 unk_0x5C[4];
-} EvtData_284;
+} Object_284;
 
 /* FX - TBD */
-typedef struct EvtData_287 {
+typedef struct Object_287 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_287;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_287;
 
 /* Map 13 - Bridge Explosion (Battle) */
-typedef struct EvtData_288 {
+typedef struct Object_288 {
    /* :0x24 */ s16 currentX;
    /* :0x26 */ u8 unk_0x26[6];
    /* :0x2C */ s16 dstRotY_unused;
@@ -2216,33 +2212,33 @@ typedef struct EvtData_288 {
    /* :0x56 */ u8 unk_0x56[6];
    /* :0x5C */ s16 iterator;
    /* :0x5E */ u8 unk_0x5E[2];
-} EvtData_288;
+} Object_288;
 
 /* Reveal Item */
-typedef struct EvtData_290_294_761 {
+typedef struct Object_290_294_761 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 theta;
    /* :0x2A */ u8 unk_0x2A[2];
    /* :0x2C */ s16 gfxIdx;
    /* :0x2E */ u8 unk_0x2E[50];
-} EvtData_290_294_761;
+} Object_290_294_761;
 
 /* Blue Item Sparkles */
-typedef struct EvtData_292 {
+typedef struct Object_292 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_292;
+   /* :0x5C */ struct Object *sprite;
+} Object_292;
 
 /* Map 31 - Scene 61 - Xeno's Flames */
-typedef struct EvtData_303 {
-   /* :0x24 */ struct EvtData *entitySprite;
+typedef struct Object_303 {
+   /* :0x24 */ struct Object *entitySprite;
    /* :0x28 */ s16 theta;
    /* :0x2A */ u8 unk_0x2A[54];
-} EvtData_303;
+} Object_303;
 
 /* Flame */
-typedef struct EvtData_304_661 {
+typedef struct Object_304_661 {
    /* :0x24 */ u8 unk_0x24[13];
    /* :0x31 */ s8 semiTrans;
    /* :0x32 */ u8 unk_0x32[6];
@@ -2251,54 +2247,54 @@ typedef struct EvtData_304_661 {
    /* :0x58 */ s16 radius;
    /* :0x5A */ s16 theta;
    /* :0x5C */ Quad *quadp;
-} EvtData_304_661;
+} Object_304_661;
 
 /* Magic Stone - FX (Map 43 - Scene 93 / Map 44 - Scene 00) */
-typedef struct EvtData_305_328 {
+typedef struct Object_305_328 {
    /* :0x24 */ union {
-      struct EvtData *entitySpriteParam;
+      struct Object *entitySpriteParam;
       struct {
          s16 ray;
          s16 explosion;
       } timers;
    } variant_0x24;
    /* :0x28 */ u8 unk_0x28[48];
-   /* :0x58 */ struct EvtData *sprite;
-   /* :0x5C */ struct EvtData *unused_0x5C;
-} EvtData_305_328;
+   /* :0x58 */ struct Object *sprite;
+   /* :0x5C */ struct Object *unused_0x5C;
+} Object_305_328;
 
 /* Healing - FX2 */
-// TODO: Disambiguate from EvtData_100?
+// TODO: Disambiguate from Object_100?
 // 306: Extra Healing, Hyper Healing
 // 791: Healing Plus
 // 792: Ultra Healing
 // 793: Supreme Healing, Holy H2O
-typedef struct EvtData_306_Etc {
+typedef struct Object_306_Etc {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[18];
-   /* :0x38 */ struct EvtData *unitSprite;
+   /* :0x38 */ struct Object *unitSprite;
    /* :0x3C */ u8 unk_0x3C[36];
-} EvtData_306_Etc;
+} Object_306_Etc;
 
 /* Evil Stream - FX2 / FX3 */
-typedef struct EvtData_307_324 {
+typedef struct Object_307_324 {
    /* :0x24 */ Cylinder cylinder;
    /* :0x48 */ u8 unk_0x48[16];
-   /* :0x58 */ struct EvtData *targetSprite;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_307_324;
+   /* :0x58 */ struct Object *targetSprite;
+   /* :0x5C */ struct Object *sprite;
+} Object_307_324;
 
 /* Life Orb - Beam */
-typedef struct EvtData_310 {
+typedef struct Object_310 {
    /* :0x24 */ s16 height;
    /* :0x26 */ s16 unused_0x26;
    /* :0x28 */ s16 radius;
    /* :0x2A */ u8 unk_0x2A[50];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_310;
+   /* :0x5C */ struct Object *sprite;
+} Object_310;
 
 /* Bubble Swirl - Bubble */
-typedef struct EvtData_312 {
+typedef struct Object_312 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -2311,16 +2307,16 @@ typedef struct EvtData_312 {
    /* :0x40 */ s16 rVelocity;
    /* :0x42 */ s16 radius;
    /* :0x44 */ u8 unk_0x44[28];
-} EvtData_312;
+} Object_312;
 
 /* Life Orb - FX1 */
-typedef struct EvtData_313 {
+typedef struct Object_313 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *beam; // evtf310
-} EvtData_313;
+   /* :0x5C */ struct Object *beam; // objf310
+} Object_313;
 
 /* Inward Ray */
-typedef struct EvtData_314 {
+typedef struct Object_314 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -2334,10 +2330,10 @@ typedef struct EvtData_314 {
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ s16 todo_x54;
    /* :0x56 */ u8 unk_0x56[10];
-} EvtData_314;
+} Object_314;
 
 /* Vertical Ray */
-typedef struct EvtData_315 {
+typedef struct Object_315 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -2352,59 +2348,59 @@ typedef struct EvtData_315 {
    /* :0x54 */ s16 rotationSpeed;
    /* :0x56 */ s16 speed;
    /* :0x58 */ u8 unk_0x58[8];
-} EvtData_315;
+} Object_315;
 
 /* Avalanche - FX2 / FX3 */
-typedef struct EvtData_317_338 {
+typedef struct Object_317_338 {
    /* :0x24 */ s32 availableSlots;
    /* :0x28 */ s32 rubbleAmount;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_317_338;
+} Object_317_338;
 
 /* FX - TBD */
-typedef struct EvtData_321 {
+typedef struct Object_321 {
    /* :0x24 */ s16 thetas[8];
    /* :0x34 */ s16 radius;
    /* :0x36 */ u8 unk_0x36[38];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_321;
+   /* :0x5C */ struct Object *sprite;
+} Object_321;
 
 /* Magic Restoration (Magic Charge, etc.) - FX2 */
-typedef struct EvtData_322_Etc {
+typedef struct Object_322_Etc {
    /* :0x24 */ s16 amount;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_322_Etc;
+} Object_322_Etc;
 
 /* FX - TBD */
-typedef struct EvtData_323_713 {
-   /* :0x24 */ struct EvtData *entitySprite;
+typedef struct Object_323_713 {
+   /* :0x24 */ struct Object *entitySprite;
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[7];
    /* :0x31 */ s8 semiTrans;
    /* :0x32 */ u8 unk_0x32[10];
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ u8 unk_0x54[8];
-   /* :0x5C */ struct EvtData *dataStore; // cylinder
-} EvtData_323_713;
+   /* :0x5C */ struct Object *dataStore; // cylinder
+} Object_323_713;
 
 /* FX - TBD */
-typedef struct EvtData_326 {
+typedef struct Object_326 {
    /* :0x24 */ s16 height;
    /* :0x26 */ s16 speed;
    /* :0x28 */ s16 radius;
    /* :0x2A */ u8 unk_0x2A[46];
-   /* :0x58 */ struct EvtData *dataStore;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_326;
+   /* :0x58 */ struct Object *dataStore;
+   /* :0x5C */ struct Object *sprite;
+} Object_326;
 
 /* Healing Circle - FX2 */
-typedef struct EvtData_327 {
+typedef struct Object_327 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *targetSprite;
-} EvtData_327;
+   /* :0x5C */ struct Object *targetSprite;
+} Object_327;
 
 /* Magic Restoration (Magic Charge, etc.) - FX1 */
-typedef struct EvtData_330 {
+typedef struct Object_330 {
    /* :0x24 */ s16 theta1;
    /* :0x26 */ s16 theta2;
    /* :0x28 */ s16 startingTheta1;
@@ -2412,39 +2408,39 @@ typedef struct EvtData_330 {
    /* :0x2C */ u8 unk_0x2C[4];
    /* :0x30 */ s16 ringSize;
    /* :0x32 */ u8 unk_0x32[34];
-   /* :0x54 */ struct EvtData *dataStore;
-   /* :0x58 */ struct EvtData *ringBottom;
-   /* :0x5C */ struct EvtData *ringTop;
-} EvtData_330;
+   /* :0x54 */ struct Object *dataStore;
+   /* :0x58 */ struct Object *ringBottom;
+   /* :0x5C */ struct Object *ringTop;
+} Object_330;
 
 /* FX - TBD */
-typedef struct EvtData_331 {
+typedef struct Object_331 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[10];
    /* :0x34 */ s16 boxIdx;
    /* :0x36 */ u8 unk_0x36[38];
-   /* :0x5C */ struct EvtData *parent; // (Maybe)
-} EvtData_331;
+   /* :0x5C */ struct Object *parent; // (Maybe)
+} Object_331;
 
 /* Rolling Fire - FX1 */
-typedef struct EvtData_332 {
+typedef struct Object_332 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[14];
    /* :0x38 */ void *animData;
    /* :0x3C */ u8 unk_0x3C[32];
-   /* :0x5C */ struct EvtData *dataStore; // cylinder
-} EvtData_332;
+   /* :0x5C */ struct Object *dataStore; // cylinder
+} Object_332;
 
 /* Salamander - FX1 */
-typedef struct EvtData_334 {
+typedef struct Object_334 {
    /* :0x24 */ s32 todo_x24;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_334;
+} Object_334;
 
 /* Salamander - Head / Segment */
-typedef struct EvtData_335_336 {
+typedef struct Object_335_336 {
    /* :0x24 */ s16 theta1;
    /* :0x26 */ s16 theta2;
    /* :0x28 */ s16 todo_x28;
@@ -2459,37 +2455,37 @@ typedef struct EvtData_335_336 {
    /* :0x46 */ u8 unk_0x46[2];
    /* :0x48 */ SVectorXYZ position4;
    /* :0x4E */ s16 unused_0x4E;
-   /* :0x50 */ struct EvtData *parent; // evtf334 (fx1)
-   /* :0x54 */ struct EvtData *sprite;
+   /* :0x50 */ struct Object *parent; // objf334 (fx1)
+   /* :0x54 */ struct Object *sprite;
    /* :0x58 */ u8 unk_0x58[4];
-   /* :0x5C */ struct EvtData *link; // evtf334/evtf335/evtf336
-} EvtData_335_336;
+   /* :0x5C */ struct Object *link; // objf334/objf335/objf336
+} Object_335_336;
 
 /* Button Depress */
-typedef struct EvtData_346 {
+typedef struct Object_346 {
    /* :0x24 */ s16 dstCamRotY;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_346;
+} Object_346;
 
 /* Map 26 */
-typedef struct EvtData_347 {
+typedef struct Object_347 {
    /* :0x24 */ u8 unk_0x24[8];
    /* :0x2C */ Camera camera;
    /* :0x3A */ u8 unk_0x3A[34];
-   /* :0x5C */ struct EvtData *buttonDepress; // evtf346
-} EvtData_347;
+   /* :0x5C */ struct Object *buttonDepress; // objf346
+} Object_347;
 
 /* FX - TBD */
-typedef struct EvtData_348 {
+typedef struct Object_348 {
    /* :0x24 */ s16 todo_x24[8];
    /* :0x34 */ s16 todo_x34[8];
    /* :0x44 */ s16 todo_x44[8];
    /* :0x54 */ u8 unk_0x54[8];
-   /* :0x5C */ struct EvtData *dataStore; // cylinder
-} EvtData_348;
+   /* :0x5C */ struct Object *dataStore; // cylinder
+} Object_348;
 
 /* MsgBox Text */
-typedef struct EvtData_351 {
+typedef struct Object_351 {
    /* :0x24 */ s16 maxCharsPerLine;
    /* :0x26 */ s16 lineSpacing;
    /* :0x28 */ s16 maxRows;
@@ -2509,43 +2505,43 @@ typedef struct EvtData_351 {
    /* :0x48 */ s16 todo_x48;
    /* :0x4A */ u8 unk_0x4A[10];
    /* :0x54 */ u8 *textResumePtr;
-   /* :0x58 */ struct EvtData *buttonIcon;
+   /* :0x58 */ struct Object *buttonIcon;
    /* :0x5C */ u8 *textPtr;
-} EvtData_351;
+} Object_351;
 
 /* Map 29 */
-typedef struct EvtData_352 {
+typedef struct Object_352 {
    /* :0x24 */ u8 unk_0x24[8];
    /* :0x2C */ Camera camera;
    /* :0x3A */ u8 unk_0x3A[34];
-   /* :0x5C */ struct EvtData *buttonDepress; // evtf346
-} EvtData_352;
+   /* :0x5C */ struct Object *buttonDepress; // objf346
+} Object_352;
 
 /* Map 19 - Elevator (TBD) */
-typedef struct EvtData_355_356 {
+typedef struct Object_355_356 {
    /* :0x24 */ union {
-      struct EvtData *elevator1Param;
+      struct Object *elevator1Param;
       struct {
          s16 a;
          s16 b;
       } dstCamRotY;
    } variant_0x24;
-   /* :0x28 */ struct EvtData *elevator2Param;
+   /* :0x28 */ struct Object *elevator2Param;
    /* :0x2C */ Camera camera;
    /* :0x3A */ u8 unk_0x3A[30];
-   /* :0x58 */ struct EvtData *elevator2;
-   /* :0x5C */ struct EvtData *elevator1;
-} EvtData_355_356;
+   /* :0x58 */ struct Object *elevator2;
+   /* :0x5C */ struct Object *elevator1;
+} Object_355_356;
 
 /* Map 19 */
-typedef struct EvtData_357 {
+typedef struct Object_357 {
    /* :0x24 */ u8 unk_0x24[52];
-   /* :0x58 */ struct EvtData *elevator2;
-   /* :0x5C */ struct EvtData *elevator1;
-} EvtData_357;
+   /* :0x58 */ struct Object *elevator2;
+   /* :0x5C */ struct Object *elevator1;
+} Object_357;
 
 /* Map 19 - Elevator (TBD) */
-typedef struct EvtData_358 {
+typedef struct Object_358 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 todo_x28;
@@ -2558,16 +2554,16 @@ typedef struct EvtData_358 {
    /* :0x36 */ s16 todo_x36;
    /* :0x38 */ s16 todo_x38;
    /* :0x3A */ u8 unk_0x3A[38];
-} EvtData_358;
+} Object_358;
 
 /* Map 13 - Bridge Explosion (Scene) */
-typedef struct EvtData_361 {
+typedef struct Object_361 {
    /* :0x24 */ s16 currentX;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_361;
+} Object_361;
 
 /* Drawbridge Button */
-typedef struct EvtData_362 {
+typedef struct Object_362 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 gfxSetIdx;
@@ -2579,17 +2575,17 @@ typedef struct EvtData_362 {
    /* :0x36 */ u8 unk_0x36[2];
    /* :0x38 */ s16 dstCamRotY;
    /* :0x3A */ u8 unk_0x3A[38];
-} EvtData_362;
+} Object_362;
 
 /* Wyrmfang - FX1 */
-typedef struct EvtData_363 {
+typedef struct Object_363 {
    /* :0x24 */ u8 unk_0x24[52];
-   /* :0x58 */ struct EvtData *ccwFlames;
-   /* :0x5C */ struct EvtData *cwFlames;
-} EvtData_363;
+   /* :0x58 */ struct Object *ccwFlames;
+   /* :0x5C */ struct Object *cwFlames;
+} Object_363;
 
 /* Map 17 - Floodgate */
-typedef struct EvtData_365 {
+typedef struct Object_365 {
    /* :0x24 */ s16 dstCamRotY;
    /* :0x26 */ u8 unk_0x26[6];
    /* :0x2C */ s16 face1Init;
@@ -2600,19 +2596,19 @@ typedef struct EvtData_365 {
    /* :0x36 */ s16 face2Curr;
    /* :0x38 */ s16 face3Curr;
    /* :0x3A */ u8 unk_0x3A[38];
-} EvtData_365;
+} Object_365;
 
 /* Map 17 - Button */
-typedef struct EvtData_366 {
+typedef struct Object_366 {
    /* :0x24 */ s16 unused_0x24;
    /* :0x26 */ u8 unk_0x26[6];
    /* :0x2C */ Camera camera;
    /* :0x3A */ u8 unk_0x3A[34];
-   /* :0x5C */ struct EvtData *buttonDepress;
-} EvtData_366;
+   /* :0x5C */ struct Object *buttonDepress;
+} Object_366;
 
 /* Screen Effect (Incomplete) */
-typedef struct EvtData_369 {
+typedef struct Object_369 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 speed;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -2633,23 +2629,23 @@ typedef struct EvtData_369 {
    /* :0x4A */ u8 unk_0x4A[2];
    /* :0x4C */ s16 semiTrans;
    /* :0x4E */ u8 unk_0x4E[18];
-} EvtData_369;
+} Object_369;
 
 /* FX - TBD */
-typedef struct EvtData_276 {
+typedef struct Object_276 {
    /* :0x24 */ union {
-      struct EvtData *targetParam;
+      struct Object *targetParam;
       s16 unk;
    } variant_0x24;
    /* :0x28 */ u8 unk_0x28[16];
    /* :0x38 */ void *animData;
    /* :0x3C */ u8 unk_0x3C[28];
-   /* :0x58 */ struct EvtData *unused_0x58;
-   /* :0x5C */ struct EvtData *dataStore; // cylinder
-} EvtData_276;
+   /* :0x58 */ struct Object *unused_0x58;
+   /* :0x5C */ struct Object *dataStore; // cylinder
+} Object_276;
 
 /* FX - TBD */
-typedef struct EvtData_377 {
+typedef struct Object_377 {
    /* :0x24 */ s16 theta1;
    /* :0x26 */ s16 theta2;
    /* :0x28 */ s16 theta3;
@@ -2657,39 +2653,39 @@ typedef struct EvtData_377 {
    /* :0x2C */ s16 radius;
    /* :0x2E */ s16 theta5;
    /* :0x30 */ u8 unk_0x30[36];
-   /* :0x54 */ struct EvtData *sprite;
+   /* :0x54 */ struct Object *sprite;
    /* :0x58 */ u8 unk_0x58[4];
-   /* :0x5C */ struct EvtData *todo_x5c;
-} EvtData_377;
+   /* :0x5C */ struct Object *todo_x5c;
+} Object_377;
 
 /* Phase Shift - FX1 */
-typedef struct EvtData_378 {
+typedef struct Object_378 {
    /* :0x24 */ SVectorXY positions[8];
    /* :0x44 */ u8 unk_0x44[20];
-   /* :0x58 */ struct EvtData *runeSprite;
-   /* :0x5C */ struct EvtData *crestSprite;
-} EvtData_378;
+   /* :0x58 */ struct Object *runeSprite;
+   /* :0x5C */ struct Object *crestSprite;
+} Object_378;
 
 /* Evil Stream - Rock */
-typedef struct EvtData_379 {
+typedef struct Object_379 {
    /* :0x24 */ u8 unk_0x24[16];
    /* :0x34 */ s16 boxIdx;
    /* :0x36 */ u8 unk_0x36[2];
    /* :0x38 */ void *animData;
    /* :0x3C */ s16 maxHeight;
    /* :0x3E */ u8 unk_0x3E[34];
-} EvtData_379;
+} Object_379;
 
 /* Level Up - FX */
-typedef struct EvtData_380 {
+typedef struct Object_380 {
    /* :0x24 */ s16 timer;
    /* :0x26 */ u8 unk_0x26[50];
-   /* :0x58 */ struct EvtData *unitSprite;
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_380;
+   /* :0x58 */ struct Object *unitSprite;
+   /* :0x5C */ struct Object *sprite;
+} Object_380;
 
 /* Flame Breath */
-typedef struct EvtData_382 {
+typedef struct Object_382 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ s16 direction;
@@ -2701,40 +2697,40 @@ typedef struct EvtData_382 {
    /* :0x3E */ s16 yTheta;
    /* :0x40 */ s16 unused_0x40;
    /* :0x42 */ u8 unk_0x42[30];
-} EvtData_382;
+} Object_382;
 
 /* Healing Sparkle */
-// TODO: Disambiguate from EvtData_101?
-typedef struct EvtData_386 {
+// TODO: Disambiguate from Object_101?
+typedef struct Object_386 {
    /* :0x24 */ u8 unk_0x24[8];
    /* :0x2C */ s16 clut;
    /* :0x2E */ u8 unk_0x2E[10];
    /* :0x38 */ void *animData;
    /* :0x3C */ s16 timer;
    /* :0x3E */ u8 unk_0x3E[34];
-} EvtData_386;
+} Object_386;
 
 /* Dark Hurricane - FX1 */
-typedef struct EvtData_388 {
+typedef struct Object_388 {
    /* :0x24 */ u8 unk_0x24[44];
-   /* :0x50 */ struct EvtData *vortex; // evtf389
+   /* :0x50 */ struct Object *vortex; // objf389
    /* :0x54 */ u8 unk_0x54[12];
-} EvtData_388;
+} Object_388;
 
 /* Dark Hurricane - Vortex */
-typedef struct EvtData_389 {
+typedef struct Object_389 {
    /* :0x24 */ u8 unk_0x24[8];
    /* :0x2C */ s16 radius;
    /* :0x2E */ u8 unk_0x2E[2];
    /* :0x30 */ s16 theta;
    /* :0x32 */ u8 unk_0x32[34];
-   /* :0x54 */ struct EvtData *sprite;
-   /* :0x58 */ struct EvtData *parent; // evtf388
+   /* :0x54 */ struct Object *sprite;
+   /* :0x58 */ struct Object *parent; // objf388
    /* :0x5C */ u8 unk_0x5C[4];
-} EvtData_389;
+} Object_389;
 
 /* Dark Hurricane - Vortex Layer */
-typedef struct EvtData_390 {
+typedef struct Object_390 {
    /* :0x24 */ s16 radius2;
    /* :0x26 */ s16 theta2;
    /* :0x28 */ s16 height;
@@ -2747,36 +2743,36 @@ typedef struct EvtData_390 {
    /* :0x36 */ u8 unk_0x36[2];
    /* :0x38 */ s16 unused_0x38;
    /* :0x3A */ u8 unk_0x3A[26];
-   /* :0x54 */ struct EvtData *sprite;
-   /* :0x58 */ struct EvtData *parent; // evtf389/evtf390
+   /* :0x54 */ struct Object *sprite;
+   /* :0x58 */ struct Object *parent; // objf389/objf390
    /* :0x5C */ u8 unk_0x5C[4];
-} EvtData_390;
+} Object_390;
 
 /* FX - TBD */
-typedef struct EvtData_392 {
-   /* :0x24 */ struct EvtData *todo_x24;
-   /* :0x28 */ struct EvtData *todo_x28;
-   /* :0x2C */ struct EvtData *todo_x2c;
-   /* :0x30 */ struct EvtData *todo_x30;
+typedef struct Object_392 {
+   /* :0x24 */ struct Object *todo_x24;
+   /* :0x28 */ struct Object *todo_x28;
+   /* :0x2C */ struct Object *todo_x2c;
+   /* :0x30 */ struct Object *todo_x30;
    /* :0x34 */ u8 unk_0x34[40];
-   /* :0x5C */ struct EvtData *todo_x5c;
-} EvtData_392;
+   /* :0x5C */ struct Object *todo_x5c;
+} Object_392;
 
 /* Map 44 - Scene 00 - Explosion Rays */
-typedef struct EvtData_393 {
-   /* :0x24 */ struct EvtData *target;
+typedef struct Object_393 {
+   /* :0x24 */ struct Object *entitySprite;
    /* :0x28 */ u8 unk_0x28[52];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_393;
+   /* :0x5C */ struct Object *sprite;
+} Object_393;
 
 /* Dynamo Hum - FX1 */
-typedef struct EvtData_394 {
+typedef struct Object_394 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *orb; // evtf395
-} EvtData_394;
+   /* :0x5C */ struct Object *orb; // objf395
+} Object_394;
 
 /* Dynamo Hum - Electric Orb */
-typedef struct EvtData_395 {
+typedef struct Object_395 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -2790,11 +2786,11 @@ typedef struct EvtData_395 {
    /* :0x3C */ s16 theta;
    /* :0x3E */ s16 size;
    /* :0x40 */ u8 unk_0x40[28];
-   /* :0x5C */ struct EvtData *parent; // evtf394
-} EvtData_395;
+   /* :0x5C */ struct Object *parent; // objf394
+} Object_395;
 
 /* Dynamo Hum - Orb Electricity */
-typedef struct EvtData_396 {
+typedef struct Object_396 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ s16 todo_x2a;
@@ -2803,51 +2799,51 @@ typedef struct EvtData_396 {
    /* :0x38 */ void *animData;
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ s32 length;
-   /* :0x58 */ struct EvtData *links[2];
-} EvtData_396;
+   /* :0x58 */ struct Object *links[2];
+} Object_396;
 
 /* Map 11 */
-typedef struct EvtData_399 {
+typedef struct Object_399 {
    /* :0x24 */ s16 dstRotY;
    /* :0x26 */ u8 unk_0x26[6];
    /* :0x2C */ Camera camera;
    /* :0x3A */ u8 unk_0x3A[38];
-} EvtData_399;
+} Object_399;
 
 /* AI - TBD */
-typedef struct EvtData_400 {
+typedef struct Object_400 {
    /* :0x24 */ struct UnitStatus *unit;
    /* :0x28 */ s16 resumeZ;
    /* :0x2A */ s16 resumeX;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_400;
+} Object_400;
 
 /* AI - TBD */
-typedef struct EvtData_401 {
+typedef struct Object_401 {
    /* :0x24 */ s8 team;
    /* :0x25 */ s8 unitIdx;
    /* :0x26 */ s16 unitIter;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_401;
+} Object_401;
 
 /* AI - TBD */
-typedef struct EvtData_402_Etc {
+typedef struct Object_402_Etc {
    /* :0x24 */ s16 resumeZ;
    /* :0x26 */ s16 resumeX;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_402_Etc;
+} Object_402_Etc;
 
 /* Panorama */
-typedef struct EvtData_405 {
+typedef struct Object_405 {
    /* :0x24 */ s16 yRot;
    /* :0x26 */ s16 xRot;
    /* :0x28 */ s16 xOffset;
    /* :0x2A */ s16 yOffset;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_405;
+} Object_405;
 
 /* Shop or Depot */
-typedef struct EvtData_406 {
+typedef struct Object_406 {
    /* :0x24 */ s8 shopId;
    /* :0x25 */ s8 category;
    /* :0x26 */ s8 shopRows;
@@ -2873,14 +2869,14 @@ typedef struct EvtData_406 {
    /* :0x59 */ u8 unk_0x59[3];
    /* :0x5C */ s8 goldState;
    /* :0x5D */ u8 unk_0x5D[3];
-} EvtData_406;
+} Object_406;
 
 /* Event Entity */
-typedef struct EvtData_409 {
+typedef struct Object_409 {
    /* :0x24 */ u8 unk_0x24[3];
    /* :0x27 */ s8 animIdx;
    /* :0x28 */ u8 unk_0x28[8];
-   /* :0x30 */ struct EvtData *sprite;
+   /* :0x30 */ struct Object *sprite;
    /* :0x34 */ u8 unk_0x34[8];
    /* :0x3C */ u8 **baseAnimSet;
    /* :0x40 */ s8 commandState;
@@ -2895,17 +2891,17 @@ typedef struct EvtData_409 {
    /* :0x4F */ u8 unk_0x4F;
    /* :0x50 */ u8 **altAnimSet;
    /* :0x54 */ u8 unk_0x54[12];
-} EvtData_409;
+} Object_409;
 
 /* Camera - Event Zoom */
-typedef struct EvtData_410 {
+typedef struct Object_410 {
    /* :0x24 */ s16 zoom;
    /* :0x26 */ s16 timer;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_410;
+} Object_410;
 
 /* MsgBox Portrait */
-typedef struct EvtData_413 {
+typedef struct Object_413 {
    /* :0x24 */ union {
       s16 id;
       s8 idx;
@@ -2915,51 +2911,51 @@ typedef struct EvtData_413 {
    /* :0x28 */ s8 speakTimer;
    /* :0x29 */ s8 blinkTimer;
    /* :0x2A */ u8 unk_0x2A[2];
-   /* :0x2C */ struct EvtData *faceSprite;
-   /* :0x30 */ struct EvtData *speakSprite;
-   /* :0x34 */ struct EvtData *blinkSprite;
-   /* :0x38 */ struct EvtData *anchor;
+   /* :0x2C */ struct Object *faceSprite;
+   /* :0x30 */ struct Object *speakSprite;
+   /* :0x34 */ struct Object *blinkSprite;
+   /* :0x38 */ struct Object *anchor;
    /* :0x3C */ s16 anchorOfsX;
    /* :0x3E */ s16 anchorOfsY;
    /* :0x40 */ u8 unk_0x40[32];
-} EvtData_413;
+} Object_413;
 
 /* Battle Victory/Defeat */
-typedef struct EvtData_420_423 {
+typedef struct Object_420_423 {
    /* :0x24 */ s8 timer;
    /* :0x25 */ u8 unk_0x25[59];
-} EvtData_420_423;
+} Object_420_423;
 
 /* MsgBox Tail */
-typedef struct EvtData_421_422 {
-   /* :0x24 */ struct EvtData *sprite;
+typedef struct Object_421_422 {
+   /* :0x24 */ struct Object *sprite;
    /* :0x28 */ s16 left;
    /* :0x2A */ s16 top;
    /* :0x2C */ s16 right;
    /* :0x2E */ s16 bottom;
    /* :0x30 */ u8 unk_0x30[48];
-} EvtData_421_422;
+} Object_421_422;
 
 /* Battle Ender */
-typedef struct EvtData_424 {
+typedef struct Object_424 {
    /* :0x24 */ s8 timer;
    /* :0x25 */ u8 unk_0x25[59];
-} EvtData_424;
+} Object_424;
 
 /* Battle - Options */
-typedef struct EvtData_425 {
+typedef struct Object_425 {
    /* :0x24 */ s8 timer;
    /* :0x25 */ u8 unk_0x25[59];
-} EvtData_425;
+} Object_425;
 
 /* Evaluate Battle 08 */
-typedef struct EvtData_438 {
+typedef struct Object_438 {
    /* :0x24 */ s8 delay;
    /* :0x25 */ u8 unk_0x25[59];
-} EvtData_438;
+} Object_438;
 
 /* Battle - Victory/Defeat Particle */
-typedef struct EvtData_446 {
+typedef struct Object_446 {
    /* :0x24 */ s8 hidden;
    /* :0x25 */ u8 unk_0x25[3];
    /* :0x28 */ s16 gfxIdx;
@@ -2980,35 +2976,35 @@ typedef struct EvtData_446 {
    /* :0x5A */ s16 todo_x5a;
    /* :0x5C */ s16 todo_x5c;
    /* :0x5E */ s16 delay;
-} EvtData_446;
+} Object_446;
 
 /* Unit Portrait (in depot, dojo, etc.) */
-typedef struct EvtData_447 {
+typedef struct Object_447 {
    /* :0x24 */ s8 windowId;
    /* :0x25 */ u8 unk_0x25[3];
-   /* :0x28 */ struct EvtData *window;
-   /* :0x2C */ struct EvtData *sprite;
+   /* :0x28 */ struct Object *window;
+   /* :0x2C */ struct Object *sprite;
    /* :0x30 */ u8 unk_0x30[48];
-} EvtData_447;
+} Object_447;
 
 /* Map Object - Rippling Water/Lava (animated texture) */
-typedef struct EvtData_564_565_566 {
+typedef struct Object_564_565_566 {
    /* :0x24 */ u16 phase;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_564_565_566;
+} Object_564_565_566;
 
 /* Opening Chest */
-typedef struct EvtData_567 {
+typedef struct Object_567 {
    /* :0x24 */ struct UnitStatus *opener;
    /* :0x28 */ u8 sendToDepot;
    /* :0x29 */ u8 unk_0x29[3];
-   /* :0x2C */ struct EvtData *openerSprite;
+   /* :0x2C */ struct Object *openerSprite;
    /* :0x30 */ u8 unk_0x30[48];
-} EvtData_567;
+} Object_567;
 
 /* Level Up - Camera Control, Sound */
-typedef struct EvtData_571 {
-   /* :0x24 */ struct EvtData *sprite;
+typedef struct Object_571 {
+   /* :0x24 */ struct Object *sprite;
    /* :0x28 */ s16 camSavedX;
    /* :0x2A */ s16 camSavedZ;
    /* :0x2C */ s16 camSavedY;
@@ -3023,17 +3019,17 @@ typedef struct EvtData_571 {
    /* :0x3E */ s16 geomOfsY;
    /* :0x40 */ s16 dstGeomOfsY;
    /* :0x42 */ u8 unk_0x42[30];
-} EvtData_571;
+} Object_571;
 
 /* Battle Items List */
-typedef struct EvtData_573 {
+typedef struct Object_573 {
    /* :0x24 */ struct UnitStatus *unit;
    /* :0x28 */ s8 item;
    /* :0x29 */ u8 unk_0x29[55];
-} EvtData_573;
+} Object_573;
 
 /* Status Portrait */
-typedef struct EvtData_575 {
+typedef struct Object_575 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -3043,28 +3039,28 @@ typedef struct EvtData_575 {
    /* :0x34 */ u8 unk_0x34[8];
    /* :0x3C */ s16 portraitId;
    /* :0x3E */ u8 unk_0x3E[34];
-} EvtData_575;
+} Object_575;
 
 /* Tavern */
-typedef struct EvtData_576 {
+typedef struct Object_576 {
    /* :0x24 */ s8 needSpeak[4];
    /* :0x28 */ s8 textPtrIdx;
    /* :0x29 */ u8 unk_0x29[35];
    /* :0x4C */ s8 timer;
    /* :0x4D */ u8 unk_0x4D[19];
-} EvtData_576;
+} Object_576;
 
 /* Dynamic Icon */
-typedef struct EvtData_577 {
+typedef struct Object_577 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[18];
    /* :0x3C */ s16 idx;
    /* :0x3E */ u8 unk_0x3E[34];
-} EvtData_577;
+} Object_577;
 
 /* Dojo */
-typedef struct EvtData_578 {
+typedef struct Object_578 {
    /* :0x24 */ s8 timer;
    /* :0x25 */ s8 chosePathB;
    /* :0x26 */ u8 unk_0x26[6];
@@ -3076,17 +3072,17 @@ typedef struct EvtData_578 {
    /* :0x33 */ u8 unk_0x33[41];
    /* :0x5C */ s16 advancementTimer;
    /* :0x5E */ u8 unk_0x5E[2];
-} EvtData_578;
+} Object_578;
 
 /* World Map */
-typedef struct EvtData_579 {
+typedef struct Object_579 {
    /* :0x24 */ u8 unk_0x24[56];
    /* :0x5C */ s8 timer;
    /* :0x5D */ u8 unk_0x5D[3];
-} EvtData_579;
+} Object_579;
 
 /* Town */
-typedef struct EvtData_580 {
+typedef struct Object_580 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s8 textPtrIdx;
    /* :0x29 */ u8 unk_0x29;
@@ -3096,25 +3092,25 @@ typedef struct EvtData_580 {
    /* :0x4D */ u8 unk_0x4D[15];
    /* :0x5C */ s8 fadeTimer;
    /* :0x5D */ u8 unk_0x5D[3];
-} EvtData_580;
+} Object_580;
 
 /* Audio Command */
-typedef struct EvtData_581 {
+typedef struct Object_581 {
    /* :0x24 */ s16 cmd;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s8 delay;
    /* :0x29 */ u8 unk_0x29[55];
-} EvtData_581;
+} Object_581;
 
 /* Battle - Player Event */
-typedef struct EvtData_585 {
+typedef struct Object_585 {
    /* :0x24 */ u8 unk_0x24[56];
    /* :0x5C */ s8 timer;
    /* :0x5D */ u8 unk_0x5D[3];
-} EvtData_585;
+} Object_585;
 
 /* Battle - MsgBox */
-typedef struct EvtData_586 {
+typedef struct Object_586 {
    /* :0x24 */ s16 nameIdx;
    /* :0x26 */ s16 portrait;
    /* :0x28 */ s16 textIdx;
@@ -3122,10 +3118,10 @@ typedef struct EvtData_586 {
    /* :0x2C */ u8 unk_0x2C[48];
    /* :0x5C */ s8 timer;
    /* :0x5D */ u8 unk_0x5D[3];
-} EvtData_586;
+} Object_586;
 
 /* Battle - Enemy Event */
-typedef struct EvtData_587 {
+typedef struct Object_587 {
    /* :0x24 */ s8 timer;
    /* :0x25 */ u8 unk_0x25[3];
    /* :0x28 */ s8 xenoSpawnZ;
@@ -3133,10 +3129,10 @@ typedef struct EvtData_587 {
    /* :0x2A */ s8 spawnZ;
    /* :0x2B */ s8 spawnX;
    /* :0x2C */ u8 unk_0x2C[52];
-} EvtData_587;
+} Object_587;
 
 /* Map Object - Boulder */
-typedef struct EvtData_591 {
+typedef struct Object_591 {
    /* :0x24 */ s8 hidden;
    /* :0x25 */ u8 unk_0x25[3];
    /* :0x28 */ s16 gfxIdx;
@@ -3150,18 +3146,18 @@ typedef struct EvtData_591 {
    /* :0x54 */ s8 gridZ;
    /* :0x55 */ s8 gridX;
    /* :0x56 */ u8 unk_0x56[10];
-} EvtData_591;
+} Object_591;
 
 /* Battle - Turn Start */
-typedef struct EvtData_592 {
+typedef struct Object_592 {
    /* :0x24 */ s8 timer;
    /* :0x25 */ s8 team;
    /* :0x26 */ s8 targets;
    /* :0x27 */ u8 unk_0x27[57];
-} EvtData_592;
+} Object_592;
 
 /* Battle - Results - Unit (Reward or Penalty) */
-typedef struct EvtData_593 {
+typedef struct Object_593 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -3176,23 +3172,23 @@ typedef struct EvtData_593 {
    /* :0x40 */ s16 unitGfxIdx;
    /* :0x42 */ s16 unitClut;
    /* :0x44 */ u8 unk_0x44[28];
-} EvtData_593;
+} Object_593;
 
 /* Status Window Manager */
-typedef struct EvtData_595 {
+typedef struct Object_595 {
    /* :0x24 */ struct UnitStatus *unit;
    /* :0x28 */ s8 multiple;
    /* :0x29 */ u8 unk_0x29[55];
-} EvtData_595;
+} Object_595;
 
 /* Battle - Intro */
-typedef struct EvtData_597 {
+typedef struct Object_597 {
    /* :0x24 */ s8 timer;
    /* :0x25 */ u8 unk_0x25[59];
-} EvtData_597;
+} Object_597;
 
 /* Map 32 - Car Release */
-typedef struct EvtData_650 {
+typedef struct Object_650 {
    /* :0x24 */ s16 todo_x24;
    /* :0x26 */ s16 todo_x26;
    /* :0x28 */ s16 startX;
@@ -3209,18 +3205,18 @@ typedef struct EvtData_650 {
    /* :0x52 */ u8 unk_0x52[10];
    /* :0x5C */ s16 hasCasualties;
    /* :0x5E */ u8 unk_0x5E[2];
-} EvtData_650;
+} Object_650;
 
 /* Map 33 - Lava Pit Platform */
-typedef struct EvtData_651 {
+typedef struct Object_651 {
    /* :0x24 */ s16 step;
    /* :0x26 */ u8 unk_0x26[14];
    /* :0x34 */ Camera camera;
    /* :0x42 */ u8 unk_0x42[30];
-} EvtData_651;
+} Object_651;
 
 /* Map 35 - Button */
-typedef struct EvtData_652 {
+typedef struct Object_652 {
    /* :0x24 */ u8 unk_0x24[16];
    /* :0x34 */ Camera camera;
    /* :0x42 */ u8 unk_0x42[10];
@@ -3231,11 +3227,11 @@ typedef struct EvtData_652 {
    /* :0x56 */ u8 unk_0x56[2];
    /* :0x58 */ s16 hitPlayerUnit;
    /* :0x5A */ s16 todo_x5a;
-   /* :0x5C */ struct EvtData *buttonDepress;
-} EvtData_652;
+   /* :0x5C */ struct Object *buttonDepress;
+} Object_652;
 
 /* Exploding Tile */
-typedef struct EvtData_653 {
+typedef struct Object_653 {
    /* :0x24 */ SVECTOR translation;
    /* :0x2C */ SVECTOR rotation;
    /* :0x34 */ u8 unk_0x34[8];
@@ -3245,40 +3241,40 @@ typedef struct EvtData_653 {
    /* :0x56 */ u8 unk_0x56[2];
    /* :0x58 */ struct MapTileModel *tileModel;
    /* :0x5C */ struct MapTileModel *tileModel_unused;
-} EvtData_653;
+} Object_653;
 
 /* Map 38 - Wash Away Unit */
-typedef struct EvtData_654 {
+typedef struct Object_654 {
    /* :0x24 */ s16 tileX;
    /* :0x26 */ s16 tileZ;
    /* :0x28 */ u8 unk_0x28[52];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_654;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_654;
 
 /* Map 38 - Raise Floodgate */
-typedef struct EvtData_655 {
+typedef struct Object_655 {
    /* :0x24 */ s16 waterFaceY;
    /* :0x26 */ u8 unk_0x26[58];
-} EvtData_655;
+} Object_655;
 
 /* Map 39 */
-typedef struct EvtData_656 {
+typedef struct Object_656 {
    /* :0x24 */ u8 unk_0x24[16];
    /* :0x34 */ Camera camera;
    /* :0x42 */ u8 unk_0x42[30];
-} EvtData_656;
+} Object_656;
 
 /* Map 38 - Floodgate */
-typedef struct EvtData_657 {
+typedef struct Object_657 {
    /* :0x24 */ u8 unk_0x24[16];
    /* :0x34 */ Camera camera;
    /* :0x42 */ u8 unk_0x42[22];
-   /* :0x58 */ struct EvtData *casualty;
-   /* :0x5C */ struct EvtData *child; // button or water
-} EvtData_657;
+   /* :0x58 */ struct Object *casualty;
+   /* :0x5C */ struct Object *child; // button or water
+} Object_657;
 
 /* Map 38 - Floodwater */
-typedef struct EvtData_658 {
+typedef struct Object_658 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 theta;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -3286,63 +3282,63 @@ typedef struct EvtData_658 {
    /* :0x2E */ u8 unk_0x2E[2];
    /* :0x30 */ s16 todo_x30;
    /* :0x32 */ u8 unk_0x32[46];
-} EvtData_658;
+} Object_658;
 
 /* Map 28 - Button */
-typedef struct EvtData_663 {
+typedef struct Object_663 {
    /* :0x24 */ u8 unk_0x24[12];
    /* :0x30 */ Camera camera;
    /* :0x3E */ u8 unk_0x3E[30];
-   /* :0x5C */ struct EvtData *child; // button or door
-} EvtData_663;
+   /* :0x5C */ struct Object *child; // button or door
+} Object_663;
 
 /* Map 27 - Buttons */
-typedef struct EvtData_665 {
+typedef struct Object_665 {
    /* :0x24 */ s16 buttonPressed[4];
    /* :0x2C */ u8 unk_0x2C[4];
    /* :0x30 */ Camera camera;
    /* :0x3E */ u8 unk_0x3E[30];
-   /* :0x5C */ struct EvtData *child; // button or door
-} EvtData_665;
+   /* :0x5C */ struct Object *child; // button or door
+} Object_665;
 
 /* Map 14 - Lower Sand Mound */
-typedef struct EvtData_666 {
+typedef struct Object_666 {
    /* :0x24 */ s16 count;
    /* :0x26 */ s16 offset;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_666;
+} Object_666;
 
 /* Map 14 - Raise Sand Mound */
-typedef struct EvtData_668 {
+typedef struct Object_668 {
    /* :0x24 */ s16 count;
    /* :0x26 */ s16 offset;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_668;
+} Object_668;
 
 /* Map 14 - Sand */
-typedef struct EvtData_670 {
+typedef struct Object_670 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *mound; // evtf666/evtf668
-} EvtData_670;
+   /* :0x5C */ struct Object *mound; // objf666/objf668
+} Object_670;
 
 /* Map 39 - Splashing Tile */
-typedef struct EvtData_672 {
+typedef struct Object_672 {
    /* :0x24 */ u8 unk_0x24[56];
    /* :0x5C */ struct MapTileModel *tileModel;
-} EvtData_672;
+} Object_672;
 
 /* Map 32 - Scene 63 - Cinematic */
-typedef struct EvtData_673 {
+typedef struct Object_673 {
    /* :0x24 */ Camera camera;
    /* :0x32 */ u8 unk_0x32[10];
    /* :0x3C */ s16 unused_0x3C;
    /* :0x3E */ u8 unk_0x3E[30];
-   /* :0x5C */ struct EvtData *focus;
-} EvtData_673;
+   /* :0x5C */ struct Object *focus;
+} Object_673;
 
 /* Leena's Forcefield */
-typedef struct EvtData_675 {
-   /* :0x24 */ struct EvtData *targetSprite;
+typedef struct Object_675 {
+   /* :0x24 */ struct Object *targetSprite;
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
    /* :0x2C */ s16 clut;
@@ -3353,35 +3349,35 @@ typedef struct EvtData_675 {
    /* :0x36 */ u8 unk_0x36[6];
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ u8 unk_0x54[12];
-} EvtData_675;
+} Object_675;
 
 /* Stat Buff FX */
-typedef struct EvtData_681 {
-   /* :0x24 */ struct EvtData *unitSprite;
+typedef struct Object_681 {
+   /* :0x24 */ struct Object *unitSprite;
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ u8 unk_0x2A[34];
    /* :0x4C */ s16 clut;
    /* :0x4E */ s16 fade;
    /* :0x50 */ s16 todo_x50;
    /* :0x52 */ u8 unk_0x52[14];
-} EvtData_681;
+} Object_681;
 
 /* Campfire */
-typedef struct EvtData_692 {
-   /* :0x24 */ struct EvtData *entitySprite;
+typedef struct Object_692 {
+   /* :0x24 */ struct Object *entitySprite;
    /* :0x28 */ u8 unk_0x28[52];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_692;
+   /* :0x5C */ struct Object *sprite;
+} Object_692;
 
 /* Spellbind - FX2 / FX3 */
-typedef struct EvtData_715_to_718 {
+typedef struct Object_715_to_718 {
    /* :0x24 */ u8 unk_0x24[2];
    /* :0x26 */ s16 unused_0x26;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_715_to_718;
+} Object_715_to_718;
 
 /* Stat Buff Icon */
-typedef struct EvtData_733 {
+typedef struct Object_733 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ u8 unk_0x2A[34];
@@ -3389,66 +3385,66 @@ typedef struct EvtData_733 {
    /* :0x4E */ s16 clut;
    /* :0x50 */ s16 todo_x50;
    /* :0x52 */ u8 unk_0x52[10];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_733;
+   /* :0x5C */ struct Object *sprite;
+} Object_733;
 
 /* Wyrmfang - Flames */
-typedef struct EvtData_747_748 {
+typedef struct Object_747_748 {
    /* :0x24 */ s16 theta;
    /* :0x26 */ s16 radius;
    /* :0x28 */ s16 amplitude;
    /* :0x2A */ s16 timer;
    /* :0x2C */ s16 todo_x2c;
    /* :0x2E */ u8 unk_0x2E[50];
-} EvtData_747_748;
+} Object_747_748;
 
 /* Wyrmfang - Flame */
-typedef struct EvtData_749 {
+typedef struct Object_749 {
    /* :0x24 */ s16 theta;
    /* :0x26 */ s16 radius;
    /* :0x28 */ s16 yTheta;
    /* :0x2A */ s16 amplitude;
    /* :0x2C */ u8 unk_0x2C[32];
-   /* :0x4C */ struct EvtData *sprite;
+   /* :0x4C */ struct Object *sprite;
    /* :0x50 */ u8 unk_0x50[16];
-} EvtData_749;
+} Object_749;
 
 /* Map 33 - Lower Platform */
-typedef struct EvtData_750_751 {
+typedef struct Object_750_751 {
    /* :0x24 */ union {
-      struct EvtData *entitySpriteParam;
+      struct Object *entitySpriteParam;
       s16 unk;
    } variant_0x24;
    /* :0x28 */ s16 ydrop;
    /* :0x2A */ u8 unk_0x2A[54];
-} EvtData_750_751;
+} Object_750_751;
 
 /* Map 39 - Scene 82 */
-typedef struct EvtData_754 {
+typedef struct Object_754 {
    /* :0x24 */ u8 unk_0x24[16];
    /* :0x34 */ Camera camera;
    /* :0x42 */ u8 unk_0x42[26];
-   /* :0x5C */ struct EvtData *focus;
-} EvtData_754;
+   /* :0x5C */ struct Object *focus;
+} Object_754;
 
 /* Elite Melee Sparkles */
-typedef struct EvtData_760 {
+typedef struct Object_760 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_760;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_760;
 
 /* Event Fade */
-typedef struct EvtData_795 {
+typedef struct Object_795 {
    /* :0x24 */ s16 fade;
    /* :0x26 */ u8 unk_0x26[14];
    /* :0x34 */ s16 delta;
    /* :0x36 */ u8 unk_0x36[14];
    /* :0x44 */ s16 max;
    /* :0x46 */ u8 unk_0x46[26];
-} EvtData_795;
+} Object_795;
 
 /* Map Object - Generic */
-typedef struct EvtData_MapObject {
+typedef struct Object_MapObject {
    /* :0x24 */ s16 param;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ s16 gfxIdx;
@@ -3457,23 +3453,23 @@ typedef struct EvtData_MapObject {
    /* :0x36 */ u8 unk_0x36[2];
    /* :0x38 */ void *animData;
    /* :0x3C */ u8 unk_0x3C[36];
-} EvtData_MapObject;
+} Object_MapObject;
 
 /* Entity Spawn - Generic */
 // When an event entity spawns an object, it passes it the entity's sprite
-typedef struct EvtData_EntitySpawn {
-   /* :0x24 */ struct EvtData *entitySpriteParam;
+typedef struct Object_EntitySpawn {
+   /* :0x24 */ struct Object *entitySpriteParam;
    /* :0x28 */ u8 unk_0x28[56];
-} EvtData_EntitySpawn;
+} Object_EntitySpawn;
 
-typedef struct EvtData_Unk_8006183c {
+typedef struct Object_Unk_8006183c {
    /* :0x24 */ s16 clut;
    /* :0x26 */ s16 scale;
    /* :0x28 */ u8 unk_0x28[52];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_Unk_8006183c;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_Unk_8006183c;
 
-typedef struct EvtData_Unk_80080924 {
+typedef struct Object_Unk_80080924 {
    /* :0x24 */ s16 theta;
    /* :0x26 */ u8 unk_0x26[2];
    /* :0x28 */ SVectorXZY position1;
@@ -3490,20 +3486,20 @@ typedef struct EvtData_Unk_80080924 {
    /* :0x56 */ s16 position8_y;
    /* :0x58 */ s16 halfSize;
    /* :0x5A */ u8 unk_0x5A[2];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_Unk_80080924;
+   /* :0x5C */ struct Object *sprite;
+} Object_Unk_80080924;
 
-typedef struct EvtData_Unk_80087b58 {
+typedef struct Object_Unk_80087b58 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *dataStore; // cylinder
-} EvtData_Unk_80087b58;
+   /* :0x5C */ struct Object *dataStore; // cylinder
+} Object_Unk_80087b58;
 
-typedef struct EvtData_Unk_8008a364 {
+typedef struct Object_Unk_8008a364 {
    /* :0x24 */ u8 unk_0x24[56];
-   /* :0x5C */ struct EvtData *sprite;
-} EvtData_Unk_8008a364;
+   /* :0x5C */ struct Object *sprite;
+} Object_Unk_8008a364;
 
-typedef struct EvtData_Unk_8008d1f0 {
+typedef struct Object_Unk_8008d1f0 {
    /* :0x24 */ u8 unk_0x24[4];
    /* :0x28 */ s16 gfxIdx;
    /* :0x2A */ u8 unk_0x2A[2];
@@ -3515,17 +3511,17 @@ typedef struct EvtData_Unk_8008d1f0 {
    /* :0x36 */ u8 unk_0x36[6];
    /* :0x3C */ SVectorXZY coords[4];
    /* :0x54 */ u8 unk_0x54[8];
-   /* :0x5C */ struct EvtData *unitSprite;
-} EvtData_Unk_8008d1f0;
+   /* :0x5C */ struct Object *unitSprite;
+} Object_Unk_8008d1f0;
 
-typedef struct EvtData_Unk_UsedBy392 {
+typedef struct Object_Unk_UsedBy392 {
    /* :0x24 */ s32 todo_x24;
    /* :0x28 */ s32 todo_x28;
    /* :0x2C */ s16 theta;
    /* :0x2E */ u8 unk_0x2E[50];
-} EvtData_Unk_UsedBy392;
+} Object_Unk_UsedBy392;
 
-typedef struct EvtData {
+typedef struct Object {
    /* 0x00 */ SVECTOR vec;
    /* 0x08 */ s16 functionIndex;
    /* 0x0A */ s16 mem;
@@ -3544,328 +3540,328 @@ typedef struct EvtData {
    /* 0x24: */
    union {
       s8 bytes[60];
-      EvtData_Sprite sprite;
-      EvtData_Sprite2 sprite2;
-      EvtData_DataStore dataStore;
-      EvtData_003 evtf003;         /* Battle - Actions */
-      EvtData_004_005_408 evtf004; /* Window */
-      EvtData_004_005_408 evtf005; /* Window */
-      EvtData_007 evtf007;         /* Apply Poison */
-      EvtData_008 evtf008;         /* Battle Portrait */
-      EvtData_009 evtf009;         /* Item Icon Manager */
-      EvtData_013 evtf013;         /* Battle Manager */
-      EvtData_014 evtf014;         /* Battle Unit */
-      EvtData_016 evtf016;         /* Choose Done Direction */
-      EvtData_017 evtf017;         /* Camera - TBD */
-      EvtData_020 evtf020;         /* Pushed Boulder */
-      EvtData_021 evtf021;         /* Unit Attacking */
-      EvtData_022_029 evtf022;     /* Projectile */
-      EvtData_023 evtf023;         /* Camera - Ranged Target */
-      EvtData_024 evtf024;         /* Camera - Bounce Zoom */
-      EvtData_025 evtf025;         /* Overhead Map View */
-      EvtData_026_588 evtf026;     /* Camera - TBD */
-      EvtData_027 evtf027;         /* Targeting Spell */
-      EvtData_028 evtf028;         /* Unit Casting Spell */
-      EvtData_030 evtf030;         /* Unit/Field Info */
-      EvtData_031 evtf031;         /* Battle Spells List */
-      EvtData_032_033 evtf032;     /* Display Damage */
-      EvtData_MapObject evtf035;   /* Map Object - Tree */
-      EvtData_MapObject evtf036;   /* Map Object - Grave Marker */
-      EvtData_MapObject evtf037;   /* Map Object - Fountain */
-      EvtData_MapObject evtf038;   /* Map Object - Lamp Post */
-      EvtData_MapObject evtf039;   /* Map Object - Flag */
-      EvtData_040 evtf040;         /* Map Object - Chest */
-      EvtData_046 evtf046;         /* Map Object - Crate */
-      EvtData_048 evtf048;         /* Push */
-      EvtData_050 evtf050;         /* Unit Sprites Decoder */
-      EvtData_051 evtf051;         /* Floating Damage Text */
-      EvtData_052 evtf052;         /* Attack Info Marker */
-      EvtData_059 evtf059;         /* Debug - VRAM */
-      EvtData_062 evtf062;         /* Stretch Warp Sprite */
-      EvtData_070 evtf070;         /* Fade From Black */
-      EvtData_071 evtf071;         /* Fade To Black */
-      EvtData_072 evtf072;         /* Fade From White */
-      EvtData_073 evtf073;         /* Fade To White */
-      EvtData_074 evtf074;         /* Fade In Sprite */
-      EvtData_075 evtf075;         /* Fade Out Sprite */
-      EvtData_076 evtf076;         /* FX - Circles (TBD) */
-      EvtData_077 evtf077;         /* FX - Circle (TBD) */
-      EvtData_078 evtf078;         /* Damage - FX2 */
-      EvtData_079 evtf079;         /* Slay - FX3 */
-      EvtData_080 evtf080;         /* Roman Fire - FX1 */
-      EvtData_082 evtf082;         /* FX - TBD */
-      EvtData_087 evtf087;         /* Map 20 - Scene 30 - Arrow Spawner */
-      EvtData_088 evtf088;         /* FX - TBD */
-      EvtData_089 evtf089;         /* Map 15 - Scene 17 - Cinematic */
-      EvtData_090 evtf090;         /* Dagger Storm - FX2 */
-      EvtData_091 evtf091;         /* Dagger Storm - Dagger */
-      EvtData_094 evtf094;         /* Mood Ring - FX1 */
-      EvtData_095 evtf095;         /* Mood Ring - Ring */
-      EvtData_096 evtf096;         /* Mood Ring - FX2 */
-      EvtData_097 evtf097;         /* Mood Ring - FX3 */
-      EvtData_098 evtf098;         /* Map 20 - Scene 30 - Arrow */
-      EvtData_099 evtf099;         /* FX - TBD */
-      EvtData_100 evtf100;         /* Healing - FX2 */
-      EvtData_101 evtf101;         /* Healing Sparkle */
-      EvtData_102_227 evtf102;     /* Poison - FX2 */
-      EvtData_103 evtf103;         /* Poison Bubbles */
-      EvtData_104 evtf104;         /* Cure - FX2 */
-      EvtData_106 evtf106;         /* Magic Charge - FX3 */
-      EvtData_107 evtf107;         /* Magic Charge - Glyph Ring */
-      EvtData_108 evtf108;         /* Harmful Wave - FX2 */
-      EvtData_109 evtf109;         /* Harmful Wave - Ring */
-      EvtData_110 evtf110;         /* Casting Stat Buff */
-      EvtData_115 evtf115;         /* Faerie - FX2 */
-      EvtData_116 evtf116;         /* Faerie - Sparkle */
-      EvtData_117 evtf117;         /* Faerie - Sparkle Trail */
-      EvtData_118 evtf118;         /* Faerie - Target */
-      EvtData_119 evtf119;         /* FX - TBD */
-      EvtData_122 evtf122;         /* Dark Fire - FX1 */
-      EvtData_149 evtf149;         /* Flashing Unit Sprite */
-      EvtData_130 evtf130;         /* FX - TBD */
-      EvtData_131 evtf131;         /* Slay Unit */
-      EvtData_132_Etc evtf132;     /* FX - TBD */
-      EvtData_133_Etc evtf133;     /* FX - TBD */
-      EvtData_132_Etc evtf134;     /* FX - TBD */
-      EvtData_132_Etc evtf136;     /* FX - TBD */
-      EvtData_133_Etc evtf137;     /* FX - TBD */
-      EvtData_132_Etc evtf140;     /* FX - TBD */
-      EvtData_133_Etc evtf141;     /* FX - TBD */
-      EvtData_144 evtf144;         /* Holy Lightning - FX2 */
-      EvtData_145 evtf145;         /* Holy Lightning - Electric Orb */
-      EvtData_147 evtf147;         /* FX - TBD */
-      EvtData_148 evtf148;         /* FX - TBD */
-      EvtData_155 evtf155;         /* Spellbind - Glyph */
-      EvtData_156 evtf156;         /* Delta Mirage - FX1 */
-      EvtData_157 evtf157;         /* Delta Mirage - Ray */
-      EvtData_158 evtf158;         /* Explosion - FX1 */
-      EvtData_159 evtf159;         /* Explosion - Rays */
-      EvtData_160 evtf160;         /* Ice Storm - Target */
-      EvtData_161 evtf161;         /* Piercing Light - FX1 */
-      EvtData_162 evtf162;         /* Ice Storm - Splash */
-      EvtData_163 evtf163;         /* Stone Shower - FX1 */
-      EvtData_164 evtf164;         /* Stone Shower - Rock */
-      EvtData_165 evtf165;         /* Stone Shower - FX2 */
-      EvtData_167 evtf167;         /* Rainbow Swirl */
-      EvtData_168 evtf168;         /* Rainbow Stroke - Rainbow Swirl */
-      EvtData_169 evtf169;         /* Evil Stream - FX1 */
-      EvtData_170 evtf170;         /* Piercing Ray, Plasma Wave - FX1 */
-      EvtData_171 evtf171;         /* Homing Ray */
-      EvtData_172 evtf172;         /* Holy Pressure - Cube */
-      EvtData_173 evtf173;         /* Fire Gem - Beam */
-      EvtData_175 evtf175;         /* Rainbow Storm - FX1 */
-      EvtData_176 evtf176;         /* Rainbow Stroke - FX1 */
-      EvtData_177 evtf177;         /* Holy Pressure - FX1 */
-      EvtData_178 evtf178;         /* Thunder Flash - FX1 */
-      EvtData_179 evtf179;         /* Thunder Flash - Ray */
-      EvtData_180 evtf180;         /* Spread Force - FX1 */
-      EvtData_182 evtf182;         /* FX - TBD */
-      EvtData_183 evtf183;         /* FX - TBD */
-      EvtData_184 evtf184;         /* Avalanche - FX1 */
-      EvtData_185 evtf185;         /* Avalanche - Rock */
-      EvtData_186 evtf186;         /* FX - TBD */
-      EvtData_188 evtf188;         /* Dark Fire - Ray */
-      EvtData_189 evtf189;         /* Ice Storm - FX1 */
-      EvtData_191 evtf191;         /* Magic Arrow - Arrow */
-      EvtData_192 evtf192;         /* Perfect Guard - FX2 */
-      EvtData_193 evtf193;         /* Dark Star - FX3 */
-      EvtData_195 evtf195;         /* Rolling Thunder - FX2 */
-      EvtData_196 evtf196;         /* Rolling Thunder - Orb Pair */
-      EvtData_197 evtf197;         /* Rolling Thunder - FX1 */
-      EvtData_198 evtf198;         /* Rolling Thunder - Casting Bolt */
-      EvtData_199 evtf199;         /* Magic Arrow - FX1 */
-      EvtData_201 evtf201;         /* Unit Struck */
-      EvtData_202_746 evtf202;     /* Unit Blocking */
-      EvtData_203 evtf203;         /* Blocking Impact */
-      EvtData_204 evtf204;         /* Summon Crest */
-      EvtData_205 evtf205;         /* Blood Spurt */
-      EvtData_206 evtf206;         /* Blood Spurt Particle */
-      EvtData_208 evtf208;         /* Holy Lightning - FX1 */
-      EvtData_211 evtf211;         /* Avalanche - Boulder */
-      EvtData_212 evtf212;         /* Holy Lightning - Casting Bolt */
-      EvtData_213 evtf213;         /* Dust Cloud Spawner */
-      EvtData_214 evtf214;         /* Dust Cloud */
-      EvtData_215 evtf215;         /* Cloud (Sand, Dust, etc.) */
-      EvtData_220 evtf220;         /* Explosion - FX2 */
-      EvtData_222 evtf222;         /* FX - TBD */
-      EvtData_223 evtf223;         /* FX - TBD */
-      EvtData_224 evtf224;         /* Thunder Ball - FX1 */
-      EvtData_225 evtf225;         /* Thunder Ball - Initial Orb */
-      EvtData_226 evtf226;         /* Thunder Ball - Child Orb */
-      EvtData_269 evtf269;         /* FX - TBD */
-      EvtData_270 evtf270;         /* FX - TBD */
-      EvtData_271 evtf271;         /* Map 36 - Scene 74 - Leena Casting Shield */
-      EvtData_272 evtf272;         /* Stat Raised */
-      EvtData_273 evtf273;         /* Outward Ray */
-      EvtData_275 evtf275;         /* FX - TBD */
-      EvtData_276 evtf276;         /* FX - TBD */
-      EvtData_277 evtf277;         /* Zoom - TBD */
-      EvtData_278 evtf278;         /* Faint Sparkles */
-      EvtData_279 evtf279;         /* Ice Storm - Camera */
-      EvtData_280 evtf280;         /* Dark Hurricane - Target */
-      EvtData_281_282 evtf281;     /* Dark Hurricane - FX2 / FX3 */
-      EvtData_283 evtf283;         /* Dark Hurricane - Cloud */
-      EvtData_284 evtf284;         /* FX - TBD */
-      EvtData_287 evtf287;         /* FX - TBD */
-      EvtData_288 evtf288;         /* Map 13 - Bridge Explosion (Battle) */
-      EvtData_290_294_761 evtf290; /* Reveal Chest Item */
-      EvtData_290_294_761 evtf294; /* Reveal Item */
-      EvtData_292 evtf292;         /* Blue Item Sparkles */
-      EvtData_303 evtf303;         /* Map 31 - Scene 61 - Xeno's Flames */
-      EvtData_304_661 evtf304;     /* Flame */
-      EvtData_305_328 evtf305;     /* Magic Stone - FX (Map 43 - Scene 93 / Map 44 - Scene 00) */
-      EvtData_306_Etc evtf306;     /* Healing - FX2 */
-      EvtData_307_324 evtf307;     /* Evil Stream - FX2 / FX3 */
-      EvtData_310 evtf310;         /* Life Orb - Beam */
-      EvtData_312 evtf312;         /* Bubble Swirl - Bubble */
-      EvtData_313 evtf313;         /* Life Orb - FX1 */
-      EvtData_314 evtf314;         /* Inward Ray */
-      EvtData_315 evtf315;         /* Vertical Ray */
-      EvtData_317_338 evtf317;     /* Avalanche - FX2 / FX3 */
-      EvtData_321 evtf321;         /* FX - TBD */
-      EvtData_322_Etc evtf322;     /* Magic Restoration (Magic Charge, etc.) - FX2 */
-      EvtData_323_713 evtf323;     /* FX - TBD */
-      EvtData_326 evtf326;         /* FX - TBD */
-      EvtData_327 evtf327;         /* Healing Circle - FX2 */
-      EvtData_330 evtf330;         /* Magic Restoration (Magic Charge, etc.) - FX1 */
-      EvtData_331 evtf331;         /* FX - TBD */
-      EvtData_332 evtf332;         /* Rolling Fire - FX1 */
-      EvtData_334 evtf334;         /* Salamander - FX1 */
-      EvtData_335_336 evtf335;     /* Salamander - Head */
-      EvtData_335_336 evtf336;     /* Salamander - Segment */
-      EvtData_132_Etc evtf344;     /* Roman Fire - FX2 / FX3 */
-      EvtData_346 evtf346;         /* Button Depress */
-      EvtData_347 evtf347;         /* Map 26 */
-      EvtData_348 evtf348;         /* FX - TBD */
-      EvtData_351 evtf351;         /* MsgBox Text */
-      EvtData_352 evtf352;         /* Map 26 */
-      EvtData_355_356 evtf355;     /* Map 19 - Elevator (TBD) */
-      EvtData_355_356 evtf356;     /* Map 19 - Elevator (TBD) */
-      EvtData_357 evtf357;         /* Map 19 */
-      EvtData_358 evtf358;         /* Map 19 - Elevator (TBD) */
-      EvtData_361 evtf361;         /* Map 13 - Bridge Explosion (Scene) */
-      EvtData_362 evtf362;         /* Drawbridge Button */
-      EvtData_363 evtf363;         /* Wyrmfang - FX1 */
-      EvtData_365 evtf365;         /* Map 17 - Floodgate */
-      EvtData_366 evtf366;         /* Map 17 - Button */
-      EvtData_369 evtf369;         /* Screen Effect */
-      EvtData_377 evtf377;         /* FX - TBD */
-      EvtData_378 evtf378;         /* Phase Shift - FX1 */
-      EvtData_379 evtf379;         /* Evil Stream - Rock */
-      EvtData_380 evtf380;         /* Level Up - FX */
-      EvtData_382 evtf382;         /* Flame Breath */
-      EvtData_386 evtf386;         /* Healing Sparkle */
-      EvtData_388 evtf388;         /* Dark Hurricane - FX1 */
-      EvtData_389 evtf389;         /* Dark Hurricane - Vortex */
-      EvtData_390 evtf390;         /* Dark Hurricane - Vortex Layer */
-      EvtData_392 evtf392;         /* FX - TBD */
-      EvtData_393 evtf393;         /* Map 44 - Scene 00 - Explosion Rays */
-      EvtData_394 evtf394;         /* Dynamo Hum - FX1 */
-      EvtData_395 evtf395;         /* Dynamo Hum - Electric Orb */
-      EvtData_399 evtf399;         /* Map 11 */
-      EvtData_396 evtf396;         /* Dynamo Hum - Orb Electricity */
-      EvtData_400 evtf400;         /* AI - TBD */
-      EvtData_401 evtf401;         /* AI - TBD */
-      EvtData_402_Etc evtf402;     /* AI - TBD */
-      EvtData_402_Etc evtf403;     /* AI - TBD */
-      EvtData_402_Etc evtf404;     /* AI - TBD */
-      EvtData_405 evtf405;         /* Panorama */
-      EvtData_406 evtf406;         /* Shop or Depot */
-      EvtData_409 evtf409;         /* Event Entity */
-      EvtData_410 evtf410;         /* Camera - Event Zoom */
-      EvtData_413 evtf413;         /* MsgBox Portrait */
-      EvtData_MapObject evtf415;   /* Map Object - Torch */
-      EvtData_420_423 evtf420;     /* Battle Victory/Defeat */
-      EvtData_421_422 evtf421;     /* MsgBox Tail (Upper) */
-      EvtData_424 evtf424;         /* Battle Ender */
-      EvtData_425 evtf425;         /* Battle - Options */
-      EvtData_438 evtf438;         /* Evaluate Battle 08 */
-      EvtData_446 evtf446;         /* Battle - Victory/Defeat Particle */
-      EvtData_447 evtf447;         /* Unit Portrait (in depot, dojo, etc.) */
-      EvtData_564_565_566 evtf564; /* Map Object - Rippling Water */
-      EvtData_567 evtf567;         /* Opening Chest */
-      EvtData_571 evtf571;         /* Level Up - Camera Control, Sound */
-      EvtData_573 evtf573;         /* Battle Items List */
-      EvtData_575 evtf575;         /* Status Portrait */
-      EvtData_576 evtf576;         /* Tavern */
-      EvtData_577 evtf577;         /* Dynamic Icon */
-      EvtData_578 evtf578;         /* Dojo */
-      EvtData_579 evtf579;         /* World Map */
-      EvtData_580 evtf580;         /* Town */
-      EvtData_581 evtf581;         /* Audio Command */
-      EvtData_585 evtf585;         /* Battle - Player Event */
-      EvtData_586 evtf586;         /* Battle - MsgBox */
-      EvtData_587 evtf587;         /* Battle - Enemy Event */
-      EvtData_026_588 evtf588;     /* Camera - TBD */
-      EvtData_402_Etc evtf589;     /* AI - TBD */
-      EvtData_591 evtf591;         /* Map Object - Boulder */
-      EvtData_592 evtf592;         /* Battle - Turn Start */
-      EvtData_593 evtf593;         /* Battle - Results - Unit (Reward or Penalty) */
-      EvtData_595 evtf595;         /* Status Window Manager */
-      EvtData_597 evtf597;         /* Battle - Intro */
-      EvtData_650 evtf650;         /* Map 32 - Car Release */
-      EvtData_651 evtf651;         /* Map 33 - Lava Pit Platform */
-      EvtData_652 evtf652;         /* Map 35 - Button */
-      EvtData_653 evtf653;         /* Exploding Tile */
-      EvtData_654 evtf654;         /* Map 38 - Wash Away Unit */
-      EvtData_655 evtf655;         /* Map 38 - Raise Floodgate */
-      EvtData_656 evtf656;         /* Map 39 */
-      EvtData_657 evtf657;         /* Map 38 - Floodgate */
-      EvtData_658 evtf658;         /* Map 38 - Floodwater */
-      EvtData_663 evtf663;         /* Map 28 - Button */
-      EvtData_665 evtf665;         /* Map 27 - Buttons */
-      EvtData_666 evtf666;         /* Map 14 - Lower Sand Mound */
-      EvtData_668 evtf668;         /* Map 14 - Raise Sand Mound */
-      EvtData_670 evtf670;         /* Map 14 - Sand */
-      EvtData_672 evtf672;         /* Map 39 - Splashing Tile */
-      EvtData_673 evtf673;         /* Map 32 - Scene 63 - Cinematic */
-      EvtData_675 evtf675;         /* Leena's Forcefield */
-      EvtData_681 evtf681;         /* Stat Buff FX */
-      EvtData_692 evtf692;         /* Campfire */
-      EvtData_715_to_718 evtf715;  /* Spellbind - FX2 / FX3 */
-      EvtData_733 evtf733;         /* Stat Buff Icon */
-      EvtData_747_748 evtf747;     /* Wyrmfang - Flames */
-      EvtData_749 evtf749;         /* Wyrmfang - Flame */
-      EvtData_750_751 evtf750;     /* Map 33 - Lower Platform */
-      EvtData_754 evtf754;         /* Map 39 - Scene 82 */
-      EvtData_760 evtf760;         /* Elite Melee Sparkles */
-      EvtData_290_294_761 evtf761; /* Reveal Used Item */
-      EvtData_795 evtf795;         /* Event Fade */
-      EvtData_133_Etc evtf801;     /* FX - TBD */
-      EvtData_133_Etc evtf802;     /* FX - TBD */
-      EvtData_133_Etc evtf803;     /* FX - TBD */
-      EvtData_MapObject mapObj;    /* Map Object - Generic */
-      EvtData_EntitySpawn entitySpawn;
-      EvtData_Unk_8006183c evtfUnk8006183c;
-      EvtData_Unk_80080924 evtfUnk80080924;
-      EvtData_Unk_80087b58 evtfUnk80087b58;
-      EvtData_Unk_8008a364 evtfUnk8008a364;
-      EvtData_Unk_8008d1f0 evtfUnk8008d1f0;
-      EvtData_Unk_UsedBy392 evtfUnkUsedBy392;
+      Object_Sprite sprite;
+      Object_Sprite2 sprite2;
+      Object_DataStore dataStore;
+      Object_003 objf003;         /* Battle - Actions */
+      Object_004_005_408 objf004; /* Window */
+      Object_004_005_408 objf005; /* Window */
+      Object_007 objf007;         /* Apply Poison */
+      Object_008 objf008;         /* Battle Portrait */
+      Object_009 objf009;         /* Item Icon Manager */
+      Object_013 objf013;         /* Battle Manager */
+      Object_014 objf014;         /* Battle Unit */
+      Object_016 objf016;         /* Choose Done Direction */
+      Object_017 objf017;         /* Camera - TBD */
+      Object_020 objf020;         /* Pushed Boulder */
+      Object_021 objf021;         /* Unit Attacking */
+      Object_022_029 objf022;     /* Projectile */
+      Object_023 objf023;         /* Camera - Ranged Target */
+      Object_024 objf024;         /* Camera - Bounce Zoom */
+      Object_025 objf025;         /* Overhead Map View */
+      Object_026_588 objf026;     /* Camera - TBD */
+      Object_027 objf027;         /* Targeting Spell */
+      Object_028 objf028;         /* Unit Casting Spell */
+      Object_030 objf030;         /* Unit/Field Info */
+      Object_031 objf031;         /* Battle Spells List */
+      Object_032_033 objf032;     /* Display Damage */
+      Object_MapObject objf035;   /* Map Object - Tree */
+      Object_MapObject objf036;   /* Map Object - Grave Marker */
+      Object_MapObject objf037;   /* Map Object - Fountain */
+      Object_MapObject objf038;   /* Map Object - Lamp Post */
+      Object_MapObject objf039;   /* Map Object - Flag */
+      Object_040 objf040;         /* Map Object - Chest */
+      Object_046 objf046;         /* Map Object - Crate */
+      Object_048 objf048;         /* Push */
+      Object_050 objf050;         /* Unit Sprites Decoder */
+      Object_051 objf051;         /* Floating Damage Text */
+      Object_052 objf052;         /* Attack Info Marker */
+      Object_059 objf059;         /* Debug - VRAM */
+      Object_062 objf062;         /* Stretch Warp Sprite */
+      Object_070 objf070;         /* Fade From Black */
+      Object_071 objf071;         /* Fade To Black */
+      Object_072 objf072;         /* Fade From White */
+      Object_073 objf073;         /* Fade To White */
+      Object_074 objf074;         /* Fade In Sprite */
+      Object_075 objf075;         /* Fade Out Sprite */
+      Object_076 objf076;         /* FX - Circles (TBD) */
+      Object_077 objf077;         /* FX - Circle (TBD) */
+      Object_078 objf078;         /* Damage - FX2 */
+      Object_079 objf079;         /* Slay - FX3 */
+      Object_080 objf080;         /* Roman Fire - FX1 */
+      Object_082 objf082;         /* FX - TBD */
+      Object_087 objf087;         /* Map 20 - Scene 30 - Arrow Spawner */
+      Object_088 objf088;         /* FX - TBD */
+      Object_089 objf089;         /* Map 15 - Scene 17 - Cinematic */
+      Object_090 objf090;         /* Dagger Storm - FX2 */
+      Object_091 objf091;         /* Dagger Storm - Dagger */
+      Object_094 objf094;         /* Mood Ring - FX1 */
+      Object_095 objf095;         /* Mood Ring - Ring */
+      Object_096 objf096;         /* Mood Ring - FX2 */
+      Object_097 objf097;         /* Mood Ring - FX3 */
+      Object_098 objf098;         /* Map 20 - Scene 30 - Arrow */
+      Object_099 objf099;         /* FX - TBD */
+      Object_100 objf100;         /* Healing - FX2 */
+      Object_101 objf101;         /* Healing Sparkle */
+      Object_102_227 objf102;     /* Poison - FX2 */
+      Object_103 objf103;         /* Poison Bubbles */
+      Object_104 objf104;         /* Cure - FX2 */
+      Object_106 objf106;         /* Magic Charge - FX3 */
+      Object_107 objf107;         /* Magic Charge - Glyph Ring */
+      Object_108 objf108;         /* Harmful Wave - FX2 */
+      Object_109 objf109;         /* Harmful Wave - Ring */
+      Object_110 objf110;         /* Casting Stat Buff */
+      Object_115 objf115;         /* Faerie - FX2 */
+      Object_116 objf116;         /* Faerie - Sparkle */
+      Object_117 objf117;         /* Faerie - Sparkle Trail */
+      Object_118 objf118;         /* Faerie - Target */
+      Object_119 objf119;         /* FX - TBD */
+      Object_122 objf122;         /* Dark Fire - FX1 */
+      Object_149 objf149;         /* Flashing Unit Sprite */
+      Object_130 objf130;         /* FX - TBD */
+      Object_131 objf131;         /* Slay Unit */
+      Object_132_Etc objf132;     /* FX - TBD */
+      Object_133_Etc objf133;     /* FX - TBD */
+      Object_132_Etc objf134;     /* FX - TBD */
+      Object_132_Etc objf136;     /* FX - TBD */
+      Object_133_Etc objf137;     /* FX - TBD */
+      Object_132_Etc objf140;     /* FX - TBD */
+      Object_133_Etc objf141;     /* FX - TBD */
+      Object_144 objf144;         /* Holy Lightning - FX2 */
+      Object_145 objf145;         /* Holy Lightning - Electric Orb */
+      Object_147 objf147;         /* FX - TBD */
+      Object_148 objf148;         /* FX - TBD */
+      Object_155 objf155;         /* Spellbind - Glyph */
+      Object_156 objf156;         /* Delta Mirage - FX1 */
+      Object_157 objf157;         /* Delta Mirage - Ray */
+      Object_158 objf158;         /* Explosion - FX1 */
+      Object_159 objf159;         /* Explosion - Rays */
+      Object_160 objf160;         /* Ice Storm - Target */
+      Object_161 objf161;         /* Piercing Light - FX1 */
+      Object_162 objf162;         /* Ice Storm - Splash */
+      Object_163 objf163;         /* Stone Shower - FX1 */
+      Object_164 objf164;         /* Stone Shower - Rock */
+      Object_165 objf165;         /* Stone Shower - FX2 */
+      Object_167 objf167;         /* Rainbow Swirl */
+      Object_168 objf168;         /* Rainbow Stroke - Rainbow Swirl */
+      Object_169 objf169;         /* Evil Stream - FX1 */
+      Object_170 objf170;         /* Piercing Ray, Plasma Wave - FX1 */
+      Object_171 objf171;         /* Homing Ray */
+      Object_172 objf172;         /* Holy Pressure - Cube */
+      Object_173 objf173;         /* Fire Gem - Beam */
+      Object_175 objf175;         /* Rainbow Storm - FX1 */
+      Object_176 objf176;         /* Rainbow Stroke - FX1 */
+      Object_177 objf177;         /* Holy Pressure - FX1 */
+      Object_178 objf178;         /* Thunder Flash - FX1 */
+      Object_179 objf179;         /* Thunder Flash - Ray */
+      Object_180 objf180;         /* Spread Force - FX1 */
+      Object_182 objf182;         /* FX - TBD */
+      Object_183 objf183;         /* FX - TBD */
+      Object_184 objf184;         /* Avalanche - FX1 */
+      Object_185 objf185;         /* Avalanche - Rock */
+      Object_186 objf186;         /* FX - TBD */
+      Object_188 objf188;         /* Dark Fire - Ray */
+      Object_189 objf189;         /* Ice Storm - FX1 */
+      Object_191 objf191;         /* Magic Arrow - Arrow */
+      Object_192 objf192;         /* Perfect Guard - FX2 */
+      Object_193 objf193;         /* Dark Star - FX3 */
+      Object_195 objf195;         /* Rolling Thunder - FX2 */
+      Object_196 objf196;         /* Rolling Thunder - Orb Pair */
+      Object_197 objf197;         /* Rolling Thunder - FX1 */
+      Object_198 objf198;         /* Rolling Thunder - Casting Bolt */
+      Object_199 objf199;         /* Magic Arrow - FX1 */
+      Object_201 objf201;         /* Unit Struck */
+      Object_202_746 objf202;     /* Unit Blocking */
+      Object_203 objf203;         /* Blocking Impact */
+      Object_204 objf204;         /* Summon Crest */
+      Object_205 objf205;         /* Blood Spurt */
+      Object_206 objf206;         /* Blood Spurt Particle */
+      Object_208 objf208;         /* Holy Lightning - FX1 */
+      Object_211 objf211;         /* Avalanche - Boulder */
+      Object_212 objf212;         /* Holy Lightning - Casting Bolt */
+      Object_213 objf213;         /* Dust Cloud Spawner */
+      Object_214 objf214;         /* Dust Cloud */
+      Object_215 objf215;         /* Cloud (Sand, Dust, etc.) */
+      Object_220 objf220;         /* Explosion - FX2 */
+      Object_222 objf222;         /* FX - TBD */
+      Object_223 objf223;         /* FX - TBD */
+      Object_224 objf224;         /* Thunder Ball - FX1 */
+      Object_225 objf225;         /* Thunder Ball - Initial Orb */
+      Object_226 objf226;         /* Thunder Ball - Child Orb */
+      Object_269 objf269;         /* FX - TBD */
+      Object_270 objf270;         /* FX - TBD */
+      Object_271 objf271;         /* Map 36 - Scene 74 - Leena Casting Shield */
+      Object_272 objf272;         /* Stat Raised */
+      Object_273 objf273;         /* Outward Ray */
+      Object_275 objf275;         /* FX - TBD */
+      Object_276 objf276;         /* FX - TBD */
+      Object_277 objf277;         /* Zoom - TBD */
+      Object_278 objf278;         /* Faint Sparkles */
+      Object_279 objf279;         /* Ice Storm - Camera */
+      Object_280 objf280;         /* Dark Hurricane - Target */
+      Object_281_282 objf281;     /* Dark Hurricane - FX2 / FX3 */
+      Object_283 objf283;         /* Dark Hurricane - Cloud */
+      Object_284 objf284;         /* FX - TBD */
+      Object_287 objf287;         /* FX - TBD */
+      Object_288 objf288;         /* Map 13 - Bridge Explosion (Battle) */
+      Object_290_294_761 objf290; /* Reveal Chest Item */
+      Object_290_294_761 objf294; /* Reveal Item */
+      Object_292 objf292;         /* Blue Item Sparkles */
+      Object_303 objf303;         /* Map 31 - Scene 61 - Xeno's Flames */
+      Object_304_661 objf304;     /* Flame */
+      Object_305_328 objf305;     /* Magic Stone - FX (Map 43 - Scene 93 / Map 44 - Scene 00) */
+      Object_306_Etc objf306;     /* Healing - FX2 */
+      Object_307_324 objf307;     /* Evil Stream - FX2 / FX3 */
+      Object_310 objf310;         /* Life Orb - Beam */
+      Object_312 objf312;         /* Bubble Swirl - Bubble */
+      Object_313 objf313;         /* Life Orb - FX1 */
+      Object_314 objf314;         /* Inward Ray */
+      Object_315 objf315;         /* Vertical Ray */
+      Object_317_338 objf317;     /* Avalanche - FX2 / FX3 */
+      Object_321 objf321;         /* FX - TBD */
+      Object_322_Etc objf322;     /* Magic Restoration (Magic Charge, etc.) - FX2 */
+      Object_323_713 objf323;     /* FX - TBD */
+      Object_326 objf326;         /* FX - TBD */
+      Object_327 objf327;         /* Healing Circle - FX2 */
+      Object_330 objf330;         /* Magic Restoration (Magic Charge, etc.) - FX1 */
+      Object_331 objf331;         /* FX - TBD */
+      Object_332 objf332;         /* Rolling Fire - FX1 */
+      Object_334 objf334;         /* Salamander - FX1 */
+      Object_335_336 objf335;     /* Salamander - Head */
+      Object_335_336 objf336;     /* Salamander - Segment */
+      Object_132_Etc objf344;     /* Roman Fire - FX2 / FX3 */
+      Object_346 objf346;         /* Button Depress */
+      Object_347 objf347;         /* Map 26 */
+      Object_348 objf348;         /* FX - TBD */
+      Object_351 objf351;         /* MsgBox Text */
+      Object_352 objf352;         /* Map 26 */
+      Object_355_356 objf355;     /* Map 19 - Elevator (TBD) */
+      Object_355_356 objf356;     /* Map 19 - Elevator (TBD) */
+      Object_357 objf357;         /* Map 19 */
+      Object_358 objf358;         /* Map 19 - Elevator (TBD) */
+      Object_361 objf361;         /* Map 13 - Bridge Explosion (Scene) */
+      Object_362 objf362;         /* Drawbridge Button */
+      Object_363 objf363;         /* Wyrmfang - FX1 */
+      Object_365 objf365;         /* Map 17 - Floodgate */
+      Object_366 objf366;         /* Map 17 - Button */
+      Object_369 objf369;         /* Screen Effect */
+      Object_377 objf377;         /* FX - TBD */
+      Object_378 objf378;         /* Phase Shift - FX1 */
+      Object_379 objf379;         /* Evil Stream - Rock */
+      Object_380 objf380;         /* Level Up - FX */
+      Object_382 objf382;         /* Flame Breath */
+      Object_386 objf386;         /* Healing Sparkle */
+      Object_388 objf388;         /* Dark Hurricane - FX1 */
+      Object_389 objf389;         /* Dark Hurricane - Vortex */
+      Object_390 objf390;         /* Dark Hurricane - Vortex Layer */
+      Object_392 objf392;         /* FX - TBD */
+      Object_393 objf393;         /* Map 44 - Scene 00 - Explosion Rays */
+      Object_394 objf394;         /* Dynamo Hum - FX1 */
+      Object_395 objf395;         /* Dynamo Hum - Electric Orb */
+      Object_399 objf399;         /* Map 11 */
+      Object_396 objf396;         /* Dynamo Hum - Orb Electricity */
+      Object_400 objf400;         /* AI - TBD */
+      Object_401 objf401;         /* AI - TBD */
+      Object_402_Etc objf402;     /* AI - TBD */
+      Object_402_Etc objf403;     /* AI - TBD */
+      Object_402_Etc objf404;     /* AI - TBD */
+      Object_405 objf405;         /* Panorama */
+      Object_406 objf406;         /* Shop or Depot */
+      Object_409 objf409;         /* Event Entity */
+      Object_410 objf410;         /* Camera - Event Zoom */
+      Object_413 objf413;         /* MsgBox Portrait */
+      Object_MapObject objf415;   /* Map Object - Torch */
+      Object_420_423 objf420;     /* Battle Victory/Defeat */
+      Object_421_422 objf421;     /* MsgBox Tail (Upper) */
+      Object_424 objf424;         /* Battle Ender */
+      Object_425 objf425;         /* Battle - Options */
+      Object_438 objf438;         /* Evaluate Battle 08 */
+      Object_446 objf446;         /* Battle - Victory/Defeat Particle */
+      Object_447 objf447;         /* Unit Portrait (in depot, dojo, etc.) */
+      Object_564_565_566 objf564; /* Map Object - Rippling Water */
+      Object_567 objf567;         /* Opening Chest */
+      Object_571 objf571;         /* Level Up - Camera Control, Sound */
+      Object_573 objf573;         /* Battle Items List */
+      Object_575 objf575;         /* Status Portrait */
+      Object_576 objf576;         /* Tavern */
+      Object_577 objf577;         /* Dynamic Icon */
+      Object_578 objf578;         /* Dojo */
+      Object_579 objf579;         /* World Map */
+      Object_580 objf580;         /* Town */
+      Object_581 objf581;         /* Audio Command */
+      Object_585 objf585;         /* Battle - Player Event */
+      Object_586 objf586;         /* Battle - MsgBox */
+      Object_587 objf587;         /* Battle - Enemy Event */
+      Object_026_588 objf588;     /* Camera - TBD */
+      Object_402_Etc objf589;     /* AI - TBD */
+      Object_591 objf591;         /* Map Object - Boulder */
+      Object_592 objf592;         /* Battle - Turn Start */
+      Object_593 objf593;         /* Battle - Results - Unit (Reward or Penalty) */
+      Object_595 objf595;         /* Status Window Manager */
+      Object_597 objf597;         /* Battle - Intro */
+      Object_650 objf650;         /* Map 32 - Car Release */
+      Object_651 objf651;         /* Map 33 - Lava Pit Platform */
+      Object_652 objf652;         /* Map 35 - Button */
+      Object_653 objf653;         /* Exploding Tile */
+      Object_654 objf654;         /* Map 38 - Wash Away Unit */
+      Object_655 objf655;         /* Map 38 - Raise Floodgate */
+      Object_656 objf656;         /* Map 39 */
+      Object_657 objf657;         /* Map 38 - Floodgate */
+      Object_658 objf658;         /* Map 38 - Floodwater */
+      Object_663 objf663;         /* Map 28 - Button */
+      Object_665 objf665;         /* Map 27 - Buttons */
+      Object_666 objf666;         /* Map 14 - Lower Sand Mound */
+      Object_668 objf668;         /* Map 14 - Raise Sand Mound */
+      Object_670 objf670;         /* Map 14 - Sand */
+      Object_672 objf672;         /* Map 39 - Splashing Tile */
+      Object_673 objf673;         /* Map 32 - Scene 63 - Cinematic */
+      Object_675 objf675;         /* Leena's Forcefield */
+      Object_681 objf681;         /* Stat Buff FX */
+      Object_692 objf692;         /* Campfire */
+      Object_715_to_718 objf715;  /* Spellbind - FX2 / FX3 */
+      Object_733 objf733;         /* Stat Buff Icon */
+      Object_747_748 objf747;     /* Wyrmfang - Flames */
+      Object_749 objf749;         /* Wyrmfang - Flame */
+      Object_750_751 objf750;     /* Map 33 - Lower Platform */
+      Object_754 objf754;         /* Map 39 - Scene 82 */
+      Object_760 objf760;         /* Elite Melee Sparkles */
+      Object_290_294_761 objf761; /* Reveal Used Item */
+      Object_795 objf795;         /* Event Fade */
+      Object_133_Etc objf801;     /* FX - TBD */
+      Object_133_Etc objf802;     /* FX - TBD */
+      Object_133_Etc objf803;     /* FX - TBD */
+      Object_MapObject mapObj;    /* Map Object - Generic */
+      Object_EntitySpawn entitySpawn;
+      Object_Unk_8006183c objfUnk8006183c;
+      Object_Unk_80080924 objfUnk80080924;
+      Object_Unk_80087b58 objfUnk80087b58;
+      Object_Unk_8008a364 objfUnk8008a364;
+      Object_Unk_8008d1f0 objfUnk8008d1f0;
+      Object_Unk_UsedBy392 objfUnkUsedBy392;
    } d;
-} EvtData;
+} Object;
 
-typedef void (*EvtFunction)(EvtData *evt);
+typedef void (*ObjFunction)(Object *obj);
 
-extern EvtData gEvtDataArray[EVT_DATA_CT];
-extern EvtFunction gEvtFunctionPointers[804];
-extern EvtData gUnitSpritesDecoder; // evtf050
-extern EvtData *gTempGfxEvt;
-extern EvtData *gTempEvt;
-extern EvtData *gScreenFade;
+extern Object gObjectArray[OBJ_DATA_CT];
+extern ObjFunction gObjFunctionPointers[804];
+extern Object gUnitSpritesDecoder; // objf050
+extern Object *gTempGfxObj;
+extern Object *gTempObj;
+extern Object *gScreenFade;
 
-void Evt_ResetByFunction(s16);
-EvtData *Evt_FindByFunction(s16);
-void Evt_Execute(void);
-void Evt_ResetFromIdx10(void);
-void Evt_ResetAll(void);
-EvtData *Evt_GetUnused(void);
-EvtData *Evt_GetFirstUnused(void);
-EvtData *Evt_GetLastUnused(void);
-EvtData *Evt_GetLastUnusedSkippingTail(s32);
-s32 Evt_CountUnused(void);
+void Obj_ResetByFunction(s16);
+Object *Obj_FindByFunction(s16);
+void Obj_Execute(void);
+void Obj_ResetFromIdx10(void);
+void Obj_ResetAll(void);
+Object *Obj_GetUnused(void);
+Object *Obj_GetFirstUnused(void);
+Object *Obj_GetLastUnused(void);
+Object *Obj_GetLastUnusedSkippingTail(s32);
+s32 Obj_CountUnused(void);
 
-EvtData *CreatePositionedEvt(EvtData *, s16);
-EvtData *SnapToUnit(EvtData *);
+Object *CreatePositionedObj(Object *, s16);
+Object *SnapToUnit(Object *);
 
 #endif

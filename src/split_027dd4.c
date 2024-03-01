@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "battle.h"
 #include "units.h"
 #include "state.h"
@@ -339,7 +339,7 @@ s32 HasDefeatSpeech(UnitStatus *unit) {
    return 0;
 }
 
-s32 IsSpriteOutsideVisibleRange(EvtData *sprite) {
+s32 IsSpriteOutsideVisibleRange(Object *sprite) {
    if ((sprite->x1.s.hi >= D_80122E28) && (sprite->x1.s.hi <= gMapSizeX + D_80122E28 - 1) &&
        (sprite->z1.s.hi >= D_80122E2C) && (sprite->z1.s.hi <= gMapSizeZ + D_80122E2C - 1)) {
       return 0;

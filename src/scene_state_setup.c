@@ -11,7 +11,7 @@ void State_SetupScene(void) {
    s32 i;
 
    SwapOutCodeToVram();
-   Evt_ResetFromIdx10();
+   Obj_ResetFromIdx10();
 
    if (gState.scene == 1) {
       SetupParty(0);

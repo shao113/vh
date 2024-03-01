@@ -1,18 +1,18 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "battle.h"
 #include "units.h"
 #include "state.h"
 #include "field.h"
 #include "window.h"
 
-#undef EVTF
-#define EVTF 027
-void Evtf027_TargetingSpell(EvtData *evt) {
+#undef OBJF
+#define OBJF 027
+void Objf027_TargetingSpell(Object *obj) {
    UnitStatus *caster;
    s32 unitIdx;
    s32 ix, iz;
-   EvtData *newEvt;
+   Object *newObj;
 
    if (gRedAttackGridPtr[gMapCursorZ][gMapCursorX] != 0) {
       gState.mapCursorOutOfRange = 0;
@@ -20,36 +20,36 @@ void Evtf027_TargetingSpell(EvtData *evt) {
       gState.mapCursorOutOfRange = 1;
    }
 
-   caster = EVT.caster;
+   caster = OBJ.caster;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      caster = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
-      EVT.caster = caster;
+      caster = &gUnits[OBJ_MAP_UNIT(obj).s.unitIdx];
+      OBJ.caster = caster;
 
       if (gSpells[gCurrentSpell].area == SPELL_AREA_NULL) {
-         gTargetX = evt->x1.s.hi;
-         gTargetZ = evt->z1.s.hi;
-         evt->state = 100;
+         gTargetX = obj->x1.s.hi;
+         gTargetZ = obj->z1.s.hi;
+         obj->state = 100;
          return;
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
       ClearGrid(1);
-      gTargetZ = evt->z1.s.hi;
-      gTargetX = evt->x1.s.hi;
+      gTargetZ = obj->z1.s.hi;
+      gTargetX = obj->x1.s.hi;
       PopulateCastingGrid(gTargetZ, gTargetX, gSpells[gCurrentSpell].range, 0);
       gYellowTargetGridPtr[gMapCursorZ][gMapCursorX] = 1;
-      evt->state++;
+      obj->state++;
       return;
 
    case 2:
       if (!(gSavedPadStateNewPresses & PAD_X)) {
          if (gSpells[gCurrentSpell].area == SPELL_AREA_AOE) {
-            evt->state++;
-            evt->state2 = 6;
+            obj->state++;
+            obj->state2 = 6;
             return;
          }
          if (gTargetX != gMapCursorX || gTargetZ != gMapCursorZ) {
@@ -61,29 +61,29 @@ void Evtf027_TargetingSpell(EvtData *evt) {
             }
          }
          if (gSavedPadStateNewPresses & PAD_CIRCLE) {
-            evt->state++;
-            evt->state2 = gSpells[gCurrentSpell].targeting;
+            obj->state++;
+            obj->state2 = gSpells[gCurrentSpell].targeting;
          }
       } else {
-         evt->state = 99;
+         obj->state = 99;
       }
       return;
 
    case 3:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case SPELL_TARGET_ENEMY:
          if (gRedAttackGridPtr[gMapCursorZ][gMapCursorX] != 0) {
             unitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx;
             if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
                gTargetX = gMapCursorX;
                gTargetZ = gMapCursorZ;
-               evt->state = 4;
+               obj->state = 4;
                return;
             }
          }
-         evt->state = 2;
-         evt->state2 = 0;
+         obj->state = 2;
+         obj->state2 = 0;
          return;
       case SPELL_TARGET_ALLY:
          if (gRedAttackGridPtr[gMapCursorZ][gMapCursorX] != 0) {
@@ -91,46 +91,46 @@ void Evtf027_TargetingSpell(EvtData *evt) {
             if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
                gTargetX = gMapCursorX;
                gTargetZ = gMapCursorZ;
-               evt->state = 4;
+               obj->state = 4;
                return;
             }
          }
-         evt->state = 2;
-         evt->state2 = 0;
+         obj->state = 2;
+         obj->state2 = 0;
          return;
       case 2:
          return;
       case SPELL_TARGET_ENEMY_GROUP:
-         evt->state = 2;
+         obj->state = 2;
          for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gRedAttackGridPtr[iz][ix] != 0) {
                   unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
-                     gTargetX = evt->x1.s.hi;
-                     gTargetZ = evt->z1.s.hi;
-                     evt->state = 4;
+                     gTargetX = obj->x1.s.hi;
+                     gTargetZ = obj->z1.s.hi;
+                     obj->state = 4;
                   }
                }
             }
          }
-         evt->state2 = 0;
+         obj->state2 = 0;
          return;
       case SPELL_TARGET_ALLY_GROUP:
-         evt->state = 2;
+         obj->state = 2;
          for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gRedAttackGridPtr[iz][ix] != 0) {
                   unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
-                     gTargetX = evt->x1.s.hi;
-                     gTargetZ = evt->z1.s.hi;
-                     evt->state = 4;
+                     gTargetX = obj->x1.s.hi;
+                     gTargetZ = obj->z1.s.hi;
+                     obj->state = 4;
                   }
                }
             }
          }
-         evt->state2 = 0;
+         obj->state2 = 0;
          return;
       case 5:
          return;
@@ -139,112 +139,112 @@ void Evtf027_TargetingSpell(EvtData *evt) {
          if (gRedAttackGridPtr[gMapCursorZ][gMapCursorX] != 0) {
             gTargetX = gMapCursorX;
             gTargetZ = gMapCursorZ;
-            evt->state = 4;
+            obj->state = 4;
             break; // -> state:4
          }
          ClearGrid(1);
          if (gSavedPadStateNewPresses & PAD_X) {
-            evt->state = 99;
+            obj->state = 99;
             return;
          }
-         evt->state = 2;
-         evt->state2 = 0;
+         obj->state = 2;
+         obj->state2 = 0;
          return;
       case 7:
       case 8:
       case 9:
-         gTargetX = evt->x1.s.hi;
-         gTargetZ = evt->z1.s.hi;
-         evt->state = 4;
+         gTargetX = obj->x1.s.hi;
+         gTargetZ = obj->z1.s.hi;
+         obj->state = 4;
          return;
       default:
          return;
-      } // switch (evt->state2) (via state:3)
+      } // switch (obj->state2) (via state:3)
 
    // fallthrough
    case 4:
       if (gSpells[gCurrentSpell].area == SPELL_AREA_SINGLE) {
-         evt->state = 100;
+         obj->state = 100;
          return;
       }
       PopulateCastingGrid(gTargetZ, gTargetX, gSpells[gCurrentSpell].fieldSize, 1);
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 5:
       if (gTargetX != gMapCursorX || gTargetZ != gMapCursorZ) {
-         evt->state = 3;
-         evt->state2 = 6;
+         obj->state = 3;
+         obj->state2 = 6;
 
          // Might explain the misidentified while loop and buggy analysis:
          goto TargetingType6_80022da4;
       }
       if (gSavedPadStateNewPresses & PAD_X) {
-         evt->state = 99;
+         obj->state = 99;
          return;
       }
       if (!(gSavedPadStateNewPresses & PAD_CIRCLE)) {
          return;
       }
-      evt->state2 = gSpells[gCurrentSpell].targeting;
-      evt->state++;
+      obj->state2 = gSpells[gCurrentSpell].targeting;
+      obj->state++;
 
    // fallthrough
    case 6:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case SPELL_TARGET_ENEMY:
          unitIdx = gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx;
          if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
-            evt->state = 100;
+            obj->state = 100;
             return;
          }
-         evt->state = 5;
-         evt->state2 = 0;
+         obj->state = 5;
+         obj->state2 = 0;
          return;
       case SPELL_TARGET_ALLY:
          unitIdx = gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx;
          if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
-            evt->state = 100;
+            obj->state = 100;
             return;
          }
-         evt->state = 5;
-         evt->state2 = 0;
+         obj->state = 5;
+         obj->state2 = 0;
          return;
       case SPELL_TARGET_ENEMY_GROUP:
-         evt->state = 5;
+         obj->state = 5;
          for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gYellowTargetGridPtr[iz][ix] != 0) {
                   unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team != gUnits[unitIdx].team) {
-                     evt->state = 100;
+                     obj->state = 100;
                   }
                }
             }
          }
-         evt->state2 = 0;
+         obj->state2 = 0;
          return;
       case SPELL_TARGET_ALLY_GROUP:
-         evt->state = 5;
+         obj->state = 5;
          for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
             for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                if (gYellowTargetGridPtr[iz][ix] != 0) {
                   unitIdx = gMapUnitsPtr[iz][ix].s.unitIdx;
                   if (unitIdx != 0 && caster->team == gUnits[unitIdx].team) {
-                     evt->state = 100;
+                     obj->state = 100;
                   }
                }
             }
          }
-         evt->state2 = 0;
+         obj->state2 = 0;
          return;
       case 6:
-         evt->state = 100;
+         obj->state = 100;
          return;
       default:
          return;
-      } // switch (evt->state2) (via state:6)
+      } // switch (obj->state2) (via state:6)
 
       return;
 
@@ -252,7 +252,7 @@ void Evtf027_TargetingSpell(EvtData *evt) {
       gSignal2 = 1;
       ClearGrid(0);
       ClearGrid(1);
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
 
    case 100:
@@ -262,20 +262,20 @@ void Evtf027_TargetingSpell(EvtData *evt) {
       gClearSavedPadState = 1;
       gSignal2 = 2;
 
-      newEvt = Evt_GetLastUnused();
-      newEvt->functionIndex = EVTF_UNIT_CASTING;
-      newEvt->x1.n = evt->x1.n;
-      newEvt->z1.n = evt->z1.n;
+      newObj = Obj_GetLastUnused();
+      newObj->functionIndex = OBJF_UNIT_CASTING;
+      newObj->x1.n = obj->x1.n;
+      newObj->z1.n = obj->z1.n;
 
-      evt->state++;
+      obj->state++;
       return;
 
    case 101:
       if (gSignal2 == 99) {
          gState.mapCursorOutOfRange = 0;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
       }
       return;
 
-   } // switch (evt->state)
+   } // switch (obj->state)
 }

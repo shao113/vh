@@ -1,6 +1,6 @@
 #include "common.h"
 #include "units.h"
-#include "evt.h"
+#include "object.h"
 #include "audio.h"
 #include "field.h"
 #include "battle.h"
@@ -15,21 +15,21 @@ u8 gBattleSceneId[50] = {96, 97, 98, 99, 100, 101, 0,  0,  102, 95, 1,  4,  8,  
                          69, 71, 74, 77, 78,  82,  84, 85, 90,  92, 0,  0,  0,  0,  0,  0};
 
 s16 gBattleEvaluator[BATTLE_CT] = {
-    EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_STD,
-    EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_STD,
-    EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_08,
-    EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_10,  EVTF_EVALUATE_BATTLE_11,
-    EVTF_EVALUATE_BATTLE_12,  EVTF_EVALUATE_BATTLE_13,  EVTF_EVALUATE_BATTLE_14,
-    EVTF_EVALUATE_BATTLE_15,  EVTF_EVALUATE_BATTLE_16,  EVTF_EVALUATE_BATTLE_17,
-    EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_19,  EVTF_EVALUATE_BATTLE_20,
-    EVTF_EVALUATE_BATTLE_21,  EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_23,
-    EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_26,
-    EVTF_EVALUATE_BATTLE_27,  EVTF_EVALUATE_BATTLE_28,  EVTF_EVALUATE_BATTLE_29,
-    EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_32,
-    EVTF_EVALUATE_BATTLE_33,  EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_35,
-    EVTF_EVALUATE_BATTLE_STD, EVTF_EVALUATE_BATTLE_37,  EVTF_EVALUATE_BATTLE_38,
-    EVTF_EVALUATE_BATTLE_39,  EVTF_EVALUATE_BATTLE_40,  EVTF_EVALUATE_BATTLE_STD,
-    EVTF_EVALUATE_BATTLE_42,  EVTF_EVALUATE_BATTLE_43};
+    OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_STD,
+    OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_STD,
+    OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_08,
+    OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_10,  OBJF_EVALUATE_BATTLE_11,
+    OBJF_EVALUATE_BATTLE_12,  OBJF_EVALUATE_BATTLE_13,  OBJF_EVALUATE_BATTLE_14,
+    OBJF_EVALUATE_BATTLE_15,  OBJF_EVALUATE_BATTLE_16,  OBJF_EVALUATE_BATTLE_17,
+    OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_19,  OBJF_EVALUATE_BATTLE_20,
+    OBJF_EVALUATE_BATTLE_21,  OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_23,
+    OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_26,
+    OBJF_EVALUATE_BATTLE_27,  OBJF_EVALUATE_BATTLE_28,  OBJF_EVALUATE_BATTLE_29,
+    OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_32,
+    OBJF_EVALUATE_BATTLE_33,  OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_35,
+    OBJF_EVALUATE_BATTLE_STD, OBJF_EVALUATE_BATTLE_37,  OBJF_EVALUATE_BATTLE_38,
+    OBJF_EVALUATE_BATTLE_39,  OBJF_EVALUATE_BATTLE_40,  OBJF_EVALUATE_BATTLE_STD,
+    OBJF_EVALUATE_BATTLE_42,  OBJF_EVALUATE_BATTLE_43};
 
 BVectorZXY gMapCursorStartingPos[BATTLE_CT] = {
     {6, 18, 0},  {7, 21, 2},  {10, 13, 0}, {5, 19, 0},  {19, 7, 1}, {0, 57, 0},  {0, 0, 0},
@@ -72,7 +72,7 @@ void PlayCurrentBattleBGM(void) {
 s32 State_Battle(void) {
    // Note: Unused return value needed for this match
    s32 i, ct;
-   EvtData *newEvt;
+   Object *newObj;
 
    switch (gState.secondary) {
    case 0:
@@ -118,7 +118,7 @@ s32 State_Battle(void) {
 
       case 3:
          SetGeomScreen(0x200);
-         Evt_ResetFromIdx10();
+         Obj_ResetFromIdx10();
          if (gState.primary != STATE_LOAD_IN_BATTLE_SAVE) {
             ClearUnits();
          }
@@ -183,8 +183,8 @@ s32 State_Battle(void) {
             SetupBattleUnits();
          }
 
-         gTempEvt = Evt_GetUnused();
-         gTempEvt->functionIndex = EVTF_BATTLE_ENDER;
+         gTempObj = Obj_GetUnused();
+         gTempObj->functionIndex = OBJF_BATTLE_ENDER;
 
          if (LoadSoundSet(2) != 0 || gState.primary != STATE_30 || gState.mapNum == 13 ||
              gState.mapNum == 14 || gState.mapNum == 15 || gState.mapNum == 33 ||
@@ -275,8 +275,8 @@ s32 State_Battle(void) {
 
    case 1:
       gState.suppressLoadingScreen = 0;
-      gTempEvt = Evt_GetUnused();
-      gTempEvt->functionIndex = gBattleEvaluator[gState.mapNum];
+      gTempObj = Obj_GetUnused();
+      gTempObj->functionIndex = gBattleEvaluator[gState.mapNum];
       gState.secondary++;
 
    // fallthrough
@@ -284,16 +284,16 @@ s32 State_Battle(void) {
       FadeInScreen(2, 20);
       if (gState.mapNum == 8) {
          // Demo
-         newEvt = Evt_GetUnused();
-         newEvt->functionIndex = EVTF_LOGO;
+         newObj = Obj_GetUnused();
+         newObj->functionIndex = OBJF_LOGO;
          gClearSavedPadState = 1;
          gPlayerControlSuppressed = 1;
          gIsEnemyTurn = 1;
          gState.D_80140859 = 0;
       } else if (gState.primary != STATE_LOAD_IN_BATTLE_SAVE) {
          gSignal1 = 1;
-         newEvt = Evt_GetUnused();
-         newEvt->functionIndex = EVTF_BATTLE_INTRO;
+         newObj = Obj_GetUnused();
+         newObj->functionIndex = OBJF_BATTLE_INTRO;
       }
       gState.secondary++;
       break;
@@ -353,7 +353,7 @@ s32 CountUnitsOfTeam(s16 team) {
    return ct;
 }
 
-void Evtf438_EvaluateBattle08(EvtData *evt) {
+void Objf438_EvaluateBattle08(Object *obj) {
    // TBD gLightRotation.vy ?
    gLightRotation.vy = GetLightRotY() + 0x10;
 
@@ -365,17 +365,17 @@ void Evtf438_EvaluateBattle08(EvtData *evt) {
       gState.signal = 0;
    }
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       if ((gState.D_80140859 != 0) || ((gPadStateNewPresses & PAD_START) != 0)) {
          FadeOutScreen(2, 6);
          PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
-         evt->d.evtf438.delay = 75;
-         evt->state++;
+         obj->d.objf438.delay = 75;
+         obj->state++;
       }
       break;
    case 1:
-      if (--evt->d.evtf438.delay == 0) {
+      if (--obj->d.objf438.delay == 0) {
          PerformAudioCommand(AUDIO_CMD_STOP_ALL);
          gIsEnemyTurn = 0;
          gState.primary = STATE_TITLE_SCREEN;
@@ -388,7 +388,7 @@ void Evtf438_EvaluateBattle08(EvtData *evt) {
    }
 }
 
-void Evtf426_EvaluateBattle10(EvtData *evt) {
+void Objf426_EvaluateBattle10(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_ZOOT)) {
@@ -403,7 +403,7 @@ void Evtf426_EvaluateBattle10(EvtData *evt) {
    }
 }
 
-void Evtf427_EvaluateBattle11(EvtData *evt) {
+void Objf427_EvaluateBattle11(Object *obj) {
    UnitStatus *p;
    s32 i, arrived;
    u8 x, z;
@@ -452,7 +452,7 @@ void Evtf427_EvaluateBattle11(EvtData *evt) {
    }
 }
 
-void Evtf428_EvaluateBattle12(EvtData *evt) {
+void Objf428_EvaluateBattle12(Object *obj) {
    gLightRotation.vy = GetLightRotY() + 0x10;
    if (gState.needEval) {
       gState.needEval = 0;
@@ -468,7 +468,7 @@ void Evtf428_EvaluateBattle12(EvtData *evt) {
    }
 }
 
-void Evtf429_EvaluateBattle13(EvtData *evt) {
+void Objf429_EvaluateBattle13(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfTeam(TEAM_ENEMY) == 0) {
@@ -483,7 +483,7 @@ void Evtf429_EvaluateBattle13(EvtData *evt) {
    }
 }
 
-void Evtf430_EvaluateBattle14(EvtData *evt) {
+void Objf430_EvaluateBattle14(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfType(UNIT_TYPE_DEATH_ANT) == 0) {
@@ -498,7 +498,7 @@ void Evtf430_EvaluateBattle14(EvtData *evt) {
    }
 }
 
-void Evtf431_EvaluateBattle15(EvtData *evt) {
+void Objf431_EvaluateBattle15(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_HASSAN)) {
@@ -513,7 +513,7 @@ void Evtf431_EvaluateBattle15(EvtData *evt) {
    }
 }
 
-void Evtf432_EvaluateBattle16(EvtData *evt) {
+void Objf432_EvaluateBattle16(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfType(UNIT_TYPE_EVILSTATUE) == 0) {
@@ -531,7 +531,7 @@ void Evtf432_EvaluateBattle16(EvtData *evt) {
    }
 }
 
-void Evtf433_EvaluateBattle17(EvtData *evt) {
+void Objf433_EvaluateBattle17(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfTeam(TEAM_ENEMY) == 0) {
@@ -553,7 +553,7 @@ void Evtf433_EvaluateBattle17(EvtData *evt) {
    }
 }
 
-void Evtf434_EvaluateStandardBattle(EvtData *evt) {
+void Objf434_EvaluateStandardBattle(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfTeam(TEAM_ENEMY) == 0) {
@@ -568,7 +568,7 @@ void Evtf434_EvaluateStandardBattle(EvtData *evt) {
    }
 }
 
-void Evtf435_EvaluateBattle19(EvtData *evt) {
+void Objf435_EvaluateBattle19(Object *obj) {
    UnitStatus *p;
    s32 i, arrived;
    u8 x, z;
@@ -631,7 +631,7 @@ void Evtf435_EvaluateBattle19(EvtData *evt) {
    }
 }
 
-void Evtf436_EvaluateBattle20(EvtData *evt) {
+void Objf436_EvaluateBattle20(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_MAGNUS)) {
@@ -646,7 +646,7 @@ void Evtf436_EvaluateBattle20(EvtData *evt) {
    }
 }
 
-void Evtf437_EvaluateBattle21(EvtData *evt) {
+void Objf437_EvaluateBattle21(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfTeam(TEAM_ENEMY) == 0) {
@@ -664,7 +664,7 @@ void Evtf437_EvaluateBattle21(EvtData *evt) {
    }
 }
 
-void Evtf439_EvaluateBattle23(EvtData *evt) {
+void Objf439_EvaluateBattle23(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (gState.turn > 5) {
@@ -682,7 +682,7 @@ void Evtf439_EvaluateBattle23(EvtData *evt) {
    }
 }
 
-void Evtf442_EvaluateBattle26(EvtData *evt) {
+void Objf442_EvaluateBattle26(Object *obj) {
    UnitStatus *p;
    s32 i;
    s8 x;
@@ -714,7 +714,7 @@ void Evtf442_EvaluateBattle26(EvtData *evt) {
    }
 }
 
-void Evtf443_EvaluateBattle27(EvtData *evt) {
+void Objf443_EvaluateBattle27(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfTeam(TEAM_ENEMY) == 0) {
@@ -745,7 +745,7 @@ void Evtf443_EvaluateBattle27(EvtData *evt) {
    }
 }
 
-void Evtf444_EvaluateBattle28(EvtData *evt) {
+void Objf444_EvaluateBattle28(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_DUMAS)) {
@@ -764,11 +764,11 @@ void Evtf444_EvaluateBattle28(EvtData *evt) {
    }
 }
 
-void Evtf445_EvaluateBattle29(EvtData *evt) {
+void Objf445_EvaluateBattle29(Object *obj) {
    UnitStatus *p;
    s32 i, arrived;
    u8 x, z;
-   EvtData *sprite;
+   Object *sprite;
 
    if (gState.needEval != 0) {
       gState.needEval = 0;
@@ -807,7 +807,7 @@ void Evtf445_EvaluateBattle29(EvtData *evt) {
    }
 }
 
-void Evtf552_EvaluateBattle32(EvtData *evt) {
+void Objf552_EvaluateBattle32(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_DALLAS)) {
@@ -822,7 +822,7 @@ void Evtf552_EvaluateBattle32(EvtData *evt) {
    }
 }
 
-void Evtf553_EvaluateBattle33(EvtData *evt) {
+void Objf553_EvaluateBattle33(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfType(UNIT_TYPE_DEATH_DEV_) == 0) {
@@ -843,7 +843,7 @@ void Evtf553_EvaluateBattle33(EvtData *evt) {
    }
 }
 
-void Evtf555_EvaluateBattle35(EvtData *evt) {
+void Objf555_EvaluateBattle35(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_KURTZ)) {
@@ -862,7 +862,7 @@ void Evtf555_EvaluateBattle35(EvtData *evt) {
    }
 }
 
-void Evtf557_EvaluateBattle37(EvtData *evt) {
+void Objf557_EvaluateBattle37(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (CountUnitsOfType(UNIT_TYPE_SALAMANDER) == 0) {
@@ -877,7 +877,7 @@ void Evtf557_EvaluateBattle37(EvtData *evt) {
    }
 }
 
-void Evtf558_EvaluateBattle38(EvtData *evt) {
+void Objf558_EvaluateBattle38(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_SABINA)) {
@@ -896,7 +896,7 @@ void Evtf558_EvaluateBattle38(EvtData *evt) {
    }
 }
 
-void Evtf559_EvaluateBattle39(EvtData *evt) {
+void Objf559_EvaluateBattle39(Object *obj) {
    s32 unitIdx;
    if (gState.needEval) {
       gState.needEval = 0;
@@ -916,7 +916,7 @@ void Evtf559_EvaluateBattle39(EvtData *evt) {
    }
 }
 
-void Evtf560_EvaluateBattle40(EvtData *evt) {
+void Objf560_EvaluateBattle40(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_KANE)) {
@@ -931,7 +931,7 @@ void Evtf560_EvaluateBattle40(EvtData *evt) {
    }
 }
 
-void Evtf562_EvaluateBattle42(EvtData *evt) {
+void Objf562_EvaluateBattle42(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_XENO)) {
@@ -946,7 +946,7 @@ void Evtf562_EvaluateBattle42(EvtData *evt) {
    }
 }
 
-void Evtf563_EvaluateBattle43(EvtData *evt) {
+void Objf563_EvaluateBattle43(Object *obj) {
    if (gState.needEval) {
       gState.needEval = 0;
       if (!FindUnitByNameIdx(UNIT_DOLF)) {
@@ -961,11 +961,11 @@ void Evtf563_EvaluateBattle43(EvtData *evt) {
    }
 }
 
-void Evtf423_BattleDefeat(EvtData *evt) { Evtf420_BattleVictory(evt); }
+void Objf423_BattleDefeat(Object *obj) { Objf420_BattleVictory(obj); }
 
-#undef EVTF
-#define EVTF 420
-void Evtf420_BattleVictory(EvtData *evt) {
+#undef OBJF
+#define OBJF 420
+void Objf420_BattleVictory(Object *obj) {
    static s16 youWin[] = {96,  110, GFX_YOU_1, 140, 110, GFX_YOU_2,
                           184, 110, GFX_WIN_1, 228, 110, GFX_WIN_2};
    static s16 youLose[] = {96,  110, GFX_YOU_1,  140, 110, GFX_YOU_2,
@@ -973,15 +973,15 @@ void Evtf420_BattleVictory(EvtData *evt) {
 
    s32 i;
    s16 *p;
-   EvtData *newEvt;
+   Object *newObj;
    s16 delay;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       for (i = 0; i < 100; i++) {
          CloseWindow(i);
       }
-      Evt_ResetByFunction(EVTF_COMPASS);
+      Obj_ResetByFunction(OBJF_COMPASS);
 
    // fallthrough
    case 1:
@@ -991,7 +991,7 @@ void Evtf420_BattleVictory(EvtData *evt) {
    case 5:
    case 6:
    case 7:
-      if (evt->functionIndex == EVTF_BATTLE_VICTORY) {
+      if (obj->functionIndex == OBJF_BATTLE_VICTORY) {
          p = youWin;
       } else {
          p = youLose;
@@ -999,94 +999,94 @@ void Evtf420_BattleVictory(EvtData *evt) {
 
       delay = 1;
       for (i = 0; i < 4; i++) {
-         newEvt = Evt_GetUnused();
-         newEvt->functionIndex = EVTF_BATTLE_VICTORY_PARTICLE;
-         newEvt->x1.n = *p++;
-         newEvt->y1.n = *p++;
-         newEvt->d.evtf446.gfxIdx = *p++;
-         newEvt->d.evtf446.delay = delay;
+         newObj = Obj_GetUnused();
+         newObj->functionIndex = OBJF_BATTLE_VICTORY_PARTICLE;
+         newObj->x1.n = *p++;
+         newObj->y1.n = *p++;
+         newObj->d.objf446.gfxIdx = *p++;
+         newObj->d.objf446.delay = delay;
          delay += 2;
       }
 
-      EVT.timer = 100;
-      evt->state++;
+      OBJ.timer = 100;
+      obj->state++;
       break;
 
    case 8:
-      if (--EVT.timer == 0) {
-         if (evt->functionIndex == EVTF_BATTLE_VICTORY) {
-            Evt_ResetByFunction(EVTF_BATTLE_VICTORY_PARTICLE);
-            newEvt = Evt_GetUnused();
-            newEvt->functionIndex = EVTF_BATTLE_RESULTS;
+      if (--OBJ.timer == 0) {
+         if (obj->functionIndex == OBJF_BATTLE_VICTORY) {
+            Obj_ResetByFunction(OBJF_BATTLE_VICTORY_PARTICLE);
+            newObj = Obj_GetUnused();
+            newObj->functionIndex = OBJF_BATTLE_RESULTS;
          } else {
             gSignal2 = 1;
          }
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 9:
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
    }
 }
 
-#undef EVTF
-#define EVTF 446
-void Evtf446_BattleVictoryParticle(EvtData *evt) {
+#undef OBJF
+#define OBJF 446
+void Objf446_BattleVictoryParticle(Object *obj) {
    s16 x;
    s16 y;
    s16 angle;
    s16 d;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      if (--EVT.delay != 0) {
+      if (--OBJ.delay != 0) {
          return;
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
-      EVT.todo_x5c = 50;
-      EVT.todo_x50 = rand() % 100 + 100;
-      EVT.todo_x58 = rand() % 5 + 2;
-      EVT.todo_x52 = rand() % 100 + 100;
-      EVT.todo_x5a = rand() % 5 + 2;
+      OBJ.todo_x5c = 50;
+      OBJ.todo_x50 = rand() % 100 + 100;
+      OBJ.todo_x58 = rand() % 5 + 2;
+      OBJ.todo_x52 = rand() % 100 + 100;
+      OBJ.todo_x5a = rand() % 5 + 2;
 
       if (rand() % 2 != 0) {
-         EVT.todo_x50 *= -1;
+         OBJ.todo_x50 *= -1;
       }
       if (rand() % 2 != 0) {
-         EVT.todo_x52 *= -1;
+         OBJ.todo_x52 *= -1;
       }
 
-      EVT.todo_x4c = EVT.todo_x50 * EVT.todo_x5c;
-      EVT.todo_x4e = EVT.todo_x52 * EVT.todo_x5c;
-      EVT.todo_x54 = EVT.todo_x58 * EVT.todo_x5c;
-      EVT.todo_x56 = EVT.todo_x5a * EVT.todo_x5c;
+      OBJ.todo_x4c = OBJ.todo_x50 * OBJ.todo_x5c;
+      OBJ.todo_x4e = OBJ.todo_x52 * OBJ.todo_x5c;
+      OBJ.todo_x54 = OBJ.todo_x58 * OBJ.todo_x5c;
+      OBJ.todo_x56 = OBJ.todo_x5a * OBJ.todo_x5c;
 
-      evt->state++;
+      obj->state++;
       break;
 
    case 2:
-      if (--EVT.todo_x5c != -1) {
-         EVT.todo_x4c -= EVT.todo_x50;
-         EVT.todo_x4e -= EVT.todo_x52;
-         EVT.todo_x54 -= EVT.todo_x58;
-         EVT.todo_x56 -= EVT.todo_x5a;
+      if (--OBJ.todo_x5c != -1) {
+         OBJ.todo_x4c -= OBJ.todo_x50;
+         OBJ.todo_x4e -= OBJ.todo_x52;
+         OBJ.todo_x54 -= OBJ.todo_x58;
+         OBJ.todo_x56 -= OBJ.todo_x5a;
       } else {
-         evt->state++;
+         obj->state++;
       }
       break;
    }
 
-   x = (rcos(EVT.todo_x4c & 0xfff) * EVT.todo_x54) >> 12;
-   y = (rcos((EVT.todo_x4c + DEG(90)) & 0xfff) * EVT.todo_x54) >> 12;
+   x = (rcos(OBJ.todo_x4c & 0xfff) * OBJ.todo_x54) >> 12;
+   y = (rcos((OBJ.todo_x4c + DEG(90)) & 0xfff) * OBJ.todo_x54) >> 12;
 
-   x += (rcos(EVT.todo_x4e & 0xfff) * EVT.todo_x56) >> 12;
-   y += (rcos((EVT.todo_x4e + DEG(90)) & 0xfff) * EVT.todo_x56) >> 12;
-   angle = EVT.todo_x4c + DEG(45);
+   x += (rcos(OBJ.todo_x4e & 0xfff) * OBJ.todo_x56) >> 12;
+   y += (rcos((OBJ.todo_x4e + DEG(90)) & 0xfff) * OBJ.todo_x56) >> 12;
+   angle = OBJ.todo_x4c + DEG(45);
 
    if (x > 0) {
       d = x * x;
@@ -1100,17 +1100,17 @@ void Evtf446_BattleVictoryParticle(EvtData *evt) {
    }
 
    d = (SquareRoot0(d) / 4) + 32;
-   x += evt->x1.n;
-   y += evt->y1.n;
-   EVT.coords[1].x = x + ((rcos(angle & 0xfff) * d) >> 12);
-   EVT.coords[0].x = x + ((rcos((angle + DEG(90)) & 0xfff) * d) >> 12);
-   EVT.coords[3].x = x + ((rcos((angle + DEG(270)) & 0xfff) * d) >> 12);
-   EVT.coords[2].x = x + ((rcos((angle + DEG(180)) & 0xfff) * d) >> 12);
-   EVT.coords[1].y = y + ((rcos((angle + DEG(90)) & 0xfff) * d) >> 12);
-   EVT.coords[0].y = y + ((rcos((angle + DEG(180)) & 0xfff) * d) >> 12);
-   EVT.coords[3].y = y + ((rcos(angle & 0xfff) * d) >> 12);
-   EVT.coords[2].y = y + ((rcos((angle + DEG(270)) & 0xfff) * d) >> 12);
+   x += obj->x1.n;
+   y += obj->y1.n;
+   OBJ.coords[1].x = x + ((rcos(angle & 0xfff) * d) >> 12);
+   OBJ.coords[0].x = x + ((rcos((angle + DEG(90)) & 0xfff) * d) >> 12);
+   OBJ.coords[3].x = x + ((rcos((angle + DEG(270)) & 0xfff) * d) >> 12);
+   OBJ.coords[2].x = x + ((rcos((angle + DEG(180)) & 0xfff) * d) >> 12);
+   OBJ.coords[1].y = y + ((rcos((angle + DEG(90)) & 0xfff) * d) >> 12);
+   OBJ.coords[0].y = y + ((rcos((angle + DEG(180)) & 0xfff) * d) >> 12);
+   OBJ.coords[3].y = y + ((rcos(angle & 0xfff) * d) >> 12);
+   OBJ.coords[2].y = y + ((rcos((angle + DEG(270)) & 0xfff) * d) >> 12);
 
-   EVT.otOfs = 55 - EVT.todo_x5c;
-   AddEvtPrim2(gGraphicsPtr->ot, evt);
+   OBJ.otOfs = 55 - OBJ.todo_x5c;
+   AddObjPrim2(gGraphicsPtr->ot, obj);
 }

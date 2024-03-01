@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "state.h"
 #include "graphics.h"
 #include "audio.h"
@@ -7,81 +7,81 @@
 #include "units.h"
 #include "battle.h"
 
-void Evtf581_AudioCommand(EvtData *evt) {
-   switch (evt->state) {
+void Objf581_AudioCommand(Object *obj) {
+   switch (obj->state) {
    case 0:
-      if ((evt->d.evtf581.delay != 0) && (--evt->d.evtf581.delay != 0)) {
+      if ((obj->d.objf581.delay != 0) && (--obj->d.objf581.delay != 0)) {
          return;
       }
-      evt->state++;
+      obj->state++;
    // fallthrough
    case 1:
-      PerformAudioCommand(evt->d.evtf581.cmd);
-      evt->functionIndex = EVTF_NULL;
+      PerformAudioCommand(obj->d.objf581.cmd);
+      obj->functionIndex = OBJF_NULL;
    }
 }
 
-void Evt_ResetByFunction(s16 functionIndex) {
+void Obj_ResetByFunction(s16 functionIndex) {
    s32 i;
-   EvtData *evt = gEvtDataArray;
+   Object *obj = gObjectArray;
 
-   for (i = 0; i < EVT_DATA_CT; i++, evt++) {
-      if (evt->functionIndex == functionIndex) {
-         evt->functionIndex = EVTF_NULL;
+   for (i = 0; i < OBJ_DATA_CT; i++, obj++) {
+      if (obj->functionIndex == functionIndex) {
+         obj->functionIndex = OBJF_NULL;
       }
    }
 }
 
-EvtData *Evt_FindByFunction(s16 functionIndex) {
+Object *Obj_FindByFunction(s16 functionIndex) {
    s32 i;
-   gTempEvt = gEvtDataArray;
+   gTempObj = gObjectArray;
 
-   for (i = 0; i < EVT_DATA_CT; i++, gTempEvt++) {
-      if (gTempEvt->functionIndex == functionIndex) {
-         return gTempEvt;
+   for (i = 0; i < OBJ_DATA_CT; i++, gTempObj++) {
+      if (gTempObj->functionIndex == functionIndex) {
+         return gTempObj;
       }
    }
    // return NULL;
 }
 
-void Evtf407_NoopIncState(EvtData *evt) {
+void Objf407_NoopIncState(Object *obj) {
    // ?
    s32 tmp;
-   if (evt->state == 0) {
-      tmp = (u16)evt->state;
-      evt->state = tmp + 1;
+   if (obj->state == 0) {
+      tmp = (u16)obj->state;
+      obj->state = tmp + 1;
    }
 }
 
-#undef EVTF
-#define EVTF 405
-void Evtf405_Panorama(EvtData *evt) {
-   EvtData *spr;
+#undef OBJF
+#define OBJF 405
+void Objf405_Panorama(Object *obj) {
+   Object *spr;
    s32 i, iy;
    // s32 ix, gfx; //<- to match, these were combined into "i"
    s16 xOfs = 0;
    s16 yOfs = 0;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->state++;
+      obj->state++;
    case 1:
-      evt->x1.n += CV(1.0);
-      xOfs = (EVT.yRot - GetCamRotY()) >> 4;
-      xOfs += evt->x1.s.hi;
-      if (evt->x1.s.hi != 0) {
-         evt->x1.s.hi = 0;
+      obj->x1.n += CV(1.0);
+      xOfs = (OBJ.yRot - GetCamRotY()) >> 4;
+      xOfs += obj->x1.s.hi;
+      if (obj->x1.s.hi != 0) {
+         obj->x1.s.hi = 0;
       }
-      yOfs = (EVT.xRot - GetCamRotX()) >> 5;
-      EVT.yRot = GetCamRotY();
-      EVT.xRot = GetCamRotX();
+      yOfs = (OBJ.xRot - GetCamRotX()) >> 5;
+      OBJ.yRot = GetCamRotY();
+      OBJ.xRot = GetCamRotX();
    }
 
-   EVT.xOffset += xOfs;
-   EVT.yOffset += yOfs;
-   EVT.xOffset &= 0x7f;
-   EVT.yOffset &= 0x7f;
-   spr = Evt_GetUnused();
+   OBJ.xOffset += xOfs;
+   OBJ.yOffset += yOfs;
+   OBJ.xOffset &= 0x7f;
+   OBJ.yOffset &= 0x7f;
+   spr = Obj_GetUnused();
 
    switch (gState.mapNum) {
    case 10:
@@ -151,60 +151,60 @@ void Evtf405_Panorama(EvtData *evt) {
 
    for (i = 0; i < 4; i++) {
       for (iy = 0; iy < 3; iy++) {
-         spr->x1.n = i * 128 - EVT.xOffset;
-         spr->y1.n = iy * 128 + EVT.yOffset - 128;
+         spr->x1.n = i * 128 - OBJ.xOffset;
+         spr->y1.n = iy * 128 + OBJ.yOffset - 128;
          spr->x3.n = spr->x1.n + 128;
          spr->y3.n = spr->y1.n + 128;
-         AddEvtPrim_Panorama(gGraphicsPtr->ot, spr);
+         AddObjPrim_Panorama(gGraphicsPtr->ot, spr);
       }
    }
 }
 
-void Evt_Execute(void) {
-   EvtData *evt;
+void Obj_Execute(void) {
+   Object *obj;
    s32 i;
 
-   evt = gEvtDataArray;
+   obj = gObjectArray;
 
-   for (i = 0; i < EVT_DATA_CT; i++, evt++) {
-      if (evt->functionIndex != EVTF_NULL) {
-         (*gEvtFunctionPointers[evt->functionIndex])(evt);
+   for (i = 0; i < OBJ_DATA_CT; i++, obj++) {
+      if (obj->functionIndex != OBJF_NULL) {
+         (*gObjFunctionPointers[obj->functionIndex])(obj);
       }
    }
 }
 
 void DecodeUnitSprites(void) {
-   EvtData *evt = &gUnitSpritesDecoder;
-   if (evt->functionIndex != EVTF_NULL) {
-      (*gEvtFunctionPointers[EVTF_UNIT_SPRITES_DECODER])(evt);
+   Object *obj = &gUnitSpritesDecoder;
+   if (obj->functionIndex != OBJF_NULL) {
+      (*gObjFunctionPointers[OBJF_UNIT_SPRITES_DECODER])(obj);
    }
 }
 
-void Evtf001_Noop(EvtData *evt) { return; }
+void Objf001_Noop(Object *obj) { return; }
 
-void Evt_ResetFromIdx10(void) {
+void Obj_ResetFromIdx10(void) {
    s32 i;
-   for (i = 10; i < EVT_DATA_CT; i++) {
-      gTempEvt = &gEvtDataArray[i];
-      gTempEvt->functionIndex = EVTF_NULL;
+   for (i = 10; i < OBJ_DATA_CT; i++) {
+      gTempObj = &gObjectArray[i];
+      gTempObj->functionIndex = OBJF_NULL;
    }
 }
 
-void Evt_ResetAll(void) {
+void Obj_ResetAll(void) {
    s32 i;
-   for (i = 0; i < EVT_DATA_CT; i++) {
-      gTempEvt = &gEvtDataArray[i];
-      gTempEvt->functionIndex = EVTF_NULL;
+   for (i = 0; i < OBJ_DATA_CT; i++) {
+      gTempObj = &gObjectArray[i];
+      gTempObj->functionIndex = OBJF_NULL;
    }
 }
 
-EvtData *Evt_GetUnused(void) {
+Object *Obj_GetUnused(void) {
    s32 i;
-   EvtData *p;
+   Object *p;
    // TBD What is the significance of first 20 entries? reserved?
-   p = &gEvtDataArray[20];
-   for (i = 20; i < EVT_DATA_CT; i++, p++) {
-      if (p->functionIndex == EVTF_NULL) {
+   p = &gObjectArray[20];
+   for (i = 20; i < OBJ_DATA_CT; i++, p++) {
+      if (p->functionIndex == OBJF_NULL) {
          ((u32 *)p)[2] = 0;
          ((u32 *)p)[3] = 0;
          ((u32 *)p)[4] = 0;
@@ -233,12 +233,12 @@ EvtData *Evt_GetUnused(void) {
    return NULL;
 }
 
-EvtData *Evt_GetFirstUnused(void) {
+Object *Obj_GetFirstUnused(void) {
    s32 i;
-   EvtData *p;
-   p = &gEvtDataArray[0];
-   for (i = 0; i < EVT_DATA_CT; i++, p++) {
-      if (p->functionIndex == EVTF_NULL) {
+   Object *p;
+   p = &gObjectArray[0];
+   for (i = 0; i < OBJ_DATA_CT; i++, p++) {
+      if (p->functionIndex == OBJF_NULL) {
          ((u32 *)p)[2] = 0;
          ((u32 *)p)[3] = 0;
          ((u32 *)p)[4] = 0;
@@ -267,15 +267,15 @@ EvtData *Evt_GetFirstUnused(void) {
    return NULL;
 }
 
-EvtData *Evt_GetLastUnused(void) { return Evt_GetLastUnusedSkippingTail(0); }
+Object *Obj_GetLastUnused(void) { return Obj_GetLastUnusedSkippingTail(0); }
 
-EvtData *Evt_GetLastUnusedSkippingTail(s32 tailEntriesToSkip) {
+Object *Obj_GetLastUnusedSkippingTail(s32 tailEntriesToSkip) {
    s32 i;
-   EvtData *p;
-   p = gEvtDataArray + EVT_DATA_LAST_IDX - tailEntriesToSkip;
+   Object *p;
+   p = gObjectArray + OBJ_DATA_LAST_IDX - tailEntriesToSkip;
    // Ensures scan doesn't enter first 20 entries (reserved?)
-   for (i = 0; i < (EVT_DATA_CT - 20) - tailEntriesToSkip; i++, p--) {
-      if (p->functionIndex == EVTF_NULL) {
+   for (i = 0; i < (OBJ_DATA_CT - 20) - tailEntriesToSkip; i++, p--) {
+      if (p->functionIndex == OBJF_NULL) {
          ((u32 *)p)[2] = 0;
          ((u32 *)p)[3] = 0;
          ((u32 *)p)[4] = 0;
@@ -304,13 +304,13 @@ EvtData *Evt_GetLastUnusedSkippingTail(s32 tailEntriesToSkip) {
    return NULL;
 }
 
-s32 Evt_CountUnused(void) {
+s32 Obj_CountUnused(void) {
    s32 i, ct;
-   EvtData *p;
+   Object *p;
    ct = 0;
-   p = &gEvtDataArray[20];
-   for (i = 20; i < EVT_DATA_CT; i++, p++) {
-      if (p->functionIndex == EVTF_NULL) {
+   p = &gObjectArray[20];
+   for (i = 20; i < OBJ_DATA_CT; i++, p++) {
+      if (p->functionIndex == OBJF_NULL) {
          ct++;
       }
    }
@@ -326,7 +326,7 @@ extern MATRIX gMatrix_800f2ba4;
 extern MATRIX gMatrix_800f2bc4;
 extern MATRIX gMatrix_800f2be4;
 
-void AddEvtPrim3(u32 *ot, EvtData *evt) {
+void AddObjPrim3(u32 *ot, Object *obj) {
    POLY_FT4 *poly;
    Quad quad;
    s32 p, flag;
@@ -334,33 +334,33 @@ void AddEvtPrim3(u32 *ot, EvtData *evt) {
    s32 otz;
    s32 gfx;
 
-   if (!evt->d.sprite.hidden) {
+   if (!obj->d.sprite.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      evt->vec.vx = evt->x1.n >> 3;
-      evt->vec.vz = evt->z1.n >> 3;
-      evt->vec.vy = -(evt->y1.n >> 3);
+      obj->vec.vx = obj->x1.n >> 3;
+      obj->vec.vz = obj->z1.n >> 3;
+      obj->vec.vy = -(obj->y1.n >> 3);
 
-      otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+      otz = RotTransPers(&obj->vec, &poly->x0, &p, &flag);
       otIdx = OT_SIZE - otz + 6;
       if (otIdx - 1 < OT_SIZE - 1) {
-         quad[0].vx = evt->d.sprite.coords[0].x >> 3;
-         quad[0].vz = evt->d.sprite.coords[0].z >> 3;
-         quad[0].vy = -(evt->d.sprite.coords[0].y >> 3);
-         quad[1].vx = evt->d.sprite.coords[1].x >> 3;
-         quad[1].vz = evt->d.sprite.coords[1].z >> 3;
-         quad[1].vy = -(evt->d.sprite.coords[1].y >> 3);
-         quad[2].vx = evt->d.sprite.coords[2].x >> 3;
-         quad[2].vz = evt->d.sprite.coords[2].z >> 3;
-         quad[2].vy = -(evt->d.sprite.coords[2].y >> 3);
-         quad[3].vx = evt->d.sprite.coords[3].x >> 3;
-         quad[3].vz = evt->d.sprite.coords[3].z >> 3;
-         quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
+         quad[0].vx = obj->d.sprite.coords[0].x >> 3;
+         quad[0].vz = obj->d.sprite.coords[0].z >> 3;
+         quad[0].vy = -(obj->d.sprite.coords[0].y >> 3);
+         quad[1].vx = obj->d.sprite.coords[1].x >> 3;
+         quad[1].vz = obj->d.sprite.coords[1].z >> 3;
+         quad[1].vy = -(obj->d.sprite.coords[1].y >> 3);
+         quad[2].vx = obj->d.sprite.coords[2].x >> 3;
+         quad[2].vz = obj->d.sprite.coords[2].z >> 3;
+         quad[2].vy = -(obj->d.sprite.coords[2].y >> 3);
+         quad[3].vx = obj->d.sprite.coords[3].x >> 3;
+         quad[3].vz = obj->d.sprite.coords[3].z >> 3;
+         quad[3].vy = -(obj->d.sprite.coords[3].y >> 3);
 
-         gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == CLUT_NULL) {
+         gfx = obj->d.sprite.gfxIdx;
+         if (obj->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
-            poly->clut = gClutIds[evt->d.sprite.clut];
+            poly->clut = gClutIds[obj->d.sprite.clut];
          }
 
          setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
@@ -369,8 +369,8 @@ void AddEvtPrim3(u32 *ot, EvtData *evt) {
                        &poly->x3, &p, &flag);
          setRGB0(poly, 0x80, 0x80, 0x80);
 
-         if (evt->d.sprite.semiTrans) {
-            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+         if (obj->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(obj->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
             poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
          } else {
             poly->tpage = gGfxTPageIds[gfx];
@@ -383,7 +383,7 @@ void AddEvtPrim3(u32 *ot, EvtData *evt) {
    }
 }
 
-void AddEvtPrim4(u32 *ot, EvtData *evt) {
+void AddObjPrim4(u32 *ot, Object *obj) {
    POLY_FT4 *poly;
    Quad quad;
    s32 p, flag;
@@ -391,40 +391,40 @@ void AddEvtPrim4(u32 *ot, EvtData *evt) {
    s32 gfx;
    s32 otz;
 
-   if (!evt->d.sprite.hidden) {
+   if (!obj->d.sprite.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
 
-      quad[0].vx = evt->d.sprite.coords[0].x >> 3;
-      quad[0].vz = evt->d.sprite.coords[0].z >> 3;
-      quad[0].vy = -(evt->d.sprite.coords[0].y >> 3);
-      quad[1].vx = evt->d.sprite.coords[1].x >> 3;
-      quad[1].vz = evt->d.sprite.coords[1].z >> 3;
-      quad[1].vy = -(evt->d.sprite.coords[1].y >> 3);
-      quad[2].vx = evt->d.sprite.coords[2].x >> 3;
-      quad[2].vz = evt->d.sprite.coords[2].z >> 3;
-      quad[2].vy = -(evt->d.sprite.coords[2].y >> 3);
-      quad[3].vx = evt->d.sprite.coords[3].x >> 3;
-      quad[3].vz = evt->d.sprite.coords[3].z >> 3;
-      quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
+      quad[0].vx = obj->d.sprite.coords[0].x >> 3;
+      quad[0].vz = obj->d.sprite.coords[0].z >> 3;
+      quad[0].vy = -(obj->d.sprite.coords[0].y >> 3);
+      quad[1].vx = obj->d.sprite.coords[1].x >> 3;
+      quad[1].vz = obj->d.sprite.coords[1].z >> 3;
+      quad[1].vy = -(obj->d.sprite.coords[1].y >> 3);
+      quad[2].vx = obj->d.sprite.coords[2].x >> 3;
+      quad[2].vz = obj->d.sprite.coords[2].z >> 3;
+      quad[2].vy = -(obj->d.sprite.coords[2].y >> 3);
+      quad[3].vx = obj->d.sprite.coords[3].x >> 3;
+      quad[3].vz = obj->d.sprite.coords[3].z >> 3;
+      quad[3].vy = -(obj->d.sprite.coords[3].y >> 3);
 
-      gfx = evt->d.sprite.gfxIdx;
-      if (evt->d.sprite.clut == CLUT_NULL) {
+      gfx = obj->d.sprite.gfxIdx;
+      if (obj->d.sprite.clut == CLUT_NULL) {
          poly->clut = gGfxClutIds[gfx];
       } else {
-         poly->clut = gClutIds[evt->d.sprite.clut];
+         poly->clut = gClutIds[obj->d.sprite.clut];
       }
 
       setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
               gGfxSubTextures[gfx][3]);
       otz = RotAverage4(&quad[0], &quad[1], &quad[2], &quad[3], &poly->x0, &poly->x1, &poly->x2,
                         &poly->x3, &p, &flag);
-      otIdx = OT_SIZE - otz + evt->d.sprite.otOfs;
+      otIdx = OT_SIZE - otz + obj->d.sprite.otOfs;
 
       if (otIdx - 1 < OT_SIZE - 1) {
          setRGB0(poly, 0x80, 0x80, 0x80);
 
-         if (evt->d.sprite.semiTrans) {
-            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+         if (obj->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(obj->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
             poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
          } else {
             poly->tpage = gGfxTPageIds[gfx];
@@ -437,7 +437,7 @@ void AddEvtPrim4(u32 *ot, EvtData *evt) {
    }
 }
 
-void AddEvtPrim5(u32 *ot, EvtData *evt) {
+void AddObjPrim5(u32 *ot, Object *obj) {
    POLY_FT4 *poly;
    Quad quad;
    s32 p, flag;
@@ -445,33 +445,33 @@ void AddEvtPrim5(u32 *ot, EvtData *evt) {
    s32 otz;
    s32 gfx;
 
-   if (!evt->d.sprite.hidden) {
+   if (!obj->d.sprite.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      evt->vec.vx = evt->x1.n >> 3;
-      evt->vec.vz = evt->z1.n >> 3;
-      evt->vec.vy = -(evt->y1.n >> 3);
+      obj->vec.vx = obj->x1.n >> 3;
+      obj->vec.vz = obj->z1.n >> 3;
+      obj->vec.vy = -(obj->y1.n >> 3);
 
-      otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
-      otIdx = OT_SIZE - otz + 6 + evt->d.sprite.otOfs;
+      otz = RotTransPers(&obj->vec, &poly->x0, &p, &flag);
+      otIdx = OT_SIZE - otz + 6 + obj->d.sprite.otOfs;
       if (otIdx - 1 < OT_SIZE - 1) {
-         quad[0].vx = evt->d.sprite.coords[0].x >> 3;
-         quad[0].vz = evt->d.sprite.coords[0].z >> 3;
-         quad[0].vy = -(evt->d.sprite.coords[0].y >> 3);
-         quad[1].vx = evt->d.sprite.coords[1].x >> 3;
-         quad[1].vz = evt->d.sprite.coords[1].z >> 3;
-         quad[1].vy = -(evt->d.sprite.coords[1].y >> 3);
-         quad[2].vx = evt->d.sprite.coords[2].x >> 3;
-         quad[2].vz = evt->d.sprite.coords[2].z >> 3;
-         quad[2].vy = -(evt->d.sprite.coords[2].y >> 3);
-         quad[3].vx = evt->d.sprite.coords[3].x >> 3;
-         quad[3].vz = evt->d.sprite.coords[3].z >> 3;
-         quad[3].vy = -(evt->d.sprite.coords[3].y >> 3);
+         quad[0].vx = obj->d.sprite.coords[0].x >> 3;
+         quad[0].vz = obj->d.sprite.coords[0].z >> 3;
+         quad[0].vy = -(obj->d.sprite.coords[0].y >> 3);
+         quad[1].vx = obj->d.sprite.coords[1].x >> 3;
+         quad[1].vz = obj->d.sprite.coords[1].z >> 3;
+         quad[1].vy = -(obj->d.sprite.coords[1].y >> 3);
+         quad[2].vx = obj->d.sprite.coords[2].x >> 3;
+         quad[2].vz = obj->d.sprite.coords[2].z >> 3;
+         quad[2].vy = -(obj->d.sprite.coords[2].y >> 3);
+         quad[3].vx = obj->d.sprite.coords[3].x >> 3;
+         quad[3].vz = obj->d.sprite.coords[3].z >> 3;
+         quad[3].vy = -(obj->d.sprite.coords[3].y >> 3);
 
-         gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == CLUT_NULL) {
+         gfx = obj->d.sprite.gfxIdx;
+         if (obj->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
-            poly->clut = gClutIds[evt->d.sprite.clut];
+            poly->clut = gClutIds[obj->d.sprite.clut];
          }
 
          setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
@@ -480,8 +480,8 @@ void AddEvtPrim5(u32 *ot, EvtData *evt) {
                        &poly->x3, &p, &flag);
          setRGB0(poly, 0x80, 0x80, 0x80);
 
-         if (evt->d.sprite.semiTrans) {
-            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+         if (obj->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(obj->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
             poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
          } else {
             poly->tpage = gGfxTPageIds[gfx];
@@ -494,7 +494,7 @@ void AddEvtPrim5(u32 *ot, EvtData *evt) {
    }
 }
 
-void AddEvtPrim6(u32 *ot, EvtData *evt, s32 useMapElevation) {
+void AddObjPrim6(u32 *ot, Object *obj, s32 useMapElevation) {
    POLY_FT4 *poly;
    Quad *quadp;
    MATRIX *matrix;
@@ -503,49 +503,49 @@ void AddEvtPrim6(u32 *ot, EvtData *evt, s32 useMapElevation) {
    s32 gfx;
    s32 otz;
 
-   if (!evt->d.sprite.hidden) {
+   if (!obj->d.sprite.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2b24 : &gMatrix_800f2b04;
+      matrix = obj->d.sprite.facingLeft ? &gMatrix_800f2b24 : &gMatrix_800f2b04;
       PushMatrix();
 
-      evt->vec.vx = evt->x1.n >> 3;
-      evt->vec.vz = evt->z1.n >> 3;
+      obj->vec.vx = obj->x1.n >> 3;
+      obj->vec.vz = obj->z1.n >> 3;
 
       if (useMapElevation) {
-         if ((evt->x1.s.hi >= D_80122E28) && (evt->x1.s.hi <= gMapSizeX + D_80122E28 - 1) &&
-             (evt->z1.s.hi >= D_80122E2C) && (evt->z1.s.hi <= gMapSizeZ + D_80122E2C - 1)) {
-            evt->vec.vy = OBJ_TILE_MODEL(evt).vertices[0].vy;
-            evt->y1.n = -(evt->vec.vy << 3);
+         if ((obj->x1.s.hi >= D_80122E28) && (obj->x1.s.hi <= gMapSizeX + D_80122E28 - 1) &&
+             (obj->z1.s.hi >= D_80122E2C) && (obj->z1.s.hi <= gMapSizeZ + D_80122E2C - 1)) {
+            obj->vec.vy = OBJ_TILE_MODEL(obj).vertices[0].vy;
+            obj->y1.n = -(obj->vec.vy << 3);
          }
       } else {
-         evt->vec.vy = -(evt->y1.n >> 3) - evt->d.sprite.animYOfs;
+         obj->vec.vy = -(obj->y1.n >> 3) - obj->d.sprite.animYOfs;
       }
 
-      RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
+      RotTrans(&obj->vec, (VECTOR *)&matrix->t, &flag);
 
-      otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+      otz = RotTransPers(&obj->vec, &poly->x0, &p, &flag);
       otIdx = OT_SIZE - otz + 8;
 
       if (otIdx - 1 < OT_SIZE - 1) {
          SetRotMatrix(matrix);
          SetTransMatrix(matrix);
 
-         gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == CLUT_NULL) {
+         gfx = obj->d.sprite.gfxIdx;
+         if (obj->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
-            poly->clut = gClutIds[evt->d.sprite.clut];
+            poly->clut = gClutIds[obj->d.sprite.clut];
          }
 
          setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
                  gGfxSubTextures[gfx][3]);
-         quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
+         quadp = gSpriteBoxQuads[obj->d.sprite.boxIdx];
          RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
                        &poly->x2, &poly->x3, &p, &flag);
          setRGB0(poly, 0x80, 0x80, 0x80);
 
-         if (evt->d.sprite.semiTrans) {
-            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+         if (obj->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(obj->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
             poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
          } else {
             poly->tpage = gGfxTPageIds[gfx];
@@ -560,7 +560,7 @@ void AddEvtPrim6(u32 *ot, EvtData *evt, s32 useMapElevation) {
    }
 }
 
-void AddEvtPrim7(u32 *ot, EvtData *evt, s32 useMapElevation) {
+void AddObjPrim7(u32 *ot, Object *obj, s32 useMapElevation) {
    POLY_FT4 *poly;
    Quad *quadp;
    MATRIX *matrix;
@@ -569,28 +569,28 @@ void AddEvtPrim7(u32 *ot, EvtData *evt, s32 useMapElevation) {
    s32 gfx;
    s32 otz;
 
-   if (!evt->d.sprite.hidden && !IsSpriteOutsideVisibleRange(evt)) {
+   if (!obj->d.sprite.hidden && !IsSpriteOutsideVisibleRange(obj)) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2b64 : &gMatrix_800f2b44;
+      matrix = obj->d.sprite.facingLeft ? &gMatrix_800f2b64 : &gMatrix_800f2b44;
       PushMatrix();
 
-      evt->vec.vx = evt->x1.n >> 3;
-      evt->vec.vz = evt->z1.n >> 3;
+      obj->vec.vx = obj->x1.n >> 3;
+      obj->vec.vz = obj->z1.n >> 3;
 
       if (useMapElevation) {
-         evt->vec.vy = OBJ_TILE_MODEL(evt).vertices[0].vy;
-         evt->y1.n = -(evt->vec.vy << 3);
+         obj->vec.vy = OBJ_TILE_MODEL(obj).vertices[0].vy;
+         obj->y1.n = -(obj->vec.vy << 3);
       } else {
-         evt->vec.vy = -(evt->y1.n >> 3);
+         obj->vec.vy = -(obj->y1.n >> 3);
       }
 
-      RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
+      RotTrans(&obj->vec, (VECTOR *)&matrix->t, &flag);
 
       if (gCameraRotation.vx > 0x113) {
-         otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+         otz = RotTransPers(&obj->vec, &poly->x0, &p, &flag);
          otIdx = OT_SIZE - otz + 5 + ((gCameraRotation.vx - 0x113) >> 6);
       } else {
-         otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+         otz = RotTransPers(&obj->vec, &poly->x0, &p, &flag);
          otIdx = OT_SIZE - otz + 5;
       }
 
@@ -598,22 +598,22 @@ void AddEvtPrim7(u32 *ot, EvtData *evt, s32 useMapElevation) {
          SetRotMatrix(matrix);
          SetTransMatrix(matrix);
 
-         gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == CLUT_NULL) {
+         gfx = obj->d.sprite.gfxIdx;
+         if (obj->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
-            poly->clut = gClutIds[evt->d.sprite.clut];
+            poly->clut = gClutIds[obj->d.sprite.clut];
          }
 
          setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
                  gGfxSubTextures[gfx][3]);
-         quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
+         quadp = gSpriteBoxQuads[obj->d.sprite.boxIdx];
          RotTransPers4(&(*quadp)[0], &(*quadp)[1], &(*quadp)[2], &(*quadp)[3], &poly->x0, &poly->x1,
                        &poly->x2, &poly->x3, &p, &flag);
          setRGB0(poly, 0x80, 0x80, 0x80);
 
-         if (evt->d.sprite.semiTrans) {
-            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+         if (obj->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(obj->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
             poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
          } else {
             poly->tpage = gGfxTPageIds[gfx];
@@ -628,7 +628,7 @@ void AddEvtPrim7(u32 *ot, EvtData *evt, s32 useMapElevation) {
    }
 }
 
-void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
+void AddObjPrim8(u32 *ot, Object *obj, s32 useMapElevation) {
    POLY_FT4 *poly;
    Quad *quadp;
    MATRIX *matrix;
@@ -638,28 +638,28 @@ void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
    s32 otz;
    s16 y;
 
-   if (!evt->d.sprite.hidden && !IsSpriteOutsideVisibleRange(evt)) {
+   if (!obj->d.sprite.hidden && !IsSpriteOutsideVisibleRange(obj)) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      matrix = evt->d.sprite.facingLeft ? &gMatrix_800f2ba4 : &gMatrix_800f2b84;
+      matrix = obj->d.sprite.facingLeft ? &gMatrix_800f2ba4 : &gMatrix_800f2b84;
       PushMatrix();
 
-      evt->vec.vx = evt->x1.n >> 3;
-      evt->vec.vz = evt->z1.n >> 3;
+      obj->vec.vx = obj->x1.n >> 3;
+      obj->vec.vz = obj->z1.n >> 3;
 
       if (useMapElevation) {
-         evt->vec.vy = OBJ_TILE_MODEL(evt).vertices[0].vy;
-         evt->y1.n = -(evt->vec.vy << 3);
+         obj->vec.vy = OBJ_TILE_MODEL(obj).vertices[0].vy;
+         obj->y1.n = -(obj->vec.vy << 3);
       } else {
-         evt->vec.vy = -(evt->y1.n >> 3);
+         obj->vec.vy = -(obj->y1.n >> 3);
       }
 
-      RotTrans(&evt->vec, (VECTOR *)&matrix->t, &flag);
+      RotTrans(&obj->vec, (VECTOR *)&matrix->t, &flag);
 
       if (gCameraRotation.vx > 0x113) {
-         otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+         otz = RotTransPers(&obj->vec, &poly->x0, &p, &flag);
          otIdx = OT_SIZE - otz + 5 + ((gCameraRotation.vx - 0x113) >> 6);
       } else {
-         otz = RotTransPers(&evt->vec, &poly->x0, &p, &flag);
+         otz = RotTransPers(&obj->vec, &poly->x0, &p, &flag);
          otIdx = OT_SIZE - otz + 5;
       }
 
@@ -667,16 +667,16 @@ void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
          SetRotMatrix(matrix);
          SetTransMatrix(matrix);
 
-         gfx = evt->d.sprite.gfxIdx;
-         if (evt->d.sprite.clut == CLUT_NULL) {
+         gfx = obj->d.sprite.gfxIdx;
+         if (obj->d.sprite.clut == CLUT_NULL) {
             poly->clut = gGfxClutIds[gfx];
          } else {
-            poly->clut = gClutIds[evt->d.sprite.clut];
+            poly->clut = gClutIds[obj->d.sprite.clut];
          }
 
          setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
                  gGfxSubTextures[gfx][3]);
-         quadp = gSpriteBoxQuads[evt->d.sprite.boxIdx];
+         quadp = gSpriteBoxQuads[obj->d.sprite.boxIdx];
 
          y = -(*quadp)[0].vy;
          (*quadp)[0].vy = -((rcos(gCameraRotation.vx & 0xfff) * (y >> 1) >> 12) + (y >> 1));
@@ -689,8 +689,8 @@ void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
 
          setRGB0(poly, gLightColor.r, gLightColor.g, gLightColor.b);
 
-         if (evt->d.sprite.semiTrans) {
-            poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+         if (obj->d.sprite.semiTrans) {
+            poly->tpage = gTPageIds[(obj->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
             poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
          } else {
             poly->tpage = gGfxTPageIds[gfx];
@@ -705,7 +705,7 @@ void AddEvtPrim8(u32 *ot, EvtData *evt, s32 useMapElevation) {
    }
 }
 
-void RenderUnitSprite(u32 *ot, EvtData *sprite, s32 useMapElevation) {
+void RenderUnitSprite(u32 *ot, Object *sprite, s32 useMapElevation) {
    Quad *quadp;
    SVECTOR screenXY;
    POLY_FT4 *poly;
@@ -997,43 +997,43 @@ void RenderUnitSprite(u32 *ot, EvtData *sprite, s32 useMapElevation) {
    PopMatrix();
 }
 
-void AddEvtPrim_Gui(u32 *ot, EvtData *evt) {
+void AddObjPrim_Gui(u32 *ot, Object *obj) {
    POLY_FT4 *poly;
    u32 otIdx;
    s32 gfx;
 
-   if (!evt->d.sprite.hidden) {
+   if (!obj->d.sprite.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      gfx = evt->d.sprite.gfxIdx;
+      gfx = obj->d.sprite.gfxIdx;
 
-      if (evt->d.sprite.clut == CLUT_NULL) {
+      if (obj->d.sprite.clut == CLUT_NULL) {
          poly->clut = gGfxClutIds[gfx];
       } else {
-         poly->clut = gClutIds[evt->d.sprite.clut];
+         poly->clut = gClutIds[obj->d.sprite.clut];
       }
 
       setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
               gGfxSubTextures[gfx][3]);
 
-      poly->x0 = evt->x1.n;
-      poly->x1 = evt->x3.n;
-      poly->x2 = evt->x1.n;
-      poly->x3 = evt->x3.n;
-      poly->y0 = evt->y1.n;
-      poly->y1 = evt->y1.n;
-      poly->y2 = evt->y3.n;
-      poly->y3 = evt->y3.n;
+      poly->x0 = obj->x1.n;
+      poly->x1 = obj->x3.n;
+      poly->x2 = obj->x1.n;
+      poly->x3 = obj->x3.n;
+      poly->y0 = obj->y1.n;
+      poly->y1 = obj->y1.n;
+      poly->y2 = obj->y3.n;
+      poly->y3 = obj->y3.n;
 
-      if (evt->d.sprite.otOfs != 0) {
-         otIdx = OT_SIZE - 1 - evt->d.sprite.otOfs;
+      if (obj->d.sprite.otOfs != 0) {
+         otIdx = OT_SIZE - 1 - obj->d.sprite.otOfs;
       } else {
          otIdx = OT_SIZE - 1;
       }
 
       setRGB0(poly, 0x80, 0x80, 0x80);
 
-      if (evt->d.sprite.semiTrans) {
-         poly->tpage = gTPageIds[(evt->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+      if (obj->d.sprite.semiTrans) {
+         poly->tpage = gTPageIds[(obj->d.sprite.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
          poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
       } else {
          poly->tpage = gGfxTPageIds[gfx];
@@ -1045,43 +1045,43 @@ void AddEvtPrim_Gui(u32 *ot, EvtData *evt) {
    }
 }
 
-void AddEvtPrim2(u32 *ot, EvtData *evt) {
+void AddObjPrim2(u32 *ot, Object *obj) {
    POLY_FT4 *poly;
    u32 otIdx;
    s32 gfx;
 
-   if (!evt->d.sprite2.hidden) {
+   if (!obj->d.sprite2.hidden) {
       poly = &gGraphicsPtr->quads[gQuadIndex];
-      gfx = evt->d.sprite2.gfxIdx;
+      gfx = obj->d.sprite2.gfxIdx;
 
-      if (evt->d.sprite2.clut == CLUT_NULL) {
+      if (obj->d.sprite2.clut == CLUT_NULL) {
          poly->clut = gGfxClutIds[gfx];
       } else {
-         poly->clut = gClutIds[evt->d.sprite2.clut];
+         poly->clut = gClutIds[obj->d.sprite2.clut];
       }
 
       setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
               gGfxSubTextures[gfx][3]);
 
-      poly->x0 = evt->d.sprite2.coords[0].x;
-      poly->x1 = evt->d.sprite2.coords[1].x;
-      poly->x2 = evt->d.sprite2.coords[2].x;
-      poly->x3 = evt->d.sprite2.coords[3].x;
-      poly->y0 = evt->d.sprite2.coords[0].y;
-      poly->y1 = evt->d.sprite2.coords[1].y;
-      poly->y2 = evt->d.sprite2.coords[2].y;
-      poly->y3 = evt->d.sprite2.coords[3].y;
+      poly->x0 = obj->d.sprite2.coords[0].x;
+      poly->x1 = obj->d.sprite2.coords[1].x;
+      poly->x2 = obj->d.sprite2.coords[2].x;
+      poly->x3 = obj->d.sprite2.coords[3].x;
+      poly->y0 = obj->d.sprite2.coords[0].y;
+      poly->y1 = obj->d.sprite2.coords[1].y;
+      poly->y2 = obj->d.sprite2.coords[2].y;
+      poly->y3 = obj->d.sprite2.coords[3].y;
 
-      if (evt->d.sprite2.otOfs != 0) {
-         otIdx = OT_SIZE - 1 - evt->d.sprite2.otOfs;
+      if (obj->d.sprite2.otOfs != 0) {
+         otIdx = OT_SIZE - 1 - obj->d.sprite2.otOfs;
       } else {
          otIdx = OT_SIZE - 1;
       }
 
       setRGB0(poly, 0x80, 0x80, 0x80);
 
-      if (evt->d.sprite2.semiTrans) {
-         poly->tpage = gTPageIds[(evt->d.sprite2.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
+      if (obj->d.sprite2.semiTrans) {
+         poly->tpage = gTPageIds[(obj->d.sprite2.semiTrans - 1) * 32 + gGfxTPageCells[gfx]];
          poly->code = GPU_CODE_POLY_FT4 | GPU_CODE_SEMI_TRANS;
       } else {
          poly->tpage = gGfxTPageIds[gfx];
@@ -1093,30 +1093,30 @@ void AddEvtPrim2(u32 *ot, EvtData *evt) {
    }
 }
 
-void AddEvtPrim_Panorama(u32 *ot, EvtData *evt) {
+void AddObjPrim_Panorama(u32 *ot, Object *obj) {
    POLY_FT4 *poly;
    s32 gfx;
 
    poly = &gGraphicsPtr->quads[gQuadIndex];
-   gfx = evt->d.sprite.gfxIdx;
+   gfx = obj->d.sprite.gfxIdx;
 
-   if (evt->d.sprite.clut == CLUT_NULL) {
+   if (obj->d.sprite.clut == CLUT_NULL) {
       poly->clut = gGfxClutIds[gfx];
    } else {
-      poly->clut = gClutIds[evt->d.sprite.clut];
+      poly->clut = gClutIds[obj->d.sprite.clut];
    }
 
    setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
            gGfxSubTextures[gfx][3]);
 
-   poly->x0 = evt->x1.n;
-   poly->x1 = evt->x3.n;
-   poly->x2 = evt->x1.n;
-   poly->x3 = evt->x3.n;
-   poly->y0 = evt->y1.n;
-   poly->y1 = evt->y1.n;
-   poly->y2 = evt->y3.n;
-   poly->y3 = evt->y3.n;
+   poly->x0 = obj->x1.n;
+   poly->x1 = obj->x3.n;
+   poly->x2 = obj->x1.n;
+   poly->x3 = obj->x3.n;
+   poly->y0 = obj->y1.n;
+   poly->y1 = obj->y1.n;
+   poly->y2 = obj->y3.n;
+   poly->y3 = obj->y3.n;
 
    setRGB0(poly, 0x80, 0x80, 0x80);
    poly->tpage = gGfxTPageIds[gfx];
@@ -1126,12 +1126,12 @@ void AddEvtPrim_Panorama(u32 *ot, EvtData *evt) {
    gQuadIndex++;
 }
 
-void RenderOverheadMapUnitMarker(u32 *ot_unused, EvtData *unitSprite, s32 showElevation, u8 team) {
-   EvtData *marker;
+void RenderOverheadMapUnitMarker(u32 *ot_unused, Object *unitSprite, s32 showElevation, u8 team) {
+   Object *marker;
    s32 osc;
    s16 n, w, s, e;
 
-   marker = Evt_GetUnused();
+   marker = Obj_GetUnused();
    if (showElevation) {
       unitSprite->y1.n = OBJ_TERRAIN(unitSprite).s.elevation * CV(0.5) + CV(1.0);
    }
@@ -1165,14 +1165,14 @@ void RenderOverheadMapUnitMarker(u32 *ot_unused, EvtData *unitSprite, s32 showEl
    marker->d.sprite.coords[2].z = s;
    marker->d.sprite.coords[3].z = s;
 
-   AddEvtPrim3(gGraphicsPtr->ot, marker);
+   AddObjPrim3(gGraphicsPtr->ot, marker);
 }
 
 void Noop_8003bb24() {}
 
-void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8 poisoned,
+void RenderUnitHelpers(u32 *ot_unused, Object *unitSprite, u8 team, u8 done, u8 poisoned,
                        u8 paralyzed, u8 hideMarker) {
-   EvtData *marker;
+   Object *marker;
    s16 spin;
    s16 slot = 0;
 
@@ -1186,7 +1186,7 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
          RenderStatusEffectText(gGraphicsPtr->ot, unitSprite, 1, slot++);
       }
       if (!hideMarker && !gIsEnemyTurn && !gPlayerControlSuppressed) {
-         marker = Evt_GetUnused();
+         marker = Obj_GetUnused();
          marker->y1.n = OBJ_TERRAIN(unitSprite).s.elevation * CV(0.5);
          marker->d.sprite.gfxIdx = (team == TEAM_PLAYER) ? GFX_PLAYER_CIRCLE : GFX_ENEMY_CIRCLE;
          marker->x1.n = unitSprite->x1.n;
@@ -1223,13 +1223,13 @@ void RenderUnitHelpers(u32 *ot_unused, EvtData *unitSprite, u8 team, u8 done, u8
              unitSprite->z1.n + (rcos((spin + DEG(270)) & 0xfff) * 0xaa >> 12);
 
          marker->d.sprite.otOfs = -2;
-         AddEvtPrim5(gGraphicsPtr->ot, marker);
+         AddObjPrim5(gGraphicsPtr->ot, marker);
       }
    }
 }
 
-void RenderStatusEffectText(u32 *ot_unused, EvtData *unitSprite, u8 paralyzed, u8 slot) {
-   EvtData *text;
+void RenderStatusEffectText(u32 *ot_unused, Object *unitSprite, u8 paralyzed, u8 slot) {
+   Object *text;
    s16 osc;
    s16 oneThird, twoThirds, oneAndOneThird;
 
@@ -1250,7 +1250,7 @@ void RenderStatusEffectText(u32 *ot_unused, EvtData *unitSprite, u8 paralyzed, u
    gQuad_800fe63c[3].vx = oneAndOneThird;
    gQuad_800fe63c[3].vy = twoThirds;
 
-   text = Evt_GetUnused();
+   text = Obj_GetUnused();
    text->d.sprite.boxIdx = 7;
 
    if (paralyzed) {
@@ -1263,15 +1263,15 @@ void RenderStatusEffectText(u32 *ot_unused, EvtData *unitSprite, u8 paralyzed, u
    text->x1.n = unitSprite->x1.n;
    text->z1.n = unitSprite->z1.n;
 
-   AddEvtPrim6(gGraphicsPtr->ot, text, 0);
+   AddObjPrim6(gGraphicsPtr->ot, text, 0);
 }
 
-void SetElevationFromTerrain(EvtData *evt) {
-   if (evt->x1.s.hi < gMapMinX || evt->x1.s.hi > gMapMaxX || evt->z1.s.hi < gMapMinZ ||
-       evt->z1.s.hi > gMapMaxZ) {
-      evt->y1.n = 0;
+void SetElevationFromTerrain(Object *obj) {
+   if (obj->x1.s.hi < gMapMinX || obj->x1.s.hi > gMapMaxX || obj->z1.s.hi < gMapMinZ ||
+       obj->z1.s.hi > gMapMaxZ) {
+      obj->y1.n = 0;
    } else {
-      evt->y1.n = OBJ_TERRAIN(evt).s.elevation * CV(0.5);
+      obj->y1.n = OBJ_TERRAIN(obj).s.elevation * CV(0.5);
    }
 }
 
@@ -1291,199 +1291,199 @@ s32 GetMapModelElevation(s8 z, s8 x) {
    }
 }
 
-void UpdateEvtAnimation(EvtData *evt) {
+void UpdateObjAnimation(Object *obj) {
    s16 *animData;
 
    /* AnimData shorts:
     boxIdx,
     (gfxIdx, delay), (gfxIdx, delay), ... */
 
-   animData = (s16 *)evt->d.sprite.animData;
+   animData = (s16 *)obj->d.sprite.animData;
 
-   if (!evt->d.sprite.animInitialized) {
-      evt->state3 = 1;
+   if (!obj->d.sprite.animInitialized) {
+      obj->state3 = 1;
    }
 
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
       break;
    case 1:
-      evt->d.sprite.animDataIdx = 1;
-      evt->d.sprite.animFinished = 0;
-      evt->d.sprite.animInitialized = 1;
-      evt->d.sprite.boxIdx = animData[0];
-      evt->d.sprite.currentFrameDelay = animData[2];
-      evt->state3++;
+      obj->d.sprite.animDataIdx = 1;
+      obj->d.sprite.animFinished = 0;
+      obj->d.sprite.animInitialized = 1;
+      obj->d.sprite.boxIdx = animData[0];
+      obj->d.sprite.currentFrameDelay = animData[2];
+      obj->state3++;
       break;
    case 2:
-      if (--evt->d.sprite.currentFrameDelay == 0) {
-         evt->d.sprite.animDataIdx += 2;
-         if (animData[evt->d.sprite.animDataIdx] == 0) {
-            if (animData[evt->d.sprite.animDataIdx + 1] != 0) {
+      if (--obj->d.sprite.currentFrameDelay == 0) {
+         obj->d.sprite.animDataIdx += 2;
+         if (animData[obj->d.sprite.animDataIdx] == 0) {
+            if (animData[obj->d.sprite.animDataIdx + 1] != 0) {
                // gfxIdx is zero, but frameDelay is non-zero; reset loop
-               evt->d.sprite.animDataIdx = 1;
-               evt->d.sprite.currentFrameDelay = animData[2];
+               obj->d.sprite.animDataIdx = 1;
+               obj->d.sprite.currentFrameDelay = animData[2];
             } else {
                // gfxIdx and frameDelay are both zero; rewind to final frame
-               evt->d.sprite.animFinished++;
-               evt->d.sprite.animDataIdx -= 2;
-               evt->state3++;
+               obj->d.sprite.animFinished++;
+               obj->d.sprite.animDataIdx -= 2;
+               obj->state3++;
             }
          } else {
             // gfxIdx is non-zero; assign associated delay, then break to set frame
-            evt->d.sprite.currentFrameDelay = animData[evt->d.sprite.animDataIdx + 1];
+            obj->d.sprite.currentFrameDelay = animData[obj->d.sprite.animDataIdx + 1];
          }
       }
       break;
    }
 
-   evt->d.sprite.gfxIdx = animData[evt->d.sprite.animDataIdx];
+   obj->d.sprite.gfxIdx = animData[obj->d.sprite.animDataIdx];
 }
 
-void UpdateMultisizeEvtAnimation(EvtData *evt) {
+void UpdateMultisizeObjAnimation(Object *obj) {
    s16 *animData;
 
    /* Multisize AnimData shorts:
     (gfxIdx, delay, boxIdx), ... */
 
-   animData = (s16 *)evt->d.sprite.animData;
+   animData = (s16 *)obj->d.sprite.animData;
 
-   if (!evt->d.sprite.animInitialized) {
-      evt->state3 = 1;
+   if (!obj->d.sprite.animInitialized) {
+      obj->state3 = 1;
    }
 
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
       break;
    case 1:
-      evt->d.sprite.animDataIdx = 0;
-      evt->d.sprite.animFinished = 0;
-      evt->d.sprite.animInitialized = 1;
-      evt->d.sprite.currentFrameDelay = animData[1];
-      evt->d.sprite.boxIdx = animData[2];
-      evt->state3++;
+      obj->d.sprite.animDataIdx = 0;
+      obj->d.sprite.animFinished = 0;
+      obj->d.sprite.animInitialized = 1;
+      obj->d.sprite.currentFrameDelay = animData[1];
+      obj->d.sprite.boxIdx = animData[2];
+      obj->state3++;
       break;
    case 2:
-      if (--evt->d.sprite.currentFrameDelay == 0) {
-         evt->d.sprite.animDataIdx += 3;
-         if (animData[evt->d.sprite.animDataIdx] == 0) {
-            if (animData[evt->d.sprite.animDataIdx + 1] != 0) {
+      if (--obj->d.sprite.currentFrameDelay == 0) {
+         obj->d.sprite.animDataIdx += 3;
+         if (animData[obj->d.sprite.animDataIdx] == 0) {
+            if (animData[obj->d.sprite.animDataIdx + 1] != 0) {
                // gfxIdx is zero, but frameDelay is non-zero; reset loop
-               evt->d.sprite.animDataIdx = 0;
-               evt->d.sprite.currentFrameDelay = animData[1];
-               evt->d.sprite.boxIdx = animData[2];
+               obj->d.sprite.animDataIdx = 0;
+               obj->d.sprite.currentFrameDelay = animData[1];
+               obj->d.sprite.boxIdx = animData[2];
             } else {
                // gfxIdx and frameDelay are both zero; rewind to final frame
-               evt->d.sprite.animFinished++;
-               evt->d.sprite.animDataIdx -= 3;
-               evt->state3++;
+               obj->d.sprite.animFinished++;
+               obj->d.sprite.animDataIdx -= 3;
+               obj->state3++;
             }
          } else {
             // gfxIdx is non-zero; assign associated delay/box, then break to set frame
-            evt->d.sprite.currentFrameDelay = animData[evt->d.sprite.animDataIdx + 1];
-            evt->d.sprite.boxIdx = animData[evt->d.sprite.animDataIdx + 2];
+            obj->d.sprite.currentFrameDelay = animData[obj->d.sprite.animDataIdx + 1];
+            obj->d.sprite.boxIdx = animData[obj->d.sprite.animDataIdx + 2];
          }
       }
       break;
    }
 
-   evt->d.sprite.gfxIdx = animData[evt->d.sprite.animDataIdx];
+   obj->d.sprite.gfxIdx = animData[obj->d.sprite.animDataIdx];
 }
 
-void UpdateUnitSpriteAnimation(EvtData *evt) {
+void UpdateUnitSpriteAnimation(Object *obj) {
    // Unit anim data consists of bytes instead of shorts
-   s8 *animData = (s8 *)evt->d.sprite.animData;
+   s8 *animData = (s8 *)obj->d.sprite.animData;
 
-   if (!evt->d.sprite.animInitialized) {
-      evt->state3 = 1;
+   if (!obj->d.sprite.animInitialized) {
+      obj->state3 = 1;
    }
 
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
       break;
 
    case 1:
-      evt->d.sprite.animFinished = 0;
-      evt->d.sprite.animInitialized = 1;
+      obj->d.sprite.animFinished = 0;
+      obj->d.sprite.animInitialized = 1;
 
       if (animData[0] >= 0x3b) {
-         evt->d.sprite.animRelativeOfs = animData[1];
-         evt->d.sprite.animYOfs = animData[2];
-         evt->d.sprite.animDataIdx = 3;
-         evt->d.sprite.currentFrameDelay = animData[4];
+         obj->d.sprite.animRelativeOfs = animData[1];
+         obj->d.sprite.animYOfs = animData[2];
+         obj->d.sprite.animDataIdx = 3;
+         obj->d.sprite.currentFrameDelay = animData[4];
          if (animData[0] == 0x3c) {
-            evt->d.sprite.animSingleAxis = 1;
+            obj->d.sprite.animSingleAxis = 1;
          } else {
-            evt->d.sprite.animSingleAxis = 0;
+            obj->d.sprite.animSingleAxis = 0;
          }
       } else {
-         evt->d.sprite.animDataIdx = 0;
-         evt->d.sprite.currentFrameDelay = animData[1];
+         obj->d.sprite.animDataIdx = 0;
+         obj->d.sprite.currentFrameDelay = animData[1];
          //? can sep? union?
-         *(u32 *)&evt->d.sprite.animRelativeOfs = 0;
-         // evt->d.sprite.animYOfs = 0;
-         evt->d.sprite.animSingleAxis = 0;
+         *(u32 *)&obj->d.sprite.animRelativeOfs = 0;
+         // obj->d.sprite.animYOfs = 0;
+         obj->d.sprite.animSingleAxis = 0;
       }
 
-      evt->state3++;
+      obj->state3++;
 
-      if (evt->d.sprite.currentFrameDelay == 1 && animData[evt->d.sprite.animDataIdx + 2] == 0 &&
-          animData[evt->d.sprite.animDataIdx + 3] == 0) {
-         evt->d.sprite.animFinished++;
-         evt->state3 = 3;
+      if (obj->d.sprite.currentFrameDelay == 1 && animData[obj->d.sprite.animDataIdx + 2] == 0 &&
+          animData[obj->d.sprite.animDataIdx + 3] == 0) {
+         obj->d.sprite.animFinished++;
+         obj->state3 = 3;
       }
 
       break;
 
    case 2:
-      if (--evt->d.sprite.currentFrameDelay == 0) {
-         evt->d.sprite.animDataIdx += 2;
+      if (--obj->d.sprite.currentFrameDelay == 0) {
+         obj->d.sprite.animDataIdx += 2;
 
-         if (animData[evt->d.sprite.animDataIdx] >= 0x3b) {
-            evt->d.sprite.animRelativeOfs = animData[evt->d.sprite.animDataIdx + 1];
-            evt->d.sprite.animYOfs = animData[evt->d.sprite.animDataIdx + 2];
-            if (animData[evt->d.sprite.animDataIdx] == 0x3c) {
-               evt->d.sprite.animSingleAxis = 1;
+         if (animData[obj->d.sprite.animDataIdx] >= 0x3b) {
+            obj->d.sprite.animRelativeOfs = animData[obj->d.sprite.animDataIdx + 1];
+            obj->d.sprite.animYOfs = animData[obj->d.sprite.animDataIdx + 2];
+            if (animData[obj->d.sprite.animDataIdx] == 0x3c) {
+               obj->d.sprite.animSingleAxis = 1;
             } else {
-               evt->d.sprite.animSingleAxis = 0;
+               obj->d.sprite.animSingleAxis = 0;
             }
-            evt->d.sprite.animDataIdx += 3;
+            obj->d.sprite.animDataIdx += 3;
          }
 
-         if (animData[evt->d.sprite.animDataIdx] == 0) {
-            if (animData[evt->d.sprite.animDataIdx + 1] != 0) {
+         if (animData[obj->d.sprite.animDataIdx] == 0) {
+            if (animData[obj->d.sprite.animDataIdx + 1] != 0) {
                if (animData[0] >= 0x3b) {
-                  evt->d.sprite.animRelativeOfs = animData[1];
-                  evt->d.sprite.animYOfs = animData[2];
+                  obj->d.sprite.animRelativeOfs = animData[1];
+                  obj->d.sprite.animYOfs = animData[2];
                   if (animData[0] == 0x3c) {
-                     evt->d.sprite.animSingleAxis = 1;
+                     obj->d.sprite.animSingleAxis = 1;
                   } else {
-                     evt->d.sprite.animSingleAxis = 0;
+                     obj->d.sprite.animSingleAxis = 0;
                   }
-                  evt->d.sprite.animDataIdx = 3;
-                  evt->d.sprite.currentFrameDelay = animData[4];
+                  obj->d.sprite.animDataIdx = 3;
+                  obj->d.sprite.currentFrameDelay = animData[4];
                } else {
-                  evt->d.sprite.animDataIdx = 0;
-                  evt->d.sprite.currentFrameDelay = animData[1];
+                  obj->d.sprite.animDataIdx = 0;
+                  obj->d.sprite.currentFrameDelay = animData[1];
                   //? can sep?
-                  *(u32 *)&evt->d.sprite.animRelativeOfs = 0;
-                  // evt->d.sprite.animYOfs = 0;
-                  evt->d.sprite.animSingleAxis = 0;
+                  *(u32 *)&obj->d.sprite.animRelativeOfs = 0;
+                  // obj->d.sprite.animYOfs = 0;
+                  obj->d.sprite.animSingleAxis = 0;
                }
             }
          } else {
-            evt->d.sprite.currentFrameDelay = animData[evt->d.sprite.animDataIdx + 1];
+            obj->d.sprite.currentFrameDelay = animData[obj->d.sprite.animDataIdx + 1];
          }
       }
 
-      if (evt->d.sprite.currentFrameDelay == 1 && animData[evt->d.sprite.animDataIdx + 2] == 0 &&
-          animData[evt->d.sprite.animDataIdx + 3] == 0) {
-         evt->d.sprite.animFinished++;
-         evt->state3++;
+      if (obj->d.sprite.currentFrameDelay == 1 && animData[obj->d.sprite.animDataIdx + 2] == 0 &&
+          animData[obj->d.sprite.animDataIdx + 3] == 0) {
+         obj->d.sprite.animFinished++;
+         obj->state3++;
       }
 
       break;
    }
 
-   evt->d.sprite.gfxIdx = animData[evt->d.sprite.animDataIdx];
+   obj->d.sprite.gfxIdx = animData[obj->d.sprite.animDataIdx];
 }

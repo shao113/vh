@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "battle.h"
 #include "units.h"
 #include "state.h"
@@ -286,15 +286,15 @@ s16 s_introYRotSpeed_801231dc;
 s16 s_introXRotSpeed_801231e0;
 s16 s_introDstCamRotY_801231e4;
 
-#undef EVTF
-#define EVTF 597
-void Evtf597_BattleIntro(EvtData *evt) {
+#undef OBJF
+#define OBJF 597
+void Objf597_BattleIntro(Object *obj) {
    s16 diff;
 
    gCameraRotation.vy -= s_introYRotSpeed_801231dc;
    gCameraRotation.vx -= s_introXRotSpeed_801231e0;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       gSignal1 = 1;
       s_introDstCamRotY_801231e4 = (gMapCursorStartingPos[gState.mapNum].y * DEG(90)) + DEG(45);
@@ -303,11 +303,11 @@ void Evtf597_BattleIntro(EvtData *evt) {
       gCameraZoom.vz = 800;
       gCameraRotation.vx = DEG(90);
       gPlayerControlSuppressed = 1;
-      EVT.timer = 30;
-      evt->state++;
+      OBJ.timer = 30;
+      obj->state++;
    // fallthrough
    case 1:
-      if (--EVT.timer == 0) {
+      if (--OBJ.timer == 0) {
          // Display battle conditions
          DrawWindow(0x42, 0, 0, 320, 72, 330, 80, WBS_DRAGON, 0);
          DrawText(20, 20, 40, 2, 0, gState.currentTextPointers[0]);
@@ -315,44 +315,44 @@ void Evtf597_BattleIntro(EvtData *evt) {
          DisplayBasicWindow(0x43);
          SlideWindowTo(0x42, 1, 80);
          SlideWindowTo(0x43, 249, 80);
-         EVT.timer = 80;
-         evt->state++;
+         OBJ.timer = 80;
+         obj->state++;
       }
       break;
    case 2:
-      if (--EVT.timer == 0 || PressedCircleOrX()) {
+      if (--OBJ.timer == 0 || PressedCircleOrX()) {
          SlideWindowTo(0x42, -350, 80);
          SlideWindowTo(0x43, -102, 80);
-         EVT.timer = 10;
-         evt->state++;
+         OBJ.timer = 10;
+         obj->state++;
       }
       break;
    case 3:
-      if (--EVT.timer == 0) {
+      if (--OBJ.timer == 0) {
          CloseWindow(0x42);
          CloseWindow(0x43);
-         EVT.timer = 10;
-         evt->state++;
+         OBJ.timer = 10;
+         obj->state++;
       }
       break;
    case 4:
-      if (--EVT.timer == 0) {
+      if (--OBJ.timer == 0) {
          DrawWindow(0x42, 0, 0, 144, 64, 84, 90, WBS_DRAGON, 0);
          DrawText(20, 24, 20, 0, 0, "Begin Battle");
          DisplayCustomWindow(0x42, 2, 1, 0, 0, 0);
-         EVT.timer = 30;
-         evt->state++;
+         OBJ.timer = 30;
+         obj->state++;
       }
       break;
    case 5:
-      if (--EVT.timer == 0 || PressedCircleOrX()) {
+      if (--OBJ.timer == 0 || PressedCircleOrX()) {
          CloseWindow(0x42);
-         EVT.timer = 20;
-         evt->state++;
+         OBJ.timer = 20;
+         obj->state++;
       }
       break;
    case 6:
-      if (--EVT.timer == 0) {
+      if (--OBJ.timer == 0) {
          s_introYRotSpeed_801231dc = 0;
          s_introXRotSpeed_801231e0 = 0;
          gPlayerControlSuppressed = 0;
@@ -368,12 +368,12 @@ void Evtf597_BattleIntro(EvtData *evt) {
             s_introDstCamRotY_801231e4 += DEG(360);
          }
 
-         EVT.timer = 20;
-         evt->state++;
+         OBJ.timer = 20;
+         obj->state++;
       }
       break;
    case 7:
-      if (--EVT.timer != 0) {
+      if (--OBJ.timer != 0) {
          gCameraRotation.vy += (s_introDstCamRotY_801231e4 - gCameraRotation.vy) >> 2;
          gCameraRotation.vx += (DEG(33.75) - gCameraRotation.vx) >> 2;
          gCameraZoom.vz += (640 - gCameraZoom.vz) >> 2;
@@ -382,231 +382,231 @@ void Evtf597_BattleIntro(EvtData *evt) {
          gCameraRotation.vx = DEG(33.75);
          gCameraZoom.vz = 640;
          gClearSavedPadState = 0;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
          gSignal1 = 0;
       }
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 587
-void Evtf587_BattleEnemyEvent(EvtData *evt) {
+#undef OBJF
+#define OBJF 587
+void Objf587_BattleEnemyEvent(Object *obj) {
    s32 i;
-   EvtData *sprite, *fx;
+   Object *sprite, *fx;
    EnemyEventSpawn *pSpawn;
 
    if (gState.battleEval != BATTLE_EVAL_NONE) {
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
    }
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       gPlayerControlSuppressed = 1;
       if (gState.mapNum == 40) {
          if (gState.mapState.s.field_0x0 == 1) {
-            evt->state = 16;
+            obj->state = 16;
             return;
          }
          if (gState.turn == 1 && FindUnitByNameIdx(UNIT_KANE)) {
-            evt->state = 10;
+            obj->state = 10;
             return;
          }
       }
       if (gState.mapNum == 26) {
          if (gState.mapState.s.field_0x13 == 1 && FindUnitByNameIdx(UNIT_LANDO)) {
             gState.mapState.s.field_0x13 = 2;
-            evt->state = 11;
+            obj->state = 11;
             return;
          }
       }
       if (gState.mapNum == 32) {
          if (gState.turn == 2) {
-            evt->state = 12;
+            obj->state = 12;
             return;
          }
          if (gState.turn == 5) {
-            evt->state = 13;
+            obj->state = 13;
             return;
          }
          if (gState.turn == 8) {
-            evt->state = 14;
+            obj->state = 14;
             return;
          }
          if (gState.turn == 11) {
-            evt->state = 15;
+            obj->state = 15;
             return;
          }
       }
       if (gState.mapNum == 38) {
          if (gState.turn == 3) {
-            evt->state = 17;
+            obj->state = 17;
             return;
          }
       }
       gPlayerControlSuppressed = 0;
-      evt->state = 99;
+      obj->state = 99;
       return;
 
    case 10:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 14);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_ANGRY, 15);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 3:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:10)
+      } // switch (obj->state2) (via state:10)
 
       return;
 
    case 11:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gState.mapState.s.field_0x13 = 2;
          SetupBattleMsgBox(UNIT_LANDO, PORTRAIT_LANDO_514, 19);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:11)
+      } // switch (obj->state2) (via state:11)
 
       return;
 
    case 12:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBoxWithoutTail(UNIT_DALLAS, PORTRAIT_C_KNIGHT, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_DALLAS, PORTRAIT_DALLAS_516, 14);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
             gState.field_0x96 = 1;
             gState.mapState.s.field_0x0++;
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 3:
          if (gState.field_0x96 == 0) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:12)
+      } // switch (obj->state2) (via state:12)
 
       return;
 
    case 13:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBoxWithoutTail(UNIT_DALLAS, PORTRAIT_C_KNIGHT, 15);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_DALLAS, PORTRAIT_DALLAS_516, 16);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
             gState.field_0x96 = 1;
             gState.mapState.s.field_0x0++;
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 3:
          if (gState.field_0x96 == 0) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:13)
+      } // switch (obj->state2) (via state:13)
 
       return;
 
    case 14:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBoxWithoutTail(UNIT_DALLAS, PORTRAIT_C_KNIGHT, 17);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_DALLAS, PORTRAIT_DALLAS_516, 18);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
             gState.field_0x96 = 1;
             gState.mapState.s.field_0x0++;
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 3:
          if (gState.field_0x96 == 0) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:14)
+      } // switch (obj->state2) (via state:14)
 
       return;
 
    case 15:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_DALLAS, PORTRAIT_DALLAS_516, 19);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             gState.field_0x96 = 1;
             gState.mapState.s.field_0x0++;
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.field_0x96 == 0) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:15)
+      } // switch (obj->state2) (via state:15)
 
       return;
 
    case 16:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          PerformAudioCommand(AUDIO_CMD_PREPARE_XA(28));
          gState.mapState.s.field_0x0 = 2;
@@ -618,104 +618,104 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
             i--;
          }
 
-         EVT.xenoSpawnZ = i;
-         SetupBattleUnit(17, EVT.xenoSpawnZ, 2, 10, TEAM_ENEMY, DIR_NORTH, 1, 20, 1);
-         gTileStateGridPtr[EVT.xenoSpawnZ][2].action = TA_X19;
-         evt->state2++;
+         OBJ.xenoSpawnZ = i;
+         SetupBattleUnit(17, OBJ.xenoSpawnZ, 2, 10, TEAM_ENEMY, DIR_NORTH, 1, 20, 1);
+         gTileStateGridPtr[OBJ.xenoSpawnZ][2].action = TA_X19;
+         obj->state2++;
          break;
 
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_XENO, PORTRAIT_XENO, 17);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
       case 3:
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 4:
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(28));
-         sprite = GetUnitSpriteAtPosition(EVT.xenoSpawnZ, 2);
-         fx = Evt_GetUnused();
-         fx->functionIndex = EVTF_STRETCH_WARP_SPRITE;
-         fx->d.evtf062.sprite = sprite;
+         sprite = GetUnitSpriteAtPosition(OBJ.xenoSpawnZ, 2);
+         fx = Obj_GetUnused();
+         fx->functionIndex = OBJF_STRETCH_WARP_SPRITE;
+         fx->d.objf062.sprite = sprite;
          fx->mem = 1;
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 5:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE, 18);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 6:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_XENO, PORTRAIT_XENO, 19);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 7:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_ANGRY, 20);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 8:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_XENO, PORTRAIT_XENO, 21);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 9:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_HAPPY, 22);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 10:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_XENO, PORTRAIT_XENO, 23);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 11:
          if (gState.msgFinished) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
-            EVT.timer = 20;
-            evt->state2++;
+            OBJ.timer = 20;
+            obj->state2++;
          }
          break;
 
       case 12:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             LoadSeqSet(0x19);
             FinishLoadingSeq();
             PerformAudioCommand(AUDIO_CMD_PLAY_SFX(230));
             sprite = FindUnitSpriteByNameIdx(UNIT_KANE);
-            fx = Evt_GetUnused();
-            fx->functionIndex = EVTF_TBD_732;
+            fx = Obj_GetUnused();
+            fx->functionIndex = OBJF_TBD_732;
             fx->x1.n = sprite->x1.n;
             fx->z1.n = sprite->z1.n;
             gState.D_801405A4 = 0;
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_CURSED, 24);
-            evt->state2++;
-            EVT.timer = 200;
+            obj->state2++;
+            OBJ.timer = 200;
          }
          break;
 
       case 13:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             gState.msgBoxFinished = 1;
          }
          if (gState.msgFinished) {
@@ -724,7 +724,7 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(28));
             SetupBattleMsgBox(UNIT_XENO, PORTRAIT_XENO, 25);
             PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(11));
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -732,66 +732,66 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
          if (gState.msgFinished) {
             sprite = FindUnitSpriteByNameIdx(UNIT_KANE);
             OBJ_TILE_STATE(sprite).action = TA_X16;
-            EVT.spawnZ = sprite->z1.s.hi;
-            EVT.spawnX = sprite->x1.s.hi;
+            OBJ.spawnZ = sprite->z1.s.hi;
+            OBJ.spawnX = sprite->x1.s.hi;
             PerformAudioCommand(AUDIO_CMD_PLAY_XA(28));
-            sprite = GetUnitSpriteAtPosition(EVT.xenoSpawnZ, 2);
-            fx = Evt_GetUnused();
-            fx->functionIndex = EVTF_STRETCH_WARP_SPRITE;
-            fx->d.evtf062.sprite = sprite;
-            EVT.timer = 30;
-            evt->state2++;
+            sprite = GetUnitSpriteAtPosition(OBJ.xenoSpawnZ, 2);
+            fx = Obj_GetUnused();
+            fx->functionIndex = OBJF_STRETCH_WARP_SPRITE;
+            fx->d.objf062.sprite = sprite;
+            OBJ.timer = 30;
+            obj->state2++;
          }
          break;
 
       case 15:
-         if (--EVT.timer == 0) {
-            SetupBattleUnit(13, EVT.spawnZ, EVT.spawnX, 30, TEAM_ENEMY, DIR_WEST, 1, 20, 4);
-            gTileStateGridPtr[EVT.xenoSpawnZ][2].action = TA_X16;
+         if (--OBJ.timer == 0) {
+            SetupBattleUnit(13, OBJ.spawnZ, OBJ.spawnX, 30, TEAM_ENEMY, DIR_WEST, 1, 20, 4);
+            gTileStateGridPtr[OBJ.xenoSpawnZ][2].action = TA_X16;
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 26);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 16:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE_BLK_KNIGHT, 29);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 17:
          if (gState.msgFinished) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_8_4);
-            EVT.timer = 75;
-            evt->state2++;
+            OBJ.timer = 75;
+            obj->state2++;
          }
          break;
 
       case 18:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(1));
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
 
-      } // switch (evt->state2) (via state:16)
+      } // switch (obj->state2) (via state:16)
 
       return;
 
    case 17:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gState.mapState.s.field_0x13 = 1;
          SetupBattleMsgBox(UNIT_SABINA, PORTRAIT_SABINA, 20);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
       case 2:
       case 3:
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 4:
@@ -818,20 +818,20 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
             pSpawn++;
          }
 
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 5:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KANE, PORTRAIT_KANE, 13);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 6:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_SABINA, PORTRAIT_SABINA, 14);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -842,41 +842,41 @@ void Evtf587_BattleEnemyEvent(EvtData *evt) {
                // do-while fixes regalloc; can't get this function to match without at least one of
                // these; not sure if this implies something should be a macro or if it just happens
                // to nudge the regs into place
-               evt->state2++;
+               obj->state2++;
             } while (0);
          }
          break;
 
       case 8:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
 
-      } // switch (evt->state2) (via state:17)
+      } // switch (obj->state2) (via state:17)
 
       return;
 
    case 99:
       gState.field_0x98 = 0;
       gPlayerControlSuppressed = 0;
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
 
-   } // switch (evt->state)
+   } // switch (obj->state)
 }
 
-#undef EVTF
-#define EVTF 585
-void Evtf585_BattlePlayerEvent(EvtData *evt) {
+#undef OBJF
+#define OBJF 585
+void Objf585_BattlePlayerEvent(Object *obj) {
    s32 i;
 
    if (gState.battleEval != BATTLE_EVAL_NONE) {
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
    }
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       gPlayerControlSuppressed = 1;
       if (gState.mapNum == 11) {
@@ -889,197 +889,197 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
                }
             }
             if (numIncapacitated == 0) {
-               evt->state = 10;
+               obj->state = 10;
                return;
             }
          }
          if (gState.turn == 3 && gState.mapState.s.field_0x0 == 0) {
             // Call attention to drawbridge switch
-            evt->state = 11;
+            obj->state = 11;
             return;
          }
       }
       if (gState.mapNum == 13) {
          if (gState.turn == 2 && FindUnitByNameIdx(UNIT_DIEGO) && FindUnitByNameIdx(UNIT_ELENI)) {
-            evt->state = 12;
+            obj->state = 12;
             return;
          }
          if (gState.turn == 3 && FindUnitByNameIdx(UNIT_ASH)) {
-            evt->state = 28;
+            obj->state = 28;
             return;
          }
       }
       if (gState.mapNum == 14) {
          if (gState.turn == 2) {
-            evt->state = 13;
+            obj->state = 13;
             return;
          }
       }
       if (gState.mapNum == 18) {
          if (gState.turn == 2) {
-            evt->state = 14;
+            obj->state = 14;
             return;
          }
       }
       if (gState.mapNum == 21) {
          if (gState.turn == 2) {
-            evt->state = 15;
+            obj->state = 15;
             return;
          }
          if (gState.turn == 4) {
-            evt->state = 16;
+            obj->state = 16;
             return;
          }
       }
       if (gState.mapNum == 23) {
          if (gState.turn == 3) {
-            evt->state = 17;
+            obj->state = 17;
             return;
          }
       }
       if (gState.mapNum == 26) {
          if (gState.turn == 2 && gState.mapState.s.field_0x13 == 0) {
-            evt->state = 18;
+            obj->state = 18;
             return;
          }
          if (gState.turn == 3 && gState.mapState.s.field_0x13 == 0) {
-            evt->state = 19;
+            obj->state = 19;
             return;
          }
          if (gState.turn == 4 && gState.mapState.s.field_0x13 == 0) {
-            evt->state = 20;
+            obj->state = 20;
             return;
          }
       }
       if (gState.mapNum == 42) {
          if (gState.turn == 2 && FindUnitByNameIdx(UNIT_DOLAN) && FindUnitByNameIdx(UNIT_AMON) &&
              FindUnitByNameIdx(UNIT_SARA)) {
-            evt->state = 23;
+            obj->state = 23;
             return;
          }
          if (gState.turn == 3 && FindUnitByNameIdx(UNIT_CLINT) && FindUnitByNameIdx(UNIT_KIRA)) {
-            evt->state = 24;
+            obj->state = 24;
             return;
          }
       }
       if (gState.mapNum == 41) {
          if (gState.turn == 2) {
-            evt->state = 25;
+            obj->state = 25;
             return;
          }
          if (gState.turn == 3) {
-            evt->state = 26;
+            obj->state = 26;
             return;
          }
          if (gState.turn == 4) {
-            evt->state = 27;
+            obj->state = 27;
             return;
          }
       }
       if (gState.mapNum == 28) {
          if (gState.turn == 2) {
-            evt->state = 29;
+            obj->state = 29;
             return;
          }
       }
       gPlayerControlSuppressed = 0;
-      evt->state = 99;
+      obj->state = 99;
       return;
 
    case 10:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_DIEGO, PORTRAIT_DIEGO, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 14);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_CLINT, PORTRAIT_CLINT, 15);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 3:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_DIEGO, PORTRAIT_DIEGO, 16);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 4:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:10)
+      } // switch (obj->state2) (via state:10)
 
       return;
 
    case 11:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 17);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:11)
+      } // switch (obj->state2) (via state:11)
 
       return;
 
    case 12:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_DIEGO, PORTRAIT_DIEGO, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ELENI, PORTRAIT_ELENI_25, 14);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_DIEGO, PORTRAIT_DIEGO, 15);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 3:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ELENI, PORTRAIT_ELENI_25, 16);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 4:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:12)
+      } // switch (obj->state2) (via state:12)
 
       return;
 
    case 13:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1088,14 +1088,14 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 14:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1104,14 +1104,14 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 15:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1120,14 +1120,14 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 16:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH_UPSET, 14);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1136,23 +1136,23 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 17:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 13);
-         evt->state2++;
+         obj->state2++;
          if (!FindUnitByNameIdx(UNIT_ZOHAR)) {
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ZOHAR, PORTRAIT_ZOHAR, 14);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1161,14 +1161,14 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 18:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 14);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1177,14 +1177,14 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 19:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 15);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1193,14 +1193,14 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 20:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 16);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1209,100 +1209,100 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 23:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_SARA, PORTRAIT_SARA_HAPPY, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_AMON, PORTRAIT_AMON_ANGRY, 14);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_DOLAN, PORTRAIT_DOLAN, 15);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 3:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_SARA, PORTRAIT_SARA, 16);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 4:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_AMON, PORTRAIT_AMON_HAPPY, 17);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 5:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_SARA, PORTRAIT_SARA_HAPPY, 18);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 6:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:23)
+      } // switch (obj->state2) (via state:23)
 
       return;
 
    case 24:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBox(UNIT_CLINT, PORTRAIT_CLINT, 19);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KIRA, PORTRAIT_KIRA, 20);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_CLINT, PORTRAIT_CLINT, 21);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 3:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KIRA, PORTRAIT_KIRA, 22);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 4:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:24)
+      } // switch (obj->state2) (via state:24)
 
       return;
 
    case 25:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBoxWithoutTail(UNIT_ASH, PORTRAIT_APPARITION_675, 13);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 14);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1311,20 +1311,20 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 26:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBoxWithoutTail(UNIT_ASH, PORTRAIT_KANE_APPARITION, 15);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH_UPSET, 16);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1333,20 +1333,20 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 27:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupBattleMsgBoxWithoutTail(UNIT_ASH, PORTRAIT_APPARITION_681, 17);
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH_6, 18);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 2:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
       }
@@ -1355,89 +1355,89 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
 
    case 28:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SetupPartyBattleUnit(UNIT_KIRA, 9, 8, DIR_NORTH);
       // fallthrough
       case 1:
       case 2:
       case 3:
-         evt->state2++;
+         obj->state2++;
          break;
       case 4:
          SetupBattleMsgBox(UNIT_KIRA, PORTRAIT_KIRA, 17);
-         evt->state2++;
+         obj->state2++;
          break;
       case 5:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 18);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 6:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KIRA, PORTRAIT_KIRA, 19);
-            evt->state2++;
+            obj->state2++;
          }
          break;
       case 7:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
-      } // switch (evt->state2) (via state:28)
+      } // switch (obj->state2) (via state:28)
 
       return;
 
    case 29:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          PerformAudioCommand(AUDIO_CMD_PREPARE_XA(77));
          SetupBattleMsgBox(UNIT_DUMAS, PORTRAIT_DUMAS, 14);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
          SetupBattleUnit(18, 19, 13, 10, TEAM_ENEMY, DIR_NORTH, 1, 20, 1);
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 2:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_KIRA_2, PORTRAIT_JUGGERNAUT, 15);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 3:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_DUMAS, PORTRAIT_DUMAS_562, 16);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 4:
          if (gState.msgFinished) {
             SetupBattleMsgBoxWithoutTail(UNIT_DUMAS, PORTRAIT_JUGGERNAUT_INJURED, 22);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 5:
       case 6:
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 7:
          gTileStateGridPtr[19][13].action = TA_X16;
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 8:
       case 9:
       case 10:
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 11:
@@ -1449,146 +1449,146 @@ void Evtf585_BattlePlayerEvent(EvtData *evt) {
          SetupPartyBattleUnit(UNIT_SARA, 18, 14, DIR_EAST);
          SetupPartyBattleUnit(UNIT_ZOHAR, 19, 14, DIR_EAST);
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(77));
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 12:
          if (gState.msgFinished) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_128_2);
-            EVT.timer = 20;
-            evt->state2++;
+            OBJ.timer = 20;
+            obj->state2++;
          }
          break;
 
       case 13:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             LoadSeqSet(23);
             FinishLoadingSeq();
-            EVT.timer = 1;
-            evt->state2++;
+            OBJ.timer = 1;
+            obj->state2++;
          }
          break;
 
       case 14:
-         if (--EVT.timer == 0) {
-            EVT.timer = 10;
-            evt->state2++;
+         if (--OBJ.timer == 0) {
+            OBJ.timer = 10;
+            obj->state2++;
          }
          break;
 
       case 15:
-         if (--EVT.timer == 0) {
-            EvtData *bloodSpurt = Evt_GetUnused();
-            bloodSpurt->functionIndex = EVTF_BLOOD_SPURT;
+         if (--OBJ.timer == 0) {
+            Object *bloodSpurt = Obj_GetUnused();
+            bloodSpurt->functionIndex = OBJF_BLOOD_SPURT;
             bloodSpurt->z1.s.hi = 19;
             bloodSpurt->x1.s.hi = 13;
-            EVT.timer = 30;
-            evt->state2++;
+            OBJ.timer = 30;
+            obj->state2++;
          }
          break;
 
       case 16:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(2));
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 17);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 17:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_CLINT, PORTRAIT_CLINT, 18);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 18:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 19);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 19:
          if (gState.msgFinished) {
             SetupBattleMsgBox(UNIT_DUMAS, PORTRAIT_DUMAS_562, 20);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 20:
          if (gState.msgFinished) {
-            evt->state = 99;
+            obj->state = 99;
          }
          break;
 
-      } // switch (evt->state2) (via state:29)
+      } // switch (obj->state2) (via state:29)
 
       return;
 
    case 99:
       gState.field_0x98 = 0;
       gPlayerControlSuppressed = 0;
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
 
-   } // switch (evt->state)
+   } // switch (obj->state)
 }
 
 void SetupBattleMsgBox(u8 nameIdx, s16 portrait, s16 textIdx) {
-   EvtData *msgbox;
+   Object *msgbox;
 
    gState.msgFinished = 0;
 
-   msgbox = Evt_GetUnused();
-   msgbox->functionIndex = EVTF_BATTLE_MSGBOX;
-   msgbox->d.evtf586.nameIdx = nameIdx;
-   msgbox->d.evtf586.portrait = portrait;
-   msgbox->d.evtf586.textIdx = textIdx;
+   msgbox = Obj_GetUnused();
+   msgbox->functionIndex = OBJF_BATTLE_MSGBOX;
+   msgbox->d.objf586.nameIdx = nameIdx;
+   msgbox->d.objf586.portrait = portrait;
+   msgbox->d.objf586.textIdx = textIdx;
 }
 
 void SetupBattleMsgBoxWithoutTail(u8 nameIdx, s16 portrait, s16 textIdx) {
-   EvtData *msgbox;
+   Object *msgbox;
 
    gState.msgFinished = 0;
 
-   msgbox = Evt_GetUnused();
-   msgbox->functionIndex = EVTF_BATTLE_MSGBOX;
-   msgbox->d.evtf586.nameIdx = nameIdx;
-   msgbox->d.evtf586.portrait = portrait;
-   msgbox->d.evtf586.textIdx = textIdx;
-   msgbox->d.evtf586.omitTail = 1;
+   msgbox = Obj_GetUnused();
+   msgbox->functionIndex = OBJF_BATTLE_MSGBOX;
+   msgbox->d.objf586.nameIdx = nameIdx;
+   msgbox->d.objf586.portrait = portrait;
+   msgbox->d.objf586.textIdx = textIdx;
+   msgbox->d.objf586.omitTail = 1;
 }
 
-#undef EVTF
-#define EVTF 586
-void Evtf586_BattleMsgBox(EvtData *evt) {
-   EvtData *sprite, *camEvt;
+#undef OBJF
+#define OBJF 586
+void Objf586_BattleMsgBox(Object *obj) {
+   Object *sprite, *camObj;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      sprite = FindUnitSpriteByNameIdx(EVT.nameIdx);
-      camEvt = Evt_GetUnused();
-      camEvt->functionIndex = EVTF_CAMERA_TBD_588;
-      camEvt->d.evtf588.target = sprite;
-      EVT.timer = 20;
-      evt->state++;
+      sprite = FindUnitSpriteByNameIdx(OBJ.nameIdx);
+      camObj = Obj_GetUnused();
+      camObj->functionIndex = OBJF_CAMERA_TBD_588;
+      camObj->d.objf588.target = sprite;
+      OBJ.timer = 20;
+      obj->state++;
       break;
    case 1:
-      if (--EVT.timer == 0) {
-         sprite = FindUnitSpriteByNameIdx(EVT.nameIdx);
-         MsgBox_ShowForSprite(sprite, 0, EVT.omitTail);
-         MsgBox_SetPortrait(EVT.portrait, 0);
-         MsgBox_SetText(1, EVT.textIdx, 0x100);
-         evt->state++;
+      if (--OBJ.timer == 0) {
+         sprite = FindUnitSpriteByNameIdx(OBJ.nameIdx);
+         MsgBox_ShowForSprite(sprite, 0, OBJ.omitTail);
+         MsgBox_SetPortrait(OBJ.portrait, 0);
+         MsgBox_SetText(1, OBJ.textIdx, 0x100);
+         obj->state++;
       }
       break;
    case 2:
       if (gState.msgBoxFinished) {
          MsgBox_Close(0);
          gState.msgFinished = 1;
-         evt->functionIndex = EVTF_NULL;
+         obj->functionIndex = OBJF_NULL;
          return;
       }
       break;
@@ -1624,7 +1624,7 @@ void DisplaySpellStatusWindow(UnitStatus *unit, u8 windowId) {
 }
 
 void DisplayItemsStatusWindow(UnitStatus *unit, u8 windowId) {
-   EvtData *icon;
+   Object *icon;
    s32 y, numItems = 0;
 
    gWindowChoicesTopMargin = 9;
@@ -1655,15 +1655,15 @@ void DisplayItemsStatusWindow(UnitStatus *unit, u8 windowId) {
       DisplayCustomWindow(windowId, 0, 1, 0, 0, 23);
    }
 
-   icon = Evt_GetUnused();
-   icon->functionIndex = EVTF_DISPLAY_ICON;
+   icon = Obj_GetUnused();
+   icon->functionIndex = OBJF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[0];
    icon->x1.n = 79;
    icon->y1.n = (10 - numItems) * 9 + 20;
    y = (unit->items[0] != ITEM_NULL) ? 18 : 0;
 
-   icon = Evt_GetUnused();
-   icon->functionIndex = EVTF_DISPLAY_ICON;
+   icon = Obj_GetUnused();
+   icon->functionIndex = OBJF_DISPLAY_ICON;
    icon->d.sprite.gfxIdx = GFX_ITEM_ICONS_OFS + unit->items[1];
    icon->x1.n = 79;
    icon->y1.n = (10 - numItems) * 9 + 20 + y;
@@ -1674,44 +1674,44 @@ u8 s_unitZ_801231ec;
 u8 s_hiddenItem_801231f0;
 u8 s_hiddenItemSentToDepot_801231f4;
 
-#undef EVTF
-#define EVTF 003
-void Evtf003_BattleActions(EvtData *evt) {
+#undef OBJF
+#define OBJF 003
+void Objf003_BattleActions(Object *obj) {
    // TODO: Eliminate gotos?
-   // evt->state3: cursorState
-   // evt->x3: unitX
-   // evt->z3: unitZ
+   // obj->state3: cursorState
+   // obj->x3: unitX
+   // obj->z3: unitZ
    UnitStatus *unit, *cursorUnit;
-   EvtData *evt1, *evt2;
+   Object *obj1, *obj2;
    s32 i; // iz, mapNum
    s32 ix;
 
    if (gState.battleEval != BATTLE_EVAL_NONE) {
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
    }
 
-   unit = EVT.unit;
+   unit = OBJ.unit;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      if (evt->state2 == 0) {
+      if (obj->state2 == 0) {
          gState.droppedItem = ITEM_NULL;
-         s_unitX_801231e8 = evt->x3.s.hi = evt->x1.s.hi;
-         s_unitZ_801231ec = evt->z3.s.hi = evt->z1.s.hi;
-         EVT.unit = unit = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
+         s_unitX_801231e8 = obj->x3.s.hi = obj->x1.s.hi;
+         s_unitZ_801231ec = obj->z3.s.hi = obj->z1.s.hi;
+         OBJ.unit = unit = &gUnits[OBJ_MAP_UNIT(obj).s.unitIdx];
          gState.lastSelectedUnit = unit->name + 1;
          unit->hideMarker = 1;
-         EVT.range = unit->travelRange;
-         EVT.remainingRange = EVT.range;
+         OBJ.range = unit->travelRange;
+         OBJ.remainingRange = OBJ.range;
          UpdateUnitInfoWindow(unit);
          DisplayBasicWindow(0x1f);
-         PopulateBlueMovementGrid(evt->z1.s.hi, evt->x1.s.hi, unit->travelRange);
+         PopulateBlueMovementGrid(obj->z1.s.hi, obj->x1.s.hi, unit->travelRange);
          gShowBlueMovementGrid = 0;
-         evt2 = unit->sprite;
-         StartUnitSpritesDecoder(evt2->d.sprite.stripIdx);
-         evt->state = 16;
-         evt->state2 = 0;
+         obj2 = unit->sprite;
+         StartUnitSpritesDecoder(obj2->d.sprite.stripIdx);
+         obj->state = 16;
+         obj->state2 = 0;
          goto BattleActions_State16;
       }
 
@@ -1726,7 +1726,7 @@ void Evtf003_BattleActions(EvtData *evt) {
       DisplayBasicWindow(0x35);
       gWindowActiveIdx = 0x35;
       gClearSavedPadState = 1;
-      evt->state++;
+      obj->state++;
       break;
 
    case 2:
@@ -1734,37 +1734,37 @@ void Evtf003_BattleActions(EvtData *evt) {
          // Action
          CloseWindow(0x35);
          if (unit->spells[0] != SPELL_NULL) {
-            evt->state = 10;
+            obj->state = 10;
          } else {
-            evt->state = 11;
+            obj->state = 11;
          }
-         evt->state2 = 0;
+         obj->state2 = 0;
       } else if (gWindowChoice.raw == 0x3502) {
          // Done
          CloseWindow(0x35);
-         evt->state = 8;
-         evt->state2 = 0;
+         obj->state = 8;
+         obj->state2 = 0;
       } else if (gWindowChoice.raw == 0x3504) {
          // Push
          CloseWindow(0x35);
-         evt->state = 15;
-         evt->state2 = 0;
+         obj->state = 15;
+         obj->state2 = 0;
       } else if (gWindowChoice.raw == 0x3503) {
          // Examine
          CloseWindow(0x35);
-         evt->state = 9;
-         evt->state2 = 0;
+         obj->state = 9;
+         obj->state2 = 0;
       } else if (gWindowChoice.raw == 0x35ff) {
          // Cancel
-         if (EVT.range != 0) {
+         if (OBJ.range != 0) {
             CloseWindow(0x35);
-            if (evt->x3.s.hi != evt->x1.s.hi || evt->z3.s.hi != evt->z1.s.hi) {
-               OBJ_TARGET_TILE_STATE(evt).action = TA_X9;
-               evt->x3.s.hi = evt->x1.s.hi;
-               evt->z3.s.hi = evt->z1.s.hi;
+            if (obj->x3.s.hi != obj->x1.s.hi || obj->z3.s.hi != obj->z1.s.hi) {
+               OBJ_TARGET_TILE_STATE(obj).action = TA_X9;
+               obj->x3.s.hi = obj->x1.s.hi;
+               obj->z3.s.hi = obj->z1.s.hi;
             }
-            evt->state = 7;
-            evt->state2 = 0;
+            obj->state = 7;
+            obj->state2 = 0;
          }
       }
       break;
@@ -1776,12 +1776,12 @@ void Evtf003_BattleActions(EvtData *evt) {
          gState.mapCursorOutOfRange = 1;
       }
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          DrawWindow(0x34, 316, 0, 56, 36, 10, 152, WBS_CROSSED, 0);
          DrawText(316, 11, 25, 0, 0, "Move");
          DisplayCustomWindow(0x34, 2, 1, 0, 0, 0);
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
@@ -1792,29 +1792,29 @@ void Evtf003_BattleActions(EvtData *evt) {
              gBlueMovementGridPtr[gMapCursorZ][gMapCursorX] != PATH_STEP_INVALID &&
              gBlueMovementGridPtr[gMapCursorZ][gMapCursorX] != PATH_STEP_UNSET &&
              gMapUnitsPtr[gMapCursorZ][gMapCursorX].raw == 0) {
-            func_8002B3A8(evt->z1.s.hi, evt->x1.s.hi, EVT.range, 2);
-            EVT.remainingRange = EVT.range - gPathGrid2_Ptr[gMapCursorZ][gMapCursorX];
-            evt->x3.s.hi = gMapCursorX;
-            evt->z3.s.hi = gMapCursorZ;
+            func_8002B3A8(obj->z1.s.hi, obj->x1.s.hi, OBJ.range, 2);
+            OBJ.remainingRange = OBJ.range - gPathGrid2_Ptr[gMapCursorZ][gMapCursorX];
+            obj->x3.s.hi = gMapCursorX;
+            obj->z3.s.hi = gMapCursorZ;
             PlotPathBackToUnit(gMapCursorZ, gMapCursorX);
-            OBJ_TILE_STATE(evt).action = TA_X6;
+            OBJ_TILE_STATE(obj).action = TA_X6;
             gSignal3 = 0;
             gClearSavedPadState = 1;
-            evt->state2++;
+            obj->state2++;
          } else if ((gSavedPadStateNewPresses & PAD_CIRCLE) &&
                     gBlueMovementGridPtr[gMapCursorZ][gMapCursorX] == PATH_STEP_INVALID) {
-            EVT.remainingRange = EVT.range;
+            OBJ.remainingRange = OBJ.range;
             CloseWindow(0x34);
             gShowBlueMovementGrid = 0;
             gState.mapCursorOutOfRange = 0;
-            evt->state = 1;
+            obj->state = 1;
          } else if (gSavedPadStateNewPresses & PAD_X) {
-            EVT.remainingRange = EVT.range;
+            OBJ.remainingRange = OBJ.range;
             CloseWindow(0x34);
             gShowBlueMovementGrid = 0;
             gState.mapCursorOutOfRange = 0;
-            evt->state = 16;
-            evt->state2 = 0;
+            obj->state = 16;
+            obj->state2 = 0;
          }
          break;
 
@@ -1823,55 +1823,55 @@ void Evtf003_BattleActions(EvtData *evt) {
             CloseWindow(0x34);
             gShowBlueMovementGrid = 0;
             gState.mapCursorOutOfRange = 0;
-            evt->state = 1;
+            obj->state = 1;
          }
          break;
-      } // switch (evt->state2) (via state:7)
+      } // switch (obj->state2) (via state:7)
 
       break;
 
    case 8:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         OBJ_TARGET_TILE_STATE(evt).action = TA_CHOOSING_DIRECTION;
-         evt2 = Evt_GetUnused();
-         evt2->functionIndex = EVTF_CHOOSE_DONE_DIRECTION;
-         evt2->d.evtf016.unit = EVT.unit;
+         OBJ_TARGET_TILE_STATE(obj).action = TA_CHOOSING_DIRECTION;
+         obj2 = Obj_GetUnused();
+         obj2->functionIndex = OBJF_CHOOSE_DONE_DIRECTION;
+         obj2->d.objf016.unit = OBJ.unit;
          gSignal3 = 0;
          gSignal2 = 0;
-         evt->state2++;
+         obj->state2++;
       // fallthrough
       case 1:
          if (gSignal2 == 1) {
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          if (gSignal2 == 2) {
-            if (EVT.range != 0) {
-               evt->state = 16;
-               evt->state2 = 0;
+            if (OBJ.range != 0) {
+               obj->state = 16;
+               obj->state2 = 0;
             } else {
-               evt->state = 1;
+               obj->state = 1;
             }
-            if (evt->x3.s.hi != evt->x1.s.hi || evt->z3.s.hi != evt->z1.s.hi) {
-               evt->state = 1;
+            if (obj->x3.s.hi != obj->x1.s.hi || obj->z3.s.hi != obj->z1.s.hi) {
+               obj->state = 1;
             }
          }
          break;
-      } // switch (evt->state2) (via state:8)
+      } // switch (obj->state2) (via state:8)
 
       break;
 
    case 9:
       // Examine
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          CloseWindow(0x1e);
-         EVT.performedSubaction = 1;
-         gState.searchX = evt->x3.s.hi;
-         gState.searchZ = evt->z3.s.hi;
+         OBJ.performedSubaction = 1;
+         gState.searchX = obj->x3.s.hi;
+         gState.searchZ = obj->z3.s.hi;
          s_hiddenItem_801231f0 = ITEM_NULL;
          i = gState.mapNum;
          if (!gState.mapState.s.foundHiddenItem1 && gState.searchZ == gMapHiddenItems[i][0].z &&
@@ -1888,7 +1888,7 @@ void Evtf003_BattleActions(EvtData *evt) {
                s_hiddenItemSentToDepot_801231f4 = 1;
             }
             gState.mapState.s.foundHiddenItem1 = 1;
-            evt->state2++;
+            obj->state2++;
          } else if (!gState.mapState.s.foundHiddenItem2 &&
                     gState.searchZ == gMapHiddenItems[i][1].z &&
                     gState.searchX == gMapHiddenItems[i][1].x) {
@@ -1904,101 +1904,101 @@ void Evtf003_BattleActions(EvtData *evt) {
                s_hiddenItemSentToDepot_801231f4 = 1;
             }
             gState.mapState.s.foundHiddenItem2 = 1;
-            evt->state2++;
+            obj->state2++;
          } else {
-            evt->state2 += 4;
+            obj->state2 += 4;
          }
          break;
 
       case 1:
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(116));
          gSignal3 = 0;
-         evt2 = unit->sprite;
-         evt1 = Evt_GetUnused();
-         evt1->x1.n = evt2->x1.n;
-         evt1->z1.n = evt2->z1.n;
-         evt1->y1.n = evt2->y1.n;
-         evt1->functionIndex = EVTF_REVEAL_HIDDEN_ITEM;
-         evt1->d.evtf294.gfxIdx = GFX_ITEM_ICONS_OFS + s_hiddenItem_801231f0;
-         EVT.timer = 80;
-         evt->state2++;
+         obj2 = unit->sprite;
+         obj1 = Obj_GetUnused();
+         obj1->x1.n = obj2->x1.n;
+         obj1->z1.n = obj2->z1.n;
+         obj1->y1.n = obj2->y1.n;
+         obj1->functionIndex = OBJF_REVEAL_HIDDEN_ITEM;
+         obj1->d.objf294.gfxIdx = GFX_ITEM_ICONS_OFS + s_hiddenItem_801231f0;
+         OBJ.timer = 80;
+         obj->state2++;
          break;
 
       case 2:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             if (!s_hiddenItemSentToDepot_801231f4) {
                ShowReceivedItemDialog(s_hiddenItem_801231f0, 0x3c, 1);
             } else {
                ShowDepotReceivedItemDialog(s_hiddenItem_801231f0, 0x3c, 1);
             }
-            EVT.timer = 80;
+            OBJ.timer = 80;
             gSignal3 = 1;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 3:
-         if (PressedCircleOrX() || --EVT.timer == 0) {
+         if (PressedCircleOrX() || --OBJ.timer == 0) {
             CloseWindow(0x3c);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 4:
          gState.needEval = 1;
          gState.signal = 1;
-         EVT.timer = 0;
-         evt->state2++;
+         OBJ.timer = 0;
+         obj->state2++;
          break;
 
       case 5:
-         if (++EVT.timer > 100) {
-            EVT.timer = 100;
+         if (++OBJ.timer > 100) {
+            OBJ.timer = 100;
          }
          if (gState.signal == 0) {
-            if (EVT.timer < 20 && s_hiddenItem_801231f0 == ITEM_NULL) {
+            if (OBJ.timer < 20 && s_hiddenItem_801231f0 == ITEM_NULL) {
                gClearSavedPadState = 1;
                DrawWindow(0x3c, 0, 0, 232, 36, 44, 90, WBS_CROSSED, 0);
                DrawText(12, 11, 25, 2, 0, "you didn't find anything!");
                DisplayCustomWindow(0x3c, 0, 1, 0, 0, 0);
-               EVT.timer = 30;
-               evt->state2++;
+               OBJ.timer = 30;
+               obj->state2++;
             } else {
-               evt->state2 += 2;
+               obj->state2 += 2;
             }
          }
          break;
 
       case 6:
-         if (PressedCircleOrX() || --EVT.timer == 0) {
+         if (PressedCircleOrX() || --OBJ.timer == 0) {
             CloseWindow(0x3c);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 7:
-         EVT.range = EVT.remainingRange;
-         evt->x1.s.hi = evt->x3.s.hi;
-         evt->z1.s.hi = evt->z3.s.hi;
-         PopulateBlueMovementGrid(evt->z1.s.hi, evt->x1.s.hi, EVT.range);
-         evt->state2++;
+         OBJ.range = OBJ.remainingRange;
+         obj->x1.s.hi = obj->x3.s.hi;
+         obj->z1.s.hi = obj->z3.s.hi;
+         PopulateBlueMovementGrid(obj->z1.s.hi, obj->x1.s.hi, OBJ.range);
+         obj->state2++;
          break;
 
       case 8:
-         if (EVT.range != 0) {
-            evt->state = 16;
-            evt->state2 = 0;
+         if (OBJ.range != 0) {
+            obj->state = 16;
+            obj->state2 = 0;
          } else {
-            evt->state = 1;
+            obj->state = 1;
          }
          break;
-      } // switch (evt->state2) (via state:9)
+      } // switch (obj->state2) (via state:9)
 
       break;
 
    case 10:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gWindowChoiceHeight = 17;
          gWindowChoicesTopMargin = 10;
@@ -2007,7 +2007,7 @@ void Evtf003_BattleActions(EvtData *evt) {
          DisplayBasicWindow(0x36);
          gWindowActiveIdx = 0x36;
          gClearSavedPadState = 1;
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -2015,43 +2015,43 @@ void Evtf003_BattleActions(EvtData *evt) {
             // Attack
             CloseWindow(0x36);
             gClearSavedPadState = 0;
-            evt->state = 12;
-            evt->state2 = 0;
+            obj->state = 12;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x3602) {
             // Magic
             CloseWindow(0x1e);
             CloseWindow(0x36);
-            evt->state = 13;
-            evt->state2 = 0;
+            obj->state = 13;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x3603) {
             // Item
             CloseWindow(0x1e);
             CloseWindow(0x36);
-            evt->state = 17;
-            evt->state2 = 0;
+            obj->state = 17;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x36ff) {
             // Cancel
             //@3e44
             CloseWindow(0x36);
          LAB_80033808:
-            if (evt->x3.s.hi == evt->x1.s.hi && evt->z3.s.hi == evt->z1.s.hi) {
-               evt->state = 16;
-               evt->state2 = 0;
-               if (EVT.range == 0) {
-                  evt->state = 1;
+            if (obj->x3.s.hi == obj->x1.s.hi && obj->z3.s.hi == obj->z1.s.hi) {
+               obj->state = 16;
+               obj->state2 = 0;
+               if (OBJ.range == 0) {
+                  obj->state = 1;
                }
             } else {
-               evt->state = 1;
+               obj->state = 1;
             }
          }
          break;
-      } // switch (evt->state2) (via state:10)
+      } // switch (obj->state2) (via state:10)
 
       break;
 
    case 11:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gWindowChoiceHeight = 17;
          gWindowChoicesTopMargin = 10;
@@ -2060,7 +2060,7 @@ void Evtf003_BattleActions(EvtData *evt) {
          DisplayBasicWindow(0x37);
          gWindowActiveIdx = 0x37;
          gClearSavedPadState = 1;
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -2068,13 +2068,13 @@ void Evtf003_BattleActions(EvtData *evt) {
             // Attack
             CloseWindow(0x37);
             gClearSavedPadState = 0;
-            evt->state = 12;
-            evt->state2 = 0;
+            obj->state = 12;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x3702) {
             // Item
             CloseWindow(0x37);
-            evt->state = 17;
-            evt->state2 = 0;
+            obj->state = 17;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x37ff) {
             // Cancel
             //@3fb0
@@ -2082,33 +2082,33 @@ void Evtf003_BattleActions(EvtData *evt) {
             goto LAB_80033808; //?: could match via tail merge?
          }
          break;
-      } // switch (evt->state2) (via state:11)
+      } // switch (obj->state2) (via state:11)
 
       break;
 
    case 12:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt2 = Evt_GetUnused();
-         evt2->functionIndex = EVTF_TARGETING_ATTACK;
+         obj2 = Obj_GetUnused();
+         obj2->functionIndex = OBJF_TARGETING_ATTACK;
          gSignal2 = 0;
-         evt2->x1.n = evt->x3.n;
-         evt2->z1.n = evt->z3.n;
-         evt->state2++;
+         obj2->x1.n = obj->x3.n;
+         obj2->z1.n = obj->z3.n;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (gSignal2 == 1) {
             gState.mapCursorOutOfRange = 0;
-            if (evt->x3.s.hi == evt->x1.s.hi && evt->z3.s.hi == evt->z1.s.hi) {
-               evt->state = 16;
-               evt->state2 = 0;
-               if (EVT.range == 0) {
-                  evt->state = 1;
+            if (obj->x3.s.hi == obj->x1.s.hi && obj->z3.s.hi == obj->z1.s.hi) {
+               obj->state = 16;
+               obj->state2 = 0;
+               if (OBJ.range == 0) {
+                  obj->state = 1;
                }
             } else {
-               evt->state = 1;
+               obj->state = 1;
             }
          }
          if (gSignal2 == 2) {
@@ -2117,142 +2117,142 @@ void Evtf003_BattleActions(EvtData *evt) {
                   gBlueMovementGridPtr[i][ix] = PATH_STEP_UNSET;
                }
             }
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
          if (gSignal2 == 99) {
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
-      } // switch (evt->state2) (via state:12)
+      } // switch (obj->state2) (via state:12)
 
       break;
 
    case 13:
    case 17:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          SlideWindowTo(0x39, 8, 268);
-         evt2 = Evt_GetUnused();
-         if (evt->state == 13) {
-            evt2->functionIndex = EVTF_BATTLE_SPELLS_LIST;
+         obj2 = Obj_GetUnused();
+         if (obj->state == 13) {
+            obj2->functionIndex = OBJF_BATTLE_SPELLS_LIST;
          } else {
-            evt2->functionIndex = EVTF_BATTLE_ITEMS_LIST;
+            obj2->functionIndex = OBJF_BATTLE_ITEMS_LIST;
          }
-         evt2->d.evtf031.unit = EVT.unit;
+         obj2->d.objf031.unit = OBJ.unit;
          gSignal2 = 0;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 1:
          if (gSignal2 == 1) {
             gState.mapCursorOutOfRange = 0;
             SlideWindowTo(0x39, 8, 188);
-            if (evt->x3.s.hi == evt->x1.s.hi && evt->z3.s.hi == evt->z1.s.hi) {
-               evt->state = 16;
-               evt->state2 = 0;
-               if (EVT.range == 0) {
-                  evt->state = 1;
+            if (obj->x3.s.hi == obj->x1.s.hi && obj->z3.s.hi == obj->z1.s.hi) {
+               obj->state = 16;
+               obj->state2 = 0;
+               if (OBJ.range == 0) {
+                  obj->state = 1;
                }
             } else {
-               evt->state = 1;
+               obj->state = 1;
             }
          }
          if (gSignal2 == 2) {
             gState.mapCursorOutOfRange = 0;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
-         evt2 = Evt_GetLastUnused();
-         evt2->functionIndex = EVTF_TARGETING_SPELL;
+         obj2 = Obj_GetLastUnused();
+         obj2->functionIndex = OBJF_TARGETING_SPELL;
          gSignal2 = 0;
-         evt2->x1.n = evt->x3.n;
-         evt2->z1.n = evt->z3.n;
-         evt->state2++;
+         obj2->x1.n = obj->x3.n;
+         obj2->z1.n = obj->z3.n;
+         obj->state2++;
 
       // fallthrough
       case 3:
          if (gSignal2 == 1) {
-            evt->state2 = 1;
-            if (evt->state == 17) {
+            obj->state2 = 1;
+            if (obj->state == 17) {
                // Restore item on cancel
                unit->items[gState.activeItemSlot] = gState.activeItem;
             }
          }
          if (gSignal2 == 2) {
             gClearSavedPadState = 1;
-            evt2 = unit->sprite;
-            unit->direction = evt2->d.sprite.direction;
+            obj2 = unit->sprite;
+            unit->direction = obj2->d.sprite.direction;
             for (i = gMapMinZ; i <= gMapMaxZ; i++) {
                for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
                   gBlueMovementGridPtr[i][ix] = PATH_STEP_UNSET;
                }
             }
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 4:
          if (gSignal2 == 99) {
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
-      } // switch (evt->state2) (via state:13/17)
+      } // switch (obj->state2) (via state:13/17)
 
       break;
 
    case 15:
       // Push
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         OBJ_TARGET_TILE_STATE(evt).action = TA_CHOOSING_DIRECTION;
-         evt->state2++;
+         OBJ_TARGET_TILE_STATE(obj).action = TA_CHOOSING_DIRECTION;
+         obj->state2++;
          break;
 
       case 1:
-         evt2 = Evt_GetUnused();
-         evt2->functionIndex = EVTF_PUSH;
-         evt2->d.evtf048.unit = EVT.unit;
+         obj2 = Obj_GetUnused();
+         obj2->functionIndex = OBJF_PUSH;
+         obj2->d.objf048.unit = OBJ.unit;
          gSignal3 = 0;
          gSignal2 = 0;
-         evt->state2++;
+         obj->state2++;
 
       // fallthrough
       case 2:
          if (gSignal2 == 99) {
-            EVT.performedSubaction = 1;
-            EVT.range = EVT.remainingRange;
-            PopulateBlueMovementGrid(evt->z3.s.hi, evt->x3.s.hi, EVT.range);
-            evt->x1.s.hi = evt->x3.s.hi;
-            evt->z1.s.hi = evt->z3.s.hi;
-            if (EVT.range != 0) {
-               evt->state = 16;
-               evt->state2 = 0;
+            OBJ.performedSubaction = 1;
+            OBJ.range = OBJ.remainingRange;
+            PopulateBlueMovementGrid(obj->z3.s.hi, obj->x3.s.hi, OBJ.range);
+            obj->x1.s.hi = obj->x3.s.hi;
+            obj->z1.s.hi = obj->z3.s.hi;
+            if (OBJ.range != 0) {
+               obj->state = 16;
+               obj->state2 = 0;
             } else {
-               evt->state = 1;
+               obj->state = 1;
             }
          } else if (gSignal2 == 2) {
-            if (evt->x3.s.hi == evt->x1.s.hi && evt->z3.s.hi == evt->z1.s.hi) {
-               if (EVT.range != 0) {
-                  evt->state = 16;
-                  evt->state2 = 0;
+            if (obj->x3.s.hi == obj->x1.s.hi && obj->z3.s.hi == obj->z1.s.hi) {
+               if (OBJ.range != 0) {
+                  obj->state = 16;
+                  obj->state2 = 0;
                } else {
-                  evt->state = 1;
+                  obj->state = 1;
                }
             } else {
-               evt->state = 1;
+               obj->state = 1;
             }
          }
          break;
-      } // switch (evt->state2) (via state:15)
+      } // switch (obj->state2) (via state:15)
 
       break;
 
@@ -2260,7 +2260,7 @@ void Evtf003_BattleActions(EvtData *evt) {
    BattleActions_State16:
       gState.mapCursorOutOfRange = 0;
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gWindowChoiceHeight = 0x11;
          gWindowChoicesTopMargin = 10;
@@ -2269,7 +2269,7 @@ void Evtf003_BattleActions(EvtData *evt) {
          DisplayBasicWindow(0x35);
          gWindowActiveIdx = 0x35;
          gClearSavedPadState = 1;
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
@@ -2277,75 +2277,75 @@ void Evtf003_BattleActions(EvtData *evt) {
             // Move
             CloseWindow(0x1f);
             CloseWindow(0x35);
-            evt->state = 7;
-            evt->state2 = 0;
+            obj->state = 7;
+            obj->state2 = 0;
          }
          if (gWindowChoice.raw == 0x3502) {
             // Action
             CloseWindow(0x1f);
             CloseWindow(0x35);
             if (unit->spells[0] != SPELL_NULL) {
-               evt->state = 10;
+               obj->state = 10;
             } else {
-               evt->state = 11;
+               obj->state = 11;
             }
-            evt->state2 = 0;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x3503) {
             // Done
             CloseWindow(0x1f);
             CloseWindow(0x35);
-            evt->state = 8;
-            evt->state2 = 0;
+            obj->state = 8;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x3505) {
             // Push
             CloseWindow(0x1f);
             CloseWindow(0x35);
-            evt->state = 15;
-            evt->state2 = 0;
+            obj->state = 15;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x3504) {
             // Examine
             CloseWindow(0x1f);
             CloseWindow(0x35);
-            evt->state = 9;
-            evt->state2 = 0;
+            obj->state = 9;
+            obj->state2 = 0;
          } else if (gWindowChoice.raw == 0x35ff) {
             // Cancel
-            if (!EVT.performedSubaction) {
+            if (!OBJ.performedSubaction) {
                CloseWindow(0x1f);
                CloseWindow(0x35);
-               evt->state = 100;
-               evt->state2 = 0;
+               obj->state = 100;
+               obj->state2 = 0;
             }
          }
          break;
-      } // switch (evt->state2) (via state:16)
+      } // switch (obj->state2) (via state:16)
 
       break;
 
    case 99:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gClearSavedPadState = 1;
          gState.mapCursorOutOfRange = 0;
-         evt2 = unit->sprite;
-         if (OBJ_TERRAIN(evt2).s.terrain == TERRAIN_VILE_BOG) {
+         obj2 = unit->sprite;
+         if (OBJ_TERRAIN(obj2).s.terrain == TERRAIN_VILE_BOG) {
             unit->poisoned = 1;
          }
          if (gState.droppedItem != ITEM_NULL) {
             ShowReceivedItemDialog(gState.droppedItem, 0x3c, 0);
             gState.depot[gState.droppedItem]++;
-            EVT.timer = 50;
-            evt->state2++;
+            OBJ.timer = 50;
+            obj->state2++;
          } else {
-            evt->state2 += 2;
+            obj->state2 += 2;
          }
          break;
 
       case 1:
-         if (PressedCircleOrX() || --EVT.timer == 0) {
+         if (PressedCircleOrX() || --OBJ.timer == 0) {
             CloseWindow(0x3c);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -2355,15 +2355,15 @@ void Evtf003_BattleActions(EvtData *evt) {
             // Moved during ambush (Reed Highway)
             gState.mapState.s.field_0x13 = 1;
          }
-         evt->state++;
+         obj->state++;
          break;
-      } // switch (evt->state2) (via state:99)
+      } // switch (obj->state2) (via state:99)
 
       break;
 
    case 100:
       gState.needEval = 1;
-      evt->state++;
+      obj->state++;
       break;
 
    case 101:
@@ -2371,35 +2371,35 @@ void Evtf003_BattleActions(EvtData *evt) {
          return;
       }
       unit->hideMarker = 0;
-      if (EVT.performedSubaction) {
+      if (OBJ.performedSubaction) {
          unit->done++;
       }
       gClearSavedPadState = 0;
       gSignal1 = 0;
       ClearBlueMovementGrid();
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       CloseWindow(0x1e);
       break;
-   } // switch (evt->state)
+   } // switch (obj->state)
 
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == unit->idx) {
          break;
       }
-      evt->state3++;
+      obj->state3++;
 
    // fallthrough
    case 1:
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == 0) {
          break;
       }
-      evt->state3++;
+      obj->state3++;
 
    // fallthrough
    case 2:
    BattleActions_CursorState2:
-      EVT.cursorUnitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx;
+      OBJ.cursorUnitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx;
       cursorUnit = &gUnits[gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx];
       UpdateCompactUnitInfoWindow(cursorUnit, cursorUnit, 1);
       CloseWindow(0x1e);
@@ -2408,20 +2408,20 @@ void Evtf003_BattleActions(EvtData *evt) {
       } else {
          DisplayCustomWindow(0x1e, 0, 1, 0, 0, 23);
       }
-      evt->state3++;
+      obj->state3++;
       break;
 
    case 3:
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == 0) {
          CloseWindow(0x1e);
-         EVT.cursorUnitIdx = 0;
-         evt->state3 = 1;
+         OBJ.cursorUnitIdx = 0;
+         obj->state3 = 1;
          break;
       }
-      if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == EVT.cursorUnitIdx) {
+      if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == OBJ.cursorUnitIdx) {
          break;
       }
-      evt->state3--;
+      obj->state3--;
       goto BattleActions_CursorState2;
    } // switch (cursorState)
 }
@@ -2429,9 +2429,9 @@ void Evtf003_BattleActions(EvtData *evt) {
 s16 s_newZoom_801231f8;
 u8 s_menuMem_battleOptions_801231fc;
 
-#undef EVTF
-#define EVTF 425
-void Evtf425_BattleOptions(EvtData *evt) {
+#undef OBJF
+#define OBJF 425
+void Objf425_BattleOptions(Object *obj) {
    // TODO: eliminate goto; earlier attempt to re-write in a more natural way threw off a bunch of
    // stuff; need to try other variations
    static u8 turnBuffer[13] = "\x82\x73\x82\x74\x82\x71\x82\x6d\x81\x40\x81\x40";
@@ -2439,15 +2439,15 @@ void Evtf425_BattleOptions(EvtData *evt) {
    UnitStatus *unit;
    s16 dx, dz;
    s16 unitX, unitZ;
-   EvtData *evt1;
+   Object *obj1;
    s16 turn;
 
    if (gState.battleEval != BATTLE_EVAL_NONE) {
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
    }
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       s_menuMem_battleOptions_801231fc = 0;
       if (gSignal1 == 0) {
@@ -2496,9 +2496,9 @@ void Evtf425_BattleOptions(EvtData *evt) {
                CenterCamera(1);
             }
 
-            evt1 = Evt_FindByFunction(EVTF_BATTLE_MAP_CURSOR_CONTROL);
-            evt1->x1.s.hi = gMapCursorX;
-            evt1->z1.s.hi = gMapCursorZ;
+            obj1 = Obj_FindByFunction(OBJF_BATTLE_MAP_CURSOR_CONTROL);
+            obj1->x1.s.hi = gMapCursorX;
+            obj1->z1.s.hi = gMapCursorZ;
             // break; // -> to next if
          } // Square
 
@@ -2508,7 +2508,7 @@ void Evtf425_BattleOptions(EvtData *evt) {
             // Pressing Circle on an unoccupied tile opens battle options
             gClearSavedPadState = 1;
             gSignal1 = 1;
-            evt->state++;
+            obj->state++;
             gWindowChoiceHeight = 17;
             gWindowChoicesTopMargin = 10;
             CloseWindow(0x35);
@@ -2544,7 +2544,7 @@ void Evtf425_BattleOptions(EvtData *evt) {
                "BATTLE CONDITION\nTURN OVER\nCHANGE ZOOM\nSTATUS\nOPTIONS\nSAVE\nLOAD");
       DisplayBasicWindowWithSetChoice(0x34, s_menuMem_battleOptions_801231fc);
       gWindowActiveIdx = 0x34;
-      evt->state++;
+      obj->state++;
       break;
 
    case 2:
@@ -2553,71 +2553,71 @@ void Evtf425_BattleOptions(EvtData *evt) {
          s_menuMem_battleOptions_801231fc = 1;
          CloseWindow(0x34);
          CloseWindow(0x35);
-         evt->state = 3;
-         evt->state2 = 0;
+         obj->state = 3;
+         obj->state2 = 0;
       }
       if (gWindowChoice.raw == 0x3403) {
          // Change zoom
          s_menuMem_battleOptions_801231fc = 2;
          CloseWindow(0x34);
-         evt->state = 5;
-         evt->state2 = 0;
+         obj->state = 5;
+         obj->state2 = 0;
       }
       if (gWindowChoice.raw == 0x3404) {
          // Status
          s_menuMem_battleOptions_801231fc = 3;
          CloseWindow(0x34);
-         evt->state = 0xb;
-         evt->state2 = 0;
+         obj->state = 0xb;
+         obj->state2 = 0;
       }
       if (gWindowChoice.raw == 0x3401) {
          // Battle condition
          s_menuMem_battleOptions_801231fc = 0;
          CloseWindow(0x34);
-         evt->state = 6;
-         evt->state2 = 0;
+         obj->state = 6;
+         obj->state2 = 0;
       }
       if (gWindowChoice.raw == 0x3405) {
          // Options
          s_menuMem_battleOptions_801231fc = 4;
          CloseWindow(0x34);
-         evt->state = 7;
-         evt->state2 = 0;
+         obj->state = 7;
+         obj->state2 = 0;
       }
       if (gWindowChoice.raw == 0x34ff) {
          // Cancel
          CloseWindow(0x34);
-         evt->state = 99;
-         evt->state2 = 0;
+         obj->state = 99;
+         obj->state2 = 0;
       }
       if (gWindowChoice.raw == 0x3406) {
          // Save
          CloseWindow(0x34);
          CloseWindow(0x35);
-         evt->state = 12;
-         evt->state2 = 0;
+         obj->state = 12;
+         obj->state2 = 0;
       }
       if (gWindowChoice.raw == 0x3407) {
          // Load
          CloseWindow(0x34);
          CloseWindow(0x35);
-         evt->state = 13;
-         evt->state2 = 0;
+         obj->state = 13;
+         obj->state2 = 0;
       }
       break;
 
    case 3:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gIsEnemyTurn = 1;
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (!gIsEnemyTurn) {
             gSignal1 = 0;
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2626,46 +2626,46 @@ void Evtf425_BattleOptions(EvtData *evt) {
 
    case 5:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          DrawWindow(0x34, 256, 0, 88, 74, 105, 80, WBS_CROSSED, 3);
          DrawText(260, 11, 10, 2, 0, "Close\nMedium\nDistant");
          DisplayBasicWindowWithSetChoice(0x34, gState.zoom);
          gWindowActiveIdx = 0x34;
-         evt->state2++;
+         obj->state2++;
          break;
 
       case 1:
-         EVT.timer = 15;
+         OBJ.timer = 15;
          if (gWindowChoice.raw == 0x3401) {
             CloseWindow(0x34);
             gState.zoom = 0;
             s_newZoom_801231f8 = 450;
-            evt->state2++;
+            obj->state2++;
          } else if (gWindowChoice.raw == 0x3402) {
             CloseWindow(0x34);
             gState.zoom = 1;
             s_newZoom_801231f8 = 640;
-            evt->state2++;
+            obj->state2++;
          } else if (gWindowChoice.raw == 0x3403) {
             CloseWindow(0x34);
             gState.zoom = 2;
             s_newZoom_801231f8 = 896;
-            evt->state2++;
+            obj->state2++;
          } else if (gWindowChoice.raw == 0x34ff || gWindowChoice.raw == 0x3404) {
             CloseWindow(0x34);
-            evt->state = 1;
-            evt->state2 = 0;
+            obj->state = 1;
+            obj->state2 = 0;
          }
          break;
 
       case 2:
-         if (--EVT.timer != 0) {
+         if (--OBJ.timer != 0) {
             gCameraZoom.vz += (s_newZoom_801231f8 - gCameraZoom.vz) >> 2;
          } else {
             gCameraZoom.vz = s_newZoom_801231f8;
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2674,14 +2674,14 @@ void Evtf425_BattleOptions(EvtData *evt) {
 
    case 6:
       // Battle conditions
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          DrawWindow(0x34, 0, 0, 320, 72, 1, 80, WBS_DRAGON, 0);
          DrawText(20, 20, 34, 2, 0, gState.currentTextPointers[0]);
          DisplayBasicWindow(0x34);
          DisplayBasicWindow(0x35);
          gWindowActiveIdx = 0x34;
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if ((PadRead(1) >> 0x10) & PAD_SELECT) {
@@ -2689,8 +2689,8 @@ void Evtf425_BattleOptions(EvtData *evt) {
             gState.vsyncNoWait = 1;
          }
          if (gPadStateNewPresses & PAD_X) {
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2698,37 +2698,37 @@ void Evtf425_BattleOptions(EvtData *evt) {
       break;
 
    case 7:
-      ShowConfigMenu(evt);
+      ShowConfigMenu(obj);
       break;
 
    case 8:
-      ShowTextSpeedSettings(evt);
+      ShowTextSpeedSettings(obj);
       break;
 
    case 9:
-      ShowAudioSettings(evt);
+      ShowAudioSettings(obj);
       break;
 
    case 10:
-      ShowCameraSettings(evt);
+      ShowCameraSettings(obj);
       break;
 
    case 11:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          CloseWindow(0x34);
          CloseWindow(0x35);
          gSignal2 = 0;
-         evt1 = Evt_GetUnused();
-         evt1->functionIndex = EVTF_STATUS_WINDOW_MGR;
-         evt->state2++;
+         obj1 = Obj_GetUnused();
+         obj1->functionIndex = OBJF_STATUS_WINDOW_MGR;
+         obj->state2++;
       // fallthrough
       case 1:
          if (gSignal2 == 100) {
             gClearSavedPadState = 0;
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2737,17 +2737,17 @@ void Evtf425_BattleOptions(EvtData *evt) {
 
    case 12:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt1 = Evt_GetUnused();
-         evt1->functionIndex = EVTF_FILE_SAVE_DIALOG_IBS;
+         obj1 = Obj_GetUnused();
+         obj1->functionIndex = OBJF_FILE_SAVE_DIALOG_IBS;
          gState.D_8014053E = 0;
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.D_8014053E != 0) {
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2756,17 +2756,17 @@ void Evtf425_BattleOptions(EvtData *evt) {
 
    case 13:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt1 = Evt_GetUnused();
-         evt1->functionIndex = EVTF_FILE_LOAD_DIALOG_IBS;
+         obj1 = Obj_GetUnused();
+         obj1->functionIndex = OBJF_FILE_LOAD_DIALOG_IBS;
          gState.D_8014053E = 0;
-         evt->state2++;
+         obj->state2++;
          break;
       case 1:
          if (gState.D_8014053E != 0) {
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
       }
@@ -2778,35 +2778,35 @@ void Evtf425_BattleOptions(EvtData *evt) {
       CloseWindow(0x35);
       gSignal1 = 0;
       gClearSavedPadState = 0;
-      evt->state = 0;
-      evt->state2 = 0;
+      obj->state = 0;
+      obj->state2 = 0;
       break;
-   } // switch (evt->state)
+   } // switch (obj->state)
 }
 
-void FieldInfo_HandleCursorUnit(EvtData *evt) {
+void FieldInfo_HandleCursorUnit(Object *obj) {
    UnitStatus *cursorUnit;
 
-   switch (evt->mem) {
+   switch (obj->mem) {
    case 0:
       // Bug: cursorUnit is uninitialized here; presumably because this function's code was lifted
-      // from Evtf003_BattleActions
+      // from Objf003_BattleActions
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == cursorUnit->idx) {
          break;
       }
-      evt->mem++;
+      obj->mem++;
 
    // fallthrough
    case 1:
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == 0) {
          break;
       }
-      evt->mem++;
+      obj->mem++;
 
    // fallthrough
    case 2:
    FieldInfo_CursorState2:
-      evt->d.evtf030.unitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx;
+      obj->d.objf030.unitIdx = gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx;
       cursorUnit = &gUnits[gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx];
       UpdateCompactUnitInfoWindow(cursorUnit, cursorUnit, 1);
       CloseWindow(0x1e);
@@ -2816,20 +2816,20 @@ void FieldInfo_HandleCursorUnit(EvtData *evt) {
       } else {
          DisplayCustomWindow(0x1e, 0, 1, 0, 0, 23);
       }
-      evt->mem++;
+      obj->mem++;
       break;
 
    case 3:
       if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == 0) {
          CloseWindow(0x1e);
-         evt->d.evtf030.unitIdx = 0;
-         evt->mem = 1;
+         obj->d.objf030.unitIdx = 0;
+         obj->mem = 1;
          break;
       }
-      if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == evt->d.evtf030.unitIdx) {
+      if (gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx == obj->d.objf030.unitIdx) {
          break;
       }
-      evt->mem--;
+      obj->mem--;
       goto FieldInfo_CursorState2;
    }
 }
@@ -2837,25 +2837,25 @@ void FieldInfo_HandleCursorUnit(EvtData *evt) {
 u8 s_unitX_80123200;
 u8 s_unitZ_80123204;
 
-#undef EVTF
-#define EVTF 030
-void Evtf030_FieldInfo(EvtData *evt) {
+#undef OBJF
+#define OBJF 030
+void Objf030_FieldInfo(Object *obj) {
    static s8 terrainText[10][12] = {"Plains   0%", "Prairie  5%", "Thicket 15%", "Barren   0%",
                                     "Water   20%", "Vile bog 0%", "Lava     0%", "Boundary30%",
                                     "Obstacle   ", "No entry   "};
-   // evt->state3: terrainInfoState
-   EvtData *evt1;
+   // obj->state3: terrainInfoState
+   Object *obj1;
    UnitStatus *unit;
 
    if (gState.battleEval != BATTLE_EVAL_NONE) {
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
    }
 
    if (!gIsEnemyTurn) {
-      switch (evt->state) {
+      switch (obj->state) {
       case 0:
-         FieldInfo_HandleCursorUnit(evt);
+         FieldInfo_HandleCursorUnit(obj);
 
          if ((gSavedPadStateNewPresses & PAD_CIRCLE) && gSignal1 == 0 &&
              gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx != 0) {
@@ -2869,42 +2869,42 @@ void Evtf030_FieldInfo(EvtData *evt) {
                   s_unitX_80123200 = gMapCursorX;
                   s_unitZ_80123204 = gMapCursorZ;
                   gSignal1 = 1;
-                  evt->state = 4;
-                  evt->state2 = 0;
+                  obj->state = 4;
+                  obj->state2 = 0;
                   break;
                } else if (unit->done || unit->paralyzed) {
                   s_unitX_80123200 = gMapCursorX;
                   s_unitZ_80123204 = gMapCursorZ;
                   gSignal1 = 1;
-                  evt->state = 4;
-                  evt->state2 = 0;
+                  obj->state = 4;
+                  obj->state2 = 0;
                   break;
                }
             }
 
             gSignal1 = 1;
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_BATTLE_ACTIONS;
-            evt1->x1.s.hi = gMapCursorX;
-            evt1->z1.s.hi = gMapCursorZ;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_BATTLE_ACTIONS;
+            obj1->x1.s.hi = gMapCursorX;
+            obj1->z1.s.hi = gMapCursorZ;
             gClearSavedPadState = 1;
 
          } else if ((gSavedPadStateNewPresses & PAD_X) && gSignal1 == 0 &&
                     gMapUnitsPtr[gMapCursorZ][gMapCursorX].s.unitIdx != 0) {
             CloseWindow(0x1e);
-            evt->x1.s.hi = gMapCursorX;
-            evt->z1.s.hi = gMapCursorZ;
+            obj->x1.s.hi = gMapCursorX;
+            obj->z1.s.hi = gMapCursorZ;
             gClearSavedPadState = 1;
             gSignal1 = 1;
-            evt->state += 2;
-            evt->state2 = 0;
+            obj->state += 2;
+            obj->state2 = 0;
          } else if ((gSavedPadStateNewPresses & PAD_TRIANGLE) && gSignal1 == 0 &&
                     !gPlayerControlSuppressed) {
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_OVERHEAD_MAP_VIEW;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_OVERHEAD_MAP_VIEW;
             gClearSavedPadState = 1;
             gSignal1 = 2;
-            evt->state += 3;
+            obj->state += 3;
          }
          break;
 
@@ -2913,20 +2913,20 @@ void Evtf030_FieldInfo(EvtData *evt) {
 
       case 2:
 
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             gSignal2 = 0;
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_STATUS_WINDOW;
-            evt1->d.evtf595.unit = unit = &gUnits[OBJ_MAP_UNIT(evt).s.unitIdx];
-            evt->state2++;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_STATUS_WINDOW;
+            obj1->d.objf595.unit = unit = &gUnits[OBJ_MAP_UNIT(obj).s.unitIdx];
+            obj->state2++;
 
          // fallthrough
          case 1:
             if (gSignal2 == 99) {
                gClearSavedPadState = 0;
                gSignal1 = 0;
-               evt->state = 0;
+               obj->state = 0;
             }
             break;
          }
@@ -2938,13 +2938,13 @@ void Evtf030_FieldInfo(EvtData *evt) {
             gClearSavedPadState = 0;
             gPlayerControlSuppressed = 0;
             gSignal1 = 0;
-            evt->state = 0;
+            obj->state = 0;
          }
          break;
 
       case 4:
          // Preview range for selected enemy or inactive unit
-         switch (evt->state2) {
+         switch (obj->state2) {
          case 0:
             gState.previewingRange = 1;
             unit = &gUnits[gMapUnitsPtr[s_unitZ_80123204][s_unitX_80123200].s.unitIdx];
@@ -2956,7 +2956,7 @@ void Evtf030_FieldInfo(EvtData *evt) {
             }
             PopulateBlueMovementGrid(s_unitZ_80123204, s_unitX_80123200, unit->travelRange);
             gShowBlueMovementGrid = 1;
-            evt->state2++;
+            obj->state2++;
             break;
 
          case 1:
@@ -2965,31 +2965,31 @@ void Evtf030_FieldInfo(EvtData *evt) {
                ClearBlueMovementGrid();
                CloseWindow(0x1f);
                gSignal1 = 0;
-               evt->state = 0;
-               evt->state2 = 0;
+               obj->state = 0;
+               obj->state2 = 0;
             }
          }
 
          break;
-      } // switch (evt->state)
+      } // switch (obj->state)
    }
 
-   switch (evt->state3) {
+   switch (obj->state3) {
    case 0:
       DrawWindow(0x39, 396, 0, 112, 36, 8, 188, WBS_CROSSED, 0);
       DisplayCustomWindow(0x39, 2, 1, 0, 0, 0);
-      EVT.previousTerrain = -1;
-      evt->state3++;
+      OBJ.previousTerrain = -1;
+      obj->state3++;
       break;
 
    case 1:
-      if (EVT.previousTerrain != gTerrainPtr[gMapCursorZ][gMapCursorX].s.terrain) {
-         EVT.previousTerrain = gTerrainPtr[gMapCursorZ][gMapCursorX].s.terrain;
-         DrawText(396, 11, 25, 0, 0, terrainText[EVT.previousTerrain]);
+      if (OBJ.previousTerrain != gTerrainPtr[gMapCursorZ][gMapCursorX].s.terrain) {
+         OBJ.previousTerrain = gTerrainPtr[gMapCursorZ][gMapCursorX].s.terrain;
+         DrawText(396, 11, 25, 0, 0, terrainText[OBJ.previousTerrain]);
       }
       if (gPlayerControlSuppressed || gIsEnemyTurn || gState.inEvent || gClearSavedPadState) {
          CloseWindow(0x39);
-         evt->state3++;
+         obj->state3++;
       }
       break;
 
@@ -2997,8 +2997,8 @@ void Evtf030_FieldInfo(EvtData *evt) {
       if (!gPlayerControlSuppressed && !gIsEnemyTurn && !gState.inEvent && !gClearSavedPadState) {
          gWindowChoicesCount = 0;
          DisplayCustomWindow(0x39, 2, 1, 0, 0, 0);
-         EVT.previousTerrain = -1;
-         evt->state3--;
+         OBJ.previousTerrain = -1;
+         obj->state3--;
       }
       break;
    }
@@ -3015,25 +3015,25 @@ s16 s_dstCamZ_80123224;
 s32 s_origMapSizeX_80123228;
 s32 s_origMapSizeZ_8012322c;
 
-#undef EVTF
-#define EVTF 013
-void Evtf013_BattleMgr(EvtData *evt) {
+#undef OBJF
+#define OBJF 013
+void Objf013_BattleMgr(Object *obj) {
    static s32 iUnit = 0;
-   EvtData *unitSprite, *evt1;
+   Object *unitSprite, *obj1;
    UnitStatus *unit;
    s32 i;
    s32 diff;
    OromeLakeEnemySpawn *pSpawn;
 
    if (gState.battleEval != BATTLE_EVAL_NONE) {
-      evt->functionIndex = EVTF_NULL;
+      obj->functionIndex = OBJF_NULL;
       return;
    }
 
-   unitSprite = EVT.unitSprite;
-   unit = EVT.unit;
+   unitSprite = OBJ.unitSprite;
+   unit = OBJ.unit;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       if (gIsEnemyTurn) {
          s_origMapSizeX_80123228 = gMapSizeX;
@@ -3064,38 +3064,38 @@ void Evtf013_BattleMgr(EvtData *evt) {
          s_dstCamY_80123220 = gCameraPos.vy;
          s_dstCamZ_80123224 = gCameraPos.vz;
 
-         evt->state = 13;
-         evt->state2 = 0;
+         obj->state = 13;
+         obj->state2 = 0;
          iUnit = 0;
 
          if (gState.mapNum == 8) {
             gPlayerControlSuppressed = 0;
-            EVT.timer = 1;
-            EVT.todo_x2d = 1;
-            evt->state = 1;
-            evt->state2 = 0;
+            OBJ.timer = 1;
+            OBJ.todo_x2d = 1;
+            obj->state = 1;
+            obj->state2 = 0;
          }
       }
       break;
 
    case 1:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          gShowBlueMovementGrid = 0;
-         if (--EVT.timer == 0) {
-            evt->state2++;
+         if (--OBJ.timer == 0) {
+            obj->state2++;
          }
          break;
       case 1:
          gState.needEval = 1;
-         evt->state2++;
+         obj->state2++;
          break;
       case 2:
          if (gState.battleEval == 0) {
-            evt->state++;
+            obj->state++;
          } else {
-            evt->state2++;
+            obj->state2++;
          }
          break;
       }
@@ -3110,12 +3110,12 @@ void Evtf013_BattleMgr(EvtData *evt) {
          iUnit++;
          if (iUnit == 40) {
             if (gState.mapNum != 8) {
-               EVT.todo_x2d = 0;
+               OBJ.todo_x2d = 0;
                gMapSizeX = s_origMapSizeX_80123228;
                gMapSizeZ = s_origMapSizeZ_8012322c;
                iUnit = 1;
-               evt->state = 14;
-               evt->state2 = 0;
+               obj->state = 14;
+               obj->state2 = 0;
                for (i = 1; i < 40; i++) {
                   unit = &gUnits[i];
                   unit->done = 0;
@@ -3161,18 +3161,18 @@ void Evtf013_BattleMgr(EvtData *evt) {
       } while (1);
       //} while (unit->idx == 0 || unit->paralyzed);
 
-      evt1 = unit->sprite;
-      EVT.unit = unit;
-      EVT.unitSprite = evt1;
-      unitSprite = evt1;
-      EVT.todo_x2d = 1;
-      evt->state++;
+      obj1 = unit->sprite;
+      OBJ.unit = unit;
+      OBJ.unitSprite = obj1;
+      unitSprite = obj1;
+      OBJ.todo_x2d = 1;
+      obj->state++;
       break;
 
    case 3:
       PopulateBlueMovementGrid(unitSprite->z1.s.hi, unitSprite->x1.s.hi, unit->travelRange);
       StartUnitSpritesDecoder(unitSprite->d.sprite.stripIdx);
-      evt->state++;
+      obj->state++;
       break;
 
    case 4:
@@ -3183,53 +3183,53 @@ void Evtf013_BattleMgr(EvtData *evt) {
          } else {
             DisplayCustomWindow(0x1d, 0, 1, 0, 0, 23);
          }
-         EVT.timer = 15;
-         evt->state++;
+         OBJ.timer = 15;
+         obj->state++;
       }
       break;
 
    case 5:
       D_80123468 = 0;
-      evt1 = Evt_GetLastUnused();
-      evt1->functionIndex = EVTF_AI_TBD_570;
-      evt1->x1.s.hi = unitSprite->x1.s.hi;
-      evt1->z1.s.hi = unitSprite->z1.s.hi;
-      evt->state++;
+      obj1 = Obj_GetLastUnused();
+      obj1->functionIndex = OBJF_AI_TBD_570;
+      obj1->x1.s.hi = unitSprite->x1.s.hi;
+      obj1->z1.s.hi = unitSprite->z1.s.hi;
+      obj->state++;
       break;
 
    case 6:
       if (D_80123468 != 0) {
          if (unitSprite->x1.s.hi == gX_801233d8 && unitSprite->z1.s.hi == gZ_801233dc) {
-            evt->state += 2;
-            evt->state2 = 0;
+            obj->state += 2;
+            obj->state2 = 0;
          } else {
-            evt->state++;
-            evt->state2 = 0;
+            obj->state++;
+            obj->state2 = 0;
          }
       }
       break;
 
    case 7:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          PerformAudioCommand(AUDIO_CMD_PREPARE_XA(136));
          if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
             OBJ_TILE_STATE(unitSprite).action = TA_X1D;
             OBJ_TILE_STATE(unitSprite).cachedByte = 16;
             gSignal3 = 0;
-            evt->state2++;
+            obj->state2++;
          } else {
-            evt->state2 += 2;
+            obj->state2 += 2;
          }
          break;
 
       case 1:
-         evt1 = Evt_GetUnused();
-         evt1->functionIndex = EVTF_CLOUD;
-         evt1->x1.n = unitSprite->x1.n;
-         evt1->z1.n = unitSprite->z1.n;
-         evt1->y1.n = unitSprite->y1.n;
+         obj1 = Obj_GetUnused();
+         obj1->functionIndex = OBJF_CLOUD;
+         obj1->x1.n = unitSprite->x1.n;
+         obj1->z1.n = unitSprite->z1.n;
+         obj1->y1.n = unitSprite->y1.n;
 
          if (gSignal3 != 0) {
             PerformAudioCommand(AUDIO_CMD_PLAY_XA(136));
@@ -3237,7 +3237,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
             OBJ_TILE_STATE(unitSprite).cachedByte = 0;
             gState.mapState.s.field_0x0 = 2;
             gState.field_0x96 = 1;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
@@ -3248,45 +3248,45 @@ void Evtf013_BattleMgr(EvtData *evt) {
             PlotPathBackToUnit(gZ_801233dc, gX_801233d8);
             OBJ_TILE_STATE(unitSprite).action = TA_X6;
             gSignal3 = 0;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 3:
          if (unit->unitType == UNIT_TYPE_ANT_ARM) {
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_CLOUD;
-            evt1->x1.n = unitSprite->x1.n;
-            evt1->z1.n = unitSprite->z1.n;
-            evt1->y1.n = unitSprite->y1.n;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_CLOUD;
+            obj1->x1.n = unitSprite->x1.n;
+            obj1->z1.n = unitSprite->z1.n;
+            obj1->y1.n = unitSprite->y1.n;
          }
          if (gSignal3 == 1) {
             gShowBlueMovementGrid = 0;
             if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
                OBJ_TILE_STATE(unitSprite).action = TA_X1D;
                OBJ_TILE_STATE(unitSprite).cachedByte = 22;
-               EVT.timer = 2;
+               OBJ.timer = 2;
                gSignal3 = 0;
-               evt->state2++;
+               obj->state2++;
             } else {
-               evt->state2 += 4;
+               obj->state2 += 4;
             }
          }
          break;
 
       case 4:
-         if (--EVT.timer == 0) {
-            evt->state2++;
+         if (--OBJ.timer == 0) {
+            obj->state2++;
             unitSprite->d.sprite.hidden = 0;
          }
          break;
 
       case 5:
-         evt1 = Evt_GetUnused();
-         evt1->functionIndex = EVTF_CLOUD;
-         evt1->x1.n = unitSprite->x1.n;
-         evt1->z1.n = unitSprite->z1.n;
-         evt1->y1.n = unitSprite->y1.n;
+         obj1 = Obj_GetUnused();
+         obj1->functionIndex = OBJF_CLOUD;
+         obj1->x1.n = unitSprite->x1.n;
+         obj1->z1.n = unitSprite->z1.n;
+         obj1->y1.n = unitSprite->y1.n;
 
          if (gSignal3 != 0) {
             OBJ_TILE_STATE(unitSprite).cachedByte = 0;
@@ -3295,63 +3295,63 @@ void Evtf013_BattleMgr(EvtData *evt) {
             gState.mapState.s.field_0x0 = 1;
             gState.mapState.s.field_0x1 = gZ_801233dc;
             gState.mapState.s.field_0x2 = gX_801233d8;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 6:
          if (gState.field_0x96 == 0) {
             UpdateElevation();
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 7:
          CloseWindow(0x1d);
          unit->direction = unitSprite->d.sprite.direction;
-         evt->state++;
-         evt->state2 = 0;
+         obj->state++;
+         obj->state2 = 0;
          break;
 
-      } // switch (evt->state2) (via state:7)
+      } // switch (obj->state2) (via state:7)
 
       break;
 
    case 8:
-      EVT.todo_x2d = 0;
+      OBJ.todo_x2d = 0;
       ClearBlueMovementGrid();
       if (D_8012337C == 0) {
          if (gDir_80123470 == 0xffff) {
-            evt->state += 1;
-            evt->state2 = 0;
+            obj->state += 1;
+            obj->state2 = 0;
          } else {
-            evt->state += 2;
-            evt->state2 = 0;
+            obj->state += 2;
+            obj->state2 = 0;
          }
       } else {
          CloseWindow(0x1d);
          if (D_8012337C == 1) {
-            evt->state += 3;
-            evt->state2 = 0;
+            obj->state += 3;
+            obj->state2 = 0;
          } else {
-            evt->state += 4;
-            evt->state2 = 0;
+            obj->state += 4;
+            obj->state2 = 0;
          }
       }
       break;
 
    case 9:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         EVT.timer = 5;
-         evt->state2++;
+         OBJ.timer = 5;
+         obj->state2++;
       // fallthrough
       case 1:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             CloseWindow(0x1d);
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
       }
@@ -3360,18 +3360,18 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
    case 10:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          unit->direction = gDir_80123470;
          OBJ_TILE_STATE(unitSprite).action = TA_XB;
-         EVT.timer = 5;
-         evt->state2++;
+         OBJ.timer = 5;
+         obj->state2++;
          // fallthrough
       case 1:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             CloseWindow(0x1d);
-            evt->state = 99;
-            evt->state2 = 0;
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
       }
@@ -3380,7 +3380,7 @@ void Evtf013_BattleMgr(EvtData *evt) {
 
    case 11:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          ClearGrid(1);
          if (unit->class == CLASS_ARCHER) {
@@ -3390,45 +3390,45 @@ void Evtf013_BattleMgr(EvtData *evt) {
             PopulateMeleeAttackGrid(unitSprite->z1.s.hi, unitSprite->x1.s.hi, 0, unit->attackRange);
          }
          gYellowTargetGridPtr[gTargetZ_80123418][gTargetX_80123414] += 1;
-         EVT.timer = 30;
-         evt->state2++;
+         OBJ.timer = 30;
+         obj->state2++;
          break;
 
       case 1:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             ClearGrid(0);
             ClearGrid(1);
-            evt1 = Evt_GetLastUnused();
-            evt1->functionIndex = EVTF_UNIT_ATTACKING;
-            evt1->x1.s.hi = gX_801233d8;
-            evt1->z1.s.hi = gZ_801233dc;
+            obj1 = Obj_GetLastUnused();
+            obj1->functionIndex = OBJF_UNIT_ATTACKING;
+            obj1->x1.s.hi = gX_801233d8;
+            obj1->z1.s.hi = gZ_801233dc;
             gTargetX = gTargetX_80123414;
             gTargetZ = gTargetZ_80123418;
             gSignal2 = 0;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
          if (gSignal2 == 99) {
-            EVT.timer = 5;
-            evt->state2++;
+            OBJ.timer = 5;
+            obj->state2++;
          }
          break;
 
       case 3:
-         if (--EVT.timer == 0) {
-            evt->state = 99;
-            evt->state2 = 0;
+         if (--OBJ.timer == 0) {
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
-      } // switch (evt->state2) (via state:11)
+      } // switch (obj->state2) (via state:11)
 
       break;
 
    case 12:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          ClearGrid(0);
          ClearGrid(1);
@@ -3443,45 +3443,45 @@ void Evtf013_BattleMgr(EvtData *evt) {
             gPathGrid1_Ptr[gTargetZ_80123418][gTargetX_80123414] += 1;
          }
 
-         EVT.timer = 50;
-         evt->state2++;
+         OBJ.timer = 50;
+         obj->state2++;
          break;
 
       case 1:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             ClearGrid(0);
             ClearGrid(1);
-            evt1 = Evt_GetLastUnused();
-            evt1->functionIndex = EVTF_UNIT_CASTING;
-            evt1->x1.s.hi = gX_801233d8;
-            evt1->z1.s.hi = gZ_801233dc;
+            obj1 = Obj_GetLastUnused();
+            obj1->functionIndex = OBJF_UNIT_CASTING;
+            obj1->x1.s.hi = gX_801233d8;
+            obj1->z1.s.hi = gZ_801233dc;
             gTargetX = gTargetX_80123414;
             gTargetZ = gTargetZ_80123418;
             gSignal2 = 0;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
          if (gSignal2 == 99) {
-            EVT.timer = 5;
-            evt->state2++;
+            OBJ.timer = 5;
+            obj->state2++;
          }
          break;
 
       case 3:
-         if (--EVT.timer == 0) {
-            evt->state = 99;
-            evt->state2 = 0;
+         if (--OBJ.timer == 0) {
+            obj->state = 99;
+            obj->state2 = 0;
          }
          break;
-      } // switch (evt->state2) (via state:12)
+      } // switch (obj->state2) (via state:12)
 
       break;
 
    case 13:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
          DrawWindow(0x38, 0, 0, 160, 64, 75, 90, WBS_DRAGON, 0);
          // ENEMY TURN
@@ -3489,75 +3489,75 @@ void Evtf013_BattleMgr(EvtData *evt) {
              20, 24, 20, 0, 0,
              "\x82\x64\x82\x6d\x82\x64\x82\x6c\x82\x78\x81\x40\x82\x73\x82\x74\x82\x71\x82\x6d");
          DisplayCustomWindow(0x38, 2, 1, 0, 0, 0);
-         EVT.timer = 45;
-         evt->state2++;
+         OBJ.timer = 45;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (EVT.timer == 25) {
+         if (OBJ.timer == 25) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
          }
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_STOP_ALL);
             CloseWindow(0x38);
-            EVT.timer = 10;
-            evt->state2++;
+            OBJ.timer = 10;
+            obj->state2++;
          }
          break;
 
       case 2:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PerformAudioCommand(AUDIO_CMD_PLAY_SEQ(1));
-            EVT.timer = 16;
-            evt->state2++;
+            OBJ.timer = 16;
+            obj->state2++;
          }
          break;
 
       case 3:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             gState.field_0x98 = 1;
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_BATTLE_ENEMY_EVENT;
-            evt->state2++;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_BATTLE_ENEMY_EVENT;
+            obj->state2++;
          }
          break;
 
       case 4:
          if (gState.field_0x98 == 0) {
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_BATTLE_TURN_START;
-            evt1->d.evtf592.team = TEAM_ENEMY;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_BATTLE_TURN_START;
+            obj1->d.objf592.team = TEAM_ENEMY;
             gSignal2 = 0;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 5:
          if (gSignal2 == 99) {
             gState.needEval = 1;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 6:
-         EVT.timer = 5;
-         evt->state = 1;
-         evt->state2 = 0;
+         OBJ.timer = 5;
+         obj->state = 1;
+         obj->state2 = 0;
          break;
-      } // switch (evt->state2) (via state:13)
+      } // switch (obj->state2) (via state:13)
 
       break;
 
    case 14:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         EVT.timer = 1;
-         evt->state2++;
+         OBJ.timer = 1;
+         obj->state2++;
 
       // fallthrough
       case 1:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             DrawWindow(0x38, 0, 0, 176, 64, 70, 90, WBS_DRAGON, 0);
             // PLAYER TURN
             DrawSjisText(
@@ -3565,57 +3565,57 @@ void Evtf013_BattleMgr(EvtData *evt) {
                 "\x82\x6f\x82\x6b\x82\x60\x82\x78\x82\x64\x82\x71\x81\x40\x82\x73\x82\x74\x82"
                 "\x71\x82\x6d");
             DisplayCustomWindow(0x38, 2, 1, 0, 0, 0);
-            EVT.timer = 45;
-            evt->state2++;
+            OBJ.timer = 45;
+            obj->state2++;
          }
          break;
 
       case 2:
-         if (EVT.timer == 25) {
+         if (OBJ.timer == 25) {
             PerformAudioCommand(AUDIO_CMD_FADE_OUT_32_4);
          }
-         if (EVT.timer == 10) {
+         if (OBJ.timer == 10) {
             PerformAudioCommand(AUDIO_CMD_STOP_ALL);
          }
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             PlayBattleBGM(gState.mapNum);
             CloseWindow(0x38);
-            EVT.timer = 20;
-            evt->state2++;
+            OBJ.timer = 20;
+            obj->state2++;
          }
          break;
 
       case 3:
-         if (--EVT.timer == 0) {
+         if (--OBJ.timer == 0) {
             gState.field_0x98 = 1;
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_BATTLE_TURN_TICKER;
-            evt->state2++;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_BATTLE_TURN_TICKER;
+            obj->state2++;
          }
          break;
 
       case 4:
          if (gState.field_0x98 == 0) {
             gState.field_0x98 = 1;
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_BATTLE_PLAYER_EVENT;
-            evt->state2++;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_BATTLE_PLAYER_EVENT;
+            obj->state2++;
          }
          break;
 
       case 5:
          if (gState.field_0x98 == 0) {
-            evt1 = Evt_GetUnused();
-            evt1->functionIndex = EVTF_BATTLE_TURN_START;
-            evt1->d.evtf592.team = TEAM_PLAYER;
+            obj1 = Obj_GetUnused();
+            obj1->functionIndex = OBJF_BATTLE_TURN_START;
+            obj1->d.objf592.team = TEAM_PLAYER;
             gSignal2 = 0;
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 6:
          if (gSignal2 == 99) {
-            EVT.timer = 20;
+            OBJ.timer = 20;
             gCameraRotation.vy &= 0xfff;
             diff = s_dstCamRotY_80123214 - gCameraRotation.vy;
             if (diff > 0) {
@@ -3625,12 +3625,12 @@ void Evtf013_BattleMgr(EvtData *evt) {
             } else if (diff < DEG(-180)) {
                s_dstCamRotY_80123214 += DEG(360);
             }
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 7:
-         if (--EVT.timer != 0) {
+         if (--OBJ.timer != 0) {
             gCameraRotation.vx += (s_dstCamRotX_80123210 - gCameraRotation.vx) >> 2;
             gCameraRotation.vy += (s_dstCamRotY_80123214 - gCameraRotation.vy) >> 2;
             gCameraZoom.vz += (s_dstZoom_80123218 - gCameraZoom.vz) >> 2;
@@ -3644,84 +3644,84 @@ void Evtf013_BattleMgr(EvtData *evt) {
             gCameraPos.vx = s_dstCamX_8012321c;
             gCameraPos.vy = s_dstCamY_80123220;
             gCameraPos.vz = s_dstCamZ_80123224;
-            evt->state2++;
+            obj->state2++;
          }
          return;
 
       case 8:
          gState.needEval = 1;
-         evt->state2++;
+         obj->state2++;
          return;
 
       case 9:
          gIsEnemyTurn = 0;
-         evt->state = 0;
+         obj->state = 0;
          return;
-      } // switch (evt->state2) (via state:14)
+      } // switch (obj->state2) (via state:14)
 
       break;
 
    case 99:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         evt1 = unit->sprite;
-         if (OBJ_TERRAIN(evt1).s.terrain == TERRAIN_VILE_BOG) {
+         obj1 = unit->sprite;
+         if (OBJ_TERRAIN(obj1).s.terrain == TERRAIN_VILE_BOG) {
             unit->poisoned = 1;
          }
          if (gState.droppedItem != ITEM_NULL) {
             ShowReceivedItemDialog(gState.droppedItem, 0x3c, 0);
             gState.depot[gState.droppedItem]++;
-            EVT.timer = 50;
-            evt->state2++;
+            OBJ.timer = 50;
+            obj->state2++;
          } else {
-            evt->state2 += 2;
+            obj->state2 += 2;
          }
          break;
 
       case 1:
-         if (PressedCircleOrX() || --EVT.timer == 0) {
+         if (PressedCircleOrX() || --OBJ.timer == 0) {
             CloseWindow(0x3c);
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 2:
          if (unit->name != UNIT_LEENA) {
-            evt->state += 1;
+            obj->state += 1;
          } else {
-            evt->state += 2;
+            obj->state += 2;
          }
          break;
-      } // switch (evt->state2) (via state:99)
+      } // switch (obj->state2) (via state:99)
 
       break;
 
    case 100:
       ClearGrid(0);
       ClearGrid(1);
-      EVT.timer = 5;
-      evt->state = 1;
-      evt->state2 = 0;
+      OBJ.timer = 5;
+      obj->state = 1;
+      obj->state2 = 0;
       break;
 
    case 101:
       if (gState.mapState.s.field_0x0 != 2 &&
           (unitSprite->z1.s.hi == 11 && unitSprite->x1.s.hi == 16)) {
          SetupBattleMsgBox(UNIT_LEENA, PORTRAIT_LEENA, 17);
-         evt->state++;
+         obj->state++;
       } else if (gState.mapState.s.field_0x0 != 3 &&
                  (unitSprite->z1.s.hi == 2 && unitSprite->x1.s.hi == 10)) {
          SetupBattleMsgBox(UNIT_LEENA, PORTRAIT_LEENA, 18);
-         evt->state++;
+         obj->state++;
       } else {
-         evt->state--;
+         obj->state--;
       }
       break;
 
    case 102:
       gPlayerControlSuppressed = 1;
-      evt->state++;
+      obj->state++;
       break;
 
    case 103:
@@ -3732,13 +3732,13 @@ void Evtf013_BattleMgr(EvtData *evt) {
             gState.mapState.s.field_0x0 = 3;
          }
          gState.field_0x96 = 1;
-         EVT.timer = 60;
-         evt->state++;
+         OBJ.timer = 60;
+         obj->state++;
       }
       break;
 
    case 104:
-      if (--EVT.timer == 0) {
+      if (--OBJ.timer == 0) {
          if (unitSprite->z1.s.hi == 11) {
             pSpawn = &sOromeLakeEnemySpawns1[0];
          } else {
@@ -3749,21 +3749,21 @@ void Evtf013_BattleMgr(EvtData *evt) {
                             DIR_WEST, 100, 12, 99);
             pSpawn++;
          }
-         evt->state++;
+         obj->state++;
       }
       break;
 
    case 105:
       if (gState.field_0x96 == 0) {
-         evt->state -= 5;
+         obj->state -= 5;
       }
       break;
 
-   } // switch (evt->state)
+   } // switch (obj->state)
 
    if (!gPlayerControlSuppressed) {
       s16 a, b;
-      if (EVT.todo_x2d) {
+      if (OBJ.todo_x2d) {
          gCameraPos.vx += (-(unitSprite->x1.n >> 3) - gCameraPos.vx) >> 4;
          gCameraPos.vz += (-(unitSprite->z1.n >> 3) - gCameraPos.vz) >> 4;
          gCameraPos.vy += (((unitSprite->y1.n + CV(1.0)) >> 3) - gCameraPos.vy) >> 4;

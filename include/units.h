@@ -407,8 +407,8 @@ typedef struct UnitStatus {
    s8 level;
    s8 team;
    u8 field3_0x3;
-   struct EvtData *battler;
-   struct EvtData *sprite;
+   struct Object *battler;
+   struct Object *sprite;
    BigInt experience;
    u8 field7_0x1c;
    u8 field8_0x1d;
@@ -536,19 +536,19 @@ typedef struct Spell {
 /*
 // Maybe an array instead?
 typedef struct SpellEx {
-   //u16 evtfMain;
-   //u16 evtfTarget;
-   //u16 evtfDefeat;
-   u16 evtf[3];
+   //u16 objfMain;
+   //u16 objfTarget;
+   //u16 objfDefeat;
+   u16 objf[3];
    s16 mpBonus;
    s16 effect;
 } SpellEx;
 */
 
 enum {
-   SPELL_EX_EVTF_MAIN = 0,
-   SPELL_EX_EVTF_TARGET = 1,
-   SPELL_EX_EVTF_DEFEAT = 2,
+   SPELL_EX_OBJF_MAIN = 0,
+   SPELL_EX_OBJF_TARGET = 1,
+   SPELL_EX_OBJF_DEFEAT = 2,
    SPELL_EX_MP_BONUS = 3,
    SPELL_EX_EFFECT = 4
 };

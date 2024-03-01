@@ -1,0 +1,1341 @@
+#include "common.h"
+#include "object.h"
+
+void Objf001_Noop(Object *);
+void Objf002_MenuChoice(Object *);
+void Objf003_BattleActions(Object *);
+void Objf004_005_408_Window(Object *);
+void Objf006_Logo(Object *);
+void Objf007_ApplyPoison(Object *);
+void Objf008_BattlePortrait(Object *);
+void Objf009_ItemIconMgr(Object *);
+void Objf013_BattleMgr(Object *);
+void Objf014_BattleUnit(Object *);
+void Objf015_TargetingAttack(Object *);
+void Objf016_ChooseDoneDirection(Object *);
+void Objf017_Camera_TBD(Object *);
+void Objf019_Compass(Object *);
+void Objf020_PushedBoulder(Object *);
+void Objf021_UnitAttacking(Object *);
+void Objf022_029_Projectile(Object *);
+void Objf023_Camera_RangedTarget(Object *);
+void Objf024_BounceZoom(Object *);
+void Objf025_OverheadMapView(Object *);
+void Objf026_588_Camera_TBD(Object *);
+void Objf027_TargetingSpell(Object *);
+void Objf028_UnitCasting(Object *);
+void Objf030_FieldInfo(Object *);
+void Objf031_BattleSpellsList(Object *);
+void Objf032_033_DisplayDamage(Object *);
+void Objf035_MapObject_Tree(Object *);
+void Objf036_MapObject_GraveMarker(Object *);
+void Objf037_MapObject_Fountain(Object *);
+void Objf038_MapObject_LampPost(Object *);
+void Objf039_MapObject_Flag(Object *);
+void Objf040_MapObject_Chest(Object *);
+void Objf042_MapObject_FlowingSand(Object *);
+void Objf043_SetupMapObjects(Object *);
+void Objf045_BloodSpurtParticleOffset(Object *);
+void Objf046_MapObject_Crate(Object *);
+void Objf047_BattleMapCursor(Object *);
+void Objf048_Push(Object *);
+void Objf049_BattleMapCursorControl(Object *);
+void Objf050_UnitSpritesDecoder(Object *);
+void Objf051_FloatingDamageText(Object *);
+void Objf052_AttackInfoMarker(Object *);
+void Objf059_DebugVram(Object *);
+void Objf060_Healing_FX1(Object *);
+void Objf062_StretchWarpSprite(Object *);
+void Objf070_FadeFromBlack(Object *);
+void Objf071_FadeToBlack(Object *);
+void Objf072_FadeFromWhite(Object *);
+void Objf073_FadeToWhite(Object *);
+void Objf074_FadeInSprite(Object *);
+void Objf075_FadeOutSprite(Object *);
+void Objf076_Circles_TBD(Object *);
+void Objf077_Circle_TBD(Object *);
+void Objf078_Damage_FX2(Object *);
+void Objf079_Slay_FX3(Object *);
+void Objf080_RomanFire_FX1(Object *);
+void Objf081_RomanFire_Flame(Object *);
+void Objf082_Fx_TBD(Object *);
+void Objf083_Fx_TBD(Object *);
+void Objf084_Avalanche_DustCloud(Object *);
+void Objf085_Map13_ExplosionPillar(Object *);
+void Objf086_Map15_HullSplash(Object *);
+void Objf087_Map20_Scn30_ArrowSpawner(Object *);
+void Objf088_Fx_TBD(Object *);
+void Objf089_Map15_Scn17_Cinematic(Object *);
+void Objf090_DaggerStorm_FX2(Object *);
+void Objf091_DaggerStorm_Dagger(Object *);
+void Objf092_DaggerStorm_FX1(Object *);
+void Objf093_DaggerStorm_FX3(Object *);
+void Objf094_MoodRing_FX1(Object *);
+void Objf095_MoodRing_Ring(Object *);
+void Objf096_MoodRing_FX2(Object *);
+void Objf097_MoodRing_FX3(Object *);
+void Objf098_Map20_Scn30_Arrow(Object *);
+void Objf099_Fx_TBD(Object *);
+void Objf100_Healing_FX2(Object *);
+void Objf101_HealingSparkle(Object *);
+void Objf102_227_Poison_FX2(Object *);
+void Objf103_Poison_Bubbles(Object *);
+void Objf104_Cure_FX2(Object *);
+void Objf106_MagicCharge_FX3(Object *);
+void Objf107_MagicCharge_GlyphRing(Object *);
+void Objf108_HarmfulWave_FX2(Object *);
+void Objf109_HarmfulWave_Ring(Object *);
+void Objf110_CastingStatBuff(Object *);
+void Objf111_BlessWeapon_FX2(Object *);
+void Objf112_MysticShield_FX2(Object *);
+void Objf113_MysticEnergy_FX2(Object *);
+void Objf115_Faerie_FX2(Object *);
+void Objf116_Faerie_Sparkle(Object *);
+void Objf117_Faerie_SparkleTrail(Object *);
+void Objf118_Faerie_Target(Object *);
+void Objf119_Fx_TBD(Object *);
+void Objf120_Fx_TBD(Object *);
+void Objf121_Fx_TBD(Object *);
+void Objf122_DarkFire_FX1(Object *);
+void Objf128_ThunderBall_FX2(Object *);
+void Objf129_ThunderBall_FX3(Object *);
+void Objf130_Fx_TBD(Object *);
+void Objf131_SlayUnit(Object *);
+void Objf132_Etc_Fx_TBD(Object *);
+void Objf133_Fx_TBD(Object *);
+void Objf137_Fx_TBD(Object *);
+void Objf141_Fx_TBD(Object *);
+void Objf144_HolyLightning_FX2(Object *);
+void Objf145_HolyLightning_ElectricOrb(Object *);
+void Objf146_HolyLightning_FX3(Object *);
+void Objf147_Fx_TBD(Object *);
+void Objf148_Fx_TBD(Object *);
+void Objf149_FlashingUnitSprite(Object *);
+void Objf151_FireGem_FX1(Object *);
+void Objf155_Spellbind_Glyph(Object *);
+void Objf156_DeltaMirage_FX1(Object *);
+void Objf157_DeltaMirage_Ray(Object *);
+void Objf158_Explosion_FX1(Object *);
+void Objf159_Explosion_Rays(Object *);
+void Objf160_IceStorm_Target(Object *);
+void Objf161_PiercingLight_FX1(Object *);
+void Objf162_IceStorm_Splash(Object *);
+void Objf163_StoneShower_FX1(Object *);
+void Objf164_StoneShower_Rock(Object *);
+void Objf165_StoneShower_FX2(Object *);
+void Objf166_StoneShower_FX3(Object *);
+void Objf167_RainbowSwirl(Object *);
+void Objf168_RainbowStroke_RainbowSwirl(Object *);
+void Objf169_EvilStream_FX1(Object *);
+void Objf170_PiercingRay_Etc_FX1(Object *);
+void Objf171_HomingRay(Object *);
+void Objf172_HolyPressure_Cube(Object *);
+void Objf173_FireGem_Beam(Object *);
+void Objf175_RainbowStorm_FX1(Object *);
+void Objf176_RainbowStroke_FX1(Object *);
+void Objf177_HolyPressure_FX1(Object *);
+void Objf178_ThunderFlash_FX1(Object *);
+void Objf179_ThunderFlash_Ray(Object *);
+void Objf180_SpreadForce_FX1(Object *);
+void Objf181_Spellbind_FX1(Object *);
+void Objf182_Fx_TBD(Object *);
+void Objf183_Fx_TBD(Object *);
+void Objf184_Avalanche_FX1(Object *);
+void Objf185_Avalanche_Rock(Object *);
+void Objf186_Fx_TBD(Object *);
+void Objf187_Fx_TBD(Object *);
+void Objf188_DarkFire_Ray(Object *);
+void Objf189_IceStorm_FX1(Object *);
+void Objf190_Fx_TBD(Object *);
+void Objf191_MagicArrow_Arrow(Object *);
+void Objf192_PerfectGuard_FX2(Object *);
+void Objf193_DarkStar_FX2(Object *);
+void Objf194_DarkStar_FX3(Object *);
+void Objf195_RollingThunder_FX2(Object *);
+void Objf196_RollingThunder_OrbPair(Object *);
+void Objf197_RollingThunder_FX1(Object *);
+void Objf198_RollingThunder_CastingBolt(Object *);
+void Objf199_MagicArrow_FX1(Object *);
+void Objf200_RollingThunder_FX3(Object *);
+void Objf201_UnitStruck(Object *);
+void Objf202_746_UnitBlocking(Object *);
+void Objf203_BlockingImpactParticle(Object *);
+void Objf204_SummonCrest(Object *);
+void Objf205_BloodSpurt(Object *);
+void Objf206_686_BloodSpurtParticle(Object *);
+void Objf207_SummonRedCrest(Object *);
+void Objf208_HolyLightning_FX1(Object *);
+void Objf209_SummonBlueCrest(Object *);
+void Objf210_SummonGreenCrest(Object *);
+void Objf211_Avalanche_Boulder(Object *);
+void Objf212_HolyLightning_CastingBolt(Object *);
+void Objf213_DustCloudSpawner(Object *);
+void Objf214_DustCloud(Object *);
+void Objf215_Cloud(Object *);
+void Objf220_Explosion_FX2(Object *);
+void Objf221_Explosion_FX3(Object *);
+void Objf222_Fx_TBD(Object *);
+void Objf223_Fx_TBD(Object *);
+void Objf224_ThunderBall_FX1(Object *);
+void Objf225_ThunderBall_InitialOrb(Object *);
+void Objf226_ThunderBall_ChildOrb(Object *);
+void Objf250_350_LoadEvent16(Object *);
+void Objf251_LoadEvent14(Object *);
+void Objf252_LoadEvent05(Object *);
+void Objf254_LoadEvent23(Object *);
+void Objf255_LoadEvent33(Object *);
+void Objf257_LoadEvent37(Object *);
+void Objf259_LoadEvent44(Object *);
+void Objf260_LoadEvent42(Object *);
+void Objf262_LoadEvent51(Object *);
+void Objf263_LoadEvent54(Object *);
+void Objf264_LoadEvent57(Object *);
+void Objf267_LoadEvent62(Object *);
+void Objf268_LoadEvent67(Object *);
+void Objf269_Fx_TBD(Object *);
+void Objf270_Fx_TBD(Object *);
+void Objf271_Map36_Scn74_LeenaCastingShield(Object *);
+void Objf272_StatRaised(Object *);
+void Objf273_OutwardRay(Object *);
+void Objf274_Noop(Object *);
+void Objf275_Fx_TBD(Object *);
+void Objf276_Fx_TBD(Object *);
+void Objf277_Zoom(Object *);
+void Objf278_FaintSparkles(Object *);
+void Objf279_IceStorm_Camera(Object *);
+void Objf280_DarkHurricane_Target(Object *);
+void Objf281_282_DarkHurricane_FX2_FX3(Object *);
+void Objf283_DarkHurricane_Cloud(Object *);
+void Objf284_Fx_TBD(Object *);
+void Objf285_CastingFx(Object *);
+void Objf286_Fx_TBD(Object *);
+void Objf287_Fx_TBD(Object *);
+void Objf288_Map13_BridgeExplosion_Battle(Object *);
+void Objf289_ChimneySmokeRing(Object *);
+void Objf290_294_761_RevealItem(Object *);
+void Objf291_ChestImpact(Object *);
+void Objf292_BlueItemSparkle(Object *);
+void Objf293_Fx_TBD(Object *);
+void Objf295_Smoke(Object *);
+void Objf296_Map17_SprayParticle(Object *);
+void Objf297_SplashDroplets(Object *);
+void Objf298_SplashWithDroplets(Object *);
+void Objf299_Map15_Ocean(Object *);
+void Objf300_Map32_Smokestack(Object *);
+void Objf301_Map32_SmokestackParticle(Object *);
+void Objf302_ChimneySmoke(Object *);
+void Objf303_Map31_Scn61_XenoFlames(Object *);
+void Objf304_661_Flame(Object *);
+void Objf305_328_MagicStoneFx(Object *);
+void Objf306_791_792_793_Healing_FX2(Object *);
+void Objf307_324_EvilStream_FX2_FX3(Object *);
+void Objf309_Explosion(Object *);
+void Objf310_LifeOrb_Beam(Object *);
+void Objf311_BubbleSwirl(Object *);
+void Objf312_BubbleSwirl_Bubble(Object *);
+void Objf313_LifeOrb_FX1(Object *);
+void Objf314_InwardRay(Object *);
+void Objf315_VerticalRay(Object *);
+void Objf316_Noop(Object *);
+void Objf317_338_Avalanche_FX2_FX3(Object *);
+void Objf321_Fx_TBD(Object *);
+void Objf322_370_371_372_MagicRestoration_FX2(Object *);
+void Objf325_Fx_TBD(Object *);
+void Objf326_Fx_TBD(Object *);
+void Objf327_HealingCircle_FX2(Object *);
+void Objf329_Noop(Object *);
+void Objf330_MagicRestoration_FX1(Object *);
+void Objf331_Fx_TBD(Object *);
+void Objf332_RollingFire_FX1(Object *);
+void Objf333_Fx_TBD(Object *);
+void Objf334_Salamander_FX1(Object *);
+void Objf335_Salamander_Head(Object *);
+void Objf336_Salamander_Segment(Object *);
+void Objf337_DaggerStorm_BloodSplatter(Object *);
+void Objf339_349_Rubble(Object *);
+void Objf340_Map48_Scn20_TBD(Object *);
+void Objf344_345_RomanFire_FX2_FX3(Object *);
+void Objf346_ButtonDepress(Object *);
+void Objf347_Map26(Object *);
+void Objf348_Fx_TBD(Object *);
+void Objf351_MsgBoxText(Object *);
+void Objf352_Map29(Object *);
+void Objf354_Map19_DebugElevators(Object *);
+void Objf355_356_Map19_Elevator(Object *);
+void Objf357_Map19(Object *);
+void Objf358_Map19_Elevator(Object *);
+void Objf359_PhaseShift_MapScaler(Object *);
+void Objf361_Map13_BridgeExplosion_Scene(Object *);
+void Objf362_DrawbridgeButton(Object *);
+void Objf363_Wyrmfang_FX1(Object *);
+void Objf364_Map15_Plank(Object *);
+void Objf365_Map17_Floodgate(Object *);
+void Objf366_Map17_Button(Object *);
+void Objf368_Map17_DrainingWater(Object *);
+void Objf369_ScreenEffect(Object *);
+void Objf375_FlameBreath_Particle(Object *);
+void Objf377_Fx_TBD(Object *);
+void Objf378_PhaseShift_FX1(Object *);
+void Objf379_EvilStream_Rock(Object *);
+void Objf380_LevelUpFx(Object *);
+void Objf381_HealingCircle_FX1(Object *);
+void Objf382_FlameBreath(Object *);
+void Objf383_Sparkle(Object *);
+void Objf384_Fx_TBD(Object *);
+void Objf385_RevealMimic(Object *);
+void Objf386_HealingSparkle(Object *);
+void Objf387_FullscreenImage(Object *);
+void Objf388_DarkHurricane_FX1(Object *);
+void Objf389_DarkHurricane_Vortex(Object *);
+void Objf390_DarkHurricane_VortexLayer(Object *);
+void Objf391(Object *);
+void Objf392_Fx_TBD(Object *);
+void Objf393_Map44_Scn00_ExplosionRays(Object *);
+void Objf394_DynamoHum_FX1(Object *);
+void Objf395_DynamoHum_ElectricOrb(Object *);
+void Objf396_DynamoHum_OrbElectricity(Object *);
+void Objf397_Fx_TBD(Object *);
+void Objf398_Fx_TBD(Object *);
+void Objf399_Map11(Object *);
+void Objf400_AI_TBD(Object *);
+void Objf401_AI_TBD(Object *);
+void Objf402_AI_TBD(Object *);
+void Objf403_AI_TBD(Object *);
+void Objf404_AI_TBD(Object *);
+void Objf405_Panorama(Object *);
+void Objf406_ShopOrDepot(Object *);
+void Objf407_NoopIncState(Object *);
+void Objf409_EventEntity(Object *);
+void Objf410_EventZoom(Object *);
+void Objf411_MapObject_VileBog(Object *);
+void Objf412_EventCamera(Object *);
+void Objf413_MsgBoxPortrait(Object *);
+void Objf414_DebugMenu(Object *);
+void Objf415_MapObject_Torch(Object *);
+void Objf416_LoadEvent00(Object *);
+void Objf417_LoadEvent03(Object *);
+void Objf418_LoadEvent06(Object *);
+void Objf419_Noop(Object *);
+void Objf420_BattleVictory(Object *);
+void Objf421_UpperMsgBoxTail(Object *);
+void Objf422_LowerMsgBoxTail(Object *);
+void Objf423_BattleDefeat(Object *);
+void Objf424_BattleEnder(Object *);
+void Objf425_BattleOptions(Object *);
+void Objf426_EvaluateBattle10(Object *);
+void Objf427_EvaluateBattle11(Object *);
+void Objf428_EvaluateBattle12(Object *);
+void Objf429_EvaluateBattle13(Object *);
+void Objf430_EvaluateBattle14(Object *);
+void Objf431_EvaluateBattle15(Object *);
+void Objf432_EvaluateBattle16(Object *);
+void Objf433_EvaluateBattle17(Object *);
+void Objf434_EvaluateStandardBattle(Object *);
+void Objf435_EvaluateBattle19(Object *);
+void Objf436_EvaluateBattle20(Object *);
+void Objf437_EvaluateBattle21(Object *);
+void Objf438_EvaluateBattle08(Object *);
+void Objf439_EvaluateBattle23(Object *);
+void Objf442_EvaluateBattle26(Object *);
+void Objf443_EvaluateBattle27(Object *);
+void Objf444_EvaluateBattle28(Object *);
+void Objf445_EvaluateBattle29(Object *);
+void Objf446_BattleVictoryParticle(Object *);
+void Objf447_UnitPortrait(Object *);
+void Objf448_UnitPortraitWrapper(Object *);
+void Objf449_MapObject_FlowingWater(Object *);
+void Objf450_LoadEvent68(Object *);
+void Objf451_LoadEvent70(Object *);
+void Objf452_LoadEvent72(Object *);
+void Objf453_LoadEvent73(Object *);
+void Objf454_LoadEvent75(Object *);
+void Objf455_LoadEvent76(Object *);
+void Objf456_LoadEvent79(Object *);
+void Objf457_LoadEvent80(Object *);
+void Objf458_LoadEvent81(Object *);
+void Objf459_LoadEvent83(Object *);
+void Objf460_LoadEvent01(Object *);
+void Objf461_LoadEvent02(Object *);
+void Objf462_LoadEvent04(Object *);
+void Objf463_LoadEvent08(Object *);
+void Objf464_LoadEvent09(Object *);
+void Objf465_LoadEvent11(Object *);
+void Objf466_LoadEvent12(Object *);
+void Objf467_LoadEvent13(Object *);
+void Objf468_LoadEvent19(Object *);
+void Objf469_LoadEvent21(Object *);
+void Objf470_LoadEvent22(Object *);
+void Objf471_LoadEvent24(Object *);
+void Objf472_LoadEvent28(Object *);
+void Objf473_LoadEvent29(Object *);
+void Objf474_LoadEvent30(Object *);
+void Objf475_LoadEvent31(Object *);
+void Objf476_LoadEvent34(Object *);
+void Objf477_LoadEvent35(Object *);
+void Objf478_LoadEvent36(Object *);
+void Objf479_LoadEvent39(Object *);
+void Objf480_LoadEvent40(Object *);
+void Objf481_LoadEvent41(Object *);
+void Objf482_LoadEvent50(Object *);
+void Objf483_LoadEvent52(Object *);
+void Objf484_LoadEvent55(Object *);
+void Objf485_LoadEvent56(Object *);
+void Objf486_LoadEvent61(Object *);
+void Objf487_LoadEvent64(Object *);
+void Objf488_LoadEvent65(Object *);
+void Objf489_LoadEvent66(Object *);
+void Objf490_LoadEvent71(Object *);
+void Objf491_LoadEvent60(Object *);
+void Objf492_LoadEvent10(Object *);
+void Objf493_LoadEvent18(Object *);
+void Objf494_LoadEvent15(Object *);
+void Objf495_LoadEvent17(Object *);
+void Objf496_LoadEvent27(Object *);
+void Objf497_LoadEvent32(Object *);
+void Objf498_LoadEvent38(Object *);
+void Objf499_LoadEvent43(Object *);
+void Objf500_LoadEvent46(Object *);
+void Objf501_LoadEvent48(Object *);
+void Objf502_LoadEvent49(Object *);
+void Objf503_LoadEvent53(Object *);
+void Objf504_LoadEvent63(Object *);
+void Objf505_LoadEvent69(Object *);
+void Objf506_LoadEvent74(Object *);
+void Objf507_LoadEvent77(Object *);
+void Objf508_LoadEvent78(Object *);
+void Objf509_LoadEvent82(Object *);
+void Objf510_LoadEvent84(Object *);
+void Objf511_LoadEvent85(Object *);
+void Objf512_LoadEvent86(Object *);
+void Objf513_LoadEvent87(Object *);
+void Objf514_LoadEvent88(Object *);
+void Objf515_LoadEvent89(Object *);
+void Objf516_LoadEvent90(Object *);
+void Objf517_LoadEvent91(Object *);
+void Objf518_LoadEvent92(Object *);
+void Objf519_LoadEvent93(Object *);
+void Objf520_LoadEvent25(Object *);
+void Objf521_LoadEvent94(Object *);
+void Objf522_LoadEvent26(Object *);
+void Objf523_LoadEvent07(Object *);
+void Objf524_LoadEvent20(Object *);
+void Objf525_LoadEvent47(Object *);
+void Objf552_EvaluateBattle32(Object *);
+void Objf553_EvaluateBattle33(Object *);
+void Objf555_EvaluateBattle35(Object *);
+void Objf557_EvaluateBattle37(Object *);
+void Objf558_EvaluateBattle38(Object *);
+void Objf559_EvaluateBattle39(Object *);
+void Objf560_EvaluateBattle40(Object *);
+void Objf562_EvaluateBattle42(Object *);
+void Objf563_EvaluateBattle43(Object *);
+void Objf564_565_566_MapObject_Water(Object *);
+void Objf567_OpeningChest(Object *);
+void Objf568_MapObject_Rail(Object *);
+void Objf569_572_MapObject_Lava(Object *);
+void Objf570_AI_TBD(Object *);
+void Objf571_LevelUp(Object *);
+void Objf573_BattleItemsList(Object *);
+void Objf574_DisplayIcon(Object *);
+void Objf575_StatusPortrait(Object *);
+void Objf576_Tavern(Object *);
+void Objf577_DynamicIcon(Object *);
+void Objf578_Dojo(Object *);
+void Objf579_WorldMap(Object *);
+void Objf580_Town(Object *);
+void Objf581_AudioCommand(Object *);
+void Objf582_MainMenu_Jpn(Object *);
+void Objf583_LoadingIndicator(Object *);
+void Objf584_Noop(Object *);
+void Objf585_BattlePlayerEvent(Object *);
+void Objf586_BattleMsgBox(Object *);
+void Objf587_BattleEnemyEvent(Object *);
+void Objf589_AI_TBD(Object *);
+void Objf590_BattleTurnTicker(Object *);
+void Objf591_MapObject_Boulder(Object *);
+void Objf592_BattleTurnStart(Object *);
+void Objf593_BattleResultsUnit(Object *);
+void Objf594_BattleResults(Object *);
+void Objf595_StatusWindow(Object *);
+void Objf596_StatusWindowMgr(Object *);
+void Objf597_BattleIntro(Object *);
+void Objf598_WorldActions(Object *);
+void Objf650_Map32_CarRelease(Object *);
+void Objf651_Map33_LavaPitPlatform(Object *);
+void Objf652_Map35_Button(Object *);
+void Objf653_ExplodingTile(Object *);
+void Objf654_Map38_WashAwayUnit(Object *);
+void Objf655_Map38_RaiseFloodgate(Object *);
+void Objf656_Map39(Object *);
+void Objf657_Map38_Floodgate(Object *);
+void Objf658_Map38_Floodwater(Object *);
+void Objf659_Splash(Object *);
+void Objf662_Map28_OpenDoor(Object *);
+void Objf663_Map28_Button(Object *);
+void Objf664_Map27_OpenCellDoor(Object *);
+void Objf665_Map27_Buttons(Object *);
+void Objf666_Map14_LowerSandMound(Object *);
+void Objf667_Map14_LowerSandTile(Object *);
+void Objf668_Map14_RaiseSandMound(Object *);
+void Objf669_Map14_RaiseSandTile(Object *);
+void Objf670_Map14_Sand(Object *);
+void Objf672_Map39_SplashingTile(Object *);
+void Objf673_Map32_Scn63_Cinematic(Object *);
+void Objf674_DebugSounds(Object *);
+void Objf675_LeenaForcefield(Object *);
+void Objf676_687_Rainfall(Object *);
+void Objf677_RainfallDrop(Object *);
+void Objf678_Ripple(Object *);
+void Objf681_StatBuffFx(Object *);
+void Objf685_RockSpurt(Object *);
+void Objf688_Noop(Object *);
+void Objf690_MagicStoneExplosion(Object *);
+void Objf691_Map43_Scn93_CameraShake(Object *);
+void Objf692_Campfire(Object *);
+void Objf702_FlamingRock(Object *);
+void Objf703_Map40_Barricade(Object *);
+void Objf708_709_Map14_Unused(Object *);
+void Objf710_Particle(Object *);
+void Objf711_712_Noop(Object *);
+void Objf715_to_718_Spellbind_FX2_FX3(Object *);
+void Objf733_StatBuffIcon(Object *);
+void Objf735_SparkleDust(Object *);
+void Objf736_RemoveParalysis_Bubble(Object *);
+void Objf737_RemoveParalysis(Object *);
+void Objf738_Map40_LowerBarricade(Object *);
+void Objf739_Particle(Object *);
+void Objf740_RemoveParalysis_Sparkles(Object *);
+void Objf747_748_Wyrmfang_Flames(Object *);
+void Objf749_Wyrmfang_Flame(Object *);
+void Objf750_751_Map33_LowerPlatform(Object *);
+void Objf752_Map14_Scn15_SandMoundSpawner(Object *);
+void Objf753_IncrementMapState0(Object *);
+void Objf754_Map39_Scn82(Object *);
+void Objf755_Map15_PirateStandIn(Object *);
+void Objf757_PushedObjectSplash(Object *);
+void Objf759_RockSpurtParticle(Object *);
+void Objf760_EliteMeleeSparkles(Object *);
+void Objf762_Megaherb(Object *);
+void Objf763_BoulderRubble(Object *);
+void Objf764_to_769_ProjectileTrail(Object *);
+void Objf770_to_789_ItemSpell(Object *);
+void Objf790_Fx_TBD(Object *);
+void Objf795_EventFade(Object *);
+void Objf797_Map47_Scn14_Dusk(Object *);
+void Objf798_ResetInputState(Object *);
+void Objf801_Fx_TBD(Object *);
+void Objf802_Fx_TBD(Object *);
+void Objf803_Fx_TBD(Object *);
+void Objf_Unk_8006183c(Object *);
+void Objf_Unk_80080924(Object *);
+void Objf_Unk_80087b58(Object *);
+void Objf_Unk_80089298(Object *);
+void Objf_Unk_8008a364(Object *);
+void Objf_Unk_8008d1f0(Object *);
+
+ObjFunction gObjFunctionPointers[804] = {
+    [0] = (ObjFunction)NULL,
+    [1] = Objf001_Noop,
+    [2] = Objf002_MenuChoice,
+    [3] = Objf003_BattleActions,
+    [4] = Objf004_005_408_Window,
+    [5] = Objf004_005_408_Window,
+    [6] = Objf006_Logo,
+    [7] = Objf007_ApplyPoison,
+    [8] = Objf008_BattlePortrait,
+    [9] = Objf009_ItemIconMgr,
+    [10] = (ObjFunction)NULL,
+    [11] = (ObjFunction)NULL,
+    [12] = (ObjFunction)NULL,
+    [13] = Objf013_BattleMgr,
+    [14] = Objf014_BattleUnit,
+    [15] = Objf015_TargetingAttack,
+    [16] = Objf016_ChooseDoneDirection,
+    [17] = Objf017_Camera_TBD,
+    [18] = (ObjFunction)NULL,
+    [19] = Objf019_Compass,
+    [20] = Objf020_PushedBoulder,
+    [21] = Objf021_UnitAttacking,
+    [22] = Objf022_029_Projectile,
+    [23] = Objf023_Camera_RangedTarget,
+    [24] = Objf024_BounceZoom,
+    [25] = Objf025_OverheadMapView,
+    [26] = Objf026_588_Camera_TBD,
+    [27] = Objf027_TargetingSpell,
+    [28] = Objf028_UnitCasting,
+    [29] = Objf022_029_Projectile,
+    [30] = Objf030_FieldInfo,
+    [31] = Objf031_BattleSpellsList,
+    [32] = Objf032_033_DisplayDamage,
+    [33] = Objf032_033_DisplayDamage,
+    [34] = (ObjFunction)NULL,
+    [35] = Objf035_MapObject_Tree,
+    [36] = Objf036_MapObject_GraveMarker,
+    [37] = Objf037_MapObject_Fountain,
+    [38] = Objf038_MapObject_LampPost,
+    [39] = Objf039_MapObject_Flag,
+    [40] = Objf040_MapObject_Chest,
+    [41] = (ObjFunction)NULL,
+    [42] = Objf042_MapObject_FlowingSand,
+    [43] = Objf043_SetupMapObjects,
+    [44] = (ObjFunction)NULL,
+    [45] = Objf045_BloodSpurtParticleOffset,
+    [46] = Objf046_MapObject_Crate,
+    [47] = Objf047_BattleMapCursor,
+    [48] = Objf048_Push,
+    [49] = Objf049_BattleMapCursorControl,
+    [50] = Objf050_UnitSpritesDecoder,
+    [51] = Objf051_FloatingDamageText,
+    [52] = Objf052_AttackInfoMarker,
+    [53] = (ObjFunction)NULL,
+    [54] = (ObjFunction)NULL,
+    [55] = (ObjFunction)NULL,
+    [56] = (ObjFunction)NULL,
+    [57] = (ObjFunction)NULL,
+    [58] = (ObjFunction)NULL,
+    [59] = Objf059_DebugVram,
+    [60] = Objf060_Healing_FX1,
+    [61] = (ObjFunction)NULL,
+    [62] = Objf062_StretchWarpSprite,
+    [63] = (ObjFunction)NULL,
+    [64] = (ObjFunction)NULL,
+    [65] = (ObjFunction)NULL,
+    [66] = (ObjFunction)NULL,
+    [67] = (ObjFunction)NULL,
+    [68] = (ObjFunction)NULL,
+    [69] = (ObjFunction)NULL,
+    [70] = Objf070_FadeFromBlack,
+    [71] = Objf071_FadeToBlack,
+    [72] = Objf072_FadeFromWhite,
+    [73] = Objf073_FadeToWhite,
+    [74] = Objf074_FadeInSprite,
+    [75] = Objf075_FadeOutSprite,
+    [76] = Objf076_Circles_TBD,
+    [77] = Objf077_Circle_TBD,
+    [78] = Objf078_Damage_FX2,
+    [79] = Objf079_Slay_FX3,
+    [80] = Objf080_RomanFire_FX1,
+    [81] = Objf081_RomanFire_Flame,
+    [82] = Objf082_Fx_TBD,
+    [83] = Objf083_Fx_TBD,
+    [84] = Objf084_Avalanche_DustCloud,
+    [85] = Objf085_Map13_ExplosionPillar,
+    [86] = Objf086_Map15_HullSplash,
+    [87] = Objf087_Map20_Scn30_ArrowSpawner,
+    [88] = Objf088_Fx_TBD,
+    [89] = Objf089_Map15_Scn17_Cinematic,
+    [90] = Objf090_DaggerStorm_FX2,
+    [91] = Objf091_DaggerStorm_Dagger,
+    [92] = Objf092_DaggerStorm_FX1,
+    [93] = Objf093_DaggerStorm_FX3,
+    [94] = Objf094_MoodRing_FX1,
+    [95] = Objf095_MoodRing_Ring,
+    [96] = Objf096_MoodRing_FX2,
+    [97] = Objf097_MoodRing_FX3,
+    [98] = Objf098_Map20_Scn30_Arrow,
+    [99] = Objf099_Fx_TBD,
+    [100] = Objf100_Healing_FX2,
+    [101] = Objf101_HealingSparkle,
+    [102] = Objf102_227_Poison_FX2,
+    [103] = Objf103_Poison_Bubbles,
+    [104] = Objf104_Cure_FX2,
+    [105] = (ObjFunction)NULL,
+    [106] = Objf106_MagicCharge_FX3,
+    [107] = Objf107_MagicCharge_GlyphRing,
+    [108] = Objf108_HarmfulWave_FX2,
+    [109] = Objf109_HarmfulWave_Ring,
+    [110] = Objf110_CastingStatBuff,
+    [111] = Objf111_BlessWeapon_FX2,
+    [112] = Objf112_MysticShield_FX2,
+    [113] = Objf113_MysticEnergy_FX2,
+    [114] = (ObjFunction)NULL,
+    [115] = Objf115_Faerie_FX2,
+    [116] = Objf116_Faerie_Sparkle,
+    [117] = Objf117_Faerie_SparkleTrail,
+    [118] = Objf118_Faerie_Target,
+    [119] = Objf119_Fx_TBD,
+    [120] = Objf120_Fx_TBD,
+    [121] = Objf121_Fx_TBD,
+    [122] = Objf122_DarkFire_FX1,
+    [123] = (ObjFunction)NULL,
+    [124] = (ObjFunction)NULL,
+    [125] = (ObjFunction)NULL,
+    [126] = (ObjFunction)NULL,
+    [127] = (ObjFunction)NULL,
+    [128] = Objf128_ThunderBall_FX2,
+    [129] = Objf129_ThunderBall_FX3,
+    [130] = Objf130_Fx_TBD,
+    [131] = Objf131_SlayUnit,
+    [132] = Objf132_Etc_Fx_TBD,
+    [133] = Objf133_Fx_TBD,
+    [134] = Objf132_Etc_Fx_TBD,
+    [135] = (ObjFunction)NULL,
+    [136] = Objf132_Etc_Fx_TBD,
+    [137] = Objf137_Fx_TBD,
+    [138] = Objf132_Etc_Fx_TBD,
+    [139] = (ObjFunction)NULL,
+    [140] = Objf132_Etc_Fx_TBD,
+    [141] = Objf141_Fx_TBD,
+    [142] = Objf132_Etc_Fx_TBD,
+    [143] = (ObjFunction)NULL,
+    [144] = Objf144_HolyLightning_FX2,
+    [145] = Objf145_HolyLightning_ElectricOrb,
+    [146] = Objf146_HolyLightning_FX3,
+    [147] = Objf147_Fx_TBD,
+    [148] = Objf148_Fx_TBD,
+    [149] = Objf149_FlashingUnitSprite,
+    [150] = (ObjFunction)NULL,
+    [151] = Objf151_FireGem_FX1,
+    [152] = (ObjFunction)NULL,
+    [153] = (ObjFunction)NULL,
+    [154] = (ObjFunction)NULL,
+    [155] = Objf155_Spellbind_Glyph,
+    [156] = Objf156_DeltaMirage_FX1,
+    [157] = Objf157_DeltaMirage_Ray,
+    [158] = Objf158_Explosion_FX1,
+    [159] = Objf159_Explosion_Rays,
+    [160] = Objf160_IceStorm_Target,
+    [161] = Objf161_PiercingLight_FX1,
+    [162] = Objf162_IceStorm_Splash,
+    [163] = Objf163_StoneShower_FX1,
+    [164] = Objf164_StoneShower_Rock,
+    [165] = Objf165_StoneShower_FX2,
+    [166] = Objf166_StoneShower_FX3,
+    [167] = Objf167_RainbowSwirl,
+    [168] = Objf168_RainbowStroke_RainbowSwirl,
+    [169] = Objf169_EvilStream_FX1,
+    [170] = Objf170_PiercingRay_Etc_FX1,
+    [171] = Objf171_HomingRay,
+    [172] = Objf172_HolyPressure_Cube,
+    [173] = Objf173_FireGem_Beam,
+    [174] = (ObjFunction)NULL,
+    [175] = Objf175_RainbowStorm_FX1,
+    [176] = Objf176_RainbowStroke_FX1,
+    [177] = Objf177_HolyPressure_FX1,
+    [178] = Objf178_ThunderFlash_FX1,
+    [179] = Objf179_ThunderFlash_Ray,
+    [180] = Objf180_SpreadForce_FX1,
+    [181] = Objf181_Spellbind_FX1,
+    [182] = Objf182_Fx_TBD,
+    [183] = Objf183_Fx_TBD,
+    [184] = Objf184_Avalanche_FX1,
+    [185] = Objf185_Avalanche_Rock,
+    [186] = Objf186_Fx_TBD,
+    [187] = Objf187_Fx_TBD,
+    [188] = Objf188_DarkFire_Ray,
+    [189] = Objf189_IceStorm_FX1,
+    [190] = Objf190_Fx_TBD,
+    [191] = Objf191_MagicArrow_Arrow,
+    [192] = Objf192_PerfectGuard_FX2,
+    [193] = Objf193_DarkStar_FX2,
+    [194] = Objf194_DarkStar_FX3,
+    [195] = Objf195_RollingThunder_FX2,
+    [196] = Objf196_RollingThunder_OrbPair,
+    [197] = Objf197_RollingThunder_FX1,
+    [198] = Objf198_RollingThunder_CastingBolt,
+    [199] = Objf199_MagicArrow_FX1,
+    [200] = Objf200_RollingThunder_FX3,
+    [201] = Objf201_UnitStruck,
+    [202] = Objf202_746_UnitBlocking,
+    [203] = Objf203_BlockingImpactParticle,
+    [204] = Objf204_SummonCrest,
+    [205] = Objf205_BloodSpurt,
+    [206] = Objf206_686_BloodSpurtParticle,
+    [207] = Objf207_SummonRedCrest,
+    [208] = Objf208_HolyLightning_FX1,
+    [209] = Objf209_SummonBlueCrest,
+    [210] = Objf210_SummonGreenCrest,
+    [211] = Objf211_Avalanche_Boulder,
+    [212] = Objf212_HolyLightning_CastingBolt,
+    [213] = Objf213_DustCloudSpawner,
+    [214] = Objf214_DustCloud,
+    [215] = Objf215_Cloud,
+    [216] = (ObjFunction)NULL,
+    [217] = (ObjFunction)NULL,
+    [218] = (ObjFunction)NULL,
+    [219] = (ObjFunction)NULL,
+    [220] = Objf220_Explosion_FX2,
+    [221] = Objf221_Explosion_FX3,
+    [222] = Objf222_Fx_TBD,
+    [223] = Objf223_Fx_TBD,
+    [224] = Objf224_ThunderBall_FX1,
+    [225] = Objf225_ThunderBall_InitialOrb,
+    [226] = Objf226_ThunderBall_ChildOrb,
+    [227] = Objf102_227_Poison_FX2,
+    [228] = (ObjFunction)NULL,
+    [229] = (ObjFunction)NULL,
+    [230] = (ObjFunction)NULL,
+    [231] = (ObjFunction)NULL,
+    [232] = (ObjFunction)NULL,
+    [233] = (ObjFunction)NULL,
+    [234] = (ObjFunction)NULL,
+    [235] = (ObjFunction)NULL,
+    [236] = (ObjFunction)NULL,
+    [237] = (ObjFunction)NULL,
+    [238] = (ObjFunction)NULL,
+    [239] = (ObjFunction)NULL,
+    [240] = (ObjFunction)NULL,
+    [241] = (ObjFunction)NULL,
+    [242] = (ObjFunction)NULL,
+    [243] = (ObjFunction)NULL,
+    [244] = (ObjFunction)NULL,
+    [245] = (ObjFunction)NULL,
+    [246] = (ObjFunction)NULL,
+    [247] = (ObjFunction)NULL,
+    [248] = (ObjFunction)NULL,
+    [249] = (ObjFunction)NULL,
+    [250] = Objf250_350_LoadEvent16,
+    [251] = Objf251_LoadEvent14,
+    [252] = Objf252_LoadEvent05,
+    [253] = (ObjFunction)0x800b1960,
+    [254] = Objf254_LoadEvent23,
+    [255] = Objf255_LoadEvent33,
+    [256] = (ObjFunction)0x800b2284,
+    [257] = Objf257_LoadEvent37,
+    [258] = (ObjFunction)0x800b2284,
+    [259] = Objf259_LoadEvent44,
+    [260] = Objf260_LoadEvent42,
+    [261] = (ObjFunction)NULL,
+    [262] = Objf262_LoadEvent51,
+    [263] = Objf263_LoadEvent54,
+    [264] = Objf264_LoadEvent57,
+    [265] = (ObjFunction)0x800b101c,
+    [266] = (ObjFunction)0x800b101c,
+    [267] = Objf267_LoadEvent62,
+    [268] = Objf268_LoadEvent67,
+    [269] = Objf269_Fx_TBD,
+    [270] = Objf270_Fx_TBD,
+    [271] = Objf271_Map36_Scn74_LeenaCastingShield,
+    [272] = Objf272_StatRaised,
+    [273] = Objf273_OutwardRay,
+    [274] = Objf274_Noop,
+    [275] = Objf275_Fx_TBD,
+    [276] = Objf276_Fx_TBD,
+    [277] = Objf277_Zoom,
+    [278] = Objf278_FaintSparkles,
+    [279] = Objf279_IceStorm_Camera,
+    [280] = Objf280_DarkHurricane_Target,
+    [281] = Objf281_282_DarkHurricane_FX2_FX3,
+    [282] = Objf281_282_DarkHurricane_FX2_FX3,
+    [283] = Objf283_DarkHurricane_Cloud,
+    [284] = Objf284_Fx_TBD,
+    [285] = Objf285_CastingFx,
+    [286] = Objf286_Fx_TBD,
+    [287] = Objf287_Fx_TBD,
+    [288] = Objf288_Map13_BridgeExplosion_Battle,
+    [289] = Objf289_ChimneySmokeRing,
+    [290] = Objf290_294_761_RevealItem,
+    [291] = Objf291_ChestImpact,
+    [292] = Objf292_BlueItemSparkle,
+    [293] = Objf293_Fx_TBD,
+    [294] = Objf290_294_761_RevealItem,
+    [295] = Objf295_Smoke,
+    [296] = Objf296_Map17_SprayParticle,
+    [297] = Objf297_SplashDroplets,
+    [298] = Objf298_SplashWithDroplets,
+    [299] = Objf299_Map15_Ocean,
+    [300] = Objf300_Map32_Smokestack,
+    [301] = Objf301_Map32_SmokestackParticle,
+    [302] = Objf302_ChimneySmoke,
+    [303] = Objf303_Map31_Scn61_XenoFlames,
+    [304] = Objf304_661_Flame,
+    [305] = Objf305_328_MagicStoneFx,
+    [306] = Objf306_791_792_793_Healing_FX2,
+    [307] = Objf307_324_EvilStream_FX2_FX3,
+    [308] = (ObjFunction)NULL,
+    [309] = Objf309_Explosion,
+    [310] = Objf310_LifeOrb_Beam,
+    [311] = Objf311_BubbleSwirl,
+    [312] = Objf312_BubbleSwirl_Bubble,
+    [313] = Objf313_LifeOrb_FX1,
+    [314] = Objf314_InwardRay,
+    [315] = Objf315_VerticalRay,
+    [316] = Objf316_Noop,
+    [317] = Objf317_338_Avalanche_FX2_FX3,
+    [318] = (ObjFunction)0x800acd90,
+    [319] = (ObjFunction)0x800acef4,
+    [320] = (ObjFunction)0x800ad284,
+    [321] = Objf321_Fx_TBD,
+    [322] = Objf322_370_371_372_MagicRestoration_FX2,
+    [323] = (ObjFunction)0x800ad600,
+    [324] = Objf307_324_EvilStream_FX2_FX3,
+    [325] = Objf325_Fx_TBD,
+    [326] = Objf326_Fx_TBD,
+    [327] = Objf327_HealingCircle_FX2,
+    [328] = Objf305_328_MagicStoneFx,
+    [329] = Objf329_Noop,
+    [330] = Objf330_MagicRestoration_FX1,
+    [331] = Objf331_Fx_TBD,
+    [332] = Objf332_RollingFire_FX1,
+    [333] = Objf333_Fx_TBD,
+    [334] = Objf334_Salamander_FX1,
+    [335] = Objf335_Salamander_Head,
+    [336] = Objf336_Salamander_Segment,
+    [337] = Objf337_DaggerStorm_BloodSplatter,
+    [338] = Objf317_338_Avalanche_FX2_FX3,
+    [339] = Objf339_349_Rubble,
+    [340] = Objf340_Map48_Scn20_TBD,
+    [341] = (ObjFunction)0x800b2db8,
+    [342] = (ObjFunction)0x800b2db8,
+    [343] = (ObjFunction)0x800b40d4,
+    [344] = Objf344_345_RomanFire_FX2_FX3,
+    [345] = Objf344_345_RomanFire_FX2_FX3,
+    [346] = Objf346_ButtonDepress,
+    [347] = Objf347_Map26,
+    [348] = Objf348_Fx_TBD,
+    [349] = Objf339_349_Rubble,
+    [350] = Objf250_350_LoadEvent16,
+    [351] = Objf351_MsgBoxText,
+    [352] = Objf352_Map29,
+    [353] = (ObjFunction)0x800b2db8,
+    [354] = Objf354_Map19_DebugElevators,
+    [355] = Objf355_356_Map19_Elevator,
+    [356] = Objf355_356_Map19_Elevator,
+    [357] = Objf357_Map19,
+    [358] = Objf358_Map19_Elevator,
+    [359] = Objf359_PhaseShift_MapScaler,
+    [360] = (ObjFunction)0x800b40d4,
+    [361] = Objf361_Map13_BridgeExplosion_Scene,
+    [362] = Objf362_DrawbridgeButton,
+    [363] = Objf363_Wyrmfang_FX1,
+    [364] = Objf364_Map15_Plank,
+    [365] = Objf365_Map17_Floodgate,
+    [366] = Objf366_Map17_Button,
+    [367] = (ObjFunction)0x800b40d4,
+    [368] = Objf368_Map17_DrainingWater,
+    [369] = Objf369_ScreenEffect,
+    [370] = Objf322_370_371_372_MagicRestoration_FX2,
+    [371] = Objf322_370_371_372_MagicRestoration_FX2,
+    [372] = Objf322_370_371_372_MagicRestoration_FX2,
+    [373] = (ObjFunction)0x800b40d4,
+    [374] = (ObjFunction)0x800b40d4,
+    [375] = Objf375_FlameBreath_Particle,
+    [376] = (ObjFunction)0x800b40d4,
+    [377] = Objf377_Fx_TBD,
+    [378] = Objf378_PhaseShift_FX1,
+    [379] = Objf379_EvilStream_Rock,
+    [380] = Objf380_LevelUpFx,
+    [381] = Objf381_HealingCircle_FX1,
+    [382] = Objf382_FlameBreath,
+    [383] = Objf383_Sparkle,
+    [384] = Objf384_Fx_TBD,
+    [385] = Objf385_RevealMimic,
+    [386] = Objf386_HealingSparkle,
+    [387] = Objf387_FullscreenImage,
+    [388] = Objf388_DarkHurricane_FX1,
+    [389] = Objf389_DarkHurricane_Vortex,
+    [390] = Objf390_DarkHurricane_VortexLayer,
+    [391] = Objf391,
+    [392] = Objf392_Fx_TBD,
+    [393] = Objf393_Map44_Scn00_ExplosionRays,
+    [394] = Objf394_DynamoHum_FX1,
+    [395] = Objf395_DynamoHum_ElectricOrb,
+    [396] = Objf396_DynamoHum_OrbElectricity,
+    [397] = Objf397_Fx_TBD,
+    [398] = Objf398_Fx_TBD,
+    [399] = Objf399_Map11,
+    [400] = Objf400_AI_TBD,
+    [401] = Objf401_AI_TBD,
+    [402] = Objf402_AI_TBD,
+    [403] = Objf403_AI_TBD,
+    [404] = Objf404_AI_TBD,
+    [405] = Objf405_Panorama,
+    [406] = Objf406_ShopOrDepot,
+    [407] = Objf407_NoopIncState,
+    [408] = Objf004_005_408_Window,
+    [409] = Objf409_EventEntity,
+    [410] = Objf410_EventZoom,
+    [411] = Objf411_MapObject_VileBog,
+    [412] = Objf412_EventCamera,
+    [413] = Objf413_MsgBoxPortrait,
+    [414] = Objf414_DebugMenu,
+    [415] = Objf415_MapObject_Torch,
+    [416] = Objf416_LoadEvent00,
+    [417] = Objf417_LoadEvent03,
+    [418] = Objf418_LoadEvent06,
+    [419] = Objf419_Noop,
+    [420] = Objf420_BattleVictory,
+    [421] = Objf421_UpperMsgBoxTail,
+    [422] = Objf422_LowerMsgBoxTail,
+    [423] = Objf423_BattleDefeat,
+    [424] = Objf424_BattleEnder,
+    [425] = Objf425_BattleOptions,
+    [426] = Objf426_EvaluateBattle10,
+    [427] = Objf427_EvaluateBattle11,
+    [428] = Objf428_EvaluateBattle12,
+    [429] = Objf429_EvaluateBattle13,
+    [430] = Objf430_EvaluateBattle14,
+    [431] = Objf431_EvaluateBattle15,
+    [432] = Objf432_EvaluateBattle16,
+    [433] = Objf433_EvaluateBattle17,
+    [434] = Objf434_EvaluateStandardBattle,
+    [435] = Objf435_EvaluateBattle19,
+    [436] = Objf436_EvaluateBattle20,
+    [437] = Objf437_EvaluateBattle21,
+    [438] = Objf438_EvaluateBattle08,
+    [439] = Objf439_EvaluateBattle23,
+    [440] = (ObjFunction)NULL,
+    [441] = (ObjFunction)NULL,
+    [442] = Objf442_EvaluateBattle26,
+    [443] = Objf443_EvaluateBattle27,
+    [444] = Objf444_EvaluateBattle28,
+    [445] = Objf445_EvaluateBattle29,
+    [446] = Objf446_BattleVictoryParticle,
+    [447] = Objf447_UnitPortrait,
+    [448] = Objf448_UnitPortraitWrapper,
+    [449] = Objf449_MapObject_FlowingWater,
+    [450] = Objf450_LoadEvent68,
+    [451] = Objf451_LoadEvent70,
+    [452] = Objf452_LoadEvent72,
+    [453] = Objf453_LoadEvent73,
+    [454] = Objf454_LoadEvent75,
+    [455] = Objf455_LoadEvent76,
+    [456] = Objf456_LoadEvent79,
+    [457] = Objf457_LoadEvent80,
+    [458] = Objf458_LoadEvent81,
+    [459] = Objf459_LoadEvent83,
+    [460] = Objf460_LoadEvent01,
+    [461] = Objf461_LoadEvent02,
+    [462] = Objf462_LoadEvent04,
+    [463] = Objf463_LoadEvent08,
+    [464] = Objf464_LoadEvent09,
+    [465] = Objf465_LoadEvent11,
+    [466] = Objf466_LoadEvent12,
+    [467] = Objf467_LoadEvent13,
+    [468] = Objf468_LoadEvent19,
+    [469] = Objf469_LoadEvent21,
+    [470] = Objf470_LoadEvent22,
+    [471] = Objf471_LoadEvent24,
+    [472] = Objf472_LoadEvent28,
+    [473] = Objf473_LoadEvent29,
+    [474] = Objf474_LoadEvent30,
+    [475] = Objf475_LoadEvent31,
+    [476] = Objf476_LoadEvent34,
+    [477] = Objf477_LoadEvent35,
+    [478] = Objf478_LoadEvent36,
+    [479] = Objf479_LoadEvent39,
+    [480] = Objf480_LoadEvent40,
+    [481] = Objf481_LoadEvent41,
+    [482] = Objf482_LoadEvent50,
+    [483] = Objf483_LoadEvent52,
+    [484] = Objf484_LoadEvent55,
+    [485] = Objf485_LoadEvent56,
+    [486] = Objf486_LoadEvent61,
+    [487] = Objf487_LoadEvent64,
+    [488] = Objf488_LoadEvent65,
+    [489] = Objf489_LoadEvent66,
+    [490] = Objf490_LoadEvent71,
+    [491] = Objf491_LoadEvent60,
+    [492] = Objf492_LoadEvent10,
+    [493] = Objf493_LoadEvent18,
+    [494] = Objf494_LoadEvent15,
+    [495] = Objf495_LoadEvent17,
+    [496] = Objf496_LoadEvent27,
+    [497] = Objf497_LoadEvent32,
+    [498] = Objf498_LoadEvent38,
+    [499] = Objf499_LoadEvent43,
+    [500] = Objf500_LoadEvent46,
+    [501] = Objf501_LoadEvent48,
+    [502] = Objf502_LoadEvent49,
+    [503] = Objf503_LoadEvent53,
+    [504] = Objf504_LoadEvent63,
+    [505] = Objf505_LoadEvent69,
+    [506] = Objf506_LoadEvent74,
+    [507] = Objf507_LoadEvent77,
+    [508] = Objf508_LoadEvent78,
+    [509] = Objf509_LoadEvent82,
+    [510] = Objf510_LoadEvent84,
+    [511] = Objf511_LoadEvent85,
+    [512] = Objf512_LoadEvent86,
+    [513] = Objf513_LoadEvent87,
+    [514] = Objf514_LoadEvent88,
+    [515] = Objf515_LoadEvent89,
+    [516] = Objf516_LoadEvent90,
+    [517] = Objf517_LoadEvent91,
+    [518] = Objf518_LoadEvent92,
+    [519] = Objf519_LoadEvent93,
+    [520] = Objf520_LoadEvent25,
+    [521] = Objf521_LoadEvent94,
+    [522] = Objf522_LoadEvent26,
+    [523] = Objf523_LoadEvent07,
+    [524] = Objf524_LoadEvent20,
+    [525] = Objf525_LoadEvent47,
+    [526] = (ObjFunction)NULL,
+    [527] = (ObjFunction)NULL,
+    [528] = (ObjFunction)NULL,
+    [529] = (ObjFunction)NULL,
+    [530] = (ObjFunction)0x800b1994,
+    [531] = (ObjFunction)NULL,
+    [532] = (ObjFunction)NULL,
+    [533] = (ObjFunction)NULL,
+    [534] = (ObjFunction)NULL,
+    [535] = (ObjFunction)0x800b2190,
+    [536] = (ObjFunction)0x800b2190,
+    [537] = (ObjFunction)NULL,
+    [538] = (ObjFunction)NULL,
+    [539] = (ObjFunction)NULL,
+    [540] = (ObjFunction)0x800b2138,
+    [541] = (ObjFunction)0x800b2138,
+    [542] = (ObjFunction)0x800b2138,
+    [543] = (ObjFunction)0x800b2138,
+    [544] = (ObjFunction)0x800b2138,
+    [545] = (ObjFunction)0x800b2138,
+    [546] = (ObjFunction)NULL,
+    [547] = (ObjFunction)NULL,
+    [548] = (ObjFunction)NULL,
+    [549] = (ObjFunction)NULL,
+    [550] = (ObjFunction)NULL,
+    [551] = (ObjFunction)NULL,
+    [552] = Objf552_EvaluateBattle32,
+    [553] = Objf553_EvaluateBattle33,
+    [554] = (ObjFunction)NULL,
+    [555] = Objf555_EvaluateBattle35,
+    [556] = (ObjFunction)NULL,
+    [557] = Objf557_EvaluateBattle37,
+    [558] = Objf558_EvaluateBattle38,
+    [559] = Objf559_EvaluateBattle39,
+    [560] = Objf560_EvaluateBattle40,
+    [561] = (ObjFunction)NULL,
+    [562] = Objf562_EvaluateBattle42,
+    [563] = Objf563_EvaluateBattle43,
+    [564] = Objf564_565_566_MapObject_Water,
+    [565] = Objf564_565_566_MapObject_Water,
+    [566] = Objf564_565_566_MapObject_Water,
+    [567] = Objf567_OpeningChest,
+    [568] = Objf568_MapObject_Rail,
+    [569] = Objf569_572_MapObject_Lava,
+    [570] = Objf570_AI_TBD,
+    [571] = Objf571_LevelUp,
+    [572] = Objf569_572_MapObject_Lava,
+    [573] = Objf573_BattleItemsList,
+    [574] = Objf574_DisplayIcon,
+    [575] = Objf575_StatusPortrait,
+    [576] = Objf576_Tavern,
+    [577] = Objf577_DynamicIcon,
+    [578] = Objf578_Dojo,
+    [579] = Objf579_WorldMap,
+    [580] = Objf580_Town,
+    [581] = Objf581_AudioCommand,
+    [582] = Objf582_MainMenu_Jpn,
+    [583] = Objf583_LoadingIndicator,
+    [584] = Objf584_Noop,
+    [585] = Objf585_BattlePlayerEvent,
+    [586] = Objf586_BattleMsgBox,
+    [587] = Objf587_BattleEnemyEvent,
+    [588] = Objf026_588_Camera_TBD,
+    [589] = Objf589_AI_TBD,
+    [590] = Objf590_BattleTurnTicker,
+    [591] = Objf591_MapObject_Boulder,
+    [592] = Objf592_BattleTurnStart,
+    [593] = Objf593_BattleResultsUnit,
+    [594] = Objf594_BattleResults,
+    [595] = Objf595_StatusWindow,
+    [596] = Objf596_StatusWindowMgr,
+    [597] = Objf597_BattleIntro,
+    [598] = Objf598_WorldActions,
+    [599] = (ObjFunction)NULL,
+    [600] = (ObjFunction)NULL,
+    [601] = (ObjFunction)NULL,
+    [602] = (ObjFunction)NULL,
+    [603] = (ObjFunction)NULL,
+    [604] = (ObjFunction)NULL,
+    [605] = (ObjFunction)NULL,
+    [606] = (ObjFunction)NULL,
+    [607] = (ObjFunction)NULL,
+    [608] = (ObjFunction)NULL,
+    [609] = (ObjFunction)NULL,
+    [610] = (ObjFunction)NULL,
+    [611] = (ObjFunction)NULL,
+    [612] = (ObjFunction)NULL,
+    [613] = (ObjFunction)NULL,
+    [614] = (ObjFunction)NULL,
+    [615] = (ObjFunction)NULL,
+    [616] = (ObjFunction)NULL,
+    [617] = (ObjFunction)NULL,
+    [618] = (ObjFunction)NULL,
+    [619] = (ObjFunction)NULL,
+    [620] = (ObjFunction)NULL,
+    [621] = (ObjFunction)NULL,
+    [622] = (ObjFunction)NULL,
+    [623] = (ObjFunction)NULL,
+    [624] = (ObjFunction)NULL,
+    [625] = (ObjFunction)NULL,
+    [626] = (ObjFunction)NULL,
+    [627] = (ObjFunction)NULL,
+    [628] = (ObjFunction)NULL,
+    [629] = (ObjFunction)NULL,
+    [630] = (ObjFunction)NULL,
+    [631] = (ObjFunction)NULL,
+    [632] = (ObjFunction)NULL,
+    [633] = (ObjFunction)NULL,
+    [634] = (ObjFunction)NULL,
+    [635] = (ObjFunction)NULL,
+    [636] = (ObjFunction)NULL,
+    [637] = (ObjFunction)NULL,
+    [638] = (ObjFunction)NULL,
+    [639] = (ObjFunction)NULL,
+    [640] = (ObjFunction)NULL,
+    [641] = (ObjFunction)NULL,
+    [642] = (ObjFunction)NULL,
+    [643] = (ObjFunction)NULL,
+    [644] = (ObjFunction)NULL,
+    [645] = (ObjFunction)NULL,
+    [646] = (ObjFunction)NULL,
+    [647] = (ObjFunction)NULL,
+    [648] = (ObjFunction)NULL,
+    [649] = (ObjFunction)NULL,
+    [650] = Objf650_Map32_CarRelease,
+    [651] = Objf651_Map33_LavaPitPlatform,
+    [652] = Objf652_Map35_Button,
+    [653] = Objf653_ExplodingTile,
+    [654] = Objf654_Map38_WashAwayUnit,
+    [655] = Objf655_Map38_RaiseFloodgate,
+    [656] = Objf656_Map39,
+    [657] = Objf657_Map38_Floodgate,
+    [658] = Objf658_Map38_Floodwater,
+    [659] = Objf659_Splash,
+    [660] = (ObjFunction)NULL,
+    [661] = Objf304_661_Flame,
+    [662] = Objf662_Map28_OpenDoor,
+    [663] = Objf663_Map28_Button,
+    [664] = Objf664_Map27_OpenCellDoor,
+    [665] = Objf665_Map27_Buttons,
+    [666] = Objf666_Map14_LowerSandMound,
+    [667] = Objf667_Map14_LowerSandTile,
+    [668] = Objf668_Map14_RaiseSandMound,
+    [669] = Objf669_Map14_RaiseSandTile,
+    [670] = Objf670_Map14_Sand,
+    [671] = (ObjFunction)NULL,
+    [672] = Objf672_Map39_SplashingTile,
+    [673] = Objf673_Map32_Scn63_Cinematic,
+    [674] = Objf674_DebugSounds,
+    [675] = Objf675_LeenaForcefield,
+    [676] = Objf676_687_Rainfall,
+    [677] = Objf677_RainfallDrop,
+    [678] = Objf678_Ripple,
+    [679] = (ObjFunction)0x800ada90,
+    [680] = (ObjFunction)0x800adcf4,
+    [681] = Objf681_StatBuffFx,
+    [682] = (ObjFunction)0x800ade8c,
+    [683] = (ObjFunction)0x800b2708,
+    [684] = (ObjFunction)0x800b2790,
+    [685] = Objf685_RockSpurt,
+    [686] = Objf206_686_BloodSpurtParticle,
+    [687] = Objf676_687_Rainfall,
+    [688] = Objf688_Noop,
+    [689] = (ObjFunction)0x800ae00c,
+    [690] = Objf690_MagicStoneExplosion,
+    [691] = Objf691_Map43_Scn93_CameraShake,
+    [692] = Objf692_Campfire,
+    [693] = (ObjFunction)0x800ae4f8,
+    [694] = (ObjFunction)0x800ae678,
+    [695] = (ObjFunction)0x800ae8f4,
+    [696] = (ObjFunction)0x800ae8f4,
+    [697] = (ObjFunction)0x800aeb04,
+    [698] = (ObjFunction)0x800aec78,
+    [699] = (ObjFunction)0x800af158,
+    [700] = (ObjFunction)0x800af2b8,
+    [701] = (ObjFunction)NULL,
+    [702] = Objf702_FlamingRock,
+    [703] = Objf703_Map40_Barricade,
+    [704] = (ObjFunction)NULL,
+    [705] = (ObjFunction)0x800af520,
+    [706] = (ObjFunction)NULL,
+    [707] = (ObjFunction)0x800afc68,
+    [708] = Objf708_709_Map14_Unused,
+    [709] = Objf708_709_Map14_Unused,
+    [710] = Objf710_Particle,
+    [711] = Objf711_712_Noop,
+    [712] = Objf711_712_Noop,
+    [713] = (ObjFunction)0x800ad600,
+    [714] = (ObjFunction)0x800afdbc,
+    [715] = Objf715_to_718_Spellbind_FX2_FX3,
+    [716] = Objf715_to_718_Spellbind_FX2_FX3,
+    [717] = Objf715_to_718_Spellbind_FX2_FX3,
+    [718] = Objf715_to_718_Spellbind_FX2_FX3,
+    [719] = (ObjFunction)0x800aff2c,
+    [720] = (ObjFunction)0x800b0500,
+    [721] = (ObjFunction)0x800b07cc,
+    [722] = (ObjFunction)0x800b0a08,
+    [723] = (ObjFunction)0x800b0bf8,
+    [724] = (ObjFunction)0x800b0cd0,
+    [725] = (ObjFunction)0x800b0e64,
+    [726] = (ObjFunction)0x800b0fc0,
+    [727] = (ObjFunction)0x800b0fd4,
+    [728] = (ObjFunction)0x800ad4c4,
+    [729] = (ObjFunction)0x800b101c,
+    [730] = (ObjFunction)0x800b130c,
+    [731] = (ObjFunction)0x800b0e04,
+    [732] = (ObjFunction)0x800af520,
+    [733] = Objf733_StatBuffIcon,
+    [734] = (ObjFunction)0x800b1334,
+    [735] = Objf735_SparkleDust,
+    [736] = Objf736_RemoveParalysis_Bubble,
+    [737] = Objf737_RemoveParalysis,
+    [738] = Objf738_Map40_LowerBarricade,
+    [739] = Objf739_Particle,
+    [740] = Objf740_RemoveParalysis_Sparkles,
+    [741] = (ObjFunction)0x800b0cd0,
+    [742] = (ObjFunction)0x800ace90,
+    [743] = (ObjFunction)0x800af520,
+    [744] = (ObjFunction)0x800af520,
+    [745] = (ObjFunction)0x800af8c8,
+    [746] = Objf202_746_UnitBlocking,
+    [747] = Objf747_748_Wyrmfang_Flames,
+    [748] = Objf747_748_Wyrmfang_Flames,
+    [749] = Objf749_Wyrmfang_Flame,
+    [750] = Objf750_751_Map33_LowerPlatform,
+    [751] = Objf750_751_Map33_LowerPlatform,
+    [752] = Objf752_Map14_Scn15_SandMoundSpawner,
+    [753] = Objf753_IncrementMapState0,
+    [754] = Objf754_Map39_Scn82,
+    [755] = Objf755_Map15_PirateStandIn,
+    [756] = (ObjFunction)0x800b1710,
+    [757] = Objf757_PushedObjectSplash,
+    [758] = (ObjFunction)0x800b28dc,
+    [759] = Objf759_RockSpurtParticle,
+    [760] = Objf760_EliteMeleeSparkles,
+    [761] = Objf290_294_761_RevealItem,
+    [762] = Objf762_Megaherb,
+    [763] = Objf763_BoulderRubble,
+    [764] = Objf764_to_769_ProjectileTrail,
+    [765] = Objf764_to_769_ProjectileTrail,
+    [766] = Objf764_to_769_ProjectileTrail,
+    [767] = Objf764_to_769_ProjectileTrail,
+    [768] = Objf764_to_769_ProjectileTrail,
+    [769] = Objf764_to_769_ProjectileTrail,
+    [770] = Objf770_to_789_ItemSpell,
+    [771] = Objf770_to_789_ItemSpell,
+    [772] = Objf770_to_789_ItemSpell,
+    [773] = Objf770_to_789_ItemSpell,
+    [774] = Objf770_to_789_ItemSpell,
+    [775] = Objf770_to_789_ItemSpell,
+    [776] = Objf770_to_789_ItemSpell,
+    [777] = Objf770_to_789_ItemSpell,
+    [778] = Objf770_to_789_ItemSpell,
+    [779] = Objf770_to_789_ItemSpell,
+    [780] = Objf770_to_789_ItemSpell,
+    [781] = Objf770_to_789_ItemSpell,
+    [782] = Objf770_to_789_ItemSpell,
+    [783] = Objf770_to_789_ItemSpell,
+    [784] = Objf770_to_789_ItemSpell,
+    [785] = Objf770_to_789_ItemSpell,
+    [786] = Objf770_to_789_ItemSpell,
+    [787] = Objf770_to_789_ItemSpell,
+    [788] = Objf770_to_789_ItemSpell,
+    [789] = Objf770_to_789_ItemSpell,
+    [790] = Objf790_Fx_TBD,
+    [791] = Objf306_791_792_793_Healing_FX2,
+    [792] = Objf306_791_792_793_Healing_FX2,
+    [793] = Objf306_791_792_793_Healing_FX2,
+    [794] = (ObjFunction)0x800b1320,
+    [795] = Objf795_EventFade,
+    [796] = (ObjFunction)0x800b53e0,
+    [797] = Objf797_Map47_Scn14_Dusk,
+    [798] = Objf798_ResetInputState,
+    [799] = Objf132_Etc_Fx_TBD,
+    [800] = Objf132_Etc_Fx_TBD,
+    [801] = Objf801_Fx_TBD,
+    [802] = Objf802_Fx_TBD,
+    [803] = Objf803_Fx_TBD,
+};

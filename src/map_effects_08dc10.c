@@ -1,5 +1,5 @@
 #include "common.h"
-#include "evt.h"
+#include "object.h"
 #include "graphics.h"
 #include "field.h"
 #include "state.h"
@@ -30,45 +30,45 @@ void Map27_RemoveCellDoor(s32 x, s32 z) {
    gTerrainPtr[z + 1][x].s.terrain = TERRAIN_PLAINS;
 }
 
-#undef EVTF
-#define EVTF 664
-void Evtf664_Map27_OpenCellDoor(EvtData *evt) {
+#undef OBJF
+#define OBJF 664
+void Objf664_Map27_OpenCellDoor(Object *obj) {
    s32 tileZ, tileX;
    MapTileModel *tileModel;
 
-   tileModel = &OBJ_TILE_MODEL(evt);
-   tileX = evt->x1.s.hi;
-   tileZ = evt->z1.s.hi;
+   tileModel = &OBJ_TILE_MODEL(obj);
+   tileX = obj->x1.s.hi;
+   tileZ = obj->z1.s.hi;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
-      evt->mem = 64;
-      evt->state2 = 2;
-      evt->state3 = 1;
-      evt->state++;
+      obj->mem = 64;
+      obj->state2 = 2;
+      obj->state3 = 1;
+      obj->state++;
 
    // fallthrough
    case 1:
-      if (evt->mem > evt->state2) {
-         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, evt->state2);
-         AdjustFaceElevation(&gMapRowPointers[tileZ + 1][tileX], 0, evt->state2);
+      if (obj->mem > obj->state2) {
+         AdjustFaceElevation(&gMapRowPointers[tileZ][tileX], 0, obj->state2);
+         AdjustFaceElevation(&gMapRowPointers[tileZ + 1][tileX], 0, obj->state2);
 
          tileModel = &gMapRowPointers[tileZ][tileX];
-         tileModel->vertices[tileModel->faces[7][0]].vy += evt->state2;
-         tileModel->vertices[tileModel->faces[7][1]].vy += evt->state2;
+         tileModel->vertices[tileModel->faces[7][0]].vy += obj->state2;
+         tileModel->vertices[tileModel->faces[7][1]].vy += obj->state2;
 
          tileModel = &gMapRowPointers[tileZ + 1][tileX];
-         tileModel->vertices[tileModel->faces[7][0]].vy += evt->state2;
-         tileModel->vertices[tileModel->faces[7][1]].vy += evt->state2;
+         tileModel->vertices[tileModel->faces[7][0]].vy += obj->state2;
+         tileModel->vertices[tileModel->faces[7][1]].vy += obj->state2;
 
-         evt->mem -= evt->state2;
+         obj->mem -= obj->state2;
       } else {
          SetFaceElevation(&gMapRowPointers[tileZ][tileX], 0, -16);
          SetFaceElevation(&gMapRowPointers[tileZ][tileX], 1, -16);
          SetFaceElevation(&gMapRowPointers[tileZ + 1][tileX], 0, -16);
          SetFaceElevation(&gMapRowPointers[tileZ + 1][tileX], 1, -16);
-         evt->mem = 0;
-         evt->state++;
+         obj->mem = 0;
+         obj->state++;
       }
       UpdateMapTileLighting(tileModel);
       gTerrainPtr[tileZ][tileX].s.elevation = -gMapRowPointers[tileZ][tileX].vertices[0].vy >> 4;
@@ -79,26 +79,26 @@ void Evtf664_Map27_OpenCellDoor(EvtData *evt) {
       break;
 
    case 2:
-      if (++evt->mem >= 32) {
-         evt->functionIndex = EVTF_NULL;
+      if (++obj->mem >= 32) {
+         obj->functionIndex = OBJF_NULL;
       }
       break;
    }
 }
 
-#undef EVTF
-#define EVTF 665
-void Evtf665_Map27_Buttons(EvtData *evt) {
+#undef OBJF
+#define OBJF 665
+void Objf665_Map27_Buttons(Object *obj) {
    static BVectorXZ buttonLocations[4] = {{22, 14}, {9, 9}, {15, 12}, {1, 1}};
    static u8 buttonDoorIdx[4] = {0, 1, 2, 4};
    static BVectorXZ doorLocations[5] = {{11, 1}, {19, 13}, {3, 1}, {11, 13}, {7, 9}};
 
    s32 i;
    s32 doorIdx;
-   EvtData *child;
+   Object *child;
    BVectorXZ *p;
 
-   switch (evt->state) {
+   switch (obj->state) {
    case 0:
       for (i = 0; i < ARRAY_COUNT(buttonLocations); i++) {
          if (gState.mapState.bytes[i] != 0) {
@@ -110,19 +110,19 @@ void Evtf665_Map27_Buttons(EvtData *evt) {
                p = &doorLocations[3];
                Map27_RemoveCellDoor(p->x, p->z);
             }
-            EVT.buttonPressed[i] = 1;
+            OBJ.buttonPressed[i] = 1;
          }
       }
-      evt->state++;
+      obj->state++;
 
    // fallthrough
    case 1:
       for (i = 0; i < ARRAY_COUNT(buttonLocations); i++) {
-         if (!EVT.buttonPressed[i] && gState.mapState.bytes[i] != 0) {
-            // Button i currently being pressed. (mapState set by Evtf443_EvaluateBattle27)
-            evt->mem = i;
-            evt->state++;
-            evt->state2 = 0;
+         if (!OBJ.buttonPressed[i] && gState.mapState.bytes[i] != 0) {
+            // Button i currently being pressed. (mapState set by Objf443_EvaluateBattle27)
+            obj->mem = i;
+            obj->state++;
+            obj->state2 = 0;
             break;
          }
       }
@@ -130,89 +130,89 @@ void Evtf665_Map27_Buttons(EvtData *evt) {
 
    case 2:
 
-      switch (evt->state2) {
+      switch (obj->state2) {
       case 0:
-         AssignFromMainCamera(&EVT.camera);
+         AssignFromMainCamera(&OBJ.camera);
          gPlayerControlSuppressed = 1;
-         evt->z3.n = buttonDoorIdx[evt->mem];
-         evt->state2++;
+         obj->z3.n = buttonDoorIdx[obj->mem];
+         obj->state2++;
          break;
 
       case 1:
-         child = Evt_GetUnused();
-         child->functionIndex = EVTF_BUTTON_DEPRESS;
-         child->x1.s.hi = buttonLocations[evt->mem].x;
-         child->z1.s.hi = buttonLocations[evt->mem].z;
-         EVT.child = child;
-         evt->state2++;
+         child = Obj_GetUnused();
+         child->functionIndex = OBJF_BUTTON_DEPRESS;
+         child->x1.s.hi = buttonLocations[obj->mem].x;
+         child->z1.s.hi = buttonLocations[obj->mem].z;
+         OBJ.child = child;
+         obj->state2++;
          break;
 
       case 2:
-         child = EVT.child;
+         child = OBJ.child;
          if (child->state == 99) {
-            evt->state3 = 0;
-            evt->state2++;
+            obj->state3 = 0;
+            obj->state2++;
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(40));
          }
          break;
 
       case 3:
-         PanCamera(doorLocations[evt->z3.n].x * CV(1.0) + CV(0.5),
-                   GetTerrainElevation(doorLocations[evt->z3.n].z, doorLocations[evt->z3.n].x),
-                   doorLocations[evt->z3.n].z * CV(1.0) + CV(0.5), 3);
-         if (++evt->state3 >= 48) {
+         PanCamera(doorLocations[obj->z3.n].x * CV(1.0) + CV(0.5),
+                   GetTerrainElevation(doorLocations[obj->z3.n].z, doorLocations[obj->z3.n].x),
+                   doorLocations[obj->z3.n].z * CV(1.0) + CV(0.5), 3);
+         if (++obj->state3 >= 48) {
             PerformAudioCommand(AUDIO_CMD_PLAY_XA(40));
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 4:
-         child = Evt_GetUnused();
-         child->functionIndex = EVTF_MAP27_OPEN_CELL_DOOR;
-         child->x1.s.hi = doorLocations[evt->z3.n].x;
-         child->z1.s.hi = doorLocations[evt->z3.n].z;
-         EVT.child = child;
-         evt->state2++;
+         child = Obj_GetUnused();
+         child->functionIndex = OBJF_MAP27_OPEN_CELL_DOOR;
+         child->x1.s.hi = doorLocations[obj->z3.n].x;
+         child->z1.s.hi = doorLocations[obj->z3.n].z;
+         OBJ.child = child;
+         obj->state2++;
          break;
 
       case 5:
-         child = EVT.child;
-         if (child->functionIndex != EVTF_MAP27_OPEN_CELL_DOOR) {
-            evt->state2++;
-            evt->state3 = 0;
+         child = OBJ.child;
+         if (child->functionIndex != OBJF_MAP27_OPEN_CELL_DOOR) {
+            obj->state2++;
+            obj->state3 = 0;
          }
          break;
 
       case 6:
-         if (evt->z3.n == 2) {
-            evt->z3.n++;
-            evt->state2 = 3;
+         if (obj->z3.n == 2) {
+            obj->z3.n++;
+            obj->state2 = 3;
          } else {
-            evt->state2++;
+            obj->state2++;
          }
          break;
 
       case 7:
-         EaseOutCamera(&EVT.camera, 2);
-         if (++evt->state3 >= 48) {
-            AssignToMainCamera(&EVT.camera);
-            evt->state2++;
+         EaseOutCamera(&OBJ.camera, 2);
+         if (++obj->state3 >= 48) {
+            AssignToMainCamera(&OBJ.camera);
+            obj->state2++;
          }
          break;
 
       case 8:
          gPlayerControlSuppressed = 0;
          gState.signal = 0;
-         evt->state2 = 0;
-         evt->state++;
+         obj->state2 = 0;
+         obj->state++;
          break;
       }
 
       break;
 
    case 3:
-      EVT.buttonPressed[evt->mem] = 1;
-      evt->state = 1;
+      OBJ.buttonPressed[obj->mem] = 1;
+      obj->state = 1;
       break;
    }
 }
