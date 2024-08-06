@@ -286,9 +286,9 @@ void RenderMaskEffect(Object *unitSprite, MaskEffectPreset *preset) {
    clonedSprite->functionIndex = OBJF_NULL;
 }
 
-static s16 sSparkleAnimData_80101838[14] = {5, GFX_SPARKLE_1, 3, GFX_SPARKLE_2, 3, GFX_SPARKLE_3,
-                                            3, GFX_SPARKLE_4, 3, GFX_SPARKLE_5, 3, GFX_NULL,
-                                            1, GFX_NULL};
+s16 gSparkleAnimData_80101838[14] = {5, GFX_SPARKLE_1, 3, GFX_SPARKLE_2, 3, GFX_SPARKLE_3,
+                                     3, GFX_SPARKLE_4, 3, GFX_SPARKLE_5, 3, GFX_NULL,
+                                     1, GFX_NULL};
 
 #undef OBJF
 #define OBJF 393
@@ -671,7 +671,7 @@ void Objf271_Map36_Scn74_LeenaCastingShield(Object *obj) {
    }
 }
 
-static s16 sCluts_801230a4[4] = {CLUT_REDS, CLUT_BLUES, CLUT_PURPLES, CLUT_GREENS};
+s16 gCluts_801230a4[4] = {CLUT_REDS, CLUT_BLUES, CLUT_PURPLES, CLUT_GREENS};
 
 #undef OBJF
 #define OBJF 270
@@ -721,7 +721,7 @@ void Objf270_Fx_TBD(Object *obj) {
          obj_s0->d.objf099.theta1 = 0;
          obj_s0->d.objf099.theta2 = 0;
          obj_s0->d.objf099.todo_x28 = rand() % 64 + 128;
-         obj_s0->d.objf099.clut = sCluts_801230a4[rand() % 4];
+         obj_s0->d.objf099.clut = gCluts_801230a4[rand() % 4];
          obj->mem += rand() % 4;
       }
 
@@ -988,7 +988,7 @@ void Objf340_Map48_Scn20_TBD(Object *obj) {
       obj_s0->d.objf099.theta1 = DEG(180);
       obj_s0->d.objf099.theta2 = DEG(0);
       obj_s0->d.objf099.todo_x28 = rand() % 64 + 256;
-      obj_s0->d.objf099.clut = sCluts_801230a4[rand() % 4];
+      obj_s0->d.objf099.clut = gCluts_801230a4[rand() % 4];
       obj_s0->d.objf099.todo_x30 = 16;
 
       obj_s0 = Obj_GetUnused();
@@ -1117,7 +1117,7 @@ void Objf305_328_MagicStoneFx(Object *obj) {
    }
 }
 
-static s16 sCluts_80101900[] = {CLUT_REDS, CLUT_BLUES, CLUT_PURPLES, CLUT_GREENS};
+s16 gCluts_80101900[] = {CLUT_REDS, CLUT_BLUES, CLUT_PURPLES, CLUT_GREENS};
 
 #undef OBJF
 #define OBJF 690
@@ -1223,3 +1223,247 @@ void func_800ACB4C(Object *sprite) {
 
    dataStore->functionIndex = OBJF_NULL;
 }
+
+#undef OBJF
+#define OBJF 318
+void Objf318_Fx_TBD(Object *obj) {
+   switch (obj->state) {
+   case 0:
+      SnapToUnit(obj);
+      obj->y1.n += CV(1.0);
+      obj->d.sprite.gfxIdx = GFX_TILED_RED_SPARKLES;
+      obj->d.sprite.semiTrans = 4;
+      obj->d.sprite.clut = CLUT_BLUES;
+      obj->state++;
+
+   // fallthrough
+   case 1:
+      obj->state2 += 32;
+      if (++obj->mem >= 512) {
+         obj->state++;
+      }
+      func_800ACB4C(obj);
+      break;
+
+   case 2:
+      obj->functionIndex = OBJF_NULL;
+      gSignal3 = 1;
+      break;
+   }
+}
+
+#undef OBJF
+#define OBJF 742
+void Objf742_Map67_Scn34_TBD(Object *obj) {
+   s32 i;
+   Object *p;
+
+   p = &gObjectArray[0];
+
+   for (i = 0; i < ARRAY_COUNT(gObjectArray); i++) {
+      if (p->functionIndex == OBJF_MAP67_SCN34_TBD_319) {
+         if (p->state == 1 && p->state2 == 2) {
+            p->state2++;
+         }
+         break;
+      }
+      p++;
+   }
+
+   obj->functionIndex = OBJF_NULL;
+}
+
+#undef OBJF
+#define OBJF 319
+void Objf319_Map67_Scn34_TBD(Object *obj) {
+   Object *obj_s2;
+   Object *obj_s0;
+   Object *obj_s3;
+
+   switch (obj->state) {
+   case 0:
+      obj_s2 = OBJ.entitySprite;
+      obj->x1.n = obj_s2->x1.n;
+      obj->z1.n = obj_s2->x1.n;
+      obj->y1.n = obj_s2->y1.n + CV(1.0);
+
+      obj_s2 = CreatePositionedObj(obj, OBJF_FX_TBD_320);
+      obj_s2->x3.n = obj->x1.n - CV(1.5);
+      OBJ.todo_x5c = obj_s2;
+
+      obj_s0 = CreatePositionedObj(obj, OBJF_NOOP);
+      obj_s0->x1.n -= CV(3.0);
+      OBJ.todo_x58 = obj_s0;
+      obj_s0->d.sprite.clut = CLUT_PURPLES;
+      obj_s0->d.sprite.semiTrans = 2;
+      OBJ.semiTrans = 2;
+
+      obj_s2 = CreatePositionedObj(obj_s0, OBJF_FX_TBD_320);
+      obj_s2->x3.n = obj_s0->x1.n + CV(1.5);
+      OBJ.todo_x50 = obj_s2;
+      obj->state++;
+
+   // fallthrough
+   case 1:
+      obj_s2 = OBJ.todo_x5c;
+      obj->x2.n = obj_s2->x1.n;
+      obj->z2.n = obj_s2->z1.n;
+      obj->y2.n = obj_s2->y1.n;
+      func_800ABFB8(obj);
+      func_800ABFB8(obj);
+      func_800ABFB8(obj);
+      obj_s0 = OBJ.todo_x58;
+      obj_s3 = OBJ.todo_x50;
+      obj_s0->x2.n = obj_s3->x1.n;
+      obj_s0->z2.n = obj_s3->z1.n;
+      obj_s0->y2.n = obj_s3->y1.n;
+      func_800ABFB8(obj_s0);
+      func_800ABFB8(obj_s0);
+
+      switch (obj->state2) {
+      case 0:
+         obj->state2++;
+
+      // fallthrough
+      case 1:
+         obj->state2++;
+
+      // fallthrough
+      case 2:
+         if (--obj->state3 <= 0) {
+            obj_s2 = CreatePositionedObj(obj, OBJF_FX_TBD_728);
+            obj_s2->x1.n -= CV(1.5);
+            obj_s2->mem = 16;
+            obj->state3 = rand() % 3 + 8;
+         }
+         break;
+
+      case 3:
+         obj_s2 = OBJ.todo_x5c;
+         obj_s3 = OBJ.todo_x50;
+         obj_s2->x2.n = obj_s3->x2.n = obj->x1.n - CV(1.5) - obj->mem;
+         if (--obj->state3 <= 0) {
+            obj_s0 = CreatePositionedObj(obj_s3, OBJF_FX_TBD_728);
+            obj_s0->mem = 16;
+            obj->state3 = rand() % 3 + 8;
+         }
+         obj->mem += 2;
+         if (obj->mem >= 384) {
+            obj_s2->functionIndex = OBJF_NULL;
+            obj_s3->functionIndex = OBJF_NULL;
+            obj->state++;
+            obj->mem = 384;
+         }
+         break;
+
+      case 4:
+         obj->state++;
+         break;
+      }
+
+      break;
+
+   case 2:
+      FadeOutScreen(0, 0xff);
+      obj->state++;
+      break;
+
+   case 3:
+      obj->state++;
+      break;
+
+   case 4:
+      FadeInScreen(0, 8);
+      obj->state++;
+      break;
+
+   case 5:
+      obj_s0 = OBJ.todo_x58;
+      obj_s0->functionIndex = OBJF_NULL;
+      obj->functionIndex = OBJF_NULL;
+      gSignal3 = 1;
+      break;
+   }
+}
+
+#undef OBJF
+#define OBJF 320
+void Objf320_Fx_TBD(Object *obj) {
+   s32 i;
+   Object *obj_s4;
+   s32 r;
+   s32 a, b;
+
+   switch (obj->state) {
+   case 0:
+      obj->state++;
+
+   // fallthrough
+   case 1:
+      obj->x1.n += (obj->x3.n - obj->x1.n) >> 2;
+      if (++obj->mem >= 32) {
+         obj->state++;
+      }
+      break;
+
+   case 2:
+      obj->x2.n = obj->x1.n;
+      obj->z2.n = obj->z1.n;
+      obj->y2.n = obj->y1.n;
+      obj->mem = 0;
+      obj->state++;
+
+   // fallthrough
+   case 3:
+      rsin(obj->mem << 4);
+      obj->x1.n = obj->x2.n;
+      obj->z1.n = obj->z2.n;
+      obj->y1.n = obj->y2.n;
+      obj->mem++;
+
+      for (i = 0; i < 5; i++) {
+         obj_s4 = CreatePositionedObj(obj, OBJF_FX_TBD_088);
+         a = rand() % DEG(360);
+         b = rand() % DEG(360);
+         r = rand() % CV(0.125) + CV(0.0625);
+         obj_s4->x2.n = r * rcos(a) >> 12;
+         obj_s4->z2.n = r * rsin(a) >> 12;
+         obj_s4->y2.n = r * rsin(b) >> 12;
+         obj_s4->mem = 12;
+      }
+      break;
+   }
+}
+
+#undef OBJF
+#define OBJF 728
+void Objf728_Fx_TBD(Object *obj) {
+   s16 halfSize;
+
+   switch (obj->state) {
+   case 0:
+      obj->d.sprite.gfxIdx = GFX_RING;
+      obj->d.sprite.clut = CLUT_BLUES;
+      obj->state++;
+
+   // fallthrough
+   case 1:
+      halfSize = obj->state2;
+      obj->state2 += 8;
+      obj->d.sprite.coords[0].x = obj->d.sprite.coords[1].x = obj->d.sprite.coords[2].x =
+          obj->d.sprite.coords[3].x = obj->x1.n;
+      obj->d.sprite.coords[0].z = obj->d.sprite.coords[2].z = obj->z1.n - halfSize;
+      obj->d.sprite.coords[1].z = obj->d.sprite.coords[3].z = obj->z1.n + halfSize;
+      obj->d.sprite.coords[0].y = obj->d.sprite.coords[1].y = obj->y1.n - halfSize;
+      obj->d.sprite.coords[2].y = obj->d.sprite.coords[3].y = obj->y1.n + halfSize;
+      obj->mem++;
+      obj->d.sprite.hidden = obj->mem % 2;
+      AddObjPrim4(gGraphicsPtr->ot, obj);
+      if (obj->state2 >= 256) {
+         obj->functionIndex = OBJF_NULL;
+      }
+      break;
+   }
+}
+
+// gSparkleAnimData_80101838, gCluts_801230a4, gCluts_80101900 static?

@@ -164,6 +164,7 @@ void UpdateInput(void) {
 
 s32 D_801231D0;
 s32 D_801231D4;
+s32 D_801231D8; // unused
 
 void CenterCamera(u8 cursor) {
    s32 dstX, dstZ;

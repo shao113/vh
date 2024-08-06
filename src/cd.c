@@ -1221,8 +1221,10 @@ u32 Movie_GetFrameNum(void) {
 
 void Movie_InitDecoder(void) {
    static void *vlcBufAddr1 = &gScratch3_80180210;
-   static void *vlcBufAddr2 = (void *)0x801a24f0; //&gScratch3_80180210[140000]; //FIXME (reloc)
-   static void *imgBufAddr = (void *)0x801c47d0;  //&gScratch3_80180210[280000]; //FIXME (reloc)
+   // static void *vlcBufAddr2 = (void *)0x801a24f0; //&gScratch3_80180210[140000]; //FIXME (reloc)
+   // static void *imgBufAddr = (void *)0x801c47d0;  //&gScratch3_80180210[280000]; //FIXME (reloc)
+   static void *vlcBufAddr2 = &gScratch3_80180210[140000];
+   static void *imgBufAddr = &gScratch3_80180210[280000];
 
    gMovieDecoder.vlcBufferIdx = 0;
    gMovieDecoder.bufferRectIdx = (gGraphicsPtr != &gGraphicBuffers[0]);

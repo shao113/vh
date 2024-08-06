@@ -174,6 +174,8 @@ typedef enum ObjFunctionIdx {
    OBJF_INWARD_RAY = 314,
    OBJF_VERTICAL_RAY = 315,
    OBJF_AVALANCHE_FX3 = 317,
+   OBJF_MAP67_SCN34_TBD_319 = 319,
+   OBJF_FX_TBD_320 = 320,
    OBJF_FX_TBD_323 = 323,
    OBJF_EVIL_STREAM_FX2 = 324,
    OBJF_MAP43_SCN93_MAGIC_STONE_FX = 328,
@@ -350,6 +352,7 @@ typedef enum ObjFunctionIdx {
    OBJF_SPELLBIND_FX3 = 716,
    OBJF_TBD_717 = 717,
    OBJF_TBD_718 = 718,
+   OBJF_FX_TBD_728 = 728,
    OBJF_TBD_732 = 732,
    OBJF_STAT_BUFF_ICON = 733,
    OBJF_SPARKLE_DUST = 735,
@@ -2357,6 +2360,18 @@ typedef struct Object_317_338 {
    /* :0x2C */ u8 unk_0x2C[52];
 } Object_317_338;
 
+/* Map 67 - Scene 34 - TBD */
+typedef struct Object_319 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ u8 unk_0x28[9];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ u8 unk_0x32[30];
+   /* :0x50 */ struct Object *todo_x50;
+   /* :0x54 */ u8 unk_0x54[4];
+   /* :0x58 */ struct Object *todo_x58;
+   /* :0x5C */ struct Object *todo_x5c;
+} Object_319;
+
 /* FX - TBD */
 typedef struct Object_321 {
    /* :0x24 */ s16 thetas[8];
@@ -3718,6 +3733,7 @@ typedef struct Object {
       Object_314 objf314;         /* Inward Ray */
       Object_315 objf315;         /* Vertical Ray */
       Object_317_338 objf317;     /* Avalanche - FX2 / FX3 */
+      Object_319 objf319;         /* Map 67 - Scene 34 - TBD */
       Object_321 objf321;         /* FX - TBD */
       Object_322_Etc objf322;     /* Magic Restoration (Magic Charge, etc.) - FX2 */
       Object_323_713 objf323;     /* FX - TBD */

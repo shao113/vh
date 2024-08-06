@@ -1280,6 +1280,9 @@ void Objf404_AI_TBD(Object *obj) {
    }
 }
 
+s32 D_80123320; // unused
+s32 D_80123324; // unused
+
 s32 s_pref_80123328;
 s32 s_z_8012332c;
 s32 s_x_80123330;

@@ -238,6 +238,9 @@ void Objf314_InwardRay(Object *);
 void Objf315_VerticalRay(Object *);
 void Objf316_Noop(Object *);
 void Objf317_338_Avalanche_FX2_FX3(Object *);
+void Objf318_Fx_TBD(Object *);
+void Objf319_Map67_Scn34_TBD(Object *);
+void Objf320_Fx_TBD(Object *);
 void Objf321_Fx_TBD(Object *);
 void Objf322_370_371_372_MagicRestoration_FX2(Object *);
 void Objf325_Fx_TBD(Object *);
@@ -498,6 +501,7 @@ void Objf708_709_Map14_Unused(Object *);
 void Objf710_Particle(Object *);
 void Objf711_712_Noop(Object *);
 void Objf715_to_718_Spellbind_FX2_FX3(Object *);
+void Objf728_Fx_TBD(Object *);
 void Objf733_StatBuffIcon(Object *);
 void Objf735_SparkleDust(Object *);
 void Objf736_RemoveParalysis_Bubble(Object *);
@@ -505,6 +509,7 @@ void Objf737_RemoveParalysis(Object *);
 void Objf738_Map40_LowerBarricade(Object *);
 void Objf739_Particle(Object *);
 void Objf740_RemoveParalysis_Sparkles(Object *);
+void Objf742_Map67_Scn34_TBD(Object *);
 void Objf747_748_Wyrmfang_Flames(Object *);
 void Objf749_Wyrmfang_Flame(Object *);
 void Objf750_751_Map33_LowerPlatform(Object *);
@@ -852,9 +857,9 @@ ObjFunction gObjFunctionPointers[804] = {
     [315] = Objf315_VerticalRay,
     [316] = Objf316_Noop,
     [317] = Objf317_338_Avalanche_FX2_FX3,
-    [318] = (ObjFunction)0x800acd90,
-    [319] = (ObjFunction)0x800acef4,
-    [320] = (ObjFunction)0x800ad284,
+    [318] = Objf318_Fx_TBD,
+    [319] = Objf319_Map67_Scn34_TBD,
+    [320] = Objf320_Fx_TBD,
     [321] = Objf321_Fx_TBD,
     [322] = Objf322_370_371_372_MagicRestoration_FX2,
     [323] = (ObjFunction)0x800ad600,
@@ -1262,7 +1267,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [725] = (ObjFunction)0x800b0e64,
     [726] = (ObjFunction)0x800b0fc0,
     [727] = (ObjFunction)0x800b0fd4,
-    [728] = (ObjFunction)0x800ad4c4,
+    [728] = Objf728_Fx_TBD,
     [729] = (ObjFunction)0x800b101c,
     [730] = (ObjFunction)0x800b130c,
     [731] = (ObjFunction)0x800b0e04,
@@ -1276,7 +1281,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [739] = Objf739_Particle,
     [740] = Objf740_RemoveParalysis_Sparkles,
     [741] = (ObjFunction)0x800b0cd0,
-    [742] = (ObjFunction)0x800ace90,
+    [742] = Objf742_Map67_Scn34_TBD,
     [743] = (ObjFunction)0x800af520,
     [744] = (ObjFunction)0x800af520,
     [745] = (ObjFunction)0x800af8c8,

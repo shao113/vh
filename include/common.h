@@ -1,6 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include "include_asm.h"
 #include "types.h"
 #include "sys/types.h"
 #include "PsyQ/libetc.h"

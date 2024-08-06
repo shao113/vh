@@ -560,10 +560,11 @@ void Card_UpdateCaption(u8 fileIdx) {
 }
 
 u8 *gCardFilenameBufferPtr = gScratch1_801317c0;
-// TODO Generates a relocation currently unsupported by psyq-obj-parser:
-// u8 *gCardFileBufferPtr = &gScratch1_801317c0[64];
-u8 *gCardFileBufferPtr = (u8 *)0x80131800;       // &gScratch1_801317c0[64]
-u8 *gCardFileVerifyBufferPtr = (u8 *)0x80133800; // &gScratch1_801317c0[8256]
+// TODO Generates a relocation currently unsupported by psyq-obj-parser; works with maspsx!
+u8 *gCardFileBufferPtr = &gScratch1_801317c0[64];
+u8 *gCardFileVerifyBufferPtr = &gScratch1_801317c0[8256];
+// u8 *gCardFileBufferPtr = (u8 *)0x80131800;       // &gScratch1_801317c0[64]
+// u8 *gCardFileVerifyBufferPtr = (u8 *)0x80133800; // &gScratch1_801317c0[8256]
 
 s32 Card_WriteRegularSaveFrom(s32 fileIdx, CardFileData_RegularSave *buf) {
    CardFileData_RegularSave *save;
