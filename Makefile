@@ -43,7 +43,7 @@ CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -Iinclude/PsyQ -nos
 OBJCOPY_FLAGS   := -O binary
 LD_FLAGS        := --cref -Map build/$(BASENAME).map -T $(BASENAME).ld -T undefined_syms_auto.txt -T undefined_funcs_auto.txt -T undefined_additional.txt --no-check-sections
 
-MASPSX          := $(PYTHON) $(TOOLS_DIR)/maspsx/maspsx.py --expand-div --aspsx-version=2.21 --symbol-addrs-path="symbol_addrs.txt"
+MASPSX          := $(PYTHON) $(TOOLS_DIR)/maspsx/maspsx.py --expand-div --aspsx-version=2.21 --use-comm-section
 
 build/src/audio.c.s: CC := cc1_v257_decompals
 build/src/audio.c.s: OPT_FLAGS := -O2

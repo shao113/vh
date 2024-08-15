@@ -15,6 +15,7 @@ options:
   o_as_suffix: False
   use_legacy_include_asm: False
   auto_decompile_empty_functions: False
+  include_macro_inc: False
 
   asm_function_macro: glabel
   asm_jtbl_label_macro: jlabel
@@ -164,13 +165,12 @@ segments:
       - [0x094b4c, c, map_effects_094b4c]         # 0x800a434c GetIdxOfHighestVtx ...
       - [0x097888, c, text]                       # 0x800a7088 CopySjisString ...
       - [0x0992fc, c, screen_effects]             # 0x800a8afc SetScreenEffectOrdering ...
+      # TODO: Redo split? split_09a268 has sbss at 0x801233a8
       - [0x09a268, c, split_09a268]               # 0x800a9a68 Objf391 ...
       - [0x09de00, asm]
       
       - [0x0a6d54, c, events]                     # 0x800b6554 Objf417_LoadEvent03 ...
       - [0x0b0480, c, graphics]                   # 0x800bfc80 LoadDecodedUnitSprites ...
-      - [0x0b2718, asm]
-      
       - [0x0b4e60, c, audio]                      # 0x800c4660 SetSeqDataPtr ...
       - [0x0b7ac8, bin]                           # 0x800c72c8 (library functions)
       
@@ -223,7 +223,6 @@ segments:
       - [0x0f2150, data]
       
       - [0x0f7044, .data, graphics]               # 0x80106844
-      - [0x0f7094, data]
       - [0x0f76ec, .data, audio]                  # 0x80106eec
       - [0x0f91d0, bin]                           # 0x801089d0 (library data)
       
@@ -251,31 +250,8 @@ segments:
       - [0x1138ac, sdata]                         # 
       - [0x113928, .sdata, graphics]              # 0x80123128
       
-      - [0x113940, .sbss, engine]
-      - [0x113974, .sbss, projectile]
-      - [0x113990, .sbss, battle_013b94]
-      - [0x1139c4, .sbss, battle_0190dc]
-      - [0x1139cc, .sbss, battle_0201b8]
-      - [0x113a30, .sbss, split_02d078]
-      - [0x113a50, pad]
-      - [0x113a58, .sbss, cd]
-      - [0x113a74, .sbss, split_037758]
-      - [0x113a80, .sbss, ending_screen]
-      - [0x113a84, .sbss, split_038148]
-      - [0x113a9c, .sbss, status_window]
-      - [0x113aa0, .sbss, world_actions]
-      - [0x113ab0, .sbss, card]
-      - [0x113ad8, .sbss, ai]
-      - [0x113b34, pad]
-      - [0x113b3c, .sbss, split_0496f8]
-      - [0x113b40, .sbss, fx_06e9c4]
-      - [0x113b44, .sbss, map_effects_094b4c]
-      - [0x113b48, .sbss, text]
-      - [0x113b4c, pad]
-      # TODO: redo split? split_09a268 has sbss at 0x801233a8
-      - [0x113be8, .sbss, screen_effects]
-      - [0x113bec, pad]
-      #- { start: 0x113bec, type: sbss }
+      # (Reverted sbss migration for now since this also seems to work, without needing any ordering hacks.)
+      - [0x113940, pad]                           # 0x80123140 (sbss)
       #- { start: 0x114ea4, type: bss, vram: 0x801246a4 }
       
   - name: additional

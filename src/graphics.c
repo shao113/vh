@@ -903,3 +903,1011 @@ void UpdateMapTileLighting(MapTileModel *tileModel) {
 
    PopMatrix();
 }
+
+void ApplyMaskEffect(s16 spriteX, s16 spriteY, s16 spriteW, s16 spriteH, s16 textureX, s16 textureY,
+                     s16 horizontalScroll, s16 verticalScroll, s16 gfxIdx, s16 bgColor) {
+   u32 spriteData[512];
+   u32 textureData[32][4];
+   u32 tiledTextureData[64][8];
+   RECT rect;
+   s32 i;
+   u32 j;
+   u32 x, y; //
+   u32 hShift;
+   u32 inputWord1, inputWord2, inputWord3, inputWord4;
+   u32 outputWord1, outputWord2, outputWord3, outputWord4;
+   u32 *p;
+   u32 c;
+
+   p = &spriteData[0];
+
+   if (horizontalScroll < 0) {
+      horizontalScroll += 64;
+   }
+   if (verticalScroll < 0) {
+      verticalScroll += 64;
+   }
+
+   rect.x = textureX / 4;
+   rect.y = textureY;
+   rect.w = 32 / 4;
+   rect.h = 32;
+   StoreImage(&rect, textureData);
+
+   rect.x = spriteX / 4;
+   rect.y = spriteY;
+   rect.w = spriteW / 4;
+   rect.h = spriteH;
+
+   // (There are eight 4-bit pixels per u32)
+   x = horizontalScroll / 8;
+   y = verticalScroll;
+   c = bgColor;
+   hShift = horizontalScroll % 8 * 4;
+   DrawSync(0);
+   StoreImage(&rect, p);
+
+   // Scroll and tile texture
+   for (i = 0; i < 32; i++) {
+      inputWord1 = textureData[(i + y) & 0x1f][(x + 0) & 3];
+      inputWord2 = textureData[(i + y) & 0x1f][(x + 1) & 3];
+      inputWord3 = textureData[(i + y) & 0x1f][(x + 2) & 3];
+      inputWord4 = textureData[(i + y) & 0x1f][(x + 3) & 3];
+
+      if (c != 0) {
+         // Replace texture's transparent pixels with given bgColor
+         if ((inputWord1 & 0xf0000000) == 0) {
+            inputWord1 |= (c << 28);
+         }
+         if ((inputWord1 & 0x0f000000) == 0) {
+            inputWord1 |= (c << 24);
+         }
+         if ((inputWord1 & 0x00f00000) == 0) {
+            inputWord1 |= (c << 20);
+         }
+         if ((inputWord1 & 0x000f0000) == 0) {
+            inputWord1 |= (c << 16);
+         }
+         if ((inputWord1 & 0x0000f000) == 0) {
+            inputWord1 |= (c << 12);
+         }
+         if ((inputWord1 & 0x00000f00) == 0) {
+            inputWord1 |= (c << 8);
+         }
+         if ((inputWord1 & 0x000000f0) == 0) {
+            inputWord1 |= (c << 4);
+         }
+         if ((inputWord1 & 0x0000000f) == 0) {
+            inputWord1 |= c;
+         }
+
+         if ((inputWord2 & 0xf0000000) == 0) {
+            inputWord2 |= (c << 28);
+         }
+         if ((inputWord2 & 0x0f000000) == 0) {
+            inputWord2 |= (c << 24);
+         }
+         if ((inputWord2 & 0x00f00000) == 0) {
+            inputWord2 |= (c << 20);
+         }
+         if ((inputWord2 & 0x000f0000) == 0) {
+            inputWord2 |= (c << 16);
+         }
+         if ((inputWord2 & 0x0000f000) == 0) {
+            inputWord2 |= (c << 12);
+         }
+         if ((inputWord2 & 0x00000f00) == 0) {
+            inputWord2 |= (c << 8);
+         }
+         if ((inputWord2 & 0x000000f0) == 0) {
+            inputWord2 |= (c << 4);
+         }
+         if ((inputWord2 & 0x0000000f) == 0) {
+            inputWord2 |= c;
+         }
+
+         if ((inputWord3 & 0xf0000000) == 0) {
+            inputWord3 |= (c << 28);
+         }
+         if ((inputWord3 & 0x0f000000) == 0) {
+            inputWord3 |= (c << 24);
+         }
+         if ((inputWord3 & 0x00f00000) == 0) {
+            inputWord3 |= (c << 20);
+         }
+         if ((inputWord3 & 0x000f0000) == 0) {
+            inputWord3 |= (c << 16);
+         }
+         if ((inputWord3 & 0x0000f000) == 0) {
+            inputWord3 |= (c << 12);
+         }
+         if ((inputWord3 & 0x00000f00) == 0) {
+            inputWord3 |= (c << 8);
+         }
+         if ((inputWord3 & 0x000000f0) == 0) {
+            inputWord3 |= (c << 4);
+         }
+         if ((inputWord3 & 0x0000000f) == 0) {
+            inputWord3 |= c;
+         }
+
+         if ((inputWord4 & 0xf0000000) == 0) {
+            inputWord4 |= (c << 28);
+         }
+         if ((inputWord4 & 0x0f000000) == 0) {
+            inputWord4 |= (c << 24);
+         }
+         if ((inputWord4 & 0x00f00000) == 0) {
+            inputWord4 |= (c << 20);
+         }
+         if ((inputWord4 & 0x000f0000) == 0) {
+            inputWord4 |= (c << 16);
+         }
+         if ((inputWord4 & 0x0000f000) == 0) {
+            inputWord4 |= (c << 12);
+         }
+         if ((inputWord4 & 0x00000f00) == 0) {
+            inputWord4 |= (c << 8);
+         }
+         if ((inputWord4 & 0x000000f0) == 0) {
+            inputWord4 |= (c << 4);
+         }
+         if ((inputWord4 & 0x0000000f) == 0) {
+            inputWord4 |= c;
+         }
+      }
+
+      if (hShift != 0) {
+         outputWord1 = (inputWord1 >> hShift) + (inputWord2 << (32 - hShift));
+         outputWord2 = (inputWord2 >> hShift) + (inputWord3 << (32 - hShift));
+         outputWord3 = (inputWord3 >> hShift) + (inputWord4 << (32 - hShift));
+         outputWord4 = (inputWord4 >> hShift) + (inputWord1 << (32 - hShift));
+      } else {
+         outputWord1 = inputWord1;
+         outputWord2 = inputWord2;
+         outputWord3 = inputWord3;
+         outputWord4 = inputWord4;
+      }
+      // t1,a2,a0,v1
+      // a1,a2,a3,t0
+      tiledTextureData[i][0] = outputWord1;
+      tiledTextureData[i][4] = outputWord1;
+      tiledTextureData[i + 32][0] = outputWord1;
+      tiledTextureData[i + 32][4] = outputWord1;
+      tiledTextureData[i][1] = outputWord2;
+      tiledTextureData[i][5] = outputWord2;
+      tiledTextureData[i + 32][1] = outputWord2;
+      tiledTextureData[i + 32][5] = outputWord2;
+      tiledTextureData[i][2] = outputWord3;
+      tiledTextureData[i][6] = outputWord3;
+      tiledTextureData[i + 32][2] = outputWord3;
+      tiledTextureData[i + 32][6] = outputWord3;
+      tiledTextureData[i][3] = outputWord4;
+      tiledTextureData[i][7] = outputWord4;
+      tiledTextureData[i + 32][3] = outputWord4;
+      tiledTextureData[i + 32][7] = outputWord4;
+   }
+
+   x = spriteW / 8;
+   DrawSync(0);
+
+   // Replace the sprite's non-transparent pixels with those of the tiled texture
+   for (i = 0; i < spriteH; i++) {
+      y = i * x;
+      for (j = 0; j < x; j++) {
+         u32 mask = p[y + j];
+
+         if (mask & 0xf0000000) {
+            mask |= 0xf0000000;
+         }
+         if (mask & 0x0f000000) {
+            mask |= 0x0f000000;
+         }
+         if (mask & 0x00f00000) {
+            mask |= 0x00f00000;
+         }
+         if (mask & 0x000f0000) {
+            mask |= 0x000f0000;
+         }
+         if (mask & 0x0000f000) {
+            mask |= 0x0000f000;
+         }
+         if (mask & 0x00000f00) {
+            mask |= 0x00000f00;
+         }
+         if (mask & 0x000000f0) {
+            mask |= 0x000000f0;
+         }
+         if (mask & 0x0000000f) {
+            mask |= 0x0000000f;
+         }
+
+         p[y + j] = mask & tiledTextureData[i][j];
+      }
+   }
+
+   // Rows of four 64x64 slots for masked results
+   x = (gfxIdx - GFX_TBD_25) % 4 * 64;
+   y = (gfxIdx - GFX_TBD_25) / 4 * 64;
+   rect.x = 576 + x / 4;
+   rect.y = 256 + y;
+   rect.w = spriteW / 4;
+   rect.h = spriteH;
+   LoadImage(&rect, p);
+   gGfxSubTextures[gfxIdx][0] = x;
+   gGfxSubTextures[gfxIdx][1] = y;
+   gGfxSubTextures[gfxIdx][2] = spriteW - 1;
+   gGfxSubTextures[gfxIdx][3] = spriteH - 1;
+   DrawSync(0);
+}
+
+s16 D_80123358;
+s16 D_8012335C;
+
+void RenderField(void) {
+   s32 ix, iz;
+   s32 endX, endZ, startX, startZ, xEdgeStartX, zEdgeX, zEdgeStartZ, xEdgeZ;
+
+   endX = 0;
+   endZ = 0;
+   startX = 0;
+   startZ = 0;
+   xEdgeStartX = 0;
+   zEdgeX = 0;
+   zEdgeStartZ = 0;
+   xEdgeZ = 0;
+
+   if (gOverheadMapState == 1) {
+      gOverheadMapState = 2;
+      D_80123358 = D_80122E28;
+      D_8012335C = D_80122E2C;
+   }
+
+   if (gOverheadMapState != 0) {
+      for (iz = gMapMinZ; iz <= gMapMaxZ; iz++) {
+         if (gState.mapNum == 32 && (iz == gMapMinZ || iz == gMapMaxZ)) {
+            continue;
+         }
+         for (ix = gMapMinX; ix <= gMapMaxX; ix++) {
+            RenderOverheadMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], 128);
+         }
+      }
+      return;
+   }
+
+   switch ((gCameraRotation.vy & 0xfff) >> 10) {
+   case CAM_DIR_SOUTH:
+      endX = D_80122E28 + gMapSizeX - 2;
+      startX = D_80122E28;
+      endZ = D_80122E2C + gMapSizeZ - 1;
+      startZ = D_80122E2C + 1;
+      xEdgeStartX = D_80122E28;
+      xEdgeZ = D_80122E2C;
+      zEdgeX = D_80122E28 + gMapSizeX - 1;
+      zEdgeStartZ = startZ;
+      break;
+   case CAM_DIR_EAST:
+      endX = D_80122E28 + gMapSizeX - 2;
+      startX = D_80122E28;
+      endZ = D_80122E2C + gMapSizeZ - 2;
+      startZ = D_80122E2C;
+      xEdgeStartX = D_80122E28;
+      xEdgeZ = D_80122E2C + gMapSizeZ - 1;
+      zEdgeX = D_80122E28 + gMapSizeX - 1;
+      zEdgeStartZ = startZ;
+      break;
+   case CAM_DIR_NORTH:
+      endX = D_80122E28 + gMapSizeX - 1;
+      startX = D_80122E28 + 1;
+      endZ = D_80122E2C + gMapSizeZ - 2;
+      startZ = D_80122E2C;
+      xEdgeStartX = D_80122E28;
+      xEdgeZ = D_80122E2C + gMapSizeZ - 1;
+      zEdgeX = D_80122E28;
+      zEdgeStartZ = startZ;
+      break;
+   case CAM_DIR_WEST:
+      endX = D_80122E28 + gMapSizeX - 1;
+      startX = D_80122E28 + 1;
+      endZ = D_80122E2C + gMapSizeZ - 1;
+      startZ = D_80122E2C + 1;
+      xEdgeStartX = D_80122E28;
+      xEdgeZ = D_80122E2C;
+      zEdgeX = D_80122E28;
+      zEdgeStartZ = startZ;
+      break;
+   }
+
+   for (iz = startZ; iz <= endZ; iz++) {
+      for (ix = startX; ix <= endX; ix++) {
+         if (gYellowTargetGridPtr[iz][ix] != 0) {
+            RenderMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_YELLOW);
+         } else if (gRedAttackGridPtr[iz][ix] != 0) {
+            RenderMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_RED);
+         } else if (gBlueMovementGridPtr[iz][ix] != 0) {
+            RenderMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_BLUE);
+         } else {
+            RenderMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_NONE);
+         }
+      }
+   }
+
+   iz = xEdgeZ;
+   for (ix = xEdgeStartX; ix < xEdgeStartX + gMapSizeX; ix++) {
+      if (gYellowTargetGridPtr[iz][ix] != 0) {
+         RenderEdgeMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_YELLOW);
+      } else if (gRedAttackGridPtr[iz][ix] != 0) {
+         RenderEdgeMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_RED);
+      } else if (gBlueMovementGridPtr[iz][ix] != 0) {
+         RenderEdgeMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_BLUE);
+      } else {
+         RenderEdgeMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_NONE);
+      }
+   }
+
+   ix = zEdgeX;
+   for (iz = zEdgeStartZ; iz < zEdgeStartZ + gMapSizeZ - 1; iz++) {
+      if (gYellowTargetGridPtr[iz][ix] != 0) {
+         RenderEdgeMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_YELLOW);
+      } else if (gRedAttackGridPtr[iz][ix] != 0) {
+         RenderEdgeMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_RED);
+      } else if (gBlueMovementGridPtr[iz][ix] != 0) {
+         RenderEdgeMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_BLUE);
+      } else {
+         RenderEdgeMapTile(gGraphicsPtr->ot, &gMapRowPointers[iz][ix], GRID_COLOR_NONE);
+      }
+   }
+}
+
+void RenderMapTile(u32 *ot, MapTileModel *tileModel, s32 gridColor) {
+   s32 faceIdx;
+   POLY_FT4 *poly;
+   u8 *pFaceVerts;
+   s32 gfx;
+   u8 texX, texY, texW, texH;
+   s32 opz;
+   s32 otz;
+   s16 shading;
+   u8 r1, g1, b1;
+   s16 r2, g2, b2;
+
+   poly = &gGraphicsPtr->quads[gQuadIndex];
+   for (faceIdx = 0; faceIdx < tileModel->faceCt; faceIdx++) {
+      gfx = tileModel->gfx[faceIdx];
+      if (gfx != GFX_NULL) {
+         pFaceVerts = &tileModel->faces[faceIdx][0];
+         gte_ldv3(&tileModel->vertices[pFaceVerts[0]], &tileModel->vertices[pFaceVerts[1]],
+                  &tileModel->vertices[pFaceVerts[2]]);
+         gte_rtpt();
+         gte_nclip();
+         gte_stopz(&opz);
+         if (opz > 0) {
+            gte_stsxy3(&poly->x0, &poly->x1, &poly->x3);
+            gte_ldv0(&tileModel->vertices[pFaceVerts[3]]);
+            gte_rtps();
+            gte_stsxy(&poly->x2);
+            gte_avsz4();
+            gte_stotz(&otz);
+            if (otz < 5) {
+               otz = 5;
+            }
+            poly->clut = gGfxClutIds[gfx];
+            poly->tpage = gGfxTPageIds[gfx];
+            texX = gGfxSubTextures[gfx][0];
+            texY = gGfxSubTextures[gfx][1];
+            texW = gGfxSubTextures[gfx][2];
+            texH = gGfxSubTextures[gfx][3];
+            setUVWH(poly, texX, texY, texW, texH);
+
+            // Darken distant faces
+            shading = otz - 150;
+            if (shading < 0) {
+               shading = 0;
+            } else if (shading > 256) {
+               shading = 256;
+            }
+            r2 = gSideLightColor[tileModel->shades[faceIdx]].r;
+            r1 = gSideLightColor[tileModel->shades[faceIdx]].r;
+            g2 = gSideLightColor[tileModel->shades[faceIdx]].g;
+            g1 = gSideLightColor[tileModel->shades[faceIdx]].g;
+            b2 = gSideLightColor[tileModel->shades[faceIdx]].b;
+            b1 = gSideLightColor[tileModel->shades[faceIdx]].b;
+            r2 *= shading;
+            g2 *= shading;
+            b2 *= shading;
+            poly->r0 = r1 - (r2 >> 8);
+            poly->g0 = g1 - (g2 >> 8);
+            poly->b0 = b1 - (b2 >> 8);
+
+            if (faceIdx == 0 && gridColor != GRID_COLOR_NONE) {
+               if (gridColor == GRID_COLOR_BLUE && gShowBlueMovementGrid) {
+                  if (!gState.previewingRange) {
+                     poly->r0 = 40;
+                     poly->g0 = 40;
+                     poly->b0 = gGridColorOscillation;
+                  } else {
+                     // Use a lighter blue when previewing enemy range
+                     poly->r0 = 70;
+                     poly->b0 = gGridColorOscillation;
+                     poly->g0 = 70;
+                  }
+               } else if (gridColor == GRID_COLOR_RED) {
+                  poly->r0 = gGridColorOscillation;
+                  poly->g0 = 40;
+                  poly->b0 = 40;
+               } else if (gridColor == GRID_COLOR_YELLOW) {
+                  poly->r0 = gGridColorOscillation;
+                  poly->g0 = gGridColorOscillation;
+                  poly->b0 = 0;
+               }
+            }
+
+            poly->code = GPU_CODE_POLY_FT4;
+            AddPrim(ot + OT_SIZE - otz, poly);
+            poly = &gGraphicsPtr->quads[++gQuadIndex];
+         }
+      }
+   }
+}
+
+void RenderEdgeMapTile(u32 *ot, MapTileModel *tileModel, s32 gridColor) {
+   s32 faceIdx;
+   POLY_FT4 *poly;
+   u8 *pFaceVerts;
+   s32 gfx;
+   u8 texX, texY, texW, texH;
+   s32 opz;
+   s32 otz;
+   s16 shading;
+   u8 r1, g1, b1;
+   s16 r2, g2, b2;
+
+   poly = &gGraphicsPtr->quads[gQuadIndex];
+   for (faceIdx = 0; faceIdx < tileModel->faceCt; faceIdx++) {
+      pFaceVerts = &tileModel->faces[faceIdx][0];
+      gte_ldv3(&tileModel->vertices[pFaceVerts[0]], &tileModel->vertices[pFaceVerts[1]],
+               &tileModel->vertices[pFaceVerts[2]]);
+      gte_rtpt();
+      gte_nclip();
+      gte_stopz(&opz);
+      if (opz > 0) {
+         gte_stsxy3(&poly->x0, &poly->x1, &poly->x3);
+         gte_ldv0(&tileModel->vertices[pFaceVerts[3]]);
+         gte_rtps();
+         gte_stsxy(&poly->x2);
+         gte_avsz4();
+         gte_stotz(&otz);
+         if (otz < 5) {
+            otz = 5;
+         }
+         gfx = tileModel->gfx[faceIdx];
+         poly->clut = gGfxClutIds[gfx];
+         poly->tpage = gGfxTPageIds[gfx];
+         texX = gGfxSubTextures[gfx][0];
+         texY = gGfxSubTextures[gfx][1];
+         texW = gGfxSubTextures[gfx][2];
+         texH = gGfxSubTextures[gfx][3];
+         setUVWH(poly, texX, texY, texW, texH);
+
+         // Darken distant faces
+         shading = otz - 150;
+         if (shading < 0) {
+            shading = 0;
+         } else if (shading > 256) {
+            shading = 256;
+         }
+         r2 = gSideLightColor[tileModel->shades[faceIdx]].r;
+         r1 = gSideLightColor[tileModel->shades[faceIdx]].r;
+         g2 = gSideLightColor[tileModel->shades[faceIdx]].g;
+         g1 = gSideLightColor[tileModel->shades[faceIdx]].g;
+         b2 = gSideLightColor[tileModel->shades[faceIdx]].b;
+         b1 = gSideLightColor[tileModel->shades[faceIdx]].b;
+         r2 *= shading;
+         g2 *= shading;
+         b2 *= shading;
+         poly->r0 = r1 - (r2 >> 8);
+         poly->g0 = g1 - (g2 >> 8);
+         poly->b0 = b1 - (b2 >> 8);
+
+         if (faceIdx == 0 && gridColor != GRID_COLOR_NONE) {
+            if (gridColor == GRID_COLOR_BLUE && gShowBlueMovementGrid) {
+               if (!gState.previewingRange) {
+                  poly->r0 = 40;
+                  poly->g0 = 40;
+                  poly->b0 = gGridColorOscillation;
+               } else {
+                  // Use a lighter blue when previewing enemy range
+                  poly->g0 = 70;
+                  poly->b0 = gGridColorOscillation;
+                  poly->r0 = 70;
+               }
+            } else if (gridColor == GRID_COLOR_RED) {
+               poly->r0 = gGridColorOscillation;
+               poly->g0 = 40;
+               poly->b0 = 40;
+            } else if (gridColor == GRID_COLOR_YELLOW) {
+               poly->r0 = gGridColorOscillation;
+               poly->g0 = gGridColorOscillation;
+               poly->b0 = 0;
+            }
+         }
+
+         poly->code = GPU_CODE_POLY_FT4;
+         AddPrim(ot + OT_SIZE - otz, poly);
+         poly = &gGraphicsPtr->quads[++gQuadIndex];
+      }
+   }
+}
+
+void RenderOverheadMapTile(u32 *ot, MapTileModel *tileModel, s32 brightness) {
+   s32 faceIdx;
+   POLY_FT4 *poly;
+   u8 *pFaceVerts;
+   s32 gfx;
+   s32 opz;
+   s32 otz;
+   s32 shade; // TODO: rename shade stuff
+
+   poly = &gGraphicsPtr->quads[gQuadIndex];
+   for (faceIdx = 0; faceIdx < tileModel->faceCt; faceIdx++) {
+      gfx = tileModel->gfx[faceIdx];
+      if (gfx != GFX_NULL) {
+         shade = tileModel->shades[faceIdx];
+         if ((gState.mapNum == 31 || gState.mapNum == 32) && (shade > 0) &&
+             (shade < 10 || shade > 18)) {
+            continue;
+         }
+         pFaceVerts = &tileModel->faces[faceIdx][0];
+         gte_ldv3(&tileModel->vertices[pFaceVerts[0]], &tileModel->vertices[pFaceVerts[1]],
+                  &tileModel->vertices[pFaceVerts[2]]);
+         gte_rtpt();
+         gte_nclip();
+         gte_stopz(&opz);
+         if (opz > 0) {
+            gte_stsxy3(&poly->x0, &poly->x1, &poly->x3);
+            gte_ldv0(&tileModel->vertices[pFaceVerts[3]]);
+            gte_rtps();
+            gte_stsxy(&poly->x2);
+            gte_avsz4();
+            gte_stotz(&otz);
+            if (otz > OT_SIZE - 1) {
+               otz = OT_SIZE - 1;
+            }
+            if (otz < 5) {
+               otz = 5;
+            }
+            poly->clut = gGfxClutIds[gfx];
+            poly->tpage = gGfxTPageIds[gfx];
+
+            setUVWH(poly, gGfxSubTextures[gfx][0], gGfxSubTextures[gfx][1], gGfxSubTextures[gfx][2],
+                    gGfxSubTextures[gfx][3]);
+            setRGB0(poly, brightness, brightness, brightness);
+
+            poly->code = GPU_CODE_POLY_FT4;
+            AddPrim(ot + OT_SIZE - otz, poly);
+            poly = &gGraphicsPtr->quads[++gQuadIndex];
+         }
+      }
+   }
+}
+
+s32 GetBestViewOfTarget(s8 z, s8 x, s32 param_3) {
+   s16 angleToCheck;
+   s16 cameraAngle;
+   s16 obstructionCt; //
+   s16 bestObstructionCt;
+   s16 bestAngle;
+   u8 dir;
+   s32 result;
+
+   cameraAngle = gCameraRotation.vy & 0xfff;
+   dir = DIR_SOUTH;
+   if (gTargetX > x) {
+      dir = DIR_WEST;
+   }
+   if (gTargetX < x) {
+      dir = DIR_EAST;
+   }
+   if (gTargetZ > z) {
+      dir = DIR_SOUTH;
+   }
+   if (gTargetZ < z) {
+      dir = DIR_NORTH;
+   }
+
+   obstructionCt = func_800C4350(z, x, cameraAngle, dir, param_3);
+   bestObstructionCt = obstructionCt;
+
+   if (obstructionCt == 0) {
+      result = (cameraAngle >> 10) << 10;
+   } else {
+      bestAngle = cameraAngle;
+
+      angleToCheck = (cameraAngle + DEG(90)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      angleToCheck = (cameraAngle - DEG(90)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      angleToCheck = (cameraAngle + DEG(180)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+      // Truncate to one of the four primary directions
+      result = bestAngle & 0xc00;
+   }
+
+   return result + DEG(45);
+}
+
+s32 func_800C3D50(s8 z, s8 x, s32 param_3) {
+   s16 angleToCheck;
+   s16 cameraAngle;
+   s16 obstructionCt;
+   s16 bestObstructionCt;
+   s16 bestAngle;
+   u8 dir;
+   s32 result;
+
+   cameraAngle = (gCameraRotation.vy + DEG(180)) & 0xfff;
+   dir = DIR_SOUTH;
+   if (gTargetX > x) {
+      dir = DIR_WEST;
+   }
+   if (gTargetX < x) {
+      dir = DIR_EAST;
+   }
+   if (gTargetZ > z) {
+      dir = DIR_SOUTH;
+   }
+   if (gTargetZ < z) {
+      dir = DIR_NORTH;
+   }
+
+   obstructionCt = func_800C4350(z, x, cameraAngle, dir, param_3);
+   bestObstructionCt = obstructionCt;
+
+   if (obstructionCt == 0) {
+      result = (cameraAngle >> 10) << 10;
+   } else {
+      bestAngle = cameraAngle;
+
+      angleToCheck = (cameraAngle + DEG(90)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      angleToCheck = (cameraAngle - DEG(90)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      angleToCheck = (cameraAngle + DEG(180)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      result = bestAngle & 0xc00;
+   }
+
+   return result + DEG(45);
+}
+
+s32 func_800C3F50(s8 z, s8 x, s32 param_3) {
+   s16 angleToCheck;
+   s16 cameraAngle;
+   s16 obstructionCt;
+   s16 bestObstructionCt;
+   s16 bestAngle;
+   u8 dir;
+   s32 result;
+
+   cameraAngle = (gCameraRotation.vy - DEG(90)) & 0xfff;
+   dir = DIR_SOUTH;
+   if (gTargetX > x) {
+      dir = DIR_WEST;
+   }
+   if (gTargetX < x) {
+      dir = DIR_EAST;
+   }
+   if (gTargetZ > z) {
+      dir = DIR_SOUTH;
+   }
+   if (gTargetZ < z) {
+      dir = DIR_NORTH;
+   }
+
+   obstructionCt = func_800C4350(z, x, cameraAngle, dir, param_3);
+   bestObstructionCt = obstructionCt;
+
+   if (obstructionCt == 0) {
+      result = (cameraAngle >> 10) << 10;
+   } else {
+      bestAngle = cameraAngle;
+
+      angleToCheck = (cameraAngle + DEG(180)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      angleToCheck = (cameraAngle - DEG(90)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      angleToCheck = (cameraAngle + DEG(90)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      result = bestAngle & 0xc00;
+   }
+
+   return result + DEG(45);
+}
+
+s32 func_800C4150(s8 z, s8 x, s32 param_3) {
+   s16 angleToCheck;
+   s16 cameraAngle;
+   s16 obstructionCt;
+   s16 bestObstructionCt;
+   s16 bestAngle;
+   u8 dir;
+   s32 result;
+
+   cameraAngle = (gCameraRotation.vy + DEG(90)) & 0xfff;
+   dir = DIR_SOUTH;
+   if (gTargetX > x) {
+      dir = DIR_WEST;
+   }
+   if (gTargetX < x) {
+      dir = DIR_EAST;
+   }
+   if (gTargetZ > z) {
+      dir = DIR_SOUTH;
+   }
+   if (gTargetZ < z) {
+      dir = DIR_NORTH;
+   }
+
+   obstructionCt = func_800C4350(z, x, cameraAngle, dir, param_3);
+   bestObstructionCt = obstructionCt;
+
+   if (obstructionCt == 0) {
+      result = (cameraAngle >> 10) << 10;
+   } else {
+      bestAngle = cameraAngle;
+
+      angleToCheck = (cameraAngle - DEG(180)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      angleToCheck = (cameraAngle + DEG(90)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      angleToCheck = (cameraAngle - DEG(90)) & 0xfff;
+      obstructionCt = func_800C4350(z, x, angleToCheck, dir, param_3);
+      if (bestObstructionCt > obstructionCt) {
+         bestAngle = angleToCheck;
+         bestObstructionCt = obstructionCt;
+      }
+
+      result = bestAngle & 0xc00;
+   }
+
+   return result + DEG(45);
+}
+
+//? Count, followed by count tile offsets within viewable range? (CHECKME)
+static s8 D_80106894[] = {
+    33, 1,  0,  1,  0,  -1, 1,   1,  -1, 1,   2,  -1, 2,   1,  -2, 2,   2,  -2, 2,   3,
+    -2, 4,  2,  -3, 4,  3,  -3,  4,  4,  -3,  6,  3,  -4,  6,  4,  -4,  6,  5,  -4,  8,
+    4,  -5, 8,  5,  -5, 8,  6,   -5, 10, 5,   -6, 10, 6,   -6, 10, 7,   -6, 12, 6,   -7,
+    12, 7,  -7, 12, 8,  -7, 14,  7,  -8, 13,  8,  -8, 14,  9,  -8, 15,  8,  -9, 15,  9,
+    -9, 16, 10, -9, 17, 9,  -10, 17, 10, -10, 17, 11, -10, 19, 10, -11, 19, 11, -11, 19,
+};
+
+static s8 D_801068F8[] = {
+    41, 2,  0,  1,  0, -1,  1,  1,  -1,  1,  2,  -1,  1,  3,  -1,  2,  1,  -2,  2,  2,  -2,
+    2,  3,  -2, 2,  4, -2,  4,  2,  -3,  4,  3,  -3,  4,  4,  -3,  4,  5,  -3,  6,  3,  -4,
+    6,  4,  -4, 6,  5, -4,  6,  6,  -4,  8,  4,  -5,  8,  5,  -5,  8,  6,  -5,  8,  7,  -5,
+    10, 5,  -6, 10, 6, -6,  10, 7,  -6,  10, 8,  -6,  12, 6,  -7,  12, 7,  -7,  12, 8,  -7,
+    12, 9,  -7, 14, 7, -8,  13, 8,  -8,  13, 9,  -8,  14, 8,  -9,  15, 9,  -9,  15, 10, -9,
+    16, 11, -9, 18, 9, -10, 17, 10, -10, 17, 11, -10, 18, 10, -11, 19, 11, -11, 19,
+};
+
+static s8 D_80106974[] = {
+    41, 1, 0,  1,  -1, -1, 1,  0, -1,  1,  1, -1,  1,  2,  -1,  2,  0,  -2,  2,  1, -2,
+    2,  2, -2, 2,  3,  -2, 4,  1, -3,  4,  2, -3,  4,  3,  -3,  4,  4,  -3,  6,  2, -4,
+    6,  3, -4, 6,  4,  -4, 6,  5, -4,  8,  3, -5,  8,  4,  -5,  8,  5,  -5,  8,  6, -5,
+    10, 4, -6, 10, 5,  -6, 10, 6, -6,  10, 7, -6,  12, 5,  -7,  12, 6,  -7,  12, 7, -7,
+    12, 8, -7, 14, 6,  -8, 13, 7, -8,  13, 8, -8,  14, 9,  -8,  15, 7,  -9,  15, 8, -9,
+    15, 9, -9, 16, 10, -9, 17, 8, -10, 17, 9, -10, 17, 10, -10, 17, 10, -11, 19,
+};
+
+static s8 D_801069F0[] = {
+    41, 1, 1,  1,  1, 0,  1,  2,  0,  2,  0, -1,  1,  1,  -1,  1,  2,  -1,  2,  3,  -1,
+    4,  1, -2, 2,  2, -2, 2,  3,  -2, 4,  4, -2,  6,  2,  -3,  4,  3,  -3,  4,  4,  -3,
+    6,  5, -3, 7,  3, -4, 6,  4,  -4, 6,  5, -4,  8,  6,  -4,  9,  4,  -5,  8,  5,  -5,
+    8,  6, -5, 9,  7, -5, 11, 5,  -6, 10, 6, -6,  10, 7,  -6,  11, 8,  -6,  13, 6,  -7,
+    12, 7, -7, 12, 8, -7, 13, 9,  -7, 15, 7, -8,  13, 8,  -8,  14, 9,  -8,  15, 10, -8,
+    17, 8, -9, 15, 9, -9, 16, 10, -9, 17, 9, -10, 17, 10, -10, 18, 11, -10, 19,
+};
+static s8 D_80106A6C[] = {
+    39, 1,  0,  1,  1,   -1, 1,  2,   -1, 2,  0,   -2, 1,  1,   -2, 1,  2,   -2, 2,  3,
+    -2, 4,  1,  -3, 2,   2,  -3, 2,   3,  -3, 4,   4,  -3, 6,   2,  -4, 4,   3,  -4, 4,
+    4,  -4, 6,  5,  -4,  8,  3,  -5,  6,  4,  -5,  6,  5,  -5,  8,  6,  -5,  10, 4,  -6,
+    8,  5,  -6, 8,  6,   -6, 10, 7,   -6, 12, 5,   -7, 10, 6,   -7, 10, 7,   -7, 11, 8,
+    -7, 14, 7,  -8, 12,  8,  -8, 13,  9,  -8, 15,  7,  -9, 14,  8,  -9, 14,  9,  -9, 15,
+    10, -9, 17, 9,  -10, 16, 10, -10, 17, 11, -10, 19, 10, -11, 18, 11, -11, 19,
+};
+static s8 D_80106AE4[] = {
+    41, 2,  0,  0,  0, -1,  1,  1,  -1,  0,  2,  -1,  0,  3,  -1,  2,  1,  -2,  2,  2,  -2,
+    2,  3,  -2, 2,  4, -2,  4,  2,  -3,  4,  3,  -3,  3,  4,  -3,  4,  5,  -3,  5,  3,  -4,
+    6,  4,  -4, 5,  5, -4,  6,  6,  -4,  7,  4,  -5,  8,  5,  -5,  7,  6,  -5,  8,  7,  -5,
+    9,  5,  -6, 10, 6, -6,  9,  7,  -6,  9,  8,  -6,  11, 6,  -7,  12, 7,  -7,  11, 8,  -7,
+    12, 9,  -7, 14, 7, -8,  13, 8,  -8,  13, 9,  -8,  14, 8,  -9,  15, 9,  -9,  15, 10, -9,
+    16, 11, -9, 18, 9, -10, 17, 10, -10, 17, 11, -10, 18, 10, -11, 19, 11, -11, 19,
+};
+static s8 D_80106B60[] = {
+    41, 1, 0,  1,  -1, -1, 0,  0, -1,  0,  1, -1,  1,  2,  -1,  2,  0,  -2,  2,  1, -2,
+    2,  2, -2, 2,  3,  -2, 4,  1, -3,  3,  2, -3,  4,  3,  -3,  4,  4,  -3,  6,  2, -4,
+    5,  3, -4, 6,  4,  -4, 6,  5, -4,  8,  3, -5,  7,  4,  -5,  8,  5,  -5,  8,  6, -5,
+    10, 4, -6, 9,  5,  -6, 9,  6, -6,  10, 7, -6,  12, 5,  -7,  11, 6,  -7,  11, 7, -7,
+    12, 8, -7, 14, 6,  -8, 13, 7, -8,  13, 8, -8,  14, 9,  -8,  15, 7,  -9,  15, 8, -9,
+    15, 9, -9, 16, 10, -9, 17, 8, -10, 17, 9, -10, 17, 10, -10, 17, 10, -11, 19,
+};
+static s8 D_80106BDC[] = {
+    41, 1, 1,  0,  1, 0,  0,  2,  0,  1,  0, -1,  1,  1,  -1,  1,  2,  -1,  2,  3,  -1,
+    3,  1, -2, 2,  2, -2, 2,  3,  -2, 4,  4, -2,  5,  2,  -3,  4,  3,  -3,  4,  4,  -3,
+    6,  5, -3, 7,  3, -4, 6,  4,  -4, 6,  5, -4,  8,  6,  -4,  9,  4,  -5,  8,  5,  -5,
+    8,  6, -5, 9,  7, -5, 11, 5,  -6, 10, 6, -6,  10, 7,  -6,  11, 8,  -6,  13, 6,  -7,
+    12, 7, -7, 12, 8, -7, 13, 9,  -7, 15, 7, -8,  13, 8,  -8,  14, 9,  -8,  15, 10, -8,
+    17, 8, -9, 15, 9, -9, 16, 10, -9, 17, 9, -10, 17, 10, -10, 18, 11, -10, 19,
+};
+static s8 D_80106C58[] = {
+    39, 1,  0,  1,  1,   -1, 0,  2,   -1, 2,  0,   -2, 0,  1,   -2, 0,  2,   -2, 2,  3,
+    -2, 4,  1,  -3, 2,   2,  -3, 2,   3,  -3, 4,   4,  -3, 6,   2,  -4, 4,   3,  -4, 4,
+    4,  -4, 5,  5,  -4,  8,  3,  -5,  5,  4,  -5,  6,  5,  -5,  7,  6,  -5,  10, 4,  -6,
+    7,  5,  -6, 8,  6,   -6, 9,  7,   -6, 12, 5,   -7, 9,  6,   -7, 10, 7,   -7, 11, 8,
+    -7, 14, 7,  -8, 12,  8,  -8, 13,  9,  -8, 15,  7,  -9, 13,  8,  -9, 14,  9,  -9, 15,
+    10, -9, 17, 9,  -10, 16, 10, -10, 17, 11, -10, 19, 10, -11, 18, 11, -11, 19,
+};
+static s8 D_80106CD0[] = {
+    41, 2,  0,  2,  0, -1,  1,  1,  -1,  0,  2,  -1,  2,  3,  -1,  3,  1,  -2,  2,  2,  -2,
+    2,  3,  -2, 3,  4, -2,  5,  2,  -3,  4,  3,  -3,  4,  4,  -3,  5,  5,  -3,  7,  3,  -4,
+    6,  4,  -4, 6,  5, -4,  7,  6,  -4,  9,  4,  -5,  8,  5,  -5,  8,  6,  -5,  9,  7,  -5,
+    11, 5,  -6, 10, 6, -6,  10, 7,  -6,  11, 8,  -6,  13, 6,  -7,  12, 7,  -7,  12, 8,  -7,
+    13, 9,  -7, 15, 7, -8,  13, 8,  -8,  14, 9,  -8,  15, 8,  -9,  15, 9,  -9,  16, 10, -9,
+    17, 11, -9, 19, 9, -10, 17, 10, -10, 17, 11, -10, 19, 10, -11, 19, 11, -11, 19,
+};
+static s8 D_80106D4C[] = {
+    41, 1, 0,  1,  -1, -1, 2,  0, -1,  1,  1, -1,  1,  2,  -1,  2,  0,  -2,  3,  1, -2,
+    2,  2, -2, 2,  3,  -2, 4,  1, -3,  5,  2, -3,  4,  3,  -3,  4,  4,  -3,  6,  2, -4,
+    7,  3, -4, 6,  4,  -4, 6,  5, -4,  8,  3, -5,  9,  4,  -5,  8,  5,  -5,  8,  6, -5,
+    10, 4, -6, 11, 5,  -6, 10, 6, -6,  10, 7, -6,  12, 5,  -7,  13, 6,  -7,  12, 7, -7,
+    12, 8, -7, 14, 6,  -8, 14, 7, -8,  13, 8, -8,  14, 9,  -8,  15, 7,  -9,  16, 8, -9,
+    15, 9, -9, 16, 10, -9, 17, 8, -10, 18, 9, -10, 17, 10, -10, 17, 10, -11, 19,
+};
+static s8 D_80106DC8[] = {
+    41, 1, 1,  2,  1, 0,  1,  2,  0,  3,  0, -1,  1,  1,  -1,  1,  2,  -1,  2,  3,  -1,
+    5,  1, -2, 2,  2, -2, 2,  3,  -2, 4,  4, -2,  7,  2,  -3,  4,  3,  -3,  4,  4,  -3,
+    6,  5, -3, 8,  3, -4, 6,  4,  -4, 6,  5, -4,  8,  6,  -4,  10, 4,  -5,  8,  5,  -5,
+    8,  6, -5, 10, 7, -5, 12, 5,  -6, 10, 6, -6,  10, 7,  -6,  12, 8,  -6,  14, 6,  -7,
+    12, 7, -7, 12, 8, -7, 14, 9,  -7, 16, 7, -8,  13, 8,  -8,  14, 9,  -8,  15, 10, -8,
+    18, 8, -9, 15, 9, -9, 16, 10, -9, 17, 9, -10, 17, 10, -10, 18, 11, -10, 19,
+};
+static s8 D_80106E44[] = {
+    39, 1,  0,  1,  1,   -1, 1,  2,   -1, 2,  0,   -2, 2,  1,   -2, 2,  2,   -2, 2,  3,
+    -2, 4,  1,  -3, 3,   2,  -3, 3,   3,  -3, 4,   4,  -3, 6,   2,  -4, 5,   3,  -4, 5,
+    4,  -4, 6,  5,  -4,  8,  3,  -5,  7,  4,  -5,  7,  5,  -5,  8,  6,  -5,  10, 4,  -6,
+    9,  5,  -6, 9,  6,   -6, 10, 7,   -6, 12, 5,   -7, 11, 6,   -7, 11, 7,   -7, 12, 8,
+    -7, 14, 7,  -8, 13,  8,  -8, 14,  9,  -8, 15,  7,  -9, 15,  8,  -9, 15,  9,  -9, 16,
+    10, -9, 17, 9,  -10, 17, 10, -10, 17, 11, -10, 19, 10, -11, 19, 11, -11, 19,
+};
+
+//? Arrays for each of the four directions, for level/downward/upward viewing ranges (CHECKME)
+static s8 *D_80106EBC[] = {D_801069F0, D_801068F8, D_80106A6C, D_80106974, D_80106BDC, D_80106AE4,
+                           D_80106C58, D_80106B60, D_80106DC8, D_80106CD0, D_80106E44, D_80106D4C};
+
+s32 func_800C4350(s8 z, s8 x, s32 angle, u8 dir, s32 param_5) {
+   s32 result;
+   s16 angleDir;
+   s8 x_t4, z_t3, y_t2;
+   s8 elevation;
+   s8 **psVar2;
+   s8 *p;
+   s32 i;
+   s32 count;
+   s32 zero; //?
+
+   result = 0;
+   zero = 0;
+   x_t4 = 0;
+   z_t3 = 0;
+   y_t2 = 0;
+   elevation = gTerrainPtr[z][x].s.elevation;
+   angleDir = (angle & 0xfff) >> 10;
+   dir = (dir + angleDir) & 3;
+
+   psVar2 = &D_80106EBC[0];
+   if (elevation > gTerrainPtr[gTargetZ][gTargetX].s.elevation) {
+      psVar2 += 4;
+   }
+   if (elevation < gTerrainPtr[gTargetZ][gTargetX].s.elevation) {
+      psVar2 += 8;
+   }
+   psVar2 += dir;
+
+   p = *psVar2;
+   if (param_5) {
+      p = &D_80106894[0];
+   }
+
+   count = *p++;
+   for (i = 0; i < count; i++) {
+      switch (angleDir) {
+      case DIR_SOUTH:
+         x_t4 = x + *p++;
+         z_t3 = z + *p++;
+         y_t2 = *p++;
+         break;
+      case DIR_WEST:
+         z_t3 = z + *p++;
+         x_t4 = x - *p++;
+         y_t2 = *p++;
+         break;
+      case DIR_NORTH:
+         x_t4 = x - *p++;
+         z_t3 = z - *p++;
+         y_t2 = *p++;
+         break;
+      case DIR_EAST:
+         z_t3 = z - *p++;
+         x_t4 = x + *p++;
+         y_t2 = *p++;
+         break;
+      }
+
+      if (x_t4 >= gMapMinX && x_t4 <= gMapMaxX && z_t3 >= gMapMinZ && z_t3 <= gMapMaxZ) {
+         y_t2 = gMapRowPointers[z_t3][x_t4].height - elevation - y_t2 + zero +
+                gCrateGrid_Ptr[z_t3][x_t4] * 2;
+         if (y_t2 > 0) {
+            result++;
+         }
+      }
+   }
+
+   return result;
+}
+
+void Noop_800c4658(void) {}

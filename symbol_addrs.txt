@@ -913,6 +913,7 @@ RenderMapTile = 0x800c2ea0; // type:func
 RenderEdgeMapTile = 0x800c331c; // type:func
 RenderOverheadMapTile = 0x800c3794; // type:func
 GetBestViewOfTarget = 0x800c3b54; // type:func
+Noop_800c4658 = 0x800c4658; // type:func
 SetSeqDataPtr = 0x800c4660; // type:func
 SetCurrentSeqSet = 0x800c4670; // type:func
 SetSeqAccessNum = 0x800c4680; // type:func
