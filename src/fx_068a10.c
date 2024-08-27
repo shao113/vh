@@ -1126,12 +1126,12 @@ void Objf193_DarkStar_FX2(Object *obj) {
          }
 
          a = OBJ.todo_x50;
-         ApplyMaskEffect(452 << 2, 400, 32, 32, 416 << 2, 384, OBJ.timer * 2 % 64, 0, GFX_TBD_25,
-                         0);
+         ApplyMaskEffect(452 << 2, 400, 32, 32, 416 << 2, 384, OBJ.timer * 2 % 64, 0,
+                         GFX_MASK_EFFECT_1, 0);
 
          obj_s2 = Obj_GetUnused();
          obj_s2->functionIndex = OBJF_NOOP;
-         obj_s2->d.sprite.gfxIdx = GFX_TBD_25;
+         obj_s2->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
          obj_s2->d.sprite.clut = CLUT_BLUES;
          obj_s2->d.sprite.semiTrans = 0;
 

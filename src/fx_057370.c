@@ -30,7 +30,7 @@ void Objf204_SummonCrest(Object *obj) {
    case 1:
       unitSprite = OBJ.unitSprite;
       fxSprite1 = Obj_GetUnused();
-      fxSprite1->d.sprite.gfxIdx = GFX_TBD_28;
+      fxSprite1->d.sprite.gfxIdx = GFX_MASK_EFFECT_4;
       fxSprite1->d.sprite.clut = OBJ.clut;
       fxSprite1->d.sprite.boxIdx = 7;
 
@@ -45,18 +45,18 @@ void Objf204_SummonCrest(Object *obj) {
       gQuad_800fe63c[3].vy = tmp;
 
       ApplyMaskEffect(496 << 2, 384, 64, 64, OBJ.vramSrcX, OBJ.vramSrcY, 0, OBJ.timer % 64,
-                      GFX_TBD_28, 0);
+                      GFX_MASK_EFFECT_4, 0);
       fxSprite1->x1.n = unitSprite->x1.n;
       fxSprite1->y1.n = unitSprite->y1.n + CV(1.0);
       fxSprite1->z1.n = unitSprite->z1.n;
       AddObjPrim6(gGraphicsPtr->ot, fxSprite1, 0);
       GetUnitSpriteVramRect(unitSprite, &spriteX, &spriteY, &spriteW, &spriteH);
-      ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 452 << 2, 400, 0, 0, GFX_TBD_25,
-                      0);
+      ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 452 << 2, 400, 0, 0,
+                      GFX_MASK_EFFECT_1, 0);
 
       CopyObject(unitSprite, fxSprite1);
       fxSprite1->d.sprite.hidden = 0;
-      fxSprite1->d.sprite.gfxIdx = GFX_TBD_25;
+      fxSprite1->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       fxSprite1->d.sprite.clut = OBJ.maskClut;
       fxSprite1->d.sprite.semiTrans = 2;
 
@@ -219,12 +219,12 @@ void Objf208_HolyLightning_FX1(Object *obj) {
       obj_s1 = OBJ.unitSprite;
       GetUnitSpriteVramRect(obj_s1, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 432 << 2, 464, 0, OBJ.timer % 64,
-                      GFX_TBD_25, 1);
+                      GFX_MASK_EFFECT_1, 1);
 
       fxSprite1 = Obj_GetUnused();
       CopyObject(obj_s1, fxSprite1);
       fxSprite1->d.sprite.hidden = 0;
-      fxSprite1->d.sprite.gfxIdx = GFX_TBD_25;
+      fxSprite1->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       fxSprite1->d.sprite.clut = CLUT_PURPLES;
       fxSprite1->d.sprite.semiTrans = 2;
 
@@ -437,12 +437,12 @@ void Objf197_RollingThunder_FX1(Object *obj) {
       obj_s1 = OBJ.unitSprite;
       GetUnitSpriteVramRect(obj_s1, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 432 << 2, 464, 0,
-                      OBJ.variant_0x24.timer % 64, GFX_TBD_25, 1);
+                      OBJ.variant_0x24.timer % 64, GFX_MASK_EFFECT_1, 1);
 
       fxSprite1 = Obj_GetUnused();
       CopyObject(obj_s1, fxSprite1);
       fxSprite1->d.sprite.hidden = 0;
-      fxSprite1->d.sprite.gfxIdx = GFX_TBD_25;
+      fxSprite1->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       fxSprite1->d.sprite.clut = CLUT_PURPLES;
       fxSprite1->d.sprite.semiTrans = 2;
 
@@ -600,12 +600,12 @@ void Objf100_Healing_FX2(Object *obj) {
       obj_s2 = OBJ.unitSprite;
       GetUnitSpriteVramRect(obj_s2, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 416 << 2, 384, 0, OBJ.timer % 64,
-                      GFX_TBD_25, 0);
+                      GFX_MASK_EFFECT_1, 0);
 
       obj_s1 = Obj_GetUnused();
       CopyObject(obj_s2, obj_s1);
       obj_s1->d.sprite.hidden = 0;
-      obj_s1->d.sprite.gfxIdx = GFX_TBD_25;
+      obj_s1->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       obj_s1->d.sprite.clut = CLUT_BLUES;
       obj_s1->d.sprite.semiTrans = 2;
 
@@ -748,12 +748,12 @@ void Objf102_227_Poison_FX2(Object *obj) {
       obj_s4 = OBJ.unitSprite;
       GetUnitSpriteVramRect(obj_s4, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 400 << 2, 384, 0, OBJ.timer % 64,
-                      GFX_TBD_25, 0);
+                      GFX_MASK_EFFECT_1, 0);
 
       obj_s1 = Obj_GetUnused();
       CopyObject(obj_s4, obj_s1);
       obj_s1->d.sprite.hidden = 0;
-      obj_s1->d.sprite.gfxIdx = GFX_TBD_25;
+      obj_s1->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       obj_s1->d.sprite.clut = CLUT_PURPLES;
       obj_s1->d.sprite.semiTrans = 2;
 
@@ -1418,12 +1418,12 @@ void Objf108_HarmfulWave_FX2(Object *obj) {
 
       GetUnitSpriteVramRect(unitSprite, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 416 << 2, 320, 0, OBJ.timer % 64,
-                      GFX_TBD_25, 0);
+                      GFX_MASK_EFFECT_1, 0);
 
       obj_s4 = Obj_GetUnused();
       CopyObject(unitSprite, obj_s4);
       obj_s4->d.sprite.hidden = 0;
-      obj_s4->d.sprite.gfxIdx = GFX_TBD_25;
+      obj_s4->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       obj_s4->d.sprite.clut = CLUT_PURPLES;
       obj_s4->d.sprite.semiTrans = 2;
 
@@ -1450,13 +1450,13 @@ void Objf108_HarmfulWave_FX2(Object *obj) {
             obj_s4->d.objf109.unitSprite = unitSprite;
          }
 
-         ApplyMaskEffect(452 << 2, 400, 32, 32, 432 << 2, 256, (OBJ.timer * 2) % 64, 0, GFX_TBD_26,
-                         0);
+         ApplyMaskEffect(452 << 2, 400, 32, 32, 432 << 2, 256, (OBJ.timer * 2) % 64, 0,
+                         GFX_MASK_EFFECT_2, 0);
 
          obj_s4 = Obj_GetUnused();
          obj_s4->functionIndex = OBJF_NOOP;
          obj_s4->d.sprite.clut = CLUT_PURPLES;
-         obj_s4->d.sprite.gfxIdx = GFX_TBD_26;
+         obj_s4->d.sprite.gfxIdx = GFX_MASK_EFFECT_2;
          obj_s4->d.sprite.semiTrans = 4;
 
          a = obj->y1.n + CV(0.0625) + abs(rsin(OBJ.timer * 16)) / 16;
@@ -1895,7 +1895,7 @@ void Objf681_StatBuffFx(Object *obj) {
    Object *obj_v1;
 
    maskEffect.srcGfxIdx = GFX_TILED_DIAMONDS;
-   maskEffect.dstGfxIdx = GFX_TBD_25;
+   maskEffect.dstGfxIdx = GFX_MASK_EFFECT_1;
    maskEffect.width = 0;
    maskEffect.height = obj->state3 % 0x40;
    maskEffect.semiTrans = 2;
@@ -2090,11 +2090,11 @@ void Objf733_StatBuffIcon(Object *obj) {
       }
 
       if (OBJ.type == 3) {
-         sprite->d.sprite.gfxIdx = GFX_TBD_26;
+         sprite->d.sprite.gfxIdx = GFX_MASK_EFFECT_2;
       } else if (OBJ.type == 4) {
-         sprite->d.sprite.gfxIdx = GFX_TBD_27;
+         sprite->d.sprite.gfxIdx = GFX_MASK_EFFECT_3;
       } else {
-         sprite->d.sprite.gfxIdx = GFX_TBD_26;
+         sprite->d.sprite.gfxIdx = GFX_MASK_EFFECT_2;
       }
 
       ApplyMaskEffect(iconVramX, iconVramY, iconWidth, iconHeight, 384 << 2, 384, 0,

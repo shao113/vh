@@ -37,7 +37,7 @@ D_FLAGS         := -Dmips -D__GNUC__=2 -D__OPTIMIZE__ -D__mips__ -D__mips -Dpsx 
 OPT_FLAGS       := -O1
 GP_OPT          := -G8
 
-CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -ffunction-cse -fpcc-struct-return -fgnu-linker
+CC_FLAGS        = $(GP_OPT) $(OPT_FLAGS) -Wall -mgas -mgpopt -msoft-float -ffunction-cse -fpcc-struct-return -fgnu-linker -gcoff
 
 CPP_FLAGS       := -undef -Wall -lang-c $(D_FLAGS) -Iinclude -Iinclude/PsyQ -nostdinc
 OBJCOPY_FLAGS   := -O binary

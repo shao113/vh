@@ -243,6 +243,7 @@ void Objf319_Map67_Scn34_TBD(Object *);
 void Objf320_Fx_TBD(Object *);
 void Objf321_Fx_TBD(Object *);
 void Objf322_370_371_372_MagicRestoration_FX2(Object *);
+void Objf323_713_Fx_TBD(Object *);
 void Objf325_Fx_TBD(Object *);
 void Objf326_Fx_TBD(Object *);
 void Objf327_HealingCircle_FX2(Object *);
@@ -489,18 +490,37 @@ void Objf675_LeenaForcefield(Object *);
 void Objf676_687_Rainfall(Object *);
 void Objf677_RainfallDrop(Object *);
 void Objf678_Ripple(Object *);
+void Objf679_EntityFlasher(Object *);
+void Objf680_LitDummySprite(Object *);
 void Objf681_StatBuffFx(Object *);
+void Objf682(Object *);
 void Objf685_RockSpurt(Object *);
 void Objf688_Noop(Object *);
+void Objf689_Fx_TBD(Object *);
 void Objf690_MagicStoneExplosion(Object *);
 void Objf691_Map43_Scn93_CameraShake(Object *);
 void Objf692_Campfire(Object *);
+void Objf693_Fx_TBD(Object *);
+void Objf694_Map61_Scn83_AshGlow(Object *);
+void Objf695_696_Fx_TBD(Object *);
+void Objf697_Map43_Scn93_FlameSphere(Object *);
+void Objf698_Map61_Scn83_EleniSparkleRings(Object *);
+void Objf699_Map61_Scn83_EleniSpell(Object *);
+void Objf700_DynamoHum_ColoredBolt(Object *);
 void Objf702_FlamingRock(Object *);
 void Objf703_Map40_Barricade(Object *);
+void Objf705_732_743_744_Transformation(Object *);
+void Objf707_Fx_TBD(Object *);
 void Objf708_709_Map14_Unused(Object *);
 void Objf710_Particle(Object *);
 void Objf711_712_Noop(Object *);
+void Objf714_DebugCamera(Object *);
 void Objf715_to_718_Spellbind_FX2_FX3(Object *);
+void Objf719_Fx_TBD(Object *);
+void Objf720_Map61_Scn83_XenoCastingCylinder(Object *);
+void Objf721_Map61_Scn83_XenoCastingCylinder_Crest(Object *);
+void Objf722_Fx_TBD(Object *);
+void Objf723_HomingParticle(Object *);
 void Objf728_Fx_TBD(Object *);
 void Objf733_StatBuffIcon(Object *);
 void Objf735_SparkleDust(Object *);
@@ -510,6 +530,7 @@ void Objf738_Map40_LowerBarricade(Object *);
 void Objf739_Particle(Object *);
 void Objf740_RemoveParalysis_Sparkles(Object *);
 void Objf742_Map67_Scn34_TBD(Object *);
+void Objf745_Fx_TBD(Object *);
 void Objf747_748_Wyrmfang_Flames(Object *);
 void Objf749_Wyrmfang_Flame(Object *);
 void Objf750_751_Map33_LowerPlatform(Object *);
@@ -862,7 +883,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [320] = Objf320_Fx_TBD,
     [321] = Objf321_Fx_TBD,
     [322] = Objf322_370_371_372_MagicRestoration_FX2,
-    [323] = (ObjFunction)0x800ad600,
+    [323] = Objf323_713_Fx_TBD,
     [324] = Objf307_324_EvilStream_FX2_FX3,
     [325] = Objf325_Fx_TBD,
     [326] = Objf326_Fx_TBD,
@@ -1218,51 +1239,51 @@ ObjFunction gObjFunctionPointers[804] = {
     [676] = Objf676_687_Rainfall,
     [677] = Objf677_RainfallDrop,
     [678] = Objf678_Ripple,
-    [679] = (ObjFunction)0x800ada90,
-    [680] = (ObjFunction)0x800adcf4,
+    [679] = Objf679_EntityFlasher,
+    [680] = Objf680_LitDummySprite,
     [681] = Objf681_StatBuffFx,
-    [682] = (ObjFunction)0x800ade8c,
+    [682] = Objf682,
     [683] = (ObjFunction)0x800b2708,
     [684] = (ObjFunction)0x800b2790,
     [685] = Objf685_RockSpurt,
     [686] = Objf206_686_BloodSpurtParticle,
     [687] = Objf676_687_Rainfall,
     [688] = Objf688_Noop,
-    [689] = (ObjFunction)0x800ae00c,
+    [689] = Objf689_Fx_TBD,
     [690] = Objf690_MagicStoneExplosion,
     [691] = Objf691_Map43_Scn93_CameraShake,
     [692] = Objf692_Campfire,
-    [693] = (ObjFunction)0x800ae4f8,
-    [694] = (ObjFunction)0x800ae678,
-    [695] = (ObjFunction)0x800ae8f4,
-    [696] = (ObjFunction)0x800ae8f4,
-    [697] = (ObjFunction)0x800aeb04,
-    [698] = (ObjFunction)0x800aec78,
-    [699] = (ObjFunction)0x800af158,
-    [700] = (ObjFunction)0x800af2b8,
+    [693] = Objf693_Fx_TBD,
+    [694] = Objf694_Map61_Scn83_AshGlow,
+    [695] = Objf695_696_Fx_TBD,
+    [696] = Objf695_696_Fx_TBD,
+    [697] = Objf697_Map43_Scn93_FlameSphere,
+    [698] = Objf698_Map61_Scn83_EleniSparkleRings,
+    [699] = Objf699_Map61_Scn83_EleniSpell,
+    [700] = Objf700_DynamoHum_ColoredBolt,
     [701] = (ObjFunction)NULL,
     [702] = Objf702_FlamingRock,
     [703] = Objf703_Map40_Barricade,
     [704] = (ObjFunction)NULL,
-    [705] = (ObjFunction)0x800af520,
+    [705] = Objf705_732_743_744_Transformation,
     [706] = (ObjFunction)NULL,
-    [707] = (ObjFunction)0x800afc68,
+    [707] = Objf707_Fx_TBD,
     [708] = Objf708_709_Map14_Unused,
     [709] = Objf708_709_Map14_Unused,
     [710] = Objf710_Particle,
     [711] = Objf711_712_Noop,
     [712] = Objf711_712_Noop,
-    [713] = (ObjFunction)0x800ad600,
-    [714] = (ObjFunction)0x800afdbc,
+    [713] = Objf323_713_Fx_TBD,
+    [714] = Objf714_DebugCamera,
     [715] = Objf715_to_718_Spellbind_FX2_FX3,
     [716] = Objf715_to_718_Spellbind_FX2_FX3,
     [717] = Objf715_to_718_Spellbind_FX2_FX3,
     [718] = Objf715_to_718_Spellbind_FX2_FX3,
-    [719] = (ObjFunction)0x800aff2c,
-    [720] = (ObjFunction)0x800b0500,
-    [721] = (ObjFunction)0x800b07cc,
-    [722] = (ObjFunction)0x800b0a08,
-    [723] = (ObjFunction)0x800b0bf8,
+    [719] = Objf719_Fx_TBD,
+    [720] = Objf720_Map61_Scn83_XenoCastingCylinder,
+    [721] = Objf721_Map61_Scn83_XenoCastingCylinder_Crest,
+    [722] = Objf722_Fx_TBD,
+    [723] = Objf723_HomingParticle,
     [724] = (ObjFunction)0x800b0cd0,
     [725] = (ObjFunction)0x800b0e64,
     [726] = (ObjFunction)0x800b0fc0,
@@ -1271,7 +1292,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [729] = (ObjFunction)0x800b101c,
     [730] = (ObjFunction)0x800b130c,
     [731] = (ObjFunction)0x800b0e04,
-    [732] = (ObjFunction)0x800af520,
+    [732] = Objf705_732_743_744_Transformation,
     [733] = Objf733_StatBuffIcon,
     [734] = (ObjFunction)0x800b1334,
     [735] = Objf735_SparkleDust,
@@ -1282,9 +1303,9 @@ ObjFunction gObjFunctionPointers[804] = {
     [740] = Objf740_RemoveParalysis_Sparkles,
     [741] = (ObjFunction)0x800b0cd0,
     [742] = Objf742_Map67_Scn34_TBD,
-    [743] = (ObjFunction)0x800af520,
-    [744] = (ObjFunction)0x800af520,
-    [745] = (ObjFunction)0x800af8c8,
+    [743] = Objf705_732_743_744_Transformation,
+    [744] = Objf705_732_743_744_Transformation,
+    [745] = Objf745_Fx_TBD,
     [746] = Objf202_746_UnitBlocking,
     [747] = Objf747_748_Wyrmfang_Flames,
     [748] = Objf747_748_Wyrmfang_Flames,

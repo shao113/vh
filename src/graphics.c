@@ -1127,8 +1127,8 @@ void ApplyMaskEffect(s16 spriteX, s16 spriteY, s16 spriteW, s16 spriteH, s16 tex
    }
 
    // Rows of four 64x64 slots for masked results
-   x = (gfxIdx - GFX_TBD_25) % 4 * 64;
-   y = (gfxIdx - GFX_TBD_25) / 4 * 64;
+   x = (gfxIdx - GFX_MASK_EFFECT_1) % 4 * 64;
+   y = (gfxIdx - GFX_MASK_EFFECT_1) / 4 * 64;
    rect.x = 576 + x / 4;
    rect.y = 256 + y;
    rect.w = spriteW / 4;

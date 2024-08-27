@@ -15,7 +15,6 @@ options:
   o_as_suffix: False
   use_legacy_include_asm: False
   auto_decompile_empty_functions: False
-  include_macro_inc: False
 
   asm_function_macro: glabel
   asm_jtbl_label_macro: jlabel
@@ -167,7 +166,7 @@ segments:
       - [0x0992fc, c, screen_effects]             # 0x800a8afc SetScreenEffectOrdering ...
       # TODO: Redo split? split_09a268 has sbss at 0x801233a8
       - [0x09a268, c, split_09a268]               # 0x800a9a68 Objf391 ...
-      - [0x09de00, asm]
+      - [0x0a14d0, asm]
       
       - [0x0a6d54, c, events]                     # 0x800b6554 Objf417_LoadEvent03 ...
       - [0x0b0480, c, graphics]                   # 0x800bfc80 LoadDecodedUnitSprites ...
@@ -220,7 +219,7 @@ segments:
       - [0x0f182c, .data, text]                   # 0x8010102c
       - [0x0f1f64, data]                          # 0x80101764 (TODO)
       - [0x0f2020, .data, split_09a268]           # 0x80101820
-      - [0x0f2150, data]
+      - [0x0f21fc, data]
       
       - [0x0f7044, .data, graphics]               # 0x80106844
       - [0x0f76ec, .data, audio]                  # 0x80106eec
@@ -247,7 +246,7 @@ segments:
       - [0x1137a0, .sdata, map_effects_08f524]    # 0x80122fa0
       - [0x1137b0, .sdata, text]                  # 0x80122fb0
       - [0x113898, .sdata, split_09a268]          # 0x80123098
-      - [0x1138ac, sdata]                         # 
+      - [0x1138b4, sdata]                         # 
       - [0x113928, .sdata, graphics]              # 0x80123128
       
       # (Reverted sbss migration for now since this also seems to work, without needing any ordering hacks.)

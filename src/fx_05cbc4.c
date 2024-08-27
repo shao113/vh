@@ -405,11 +405,11 @@ void func_8006DCD8(Object *deltaMirage) {
    }
 
    ApplyMaskEffect(452 << 2, 400, 32, 32, 432 << 2, 256, deltaMirage->d.objf156.timer % 64, 0,
-                   GFX_TBD_25, 0);
+                   GFX_MASK_EFFECT_1, 0);
 
    sprite = Obj_GetUnused();
    sprite->functionIndex = OBJF_NOOP;
-   sprite->d.sprite.gfxIdx = GFX_TBD_25;
+   sprite->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
    sprite->d.sprite.clut = CLUT_BLUES;
    sprite->d.sprite.semiTrans = 1;
 
@@ -676,12 +676,12 @@ void Objf158_Explosion_FX1(Object *obj) {
       unitSprite = OBJ.unitSprite;
       GetUnitSpriteVramRect(unitSprite, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 432 << 2, 256, width, height,
-                      GFX_TBD_25, 0);
+                      GFX_MASK_EFFECT_1, 0);
 
       obj_s0 = Obj_GetUnused();
       CopyObject(unitSprite, obj_s0);
       obj_s0->d.sprite.hidden = 0;
-      obj_s0->d.sprite.gfxIdx = GFX_TBD_25;
+      obj_s0->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       obj_s0->d.sprite.clut = CLUT_REDS;
       obj_s0->d.sprite.semiTrans = 0;
 

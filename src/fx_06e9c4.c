@@ -85,8 +85,8 @@ void Objf118_Faerie_Target(Object *obj) {
       obj_s3->d.sprite.hidden = 0;
       GetUnitSpriteVramRect(targetSprite, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 400 << 2, 320, 0,
-                      -(obj->state3++ % 0x40), GFX_TBD_25, 0);
-      obj_s2->d.sprite.gfxIdx = GFX_TBD_25;
+                      -(obj->state3++ % 0x40), GFX_MASK_EFFECT_1, 0);
+      obj_s2->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       obj_s2->d.sprite.clut = OBJ.clut;
       obj_s2->d.sprite.semiTrans = 2;
 

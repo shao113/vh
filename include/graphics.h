@@ -38,10 +38,10 @@ typedef enum GfxIdx {
    GFX_PORTRAIT_B_SPEAK_1 = 22,
    GFX_PORTRAIT_B_SPEAK_2 = 23,
    GFX_PORTRAIT_B_BLINK = 24,
-   GFX_TBD_25 = 25,
-   GFX_TBD_26 = 26,
-   GFX_TBD_27 = 27,
-   GFX_TBD_28 = 28,
+   GFX_MASK_EFFECT_1 = 25,
+   GFX_MASK_EFFECT_2 = 26,
+   GFX_MASK_EFFECT_3 = 27,
+   GFX_MASK_EFFECT_4 = 28,
    GFX_DIGIT_0 = 30,
    GFX_DIGIT_1 = 31,
    GFX_DIGIT_2 = 32,
@@ -173,6 +173,7 @@ typedef enum GfxIdx {
    GFX_TILED_DYN_166 = 166,
    GFX_TILED_VEINS = 167,
    GFX_TILED_LINES = 172,
+   GFX_TILED_TBD_177 = 177,
    GFX_TILED_FLAMES = 182,
    GFX_TILED_FLAMES_DYN_1 = 183,
    GFX_TILED_ICE = 187,
@@ -743,7 +744,8 @@ struct Object *GetUnitSpriteAtPosition(u8, u8);
 void RenderMaskEffect(struct Object *, MaskEffectPreset *);
 
 void AddObjPrim_Gui(u32 *ot, struct Object *obj);
-void RenderUnitSprite(u32 *ot, struct Object *sprite, s32 useMapElevation);
+// Discrepancy in Objf680_LitDummySprite (missing last arg)
+// void RenderUnitSprite(u32 *ot, struct Object *sprite, s32 useMapElevation);
 void UpdateObjAnimation(struct Object *);
 
 static inline u16 GetLightRotY() { return gLightRotation.vy; }

@@ -43,7 +43,7 @@ void Objf327_HealingCircle_FX2(Object *obj) {
       spriteW++;
       spriteH++;
       ApplyMaskEffect(spriteX, spriteY, spriteW, spriteH, 416 << 2, 320, 0,
-                      0x40 - (obj->state2 & 0x3f), GFX_TBD_25, 0);
+                      0x40 - (obj->state2 & 0x3f), GFX_MASK_EFFECT_1, 0);
 
       fxSprite = CreatePositionedObj(obj, OBJF_NOOP);
 
@@ -53,7 +53,7 @@ void Objf327_HealingCircle_FX2(Object *obj) {
          fxSprite->d.sprite.boxIdx = 0;
       }
 
-      fxSprite->d.sprite.gfxIdx = GFX_TBD_25;
+      fxSprite->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       fxSprite->d.sprite.clut = CLUT_BLUES;
       fxSprite->d.sprite.semiTrans = 2;
       fxSprite->d.sprite.facingLeft = targetSprite->d.sprite.facingLeft;
@@ -147,7 +147,7 @@ void Objf322_370_371_372_MagicRestoration_FX2(Object *obj) {
       fxSprite->functionIndex = OBJF_NOOP;
 
       maskEffect.srcGfxIdx = GFX_TILED_VEINS;
-      maskEffect.dstGfxIdx = GFX_TBD_25;
+      maskEffect.dstGfxIdx = GFX_MASK_EFFECT_1;
       maskEffect.width = 0;
       maskEffect.height = 0x60 - obj->state2;
       maskEffect.semiTrans = 2;

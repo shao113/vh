@@ -342,18 +342,24 @@ typedef enum ObjFunctionIdx {
    OBJF_ROCK_SPURT_PARTICLE_2 = 686,
    OBJF_LIGHT_RAINFALL = 687,
    OBJF_MAGIC_STONE_EXPLOSION = 690,
+   OBJF_FX_TBD_695 = 695,
+   OBJF_MAP61_SCN83_ELENI_SPARKLE_RINGS = 698,
    OBJF_DYNAMO_HUM_COLORED_BOLT = 700,
    OBJF_FLAMING_ROCK = 702,
    OBJF_MAP40_BARRICADE = 703,
+   OBJF_FX_TBD_707 = 707,
    OBJF_MAP14_UNUSED_708 = 708,
    OBJF_MAP14_UNUSED_709 = 709,
    OBJF_PARTICLE_710 = 710, // Generic animated particle?
+   OBJF_FX_TBD_713 = 713,
    OBJF_SPELLBIND_FX2 = 715,
    OBJF_SPELLBIND_FX3 = 716,
    OBJF_TBD_717 = 717,
    OBJF_TBD_718 = 718,
+   OBJF_MAP61_SCN83_XENO_CASTING_CYLINDER_CREST = 721,
+   OBJF_HOMING_PARTICLE = 723,
    OBJF_FX_TBD_728 = 728,
-   OBJF_TBD_732 = 732,
+   OBJF_MID_BATTLE_TRANSFORMATION = 732,
    OBJF_STAT_BUFF_ICON = 733,
    OBJF_SPARKLE_DUST = 735,
    OBJF_REMOVE_PARALYSIS_BUBBLE = 736,
@@ -3366,6 +3372,21 @@ typedef struct Object_675 {
    /* :0x54 */ u8 unk_0x54[12];
 } Object_675;
 
+/* Entity Flasher */
+typedef struct Object_679 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ s16 timer;
+   /* :0x2A */ u8 unk_0x2A[50];
+   /* :0x5C */ struct Object *sprite;
+} Object_679;
+
+/* Lit Dummy Sprite */
+typedef struct Object_680 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct Object *sprite;
+} Object_680;
+
 /* Stat Buff FX */
 typedef struct Object_681 {
    /* :0x24 */ struct Object *unitSprite;
@@ -3377,6 +3398,14 @@ typedef struct Object_681 {
    /* :0x52 */ u8 unk_0x52[14];
 } Object_681;
 
+/* FX - TBD */
+typedef struct Object_689 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ struct Object *sprite;
+   /* :0x2C */ SVectorXZY coords[3];
+   /* :0x3E */ u8 unk_0x3E[34];
+} Object_689;
+
 /* Campfire */
 typedef struct Object_692 {
    /* :0x24 */ struct Object *entitySprite;
@@ -3384,12 +3413,88 @@ typedef struct Object_692 {
    /* :0x5C */ struct Object *sprite;
 } Object_692;
 
+/* FX - TBD */
+typedef struct Object_695_696 {
+   /* :0x24 */ union {
+      struct Object *entitySpriteParam;
+      s16 unk;
+   } variant_0x24;
+   /* :0x28 */ s16 intensity;
+   /* :0x2A */ u8 unk_0x2A[50];
+   /* :0x5C */ struct Object *entitySprite;
+} Object_695_696;
+
+/* Map 43 - Scene 93 - Flame Sphere */
+typedef struct Object_697 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct Object *sphere;
+} Object_697;
+
+/* Map 61 - Scene 83 - Eleni's Spell - Sparkle Rings */
+typedef struct Object_698 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ s16 firstLaunchTimer;
+   /* :0x2A */ s16 launchNum;
+   /* :0x2C */ s16 launchTimer;
+   /* :0x2E */ u8 unk_0x2E[46];
+   /* :0x5C */ struct Object *sparkleSprite;
+} Object_698;
+
+/* FX - TBD */
+typedef struct Object_707 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[6];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[6];
+   /* :0x3C */ s16 halfWidth;
+   /* :0x3E */ s16 halfHeight;
+   /* :0x40 */ u8 unk_0x40[32];
+} Object_707;
+
 /* Spellbind - FX2 / FX3 */
 typedef struct Object_715_to_718 {
    /* :0x24 */ u8 unk_0x24[2];
    /* :0x26 */ s16 unused_0x26;
    /* :0x28 */ u8 unk_0x28[56];
 } Object_715_to_718;
+
+/* FX - TBD */
+typedef struct Object_719 {
+   /* :0x24 */ struct Object *entitySpriteParam;
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[3];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ u8 unk_0x32[10];
+   /* :0x3C */ SVectorXZY coords[4];
+   /* :0x54 */ u8 unk_0x54[4];
+   /* :0x58 */ struct Object *entitySprite;
+   /* :0x5C */ struct Object *sphere;
+} Object_719;
+
+/* Map 61 - Scene 83 - Xeno's Casting Cylinder */
+typedef struct Object_720 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct Object *dataStore;
+} Object_720;
+
+/* Map 61 - Scene 83 - Xeno's Casting Cylinder - Crest */
+typedef struct Object_721 {
+   /* :0x24 */ u8 unk_0x24[4];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[3];
+   /* :0x31 */ s8 semiTrans;
+   /* :0x32 */ u8 unk_0x32[42];
+   /* :0x5C */ struct Object *sprite;
+} Object_721;
 
 /* Stat Buff Icon */
 typedef struct Object_733 {
@@ -3832,8 +3937,18 @@ typedef struct Object {
       Object_672 objf672;         /* Map 39 - Splashing Tile */
       Object_673 objf673;         /* Map 32 - Scene 63 - Cinematic */
       Object_675 objf675;         /* Leena's Forcefield */
+      Object_679 objf679;         /* Entity Flasher */
+      Object_680 objf680;         /* Lit Dummy Sprite */
       Object_681 objf681;         /* Stat Buff FX */
+      Object_689 objf689;         /* FX - TBD */
       Object_692 objf692;         /* Campfire */
+      Object_695_696 objf695;     /* FX - TBD */
+      Object_697 objf697;         /* Map 43 - Scene 93 - Flame Sphere */
+      Object_698 objf698;         /* Map 61 - Scene 83 - Eleni's Spell - Sparkle Rings */
+      Object_707 objf707;         /* FX - TBD */
+      Object_719 objf719;         /* FX - TBD */
+      Object_720 objf720;         /* Map 61 - Scene 83 - Xeno's Casting Cylinder */
+      Object_721 objf721;         /* Map 61 - Scene 83 - Xeno's Casting Cylinder - Crest */
       Object_715_to_718 objf715;  /* Spellbind - FX2 / FX3 */
       Object_733 objf733;         /* Stat Buff Icon */
       Object_747_748 objf747;     /* Wyrmfang - Flames */

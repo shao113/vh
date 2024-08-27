@@ -1097,7 +1097,7 @@ void Objf014_BattleUnit(Object *obj) {
             MsgBox_Close(0);
             OBJ.timer = 90;
             obj1 = Obj_GetUnused();
-            obj1->functionIndex = OBJF_TBD_732;
+            obj1->functionIndex = OBJF_MID_BATTLE_TRANSFORMATION;
             obj1->x1.s.hi = sprite->x1.s.hi;
             obj1->z1.s.hi = sprite->z1.s.hi;
             gState.D_801405A4 = 0;

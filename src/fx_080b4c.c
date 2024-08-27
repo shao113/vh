@@ -32,7 +32,7 @@ void Objf306_791_792_793_Healing_FX2(Object *obj) {
    case 1:
       unitSprite = OBJ.unitSprite;
       maskEffect.srcGfxIdx = GFX_TILED_FLAMES;
-      maskEffect.dstGfxIdx = GFX_TBD_25;
+      maskEffect.dstGfxIdx = GFX_MASK_EFFECT_1;
       maskEffect.width = 0;
       maskEffect.height = OBJ.timer % 0x40;
       maskEffect.semiTrans = 2;
@@ -770,7 +770,7 @@ void Objf380_LevelUpFx(Object *obj) {
       unitSprite = OBJ.unitSprite;
       GetUnitSpriteVramRect(unitSprite, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 400 << 2, 320, 0,
-                      (OBJ.timer * 2) % 64, GFX_TBD_25, 0);
+                      (OBJ.timer * 2) % 64, GFX_MASK_EFFECT_1, 0);
       OBJ.timer++;
 
       obj_s2 = Obj_GetUnused();
@@ -780,10 +780,10 @@ void Objf380_LevelUpFx(Object *obj) {
       RenderUnitSprite(gGraphicsPtr->ot, obj_s2, 0);
       poly = &gGraphicsPtr->quads[gQuadIndex - 1];
 
-      gfxX = gGfxSubTextures[GFX_TBD_25][0];
-      gfxY = gGfxSubTextures[GFX_TBD_25][1];
-      gfxW = gGfxSubTextures[GFX_TBD_25][2];
-      gfxH = gGfxSubTextures[GFX_TBD_25][3];
+      gfxX = gGfxSubTextures[GFX_MASK_EFFECT_1][0];
+      gfxY = gGfxSubTextures[GFX_MASK_EFFECT_1][1];
+      gfxW = gGfxSubTextures[GFX_MASK_EFFECT_1][2];
+      gfxH = gGfxSubTextures[GFX_MASK_EFFECT_1][3];
       setUVWH(poly, gfxX, gfxY, gfxW, gfxH);
 
       poly->clut = gClutIds[cluts[OBJ.timer % 3]];
@@ -1238,7 +1238,7 @@ void Objf737_RemoveParalysis(Object *obj) {
       }
 
       unusedMaskEffect.srcGfxIdx = GFX_TILED_VEINS;
-      unusedMaskEffect.dstGfxIdx = GFX_TBD_25;
+      unusedMaskEffect.dstGfxIdx = GFX_MASK_EFFECT_1;
       unusedMaskEffect.width = 0;
       unusedMaskEffect.height = obj->state2 % 64;
       unusedMaskEffect.semiTrans = 2;

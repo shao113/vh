@@ -705,7 +705,7 @@ void Objf587_BattleEnemyEvent(Object *obj) {
             PerformAudioCommand(AUDIO_CMD_PLAY_SFX(230));
             sprite = FindUnitSpriteByNameIdx(UNIT_KANE);
             fx = Obj_GetUnused();
-            fx->functionIndex = OBJF_TBD_732;
+            fx->functionIndex = OBJF_MID_BATTLE_TRANSFORMATION;
             fx->x1.n = sprite->x1.n;
             fx->z1.n = sprite->z1.n;
             gState.D_801405A4 = 0;

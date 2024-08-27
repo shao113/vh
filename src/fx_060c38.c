@@ -521,11 +521,11 @@ void Objf169_EvilStream_FX1(Object *obj) {
    // fallthrough
    case 1:
       ApplyMaskEffect(448 << 2, 384, 64, 64, (384 << 2) + obj->state3 % 8 * 32, 0, 0,
-                      (obj->state3 * 3) % 64, GFX_TBD_26, 0);
+                      (obj->state3 * 3) % 64, GFX_MASK_EFFECT_2, 0);
 
       sprite = Obj_GetUnused();
       sprite->functionIndex = OBJF_NOOP;
-      sprite->d.sprite.gfxIdx = GFX_TBD_26;
+      sprite->d.sprite.gfxIdx = GFX_MASK_EFFECT_2;
       sprite->d.sprite.boxIdx = 7;
       sprite->x1.n = obj->x1.n;
       sprite->y1.n = obj->y1.n;
@@ -565,12 +565,12 @@ void Objf169_EvilStream_FX1(Object *obj) {
       gQuad_800fe63c[3].vx = a;
       gQuad_800fe63c[3].vy = a;
 
-      ApplyMaskEffect(496 << 2, 384, 64, 64, (384 << 2) + obj->state3 % 8 * 32, 0, 0, 0, GFX_TBD_25,
-                      0);
+      ApplyMaskEffect(496 << 2, 384, 64, 64, (384 << 2) + obj->state3 % 8 * 32, 0, 0, 0,
+                      GFX_MASK_EFFECT_1, 0);
 
       sprite = Obj_GetUnused();
       sprite->functionIndex = OBJF_NOOP;
-      sprite->d.sprite.gfxIdx = GFX_TBD_25;
+      sprite->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       sprite->d.sprite.boxIdx = 7;
       sprite->x1.n = obj->x1.n;
       sprite->y1.n = obj->y1.n;
@@ -610,12 +610,12 @@ void Objf169_EvilStream_FX1(Object *obj) {
       gQuad_800fe63c[3].vx = 0x48;
       gQuad_800fe63c[3].vy = 0x48;
 
-      ApplyMaskEffect(496 << 2, 384, 64, 64, (384 << 2) + obj->state3 % 8 * 32, 0, 0, 0, GFX_TBD_25,
-                      0);
+      ApplyMaskEffect(496 << 2, 384, 64, 64, (384 << 2) + obj->state3 % 8 * 32, 0, 0, 0,
+                      GFX_MASK_EFFECT_1, 0);
 
       sprite = Obj_GetUnused();
       sprite->functionIndex = OBJF_NOOP;
-      sprite->d.sprite.gfxIdx = GFX_TBD_25;
+      sprite->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       sprite->d.sprite.boxIdx = 7;
       sprite->x1.n = obj->x1.n;
       sprite->y1.n = obj->y1.n;
@@ -1161,9 +1161,9 @@ void Objf160_IceStorm_Target(Object *obj) {
 
       GetUnitSpriteVramRect(targetSprite, &spriteX, &spriteY, &spriteW, &spriteH);
       ApplyMaskEffect(spriteX, spriteY, spriteW + 1, spriteH + 1, 384 << 2, 384, 0,
-                      -(obj->state3++ % 64), GFX_TBD_25, 0);
+                      -(obj->state3++ % 64), GFX_MASK_EFFECT_1, 0);
 
-      fxSprite1->d.sprite.gfxIdx = GFX_TBD_25;
+      fxSprite1->d.sprite.gfxIdx = GFX_MASK_EFFECT_1;
       fxSprite1->d.sprite.clut = OBJ.clut;
       fxSprite1->d.sprite.semiTrans = 2;
 
