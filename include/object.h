@@ -122,6 +122,7 @@ typedef enum ObjFunctionIdx {
    OBJF_DARK_STAR_FX2 = 193,
    OBJF_ROLLING_THUNDER_FX2 = 195,
    OBJF_ROLLING_THUNDER_ORB_PAIR = 196,
+   OBJF_ROLLING_THUNDER_FX1 = 197,
    OBJF_ROLLING_THUNDER_CASTING_BOLT = 198,
    OBJF_UNIT_STRUCK = 201,
    OBJF_UNIT_BLOCKING = 202,
@@ -140,6 +141,8 @@ typedef enum ObjFunctionIdx {
    OBJF_THUNDER_BALL_CHILD_ORB = 226,
    OBJF_MAP36_LEENA = 256,
    OBJF_MAP36_VILLAGER = 258,
+   OBJF_MAP23_SCN39_SHRINK_WARP_SPRITE = 265,
+   OBJF_MAP61_SCN83_SHRINK_WARP_SPRITE = 266,
    OBJF_FX_TBD_269 = 269,
    OBJF_STAT_RAISED = 272,
    OBJF_OUTWARD_RAY = 273,
@@ -176,6 +179,7 @@ typedef enum ObjFunctionIdx {
    OBJF_AVALANCHE_FX3 = 317,
    OBJF_MAP67_SCN34_TBD_319 = 319,
    OBJF_FX_TBD_320 = 320,
+   OBJF_FX_TBD_321 = 321,
    OBJF_FX_TBD_323 = 323,
    OBJF_EVIL_STREAM_FX2 = 324,
    OBJF_MAP43_SCN93_MAGIC_STONE_FX = 328,
@@ -356,9 +360,12 @@ typedef enum ObjFunctionIdx {
    OBJF_SPELLBIND_FX3 = 716,
    OBJF_TBD_717 = 717,
    OBJF_TBD_718 = 718,
+   OBJF_DIMENSIONAL_RIFT = 719,
    OBJF_MAP61_SCN83_XENO_CASTING_CYLINDER_CREST = 721,
+   OBJF_DIMENSIONAL_RIFT_SPARKLES = 722,
    OBJF_HOMING_PARTICLE = 723,
    OBJF_FX_TBD_728 = 728,
+   OBJF_MAP67_SCN34_SHRINK_WARP_SPRITE = 729,
    OBJF_MID_BATTLE_TRANSFORMATION = 732,
    OBJF_STAT_BUFF_ICON = 733,
    OBJF_SPARKLE_DUST = 735,
@@ -367,6 +374,7 @@ typedef enum ObjFunctionIdx {
    OBJF_MAP40_LOWER_BARRICADE = 738,
    OBJF_PARTICLE_739 = 739,
    OBJF_REMOVE_PARALYSIS_SPARKLES = 740,
+   OBJF_FX_TBD_741 = 741,
    OBJF_ENTITY_BLOCKING = 746,
    OBJF_WYRMFANG_FLAMES_CW = 747,
    OBJF_WYRMFANG_FLAMES_CCW = 748,
@@ -1241,7 +1249,7 @@ typedef struct Object_133_Etc {
    /* :0x26 */ s16 semiTrans;
    /* :0x28 */ s16 todo_x28;
    /* :0x2A */ s16 todo_x2a; // increments x34
-   /* :0x2C */ u8 unk_0x2C[2];
+   /* :0x2C */ s16 todo_x2c;
    /* :0x2E */ s16 radius;
    /* :0x30 */ s16 theta;
    /* :0x32 */ s16 h;
@@ -2058,6 +2066,13 @@ typedef struct Object_226 {
    /* :0x58 */ struct Object *lightningSprite;
    /* :0x5C */ struct Object *orbSprite;
 } Object_226;
+
+/* Shrink & Warp Sprite */
+typedef struct Object_265_266_729 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct Object *sprite;
+} Object_265_266_729;
 
 /* FX - TBD */
 typedef struct Object_269 {
@@ -3462,7 +3477,7 @@ typedef struct Object_715_to_718 {
    /* :0x28 */ u8 unk_0x28[56];
 } Object_715_to_718;
 
-/* FX - TBD */
+/* Dimensional Rift */
 typedef struct Object_719 {
    /* :0x24 */ struct Object *entitySpriteParam;
    /* :0x28 */ s16 gfxIdx;
@@ -3496,6 +3511,13 @@ typedef struct Object_721 {
    /* :0x5C */ struct Object *sprite;
 } Object_721;
 
+/* FX - TBD */
+typedef struct Object_724 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct Object *sparkles;
+} Object_724;
+
 /* Stat Buff Icon */
 typedef struct Object_733 {
    /* :0x24 */ u8 unk_0x24[4];
@@ -3507,6 +3529,13 @@ typedef struct Object_733 {
    /* :0x52 */ u8 unk_0x52[10];
    /* :0x5C */ struct Object *sprite;
 } Object_733;
+
+/* FX - TBD */
+typedef struct Object_734 {
+   /* :0x24 */ struct Object *unitSprite;
+   /* :0x28 */ u8 unk_0x28[52];
+   /* :0x5C */ struct Object *sprite;
+} Object_734;
 
 /* Wyrmfang - Flames */
 typedef struct Object_747_748 {
@@ -3808,6 +3837,7 @@ typedef struct Object {
       Object_224 objf224;         /* Thunder Ball - FX1 */
       Object_225 objf225;         /* Thunder Ball - Initial Orb */
       Object_226 objf226;         /* Thunder Ball - Child Orb */
+      Object_265_266_729 objf265; /* Shrink & Warp Sprite */
       Object_269 objf269;         /* FX - TBD */
       Object_270 objf270;         /* FX - TBD */
       Object_271 objf271;         /* Map 36 - Scene 74 - Leena Casting Shield */
@@ -3946,11 +3976,13 @@ typedef struct Object {
       Object_697 objf697;         /* Map 43 - Scene 93 - Flame Sphere */
       Object_698 objf698;         /* Map 61 - Scene 83 - Eleni's Spell - Sparkle Rings */
       Object_707 objf707;         /* FX - TBD */
-      Object_719 objf719;         /* FX - TBD */
+      Object_719 objf719;         /* Dimensional Rift */
       Object_720 objf720;         /* Map 61 - Scene 83 - Xeno's Casting Cylinder */
       Object_721 objf721;         /* Map 61 - Scene 83 - Xeno's Casting Cylinder - Crest */
+      Object_724 objf724;         /* FX - TBD */
       Object_715_to_718 objf715;  /* Spellbind - FX2 / FX3 */
       Object_733 objf733;         /* Stat Buff Icon */
+      Object_734 objf734;         /* FX - TBD */
       Object_747_748 objf747;     /* Wyrmfang - Flames */
       Object_749 objf749;         /* Wyrmfang - Flame */
       Object_750_751 objf750;     /* Map 33 - Lower Platform */

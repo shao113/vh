@@ -327,123 +327,113 @@ void Objf115_Faerie_FX2(Object *obj) {
    }
 }
 
-/*
 #undef OBJF
 #define OBJF 211
 void Objf211_Avalanche_Boulder(Object *obj) {
-
-   // WIP: Butchered this pretty badly while trying (unsuccessfully) to eke out a fake match.
-
    extern SVECTOR s_vertices_80123b0c[11][9];
 
-   Object *obj_s0;
+   Object *unitSprite;
    Object *obj_s2;
    POLY_FT4 *poly;
-   s32 i, j;
-   s32 rnd1;
-   s32 rnd2;
+   s32 i, j, k;
    s16 iVar5s;
    s16 iVar8s;
    s16 iVar10s;
-   s32 shade;
-   s16 a;
-   s16 b;
-   s16 c;
-   s32 temp_s8;
-   s16 local_38;
-   s32 local_40;
-   s32 flag;
-   s32 onstack;
+   s16 a, b;
+   s32 tmp_0x200;
+   s32 tmp_0x300;
    MATRIX matrix;
    VECTOR rotated[11][9];
    SVECTOR rotation;
-
-   s8 unused[16];
+   s32 flag;
+   // s8 unused[8];
 
    switch (obj->state) {
    case 0:
-      obj_s0 = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
+      unitSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
       obj->y1.n = GetTerrainElevation(obj->z1.s.hi, obj->x1.s.hi) + CV(2.0);
-      obj->x1.n = obj_s0->x1.n;
-      obj->z1.n = obj_s0->z1.n;
+      obj->x1.n = unitSprite->x1.n;
+      obj->z1.n = unitSprite->z1.n;
 
-      temp_s8 = 0x300; //?
+      tmp_0x300 = 0x300;
+      // tmp_0x200 = 0x200;
 
-      // Intentionally wrong, for easier comparison:
-      i = 0;
-      *&onstack = 0x100;
-
-      for (; i < 11; i++) {
-         //? Getting this part right is probably essential for a match; another temp? s16?
-         b = ((j = onstack) * rsin(i * 0xcd)) / ONE;
-         a = (u16)(temp_s8 >> 1) * rcos(i * 0xcd + 0x800) / ONE;
+      for (i = 0; i < 11; i++) {
+         // Matches except for stack when using tmp_0x200, but trying to pad the stack shifts the
+         // compiler temp (?); this gets around that but looks very fake (FIXME)
+         s32 tmp;
+         a = (tmp_0x300 - 0x100);
+         tmp = a / 2;
+         iVar8s = (tmp * rsin(i * 0xcd)) / ONE;
+         // iVar8s = ((tmp_0x200 / 2) * rsin(i * 0xcd)) / ONE;
+         iVar10s = (tmp_0x300 / 2) * rcos(i * 0xcd + 0x800) / ONE;
          for (j = 0; j < 9; j++) {
-            s_vertices_80123b0c[i][j].vx = b * rcos(j * 0x200) / ONE;
-            s_vertices_80123b0c[i][j].vy = b * rsin(j * 0x200) / ONE;
-            s_vertices_80123b0c[i][j].vz = a;
+            s_vertices_80123b0c[i][j].vx = iVar8s * rcos(j * 0x200) / ONE;
+            s_vertices_80123b0c[i][j].vy = iVar8s * rsin(j * 0x200) / ONE;
+            s_vertices_80123b0c[i][j].vz = iVar10s;
          }
       }
 
-      for (local_40 = 0; local_40 < 0x100; local_40++) {
-         rnd1 = rand() % 11;
+      for (k = 0; k < 256; k++) {
+         i = rand() % 11;
          j = rand() % 8;
-         a = 0x140 * rsin(rnd1 * 0xcd) / ONE;
+         a = 0x140 * rsin(i * 0xcd) / ONE;
 
-         if (rnd1 == 0) {
+         if (i == 0) {
             iVar5s = 8 - rand() % 17;
             iVar8s = 8 - rand() % 17;
             iVar10s = 8 - rand() % 17;
-            b = rand() % 8;
+            a = rand() % 8;
 
             for (j = 0; j < 8; j++) {
-               s_vertices_80123b0c[rnd1][j].vx =
-                   (s_vertices_80123b0c[rnd1][j].vx * 7 + s_vertices_80123b0c[rnd1 + 1][b].vx) / 8 +
+               s_vertices_80123b0c[i][j].vx =
+                   (s_vertices_80123b0c[i][j].vx * 7 + s_vertices_80123b0c[i + 1][a].vx) / 8 +
                    iVar5s;
-               s_vertices_80123b0c[rnd1][j].vz =
-                   (s_vertices_80123b0c[rnd1][j].vz * 7 + s_vertices_80123b0c[rnd1 + 1][b].vz) / 8 +
+               s_vertices_80123b0c[i][j].vz =
+                   (s_vertices_80123b0c[i][j].vz * 7 + s_vertices_80123b0c[i + 1][a].vz) / 8 +
                    iVar8s;
-               s_vertices_80123b0c[rnd1][j].vy =
-                   (s_vertices_80123b0c[rnd1][j].vy * 7 + s_vertices_80123b0c[rnd1 + 1][b].vy) / 8 +
+               s_vertices_80123b0c[i][j].vy =
+                   (s_vertices_80123b0c[i][j].vy * 7 + s_vertices_80123b0c[i + 1][a].vy) / 8 +
                    iVar10s;
             }
-         } else if (rnd1 == 10) {
+         } else if (i == 10) {
             iVar5s = 8 - rand() % 17;
             iVar8s = 8 - rand() % 17;
             iVar10s = 8 - rand() % 17;
-            b = rand() % 8;
+            a = rand() % 8;
 
             for (j = 0; j < 8; j++) {
-               s_vertices_80123b0c[rnd1][j].vx =
-                   (s_vertices_80123b0c[rnd1][j].vx * 7 + s_vertices_80123b0c[rnd1 - 1][b].vx) / 8 +
+               s_vertices_80123b0c[i][j].vx =
+                   (s_vertices_80123b0c[i][j].vx * 7 + s_vertices_80123b0c[i - 1][a].vx) / 8 +
                    iVar5s;
-               s_vertices_80123b0c[rnd1][j].vz =
-                   (s_vertices_80123b0c[rnd1][j].vz * 7 + s_vertices_80123b0c[rnd1 - 1][b].vz) / 8 +
+               s_vertices_80123b0c[i][j].vz =
+                   (s_vertices_80123b0c[i][j].vz * 7 + s_vertices_80123b0c[i - 1][a].vz) / 8 +
                    iVar8s;
-               s_vertices_80123b0c[rnd1][j].vy =
-                   (s_vertices_80123b0c[rnd1][j].vy * 7 + s_vertices_80123b0c[rnd1 - 1][b].vy) / 8 +
+               s_vertices_80123b0c[i][j].vy =
+                   (s_vertices_80123b0c[i][j].vy * 7 + s_vertices_80123b0c[i - 1][a].vy) / 8 +
                    iVar10s;
             }
          } else {
-            s_vertices_80123b0c[rnd1][j].vx =
-                (s_vertices_80123b0c[rnd1][j].vx * 4 + s_vertices_80123b0c[rnd1 + 1][j].vx +
-                 s_vertices_80123b0c[rnd1 - 1][j].vx + s_vertices_80123b0c[rnd1][j + 1].vx +
-                 s_vertices_80123b0c[rnd1][j - 1].vx) /
+            s_vertices_80123b0c[i][j].vx =
+                (s_vertices_80123b0c[i][j].vx * 4 + s_vertices_80123b0c[i + 1][j].vx +
+                 s_vertices_80123b0c[i - 1][j].vx + s_vertices_80123b0c[i][j + 1].vx +
+                 s_vertices_80123b0c[i][j - 1].vx) /
                     8 +
-                (a * (0x30 - rand() % 0x61) / 0x100);
+                (a * (48 - rand() % 97) / 0x100);
 
-            s_vertices_80123b0c[rnd1][j].vy =
-                (s_vertices_80123b0c[rnd1][j].vy * 4 + s_vertices_80123b0c[rnd1 + 1][j].vy +
-                 s_vertices_80123b0c[rnd1 - 1][j].vy + s_vertices_80123b0c[rnd1][j + 1].vy +
-                 s_vertices_80123b0c[rnd1][j - 1].vy) /
+            s_vertices_80123b0c[i][j].vy =
+                (s_vertices_80123b0c[i][j].vy * 4 + s_vertices_80123b0c[i + 1][j].vy +
+                 s_vertices_80123b0c[i - 1][j].vy + s_vertices_80123b0c[i][j + 1].vy +
+                 s_vertices_80123b0c[i][j - 1].vy) /
                     8 +
-                (a * (0x30 - rand() % 0x61) / 0x100);
+                (a * (48 - rand() % 97) / 0x100);
 
-            s_vertices_80123b0c[rnd1][j].vz =
-                (s_vertices_80123b0c[rnd1][j].vz * 4 + s_vertices_80123b0c[rnd1 + 1][j].vz +
-                 s_vertices_80123b0c[rnd1 - 1][j].vz + s_vertices_80123b0c[rnd1][j + 1].vz +
-                 s_vertices_80123b0c[rnd1][j - 1].vz) /
+            s_vertices_80123b0c[i][j].vz =
+                (s_vertices_80123b0c[i][j].vz * 4 + s_vertices_80123b0c[i + 1][j].vz +
+                 s_vertices_80123b0c[i - 1][j].vz + s_vertices_80123b0c[i][j + 1].vz +
+                 s_vertices_80123b0c[i][j - 1].vz) /
                     8 +
-                (a * (0x30 - rand() % 0x61) / 0x100);
+                (a * (48 - rand() % 97) / 0x100);
          }
       }
 
@@ -473,58 +463,57 @@ void Objf211_Avalanche_Boulder(Object *obj) {
       matrix.t[2] = 0;
       SetRotMatrix(&matrix);
       SetTransMatrix(&matrix);
-      do {
-         for (i = 0; i < 11; i++) {
-            for (j = 0; j < 9; j++) {
-               RotTrans(&s_vertices_80123b0c[i][j], &rotated[i][j], &flag);
-            }
+
+      for (i = 0; i < 11; i++) {
+         for (j = 0; j < 9; j++) {
+            RotTrans(&s_vertices_80123b0c[i][j], &rotated[i][j], &flag);
          }
-      } while (0);
+      }
       PopMatrix();
 
-      for (rnd2 = 0; rnd2 < 10; rnd2++) {
+      for (i = 0; i < 10; i++) {
          for (j = 0; j < 8; j++) {
-            obj_s2->d.sprite.coords[0].x = obj->x1.n + iVar8s * rotated[rnd2 + 1][j].vx / 0x80;
-            obj_s2->d.sprite.coords[0].y = obj->y1.n + iVar8s * rotated[rnd2 + 1][j].vy / 0x80;
-            obj_s2->d.sprite.coords[0].z = obj->z1.n + iVar8s * rotated[rnd2 + 1][j].vz / 0x80;
-            obj_s2->d.sprite.coords[1].x = obj->x1.n + iVar8s * rotated[rnd2 + 1][j + 1].vx / 0x80;
-            obj_s2->d.sprite.coords[1].y = obj->y1.n + iVar8s * rotated[rnd2 + 1][j + 1].vy / 0x80;
-            obj_s2->d.sprite.coords[1].z = obj->z1.n + iVar8s * rotated[rnd2 + 1][j + 1].vz / 0x80;
-            obj_s2->d.sprite.coords[2].x = obj->x1.n + iVar8s * rotated[rnd2][j].vx / 0x80;
-            obj_s2->d.sprite.coords[2].y = obj->y1.n + iVar8s * rotated[rnd2][j].vy / 0x80;
-            obj_s2->d.sprite.coords[2].z = obj->z1.n + iVar8s * rotated[rnd2][j].vz / 0x80;
-            obj_s2->d.sprite.coords[3].x = obj->x1.n + iVar8s * rotated[rnd2][j + 1].vx / 0x80;
-            obj_s2->d.sprite.coords[3].y = obj->y1.n + iVar8s * rotated[rnd2][j + 1].vy / 0x80;
-            obj_s2->d.sprite.coords[3].z = obj->z1.n + iVar8s * rotated[rnd2][j + 1].vz / 0x80;
+            obj_s2->d.sprite.coords[0].x = obj->x1.n + iVar8s * rotated[i + 1][j].vx / 128;
+            obj_s2->d.sprite.coords[0].y = obj->y1.n + iVar8s * rotated[i + 1][j].vy / 128;
+            obj_s2->d.sprite.coords[0].z = obj->z1.n + iVar8s * rotated[i + 1][j].vz / 128;
+            obj_s2->d.sprite.coords[1].x = obj->x1.n + iVar8s * rotated[i + 1][j + 1].vx / 128;
+            obj_s2->d.sprite.coords[1].y = obj->y1.n + iVar8s * rotated[i + 1][j + 1].vy / 128;
+            obj_s2->d.sprite.coords[1].z = obj->z1.n + iVar8s * rotated[i + 1][j + 1].vz / 128;
+            obj_s2->d.sprite.coords[2].x = obj->x1.n + iVar8s * rotated[i][j].vx / 128;
+            obj_s2->d.sprite.coords[2].y = obj->y1.n + iVar8s * rotated[i][j].vy / 128;
+            obj_s2->d.sprite.coords[2].z = obj->z1.n + iVar8s * rotated[i][j].vz / 128;
+            obj_s2->d.sprite.coords[3].x = obj->x1.n + iVar8s * rotated[i][j + 1].vx / 128;
+            obj_s2->d.sprite.coords[3].y = obj->y1.n + iVar8s * rotated[i][j + 1].vy / 128;
+            obj_s2->d.sprite.coords[3].z = obj->z1.n + iVar8s * rotated[i][j + 1].vz / 128;
 
-            a = 0x80;
+            iVar10s = 128;
             if (obj_s2->d.sprite.coords[0].x - obj_s2->d.sprite.coords[1].x < 0) {
-               a -= 0x10;
+               iVar10s -= 16;
             }
             if (obj_s2->d.sprite.coords[2].x - obj_s2->d.sprite.coords[3].x < 0) {
-               a -= 0x10;
+               iVar10s -= 16;
             }
             if (obj_s2->d.sprite.coords[0].z - obj_s2->d.sprite.coords[1].z < 0) {
-               a -= 0x10;
+               iVar10s -= 16;
             }
             if (obj_s2->d.sprite.coords[2].z - obj_s2->d.sprite.coords[3].z < 0) {
-               a -= 0x10;
+               iVar10s -= 16;
             }
             if (obj_s2->d.sprite.coords[0].y - obj_s2->d.sprite.coords[2].y < 0) {
-               a -= 0x10;
+               iVar10s -= 16;
             }
             if (obj_s2->d.sprite.coords[1].y - obj_s2->d.sprite.coords[3].y < 0) {
-               a -= 0x10;
+               iVar10s -= 16;
             }
 
             AddObjPrim4(gGraphicsPtr->ot, obj_s2);
             poly = &gGraphicsPtr->quads[gQuadIndex - 1];
-            setRGB0(poly, a, a, a);
+            setRGB0(poly, iVar10s, iVar10s, iVar10s);
          }
       }
 
       obj_s2->functionIndex = OBJF_NULL;
       break;
    }
+   //{ s8 unused[8]; }
 }
-*/

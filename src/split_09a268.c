@@ -1472,8 +1472,8 @@ void Objf728_Fx_TBD(Object *obj) {
 #undef OBJF
 #define OBJF 323
 void Objf323_713_Fx_TBD(Object *obj) {
-   // 323: Spawned by Objf333 (unused?), EVTDATA29.DAT (Map20/Magnus)
-   // 713: Spawned by EVTDATA55.DAT (Map30/Xeno)
+   // 323: Spawned by Objf333 (unused?), EVDATA29.DAT (Map20/Magnus)
+   // 713: Spawned by EVDATA55.DAT (Map30/Xeno)
 
    Object *obj_s2;
    Cylinder *dsCylinder;
@@ -2530,7 +2530,7 @@ s16 D_80123354;
 
 #undef OBJF
 #define OBJF 719
-void Objf719_Fx_TBD(Object *obj) {
+void Objf719_DimensionalRift(Object *obj) {
    Quad quad1;
    Quad quad2;
    Quad quad3;
@@ -2834,7 +2834,7 @@ void Objf721_Map61_Scn83_XenoCastingCylinder_Crest(Object *obj) {
 
 #undef OBJF
 #define OBJF 722
-void Objf722_Fx_TBD(Object *obj) {
+void Objf722_DimensionalRift_Sparkles(Object *obj) {
    // Colored sparkles that converge into rift; code to spawn exists in 724/741, but it's disabled;
 
    Object *particle;
@@ -2890,4 +2890,383 @@ void Objf723_HomingParticle(Object *obj) {
    if (--obj->mem <= 0) {
       obj->functionIndex = OBJF_NULL;
    }
+}
+
+#undef OBJF
+#define OBJF 724
+void Objf724_741_Fx_TBD(Object *obj) {
+   // 724: Spawned by EVDATA34.DAT, EVDATA39.DAT, EVDATA83.DAT
+   // 741: Spawned by EVDATA40.DAT, EVDATA93.DAT
+
+   Object *entitySprite;
+   Object *rift;
+
+   switch (obj->state) {
+   case 0:
+      entitySprite = OBJ.entitySprite;
+      obj->x1.n = entitySprite->x1.n;
+      obj->z1.n = entitySprite->z1.n;
+      obj->y1.n = entitySprite->y1.n + CV(1.0);
+      obj->state = 3;
+      break;
+
+   case 1:
+      OBJ.sparkles = CreatePositionedObj(obj, OBJF_DIMENSIONAL_RIFT_SPARKLES);
+      obj->state++;
+
+   // fallthrough
+   case 2:
+      if (++obj->mem >= 128) {
+         obj->state++;
+      }
+      break;
+
+   case 3:
+      rift = CreatePositionedObj(obj, OBJF_DIMENSIONAL_RIFT);
+      rift->d.objf719.entitySpriteParam = OBJ.entitySprite;
+      rift->mem = 2;
+      if (obj->functionIndex == OBJF_FX_TBD_741) {
+         rift->mem = 64;
+      }
+      obj->functionIndex = OBJF_NULL;
+      break;
+   }
+}
+
+#undef OBJF
+#define OBJF 731
+void Objf731_DimensionalRift_Close(Object *obj) {
+   s32 i;
+   Object *p;
+
+   p = &gObjectArray[0];
+
+   for (i = 0; i < ARRAY_COUNT(gObjectArray); i++) {
+      if (p->functionIndex == OBJF_DIMENSIONAL_RIFT) {
+         if (p->state == 1) {
+            p->state2++;
+         }
+         break;
+      }
+      p++;
+   }
+
+   obj->functionIndex = OBJF_NULL;
+}
+
+#undef OBJF
+#define OBJF 725
+void Objf725_CastingRays(Object *obj) {
+   Object *obj_v1;
+   s32 i;
+
+   switch (obj->state) {
+   case 0:
+      obj_v1 = obj->d.entitySpawn.entitySpriteParam;
+      obj->x1.n = obj_v1->x1.n;
+      obj->z1.n = obj_v1->z1.n;
+      obj->y1.n = obj_v1->y1.n + CV(0.5);
+      gSignal3 = 0;
+      obj->state2 = 4;
+      obj->state++;
+
+   // fallthrough
+   case 1:
+      if (--obj->state2 <= 0) {
+         for (i = 0; i < 3; i++) {
+            obj_v1 = Obj_GetUnused();
+            obj_v1->functionIndex = OBJF_INWARD_RAY;
+            obj_v1->x2.n = obj->x1.n;
+            obj_v1->z2.n = obj->z1.n;
+            obj_v1->y2.n = obj->y1.n;
+         }
+         obj->state2 = (rand() >> 2) % 3;
+      }
+      if (gSignal3 == 1) {
+         gSignal3 = 0;
+         obj->functionIndex = OBJF_NULL;
+      }
+      break;
+   }
+}
+
+#undef OBJF
+#define OBJF 726
+void Objf726_CastingRays_Stop(Object *obj) {
+   gSignal3 = 1;
+   obj->functionIndex = OBJF_NULL;
+}
+
+#undef OBJF
+#define OBJF 727
+void Objf727(Object *obj) {
+   // Unused? Maybe to reuse Rolling Thunder FX for event entity?
+
+   Object *fx;
+
+   fx = Obj_GetUnused();
+   fx->functionIndex = OBJF_ROLLING_THUNDER_FX1;
+   fx->mem = 1;
+   fx->d.objf197.variant_0x24.unitSpriteParam = obj->d.entitySpawn.entitySpriteParam;
+   obj->functionIndex = OBJF_NULL;
+}
+
+#undef OBJF
+#define OBJF 265
+void Objf265_266_729_ShrinkWarpSprite(Object *obj) {
+   // Spawned in scenes 34/39/83 to suck sprites into dimensional rift.
+
+   static SVectorXZY riftLocations[4] = {{CV(7.5), CV(10.5), CV(2.0)},
+                                         {CV(8.5), CV(8.5), CV(3.5)},
+                                         {CV(8.5), CV(3.5), CV(2.0)},
+                                         {CV(7.0), CV(10.0), CV(2.5)}};
+
+   s32 riftIdx;
+   s32 i;
+   Object *sprite;
+   Object *entitySprite;
+   Quad savedQuad;
+   Quad *quadp;
+
+   switch (obj->state) {
+   case 0:
+      switch (obj->functionIndex) {
+      default:
+      case 267: //?
+         riftIdx = 0;
+         break;
+      case OBJF_MAP23_SCN39_SHRINK_WARP_SPRITE:
+         riftIdx = 1;
+         break;
+      case OBJF_MAP61_SCN83_SHRINK_WARP_SPRITE:
+         riftIdx = 2;
+         break;
+      }
+
+      sprite = Obj_GetUnused();
+      sprite->functionIndex = OBJF_NOOP;
+      entitySprite = OBJ.entitySprite;
+      CopyObject(entitySprite, sprite);
+      entitySprite->d.sprite.hidden = 1;
+      sprite->d.sprite.hidden = 0;
+      OBJ.sprite = sprite;
+      sprite->x2.n = riftLocations[riftIdx].x;
+      sprite->z2.n = riftLocations[riftIdx].z;
+      sprite->y2.n = riftLocations[riftIdx].y;
+
+      obj->state3 = 256;
+      obj->state++;
+
+   // fallthrough
+   case 1:
+      sprite = OBJ.sprite;
+      sprite->x1.n += (sprite->x2.n - sprite->x1.n) >> 3;
+      sprite->z1.n += (sprite->z2.n - sprite->z1.n) >> 3;
+      sprite->y1.n += (sprite->y2.n - sprite->y1.n) >> 3;
+
+      entitySprite = OBJ.entitySprite;
+      quadp = gSpriteBoxQuads[entitySprite->d.sprite.boxIdx];
+      for (i = 0; i < 4; i++) {
+         savedQuad[i] = (*quadp)[i];
+         (*quadp)[i].vx = ((*quadp)[i].vx * obj->state3) >> 8;
+         (*quadp)[i].vy = ((*quadp)[i].vy * obj->state3) >> 8;
+      }
+
+      sprite->d.sprite.boxIdx = 7;
+      RenderUnitSprite(gGraphicsPtr->ot, sprite, 0);
+
+      for (i = 0; i < 4; i++) {
+         (*quadp)[i] = savedQuad[i];
+      }
+
+      obj->state3 -= 4;
+      if (obj->state3 <= 0) {
+         obj->state++;
+      }
+      break;
+
+   case 2:
+      sprite = OBJ.sprite;
+      sprite->functionIndex = OBJF_NULL;
+      obj->functionIndex = OBJF_NULL;
+      break;
+   }
+}
+
+#undef OBJF
+#define OBJF 730
+void Objf730_EnableAdditiveBlending(Object *obj) {
+   Object *entitySprite;
+
+   entitySprite = obj->d.entitySpawn.entitySpriteParam;
+   entitySprite->d.sprite.semiTrans = 2;
+   obj->functionIndex = OBJF_NULL;
+}
+
+#undef OBJF
+#define OBJF 794
+void Objf794_DisableBlending(Object *obj) {
+   Object *entitySprite;
+
+   entitySprite = obj->d.entitySpawn.entitySpriteParam;
+   entitySprite->d.sprite.semiTrans = 0;
+   obj->functionIndex = OBJF_NULL;
+}
+
+#undef OBJF
+#define OBJF 734
+void Objf734_Fx_TBD(Object *obj) {
+   static s16 rockAnimData[] = {4, GFX_ROCK_1, 2, GFX_ROCK_2, 2, GFX_ROCK_3,
+                                2, GFX_ROCK_4, 2, GFX_NULL,   1, GFX_NULL};
+
+   Object *unitSprite;
+   Object *obj_s1;
+   Object *obj_s2;
+   Object *zoom;
+   s16 prevQuadIdx;
+   POLY_FT4 *poly;
+   s32 i;
+   s32 theta;
+
+   switch (obj->state) {
+   case 0:
+      SnapToUnit(obj);
+      unitSprite = GetUnitSpriteAtPosition(obj->z1.s.hi, obj->x1.s.hi);
+      OBJ.unitSprite = unitSprite;
+
+      obj_s1 = CreatePositionedObj(obj, OBJF_NOOP);
+      obj_s1->functionIndex = OBJF_NOOP;
+      obj_s1->y1.n += CV(6.0);
+      obj_s1->d.sprite.animData = rockAnimData;
+      obj_s1->y3.n = CV(-0.25);
+      obj_s1->y2.n = CV(-0.375);
+      obj_s1->d.sprite.boxIdx = 3;
+      obj_s1->d.sprite.clut = CLUT_REDS;
+      OBJ.sprite = obj_s1;
+      obj->state++;
+
+   // fallthrough
+   case 1:
+      obj_s1 = OBJ.sprite;
+      unitSprite = OBJ.unitSprite;
+      UpdateObjAnimation(obj_s1);
+      prevQuadIdx = gQuadIndex;
+      AddObjPrim6(gGraphicsPtr->ot, obj_s1, 0);
+      if (prevQuadIdx != gQuadIndex) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, 220, 128, 128);
+      }
+      for (i = 0; i < 1; i++) {
+         obj_s2 = CreatePositionedObj(obj_s1, OBJF_EXPLOSION);
+         theta = rand() % DEG(360);
+         obj_s2->x2.n = CV(0.0234375) * rcos(theta) >> 12;
+         obj_s2->z2.n = CV(0.0234375) * rsin(theta) >> 12;
+         obj_s2->y2.n = -(obj_s1->y2.n >> 3);
+         // The explosion object assigns the actual animData based on this initial value
+         obj_s2->d.sprite.animData = 1;
+      }
+
+      obj_s1->y1.n += obj_s1->y2.n;
+      if (obj_s1->y1.n <= unitSprite->y1.n) {
+         obj_s1->functionIndex = OBJF_NULL;
+         obj->state++;
+      }
+      break;
+
+   case 2:
+      zoom = Obj_GetUnused();
+      zoom->functionIndex = OBJF_BOUNCE_ZOOM;
+      theta = (rand() >> 2) % DEG(360);
+      for (i = 0; i < 8; i++) {
+         obj_s1 = CreatePositionedObj(obj, OBJF_FLAMING_ROCK);
+         obj_s1->x2.n = CV(0.1875) * rcos(theta) >> 12;
+         obj_s1->z2.n = CV(0.1875) * rsin(theta) >> 12;
+         obj_s1->y2.n = CV(0.375) + (CV(0.125) * rsin(rand() % DEG(360)) >> 12);
+         obj_s1->y3.n = CV(-0.046875);
+         obj_s1->x3.n = 0;
+         obj_s1->z3.n = 0;
+         theta += DEG(45);
+      }
+      obj_s1 = CreatePositionedObj(obj, OBJF_FX_TBD_321);
+      obj_s1->y1.n += CV(0.5);
+      obj->state3 = 128;
+      obj->state++;
+      break;
+
+   case 3:
+      if (obj->state3 % 2) {
+         obj_s1 = CreatePositionedObj(obj, OBJF_FX_TBD_141);
+         obj_s1->y1.n += CV(0.5);
+         obj_s1->d.objf141.clut = CLUT_REDS;
+         obj_s1->d.objf141.semiTrans = 2;
+         obj_s1->d.objf141.todo_x2c = 1;
+         obj_s1->d.objf141.todo_x28 = 0x20;
+         obj_s1->d.objf141.todo_x2a = 0xaa;
+         obj_s1->d.objf141.radius = CV(0.4375);
+      }
+      if (--obj->state3 <= 0) {
+         obj->functionIndex = OBJF_NULL;
+         gSignal3 = 1;
+      }
+      break;
+   }
+}
+
+#undef OBJF
+#define OBJF 756
+void Objf756_Map36_Scn75_Cinematic(Object *obj) {
+   switch (obj->state) {
+   case 0:
+      gState.enableMapScaling = 1;
+      obj->x1.n = CV(16.0);
+      obj->z1.n = CV(16.0);
+      obj->state++;
+
+   // fallthrough
+   case 1:
+      gCameraRotation.vx += 4;
+      gCameraRotation.vy += 8;
+      gState.eventCameraRot = gCameraRotation.vy;
+      gState.eventCameraPan.x += (CV(11.0) - gState.eventCameraPan.x) >> 3;
+      gState.eventCameraPan.z += (CV(11.0) - gState.eventCameraPan.z) >> 3;
+      obj->x1.n -= CV(0.0625);
+      obj->z1.n -= CV(0.0625);
+      gMapScale.vx = obj->x1.n;
+      gMapScale.vz = obj->z1.n;
+      obj->y1.n = obj->x1.n;
+      gMapScale.vy = obj->y1.n;
+      obj->state3++;
+      if (gCameraRotation.vx == DEG(90)) {
+         obj->state++;
+      }
+      break;
+
+   case 2:
+      gCameraRotation.vy += 8;
+      gState.eventCameraRot = gCameraRotation.vy;
+      if (++obj->state3 >= 256) {
+         obj->state++;
+      }
+      break;
+
+   case 3:
+      gMapScale.vx += (FIXED(1.0) - gMapScale.vx) >> 4;
+      gMapScale.vy += (FIXED(1.0) - gMapScale.vy) >> 4;
+      gMapScale.vz += (FIXED(1.0) - gMapScale.vz) >> 4;
+      if (++obj->state2 >= 128) {
+         gState.enableMapScaling = 0;
+         gMapScale.vx = FIXED(1.0);
+         gMapScale.vy = FIXED(1.0);
+         gMapScale.vz = FIXED(1.0);
+         obj->functionIndex = OBJF_NULL;
+      }
+      break;
+   }
+}
+
+#undef OBJF
+#define OBJF 253
+void Objf253_SpawnGraveMarker(Object *obj) {
+   CreatePositionedObj(obj->d.entitySpawn.entitySpriteParam, OBJF_MAP_OBJECT_GRAVE_MARKER);
+   obj->functionIndex = OBJF_NULL;
 }

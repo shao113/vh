@@ -182,6 +182,7 @@ void Objf226_ThunderBall_ChildOrb(Object *);
 void Objf250_350_LoadEvent16(Object *);
 void Objf251_LoadEvent14(Object *);
 void Objf252_LoadEvent05(Object *);
+void Objf253_SpawnGraveMarker(Object *);
 void Objf254_LoadEvent23(Object *);
 void Objf255_LoadEvent33(Object *);
 void Objf257_LoadEvent37(Object *);
@@ -190,6 +191,7 @@ void Objf260_LoadEvent42(Object *);
 void Objf262_LoadEvent51(Object *);
 void Objf263_LoadEvent54(Object *);
 void Objf264_LoadEvent57(Object *);
+void Objf265_266_729_ShrinkWarpSprite(Object *);
 void Objf267_LoadEvent62(Object *);
 void Objf268_LoadEvent67(Object *);
 void Objf269_Fx_TBD(Object *);
@@ -516,13 +518,20 @@ void Objf710_Particle(Object *);
 void Objf711_712_Noop(Object *);
 void Objf714_DebugCamera(Object *);
 void Objf715_to_718_Spellbind_FX2_FX3(Object *);
-void Objf719_Fx_TBD(Object *);
+void Objf719_DimensionalRift(Object *);
 void Objf720_Map61_Scn83_XenoCastingCylinder(Object *);
 void Objf721_Map61_Scn83_XenoCastingCylinder_Crest(Object *);
-void Objf722_Fx_TBD(Object *);
+void Objf722_DimensionalRift_Sparkles(Object *);
 void Objf723_HomingParticle(Object *);
+void Objf724_741_Fx_TBD(Object *);
+void Objf725_CastingRays(Object *);
+void Objf726_CastingRays_Stop(Object *);
+void Objf727(Object *);
 void Objf728_Fx_TBD(Object *);
+void Objf730_EnableAdditiveBlending(Object *);
+void Objf731_DimensionalRift_Close(Object *);
 void Objf733_StatBuffIcon(Object *);
+void Objf734_Fx_TBD(Object *);
 void Objf735_SparkleDust(Object *);
 void Objf736_RemoveParalysis_Bubble(Object *);
 void Objf737_RemoveParalysis(Object *);
@@ -538,6 +547,7 @@ void Objf752_Map14_Scn15_SandMoundSpawner(Object *);
 void Objf753_IncrementMapState0(Object *);
 void Objf754_Map39_Scn82(Object *);
 void Objf755_Map15_PirateStandIn(Object *);
+void Objf756_Map36_Scn75_Cinematic(Object *);
 void Objf757_PushedObjectSplash(Object *);
 void Objf759_RockSpurtParticle(Object *);
 void Objf760_EliteMeleeSparkles(Object *);
@@ -546,6 +556,7 @@ void Objf763_BoulderRubble(Object *);
 void Objf764_to_769_ProjectileTrail(Object *);
 void Objf770_to_789_ItemSpell(Object *);
 void Objf790_Fx_TBD(Object *);
+void Objf794_DisableBlending(Object *);
 void Objf795_EventFade(Object *);
 void Objf797_Map47_Scn14_Dusk(Object *);
 void Objf798_ResetInputState(Object *);
@@ -813,7 +824,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [250] = Objf250_350_LoadEvent16,
     [251] = Objf251_LoadEvent14,
     [252] = Objf252_LoadEvent05,
-    [253] = (ObjFunction)0x800b1960,
+    [253] = Objf253_SpawnGraveMarker,
     [254] = Objf254_LoadEvent23,
     [255] = Objf255_LoadEvent33,
     [256] = (ObjFunction)0x800b2284,
@@ -825,8 +836,8 @@ ObjFunction gObjFunctionPointers[804] = {
     [262] = Objf262_LoadEvent51,
     [263] = Objf263_LoadEvent54,
     [264] = Objf264_LoadEvent57,
-    [265] = (ObjFunction)0x800b101c,
-    [266] = (ObjFunction)0x800b101c,
+    [265] = Objf265_266_729_ShrinkWarpSprite,
+    [266] = Objf265_266_729_ShrinkWarpSprite,
     [267] = Objf267_LoadEvent62,
     [268] = Objf268_LoadEvent67,
     [269] = Objf269_Fx_TBD,
@@ -1279,29 +1290,29 @@ ObjFunction gObjFunctionPointers[804] = {
     [716] = Objf715_to_718_Spellbind_FX2_FX3,
     [717] = Objf715_to_718_Spellbind_FX2_FX3,
     [718] = Objf715_to_718_Spellbind_FX2_FX3,
-    [719] = Objf719_Fx_TBD,
+    [719] = Objf719_DimensionalRift,
     [720] = Objf720_Map61_Scn83_XenoCastingCylinder,
     [721] = Objf721_Map61_Scn83_XenoCastingCylinder_Crest,
-    [722] = Objf722_Fx_TBD,
+    [722] = Objf722_DimensionalRift_Sparkles,
     [723] = Objf723_HomingParticle,
-    [724] = (ObjFunction)0x800b0cd0,
-    [725] = (ObjFunction)0x800b0e64,
-    [726] = (ObjFunction)0x800b0fc0,
-    [727] = (ObjFunction)0x800b0fd4,
+    [724] = Objf724_741_Fx_TBD,
+    [725] = Objf725_CastingRays,
+    [726] = Objf726_CastingRays_Stop,
+    [727] = Objf727,
     [728] = Objf728_Fx_TBD,
-    [729] = (ObjFunction)0x800b101c,
-    [730] = (ObjFunction)0x800b130c,
-    [731] = (ObjFunction)0x800b0e04,
+    [729] = Objf265_266_729_ShrinkWarpSprite,
+    [730] = Objf730_EnableAdditiveBlending,
+    [731] = Objf731_DimensionalRift_Close,
     [732] = Objf705_732_743_744_Transformation,
     [733] = Objf733_StatBuffIcon,
-    [734] = (ObjFunction)0x800b1334,
+    [734] = Objf734_Fx_TBD,
     [735] = Objf735_SparkleDust,
     [736] = Objf736_RemoveParalysis_Bubble,
     [737] = Objf737_RemoveParalysis,
     [738] = Objf738_Map40_LowerBarricade,
     [739] = Objf739_Particle,
     [740] = Objf740_RemoveParalysis_Sparkles,
-    [741] = (ObjFunction)0x800b0cd0,
+    [741] = Objf724_741_Fx_TBD,
     [742] = Objf742_Map67_Scn34_TBD,
     [743] = Objf705_732_743_744_Transformation,
     [744] = Objf705_732_743_744_Transformation,
@@ -1316,7 +1327,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [753] = Objf753_IncrementMapState0,
     [754] = Objf754_Map39_Scn82,
     [755] = Objf755_Map15_PirateStandIn,
-    [756] = (ObjFunction)0x800b1710,
+    [756] = Objf756_Map36_Scn75_Cinematic,
     [757] = Objf757_PushedObjectSplash,
     [758] = (ObjFunction)0x800b28dc,
     [759] = Objf759_RockSpurtParticle,
@@ -1354,7 +1365,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [791] = Objf306_791_792_793_Healing_FX2,
     [792] = Objf306_791_792_793_Healing_FX2,
     [793] = Objf306_791_792_793_Healing_FX2,
-    [794] = (ObjFunction)0x800b1320,
+    [794] = Objf794_DisableBlending,
     [795] = Objf795_EventFade,
     [796] = (ObjFunction)0x800b53e0,
     [797] = Objf797_Map47_Scn14_Dusk,
