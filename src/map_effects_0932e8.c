@@ -113,7 +113,7 @@ void Objf657_Map38_Floodgate(Object *obj) {
          if (OBJ_MAP_UNIT(obj).raw != 0 &&
              gUnits[OBJ_MAP_UNIT(obj).s.unitIdx].class != CLASS_AIRMAN) {
             gState.msgFinished = 0;
-            OBJ_TILE_STATE(obj).action = TA_X20;
+            OBJ_TILE_STATE(obj).action = TA_32;
             obj->state2++;
          } else {
             obj->state2 += 2;
@@ -596,7 +596,7 @@ void Objf654_Map38_WashAwayUnit(Object *obj) {
          obj->x2.n = 0;
          obj->z3.n = CV(0.03125);
          if (obj->z1.s.hi >= gMapMaxZ) {
-            gTileStateGridPtr[OBJ.tileZ][OBJ.tileX].action = TA_X16;
+            gTileStateGridPtr[OBJ.tileZ][OBJ.tileX].action = TA_22;
             obj->functionIndex = OBJF_NULL;
          }
          break;

@@ -326,6 +326,9 @@ typedef enum GfxIdx {
    GFX_MAP_TEXTURE_55 = 455,
    GFX_MAP_TEXTURE_56 = 456,
    GFX_MAP_TEXTURE_62 = 462,
+   GFX_MAP_TEXTURE_74 = 474,
+   GFX_MAP_TEXTURE_75 = 475,
+   GFX_MAP_TEXTURE_76 = 476,
    GFX_MAP_TEXTURE_84 = 484,
    GFX_MAP_TEXTURE_85 = 485,
    GFX_MAP_TEXTURE_86 = 486,
@@ -370,9 +373,11 @@ typedef enum ClutIdx {
    CLUT_GREENS = 9,
    CLUT_MASK = 10,
    CLUT_12 = 12,
+   CLUT_14 = 14,
    CLUT_WINDOW = 16,
    CLUT_INACTIVE_WINDOW = 19,
    CLUT_25 = 25,
+   CLUT_58 = 58,
 } ClutIdx;
 
 typedef enum AnimIdx {

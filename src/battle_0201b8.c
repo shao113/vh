@@ -621,7 +621,7 @@ void Objf587_BattleEnemyEvent(Object *obj) {
 
          OBJ.xenoSpawnZ = i;
          SetupBattleUnit(17, OBJ.xenoSpawnZ, 2, 10, TEAM_ENEMY, DIR_NORTH, 1, 20, 1);
-         gTileStateGridPtr[OBJ.xenoSpawnZ][2].action = TA_X19;
+         gTileStateGridPtr[OBJ.xenoSpawnZ][2].action = TA_25;
          obj->state2++;
          break;
 
@@ -732,7 +732,7 @@ void Objf587_BattleEnemyEvent(Object *obj) {
       case 14:
          if (gState.msgFinished) {
             sprite = FindUnitSpriteByNameIdx(UNIT_KANE);
-            OBJ_TILE_STATE(sprite).action = TA_X16;
+            OBJ_TILE_STATE(sprite).action = TA_22;
             OBJ.spawnZ = sprite->z1.s.hi;
             OBJ.spawnX = sprite->x1.s.hi;
             PerformAudioCommand(AUDIO_CMD_PLAY_XA(28));
@@ -748,7 +748,7 @@ void Objf587_BattleEnemyEvent(Object *obj) {
       case 15:
          if (--OBJ.timer == 0) {
             SetupBattleUnit(13, OBJ.spawnZ, OBJ.spawnX, 30, TEAM_ENEMY, DIR_WEST, 1, 20, 4);
-            gTileStateGridPtr[OBJ.xenoSpawnZ][2].action = TA_X16;
+            gTileStateGridPtr[OBJ.xenoSpawnZ][2].action = TA_22;
             SetupBattleMsgBox(UNIT_ASH, PORTRAIT_ASH, 26);
             obj->state2++;
          }
@@ -1431,7 +1431,7 @@ void Objf585_BattlePlayerEvent(Object *obj) {
          break;
 
       case 7:
-         gTileStateGridPtr[19][13].action = TA_X16;
+         gTileStateGridPtr[19][13].action = TA_22;
          obj->state2++;
          break;
 
@@ -1760,7 +1760,7 @@ void Objf003_BattleActions(Object *obj) {
          if (OBJ.range != 0) {
             CloseWindow(0x35);
             if (obj->x3.s.hi != obj->x1.s.hi || obj->z3.s.hi != obj->z1.s.hi) {
-               OBJ_TARGET_TILE_STATE(obj).action = TA_X9;
+               OBJ_TARGET_TILE_STATE(obj).action = TA_9;
                obj->x3.s.hi = obj->x1.s.hi;
                obj->z3.s.hi = obj->z1.s.hi;
             }
@@ -1798,7 +1798,7 @@ void Objf003_BattleActions(Object *obj) {
             obj->x3.s.hi = gMapCursorX;
             obj->z3.s.hi = gMapCursorZ;
             PlotPathBackToUnit(gMapCursorZ, gMapCursorX);
-            OBJ_TILE_STATE(obj).action = TA_X6;
+            OBJ_TILE_STATE(obj).action = TA_6;
             gSignal3 = 0;
             gClearSavedPadState = 1;
             obj->state2++;
@@ -2741,7 +2741,7 @@ void Objf425_BattleOptions(Object *obj) {
       switch (obj->state2) {
       case 0:
          obj1 = Obj_GetUnused();
-         obj1->functionIndex = OBJF_FILE_SAVE_DIALOG_IBS;
+         obj1->functionIndex = OBJF_FILE_SAVE_MENU_IBS;
          gState.D_8014053E = 0;
          obj->state2++;
          break;
@@ -2760,7 +2760,7 @@ void Objf425_BattleOptions(Object *obj) {
       switch (obj->state2) {
       case 0:
          obj1 = Obj_GetUnused();
-         obj1->functionIndex = OBJF_FILE_LOAD_DIALOG_IBS;
+         obj1->functionIndex = OBJF_FILE_LOAD_MENU_IBS;
          gState.D_8014053E = 0;
          obj->state2++;
          break;
@@ -3216,7 +3216,7 @@ void Objf013_BattleMgr(Object *obj) {
       case 0:
          PerformAudioCommand(AUDIO_CMD_PREPARE_XA(136));
          if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
-            OBJ_TILE_STATE(unitSprite).action = TA_X1D;
+            OBJ_TILE_STATE(unitSprite).action = TA_29;
             OBJ_TILE_STATE(unitSprite).cachedByte = 16;
             gSignal3 = 0;
             obj->state2++;
@@ -3247,7 +3247,7 @@ void Objf013_BattleMgr(Object *obj) {
             PerformAudioCommand(AUDIO_CMD_PREPARE_XA(137));
             gShowBlueMovementGrid = 1;
             PlotPathBackToUnit(gZ_801233dc, gX_801233d8);
-            OBJ_TILE_STATE(unitSprite).action = TA_X6;
+            OBJ_TILE_STATE(unitSprite).action = TA_6;
             gSignal3 = 0;
             obj->state2++;
          }
@@ -3264,7 +3264,7 @@ void Objf013_BattleMgr(Object *obj) {
          if (gSignal3 == 1) {
             gShowBlueMovementGrid = 0;
             if (unit->unitType == UNIT_TYPE_DEATH_ANT) {
-               OBJ_TILE_STATE(unitSprite).action = TA_X1D;
+               OBJ_TILE_STATE(unitSprite).action = TA_29;
                OBJ_TILE_STATE(unitSprite).cachedByte = 22;
                OBJ.timer = 2;
                gSignal3 = 0;
@@ -3364,10 +3364,10 @@ void Objf013_BattleMgr(Object *obj) {
       switch (obj->state2) {
       case 0:
          unit->direction = gDir_80123470;
-         OBJ_TILE_STATE(unitSprite).action = TA_XB;
+         OBJ_TILE_STATE(unitSprite).action = TA_11;
          OBJ.timer = 5;
          obj->state2++;
-         // fallthrough
+      // fallthrough
       case 1:
          if (--OBJ.timer == 0) {
             CloseWindow(0x1d);

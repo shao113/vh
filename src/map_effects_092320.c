@@ -160,7 +160,7 @@ void Objf652_Map35_Button(Object *obj) {
          for (j = 9; j <= 13; j++) {
             for (i = 7; i <= 8; i++) {
                if (gMapUnitsPtr[i][j].raw != 0) {
-                  gTileStateGridPtr[i][j].action = TA_X16;
+                  gTileStateGridPtr[i][j].action = TA_22;
                }
                if (alt != 0) {
                   obj_s0 = Obj_GetUnused();
@@ -243,7 +243,7 @@ void Objf652_Map35_Button(Object *obj) {
          i = OBJ.tileZ;
          if (gMapUnitsPtr[i][j].raw != 0) {
             gState.msgFinished = 0;
-            gTileStateGridPtr[i][j].action = TA_X20;
+            gTileStateGridPtr[i][j].action = TA_32;
             obj->state2++;
          } else {
             obj->state2 += 2;
@@ -284,7 +284,7 @@ void Objf652_Map35_Button(Object *obj) {
             for (j = 9; j <= 13; j++) {
                for (i = 7; i <= 8; i++) {
                   if (gMapUnitsPtr[i][j].raw != 0) {
-                     gTileStateGridPtr[i][j].action = TA_X16;
+                     gTileStateGridPtr[i][j].action = TA_22;
                   }
                   avail = Obj_CountUnused();
                   if (--k <= 0 && avail >= 50) {

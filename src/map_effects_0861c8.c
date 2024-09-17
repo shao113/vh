@@ -387,7 +387,7 @@ void Objf361_Map13_BridgeExplosion_Scene(Object *obj) {
 
       for (i = 0; i < 4; i++) {
          if (gTerrainPtr[i + 2][OBJ.currentX].raw != 0) {
-            gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_X16;
+            gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_22;
          }
       }
 
@@ -538,7 +538,7 @@ void Objf288_Map13_BridgeExplosion_Battle(Object *obj) {
             for (i = 0; i < 4; i++) {
                Map13_ExplodeBridgeTile(i + 2, OBJ.currentX, i);
                if (gMapUnitsPtr[i + 2][OBJ.currentX].s.unitIdx != UNIT_NULL) {
-                  gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_X16;
+                  gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_22;
                }
             }
             Map13_RemoveBridgeSection(OBJ.currentX);
@@ -568,7 +568,7 @@ void Objf288_Map13_BridgeExplosion_Battle(Object *obj) {
          i = OBJ.iterator;
          if (gMapUnitsPtr[i + 2][OBJ.currentX].raw != 0) {
             gState.msgFinished = 0;
-            gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_X20;
+            gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_32;
             obj->state2 += 2;
          } else {
             obj->state2++;
@@ -612,7 +612,7 @@ void Objf288_Map13_BridgeExplosion_Battle(Object *obj) {
       case 6:
          for (i = 0; i < 4; i++) {
             if (gMapUnitsPtr[i + 2][OBJ.currentX].raw != 0) {
-               gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_X16;
+               gTileStateGridPtr[i + 2][OBJ.currentX].action = TA_22;
             }
             Map13_ExplodeBridgeTile(i + 2, OBJ.currentX, i);
          }

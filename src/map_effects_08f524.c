@@ -329,7 +329,7 @@ void Objf650_Map32_CarRelease(Object *obj) {
             j = OBJ.tileZ;
             if (gMapUnitsPtr[j][i].s.unitIdx != 0) {
                gState.msgFinished = 0;
-               gTileStateGridPtr[j][i].action = TA_X20;
+               gTileStateGridPtr[j][i].action = TA_32;
                obj->state3++;
             } else {
                obj->state3 += 3;
@@ -531,7 +531,7 @@ void Objf650_Map32_CarRelease(Object *obj) {
             gMapRowPointers[j][i] = gMapRowPointers[j][i % 2];
             ShiftTile(tileModel2, i / 2 * 64, 0);
             if (gMapUnitsPtr[j][i].s.unitIdx != 0) {
-               gTileStateGridPtr[j][i].action = TA_X16;
+               gTileStateGridPtr[j][i].action = TA_22;
             }
             gTerrainPtr[j][i].s.terrain = TERRAIN_NO_ENTRY;
             gTerrainPtr[j][i].s.elevation = -gMapRowPointers[j][i].vertices[0].vy >> 4;

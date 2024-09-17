@@ -607,10 +607,10 @@ void Objf021_UnitAttacking(Object *obj) {
             return;
          }
          if (OBJ_MAP_UNIT(obj1).s.unitIdx != 0) {
-            OBJ_TILE_STATE(obj1).action = TA_XB;
+            OBJ_TILE_STATE(obj1).action = TA_11;
          }
          if (OBJ_MAP_UNIT(obj2).s.unitIdx != 0) {
-            OBJ_TILE_STATE(obj2).action = TA_XB;
+            OBJ_TILE_STATE(obj2).action = TA_11;
          }
          gSignal5 = 99;
          gMapSizeX = OBJ.mapSizeX;
@@ -1091,7 +1091,7 @@ void Objf028_UnitCasting(Object *obj) {
                if (unitIdxAtLocation != 0 &&
                    gMapUnitsPtr[iz][ix].s.team == s_casterUnit_801231a4->team &&
                    unitIdx != unitIdxAtLocation) {
-                  gTileStateGridPtr[iz][ix].action = TA_X1F;
+                  gTileStateGridPtr[iz][ix].action = TA_31;
                }
             }
          }
@@ -1664,7 +1664,7 @@ void Objf592_BattleTurnStart(Object *obj) {
          PerformAudioCommand(AUDIO_CMD_PLAY_XA(135));
          s_unit_801231c0 = &gUnits[gMapUnitsPtr[gTargetZ][gTargetX].s.unitIdx];
 
-         gTileStateGridPtr[gTargetZ][gTargetX].action = TA_X1E;
+         gTileStateGridPtr[gTargetZ][gTargetX].action = TA_30;
          if (s_unit_801231c0->team == TEAM_PLAYER) {
             gTileStateGridPtr[gTargetZ][gTargetX].cachedByte = 22;
          } else {
@@ -1872,7 +1872,7 @@ void Objf592_BattleTurnStart(Object *obj) {
             i = 0;
          }
       }
-      gTileStateGridPtr[gTargetZ][gTargetX].action = TA_X19;
+      gTileStateGridPtr[gTargetZ][gTargetX].action = TA_25;
       if (s_unitTypeToSpawn_801231b8 == UNIT_TYPE_ANT_ARM) {
          SetupBattleUnit(7, gTargetZ, gTargetX, 1, TEAM_ENEMY, DIR_SOUTH, 99, 0, 99);
       } else {
@@ -1907,7 +1907,7 @@ void Objf592_BattleTurnStart(Object *obj) {
       }
       if (s_unitTypeToSpawn_801231b8 == UNIT_TYPE_ANT_ARM) {
          obj_s1 = GetUnitSpriteAtPosition(gTargetZ, gTargetX);
-         gTileStateGridPtr[gTargetZ][gTargetX].action = TA_X1E;
+         gTileStateGridPtr[gTargetZ][gTargetX].action = TA_30;
          gTileStateGridPtr[gTargetZ][gTargetX].cachedByte = 16;
          OBJ.timer = 70;
       } else {

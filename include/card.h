@@ -131,7 +131,7 @@ typedef struct DeferredInBattleSaveData {
 
 typedef struct CardFileData_Listing {
    u32 checksum;
-   u8 slots[4];
+   u8 slotOccupied[4];
    s8 captions[3][40];
 } CardFileData_Listing;
 
@@ -155,16 +155,16 @@ s32 Card_ReadRegularSaveIntoBuf(u8);
 s32 Card_WriteRegularSaveFromBuf(u8);
 s32 Card_WriteFileListingFromBuf(void);
 s32 Card_ReadFileListingIntoBuf(void);
-s32 Card_WriteRegularSave(u8);
-s32 Card_LoadRegularSave(u8);
-void ReloadBattle(void);
+// s32 Card_WriteRegularSave(u8);
+// s32 Card_LoadRegularSave(u8);
+s32 ReloadBattle(void);
 s32 Card_LoadInBattleSave(void);
 s32 Card_WriteInBattleSave(void);
 s32 Card_WriteFileListing(void);
 s32 Card_ReadFileListing(void);
 s32 Card_EmbedIntIntoCaption(s32, u8 *);
 s32 Card_EmbedIntIntoSjisCaption(s32, u8 *);
-void Card_UpdateCaption(u8);
+// void Card_UpdateCaption(u8);
 s32 Card_WriteRegularSaveFrom(s32, CardFileData_RegularSave *);
 s32 Card_ReadRegularSaveInto(s32, CardFileData_RegularSave *);
 s32 Card_WriteFileListingFrom(CardFileData_Listing *);

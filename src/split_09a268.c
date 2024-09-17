@@ -3270,3 +3270,266 @@ void Objf253_SpawnGraveMarker(Object *obj) {
    CreatePositionedObj(obj->d.entitySpawn.entitySpriteParam, OBJF_MAP_OBJECT_GRAVE_MARKER);
    obj->functionIndex = OBJF_NULL;
 }
+
+#undef OBJF
+#define OBJF 530
+void Objf530_Map61_Scn83_VandalHeartForcefield(Object *obj) {
+   extern SVECTOR D_80124EB4[6];
+
+   Object *obj_s0;
+   s32 i;
+   s16 theta;
+   u8 intensity;
+   POLY_FT4 *poly;
+
+   switch (obj->state) {
+   case 0:
+      gState.mapState.s.field_0x0 = 0;
+      obj_s0 = OBJ.entitySprite;
+      obj->y1.n = obj_s0->y1.n;
+      obj->x1.n = obj_s0->x1.n;
+      obj->z1.n = obj_s0->z1.n;
+      obj->state++;
+
+   // fallthrough
+   case 1:
+
+      switch (obj->state2) {
+      case 0:
+         if (gState.mapState.s.field_0x0 != 0) {
+            obj->mem = 30;
+            obj->state2++;
+         }
+         break;
+
+      case 1:
+         if (++obj->mem >= 180) {
+            obj->functionIndex = OBJF_NULL;
+         }
+         break;
+      }
+
+      break;
+   }
+
+   obj_s0 = Obj_GetUnused();
+   obj_s0->functionIndex = OBJF_NOOP;
+   obj_s0->d.sprite.gfxIdx = GFX_COLORS;
+   obj_s0->d.sprite.clut = CLUT_14;
+   obj_s0->d.sprite.semiTrans = 2;
+   theta = OBJ.theta;
+
+   for (i = 0; i < 6; i++) {
+      D_80124EB4[i].vx = CV(0.5) * rsin(theta + i * (DEG(360) / 6)) / ONE;
+      D_80124EB4[i].vz = CV(0.5) * rcos(theta + i * (DEG(360) / 6)) / ONE;
+   }
+
+   if (obj->state2 != 0) {
+      s32 tmp = 256 * rsin(obj->mem * 4096 / 360) / ONE;
+      if (tmp > 255) {
+         tmp = 255;
+      }
+      intensity = tmp;
+   }
+
+   for (i = 0; i < 5; i++) {
+      obj_s0->d.sprite.coords[0].x = D_80124EB4[i].vx + obj->x1.n;
+      obj_s0->d.sprite.coords[0].z = D_80124EB4[i].vz + obj->z1.n;
+      obj_s0->d.sprite.coords[0].y = obj->y1.n + CV(1.25);
+      obj_s0->d.sprite.coords[1].x = D_80124EB4[i + 1].vx + obj->x1.n;
+      obj_s0->d.sprite.coords[1].z = D_80124EB4[i + 1].vz + obj->z1.n;
+      obj_s0->d.sprite.coords[1].y = obj->y1.n + CV(1.25);
+      obj_s0->d.sprite.coords[2].x = D_80124EB4[i].vx + obj->x1.n;
+      obj_s0->d.sprite.coords[2].z = D_80124EB4[i].vz + obj->z1.n;
+      obj_s0->d.sprite.coords[2].y = obj->y1.n;
+      obj_s0->d.sprite.coords[3].x = D_80124EB4[i + 1].vx + obj->x1.n;
+      obj_s0->d.sprite.coords[3].z = D_80124EB4[i + 1].vz + obj->z1.n;
+      obj_s0->d.sprite.coords[3].y = obj->y1.n;
+
+      AddObjPrim4(gGraphicsPtr->ot, obj_s0);
+      if (obj->state2 != 0) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, intensity, intensity, intensity);
+      }
+   }
+
+   obj_s0->d.sprite.coords[0].x = D_80124EB4[5].vx + obj->x1.n;
+   obj_s0->d.sprite.coords[0].z = D_80124EB4[5].vz + obj->z1.n;
+   obj_s0->d.sprite.coords[0].y = obj->y1.n + CV(1.25);
+   obj_s0->d.sprite.coords[1].x = D_80124EB4[0].vx + obj->x1.n;
+   obj_s0->d.sprite.coords[1].z = D_80124EB4[0].vz + obj->z1.n;
+   obj_s0->d.sprite.coords[1].y = obj->y1.n + CV(1.25);
+   obj_s0->d.sprite.coords[2].x = D_80124EB4[5].vx + obj->x1.n;
+   obj_s0->d.sprite.coords[2].z = D_80124EB4[5].vz + obj->z1.n;
+   obj_s0->d.sprite.coords[2].y = obj->y1.n;
+   obj_s0->d.sprite.coords[3].x = D_80124EB4[0].vx + obj->x1.n;
+   obj_s0->d.sprite.coords[3].z = D_80124EB4[0].vz + obj->z1.n;
+   obj_s0->d.sprite.coords[3].y = obj->y1.n;
+
+   AddObjPrim4(gGraphicsPtr->ot, obj_s0);
+   if (obj->state2 != 0) {
+      poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+      setRGB0(poly, intensity, intensity, intensity);
+   }
+
+   for (i = 0; i < 5; i++) {
+      obj_s0->d.sprite.coords[0].x = obj_s0->d.sprite.coords[1].x = obj->x1.n;
+      obj_s0->d.sprite.coords[0].z = obj_s0->d.sprite.coords[1].z = obj->z1.n;
+      obj_s0->d.sprite.coords[0].y = obj_s0->d.sprite.coords[1].y = obj->y1.n + CV(1.5);
+      obj_s0->d.sprite.coords[2].x = D_80124EB4[i].vx + obj->x1.n;
+      obj_s0->d.sprite.coords[2].z = D_80124EB4[i].vz + obj->z1.n;
+      obj_s0->d.sprite.coords[2].y = obj->y1.n + CV(1.25);
+      obj_s0->d.sprite.coords[3].x = D_80124EB4[i + 1].vx + obj->x1.n;
+      obj_s0->d.sprite.coords[3].z = D_80124EB4[i + 1].vz + obj->z1.n;
+      obj_s0->d.sprite.coords[3].y = obj->y1.n + CV(1.25);
+
+      AddObjPrim4(gGraphicsPtr->ot, obj_s0);
+      if (obj->state2 != 0) {
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         setRGB0(poly, intensity, intensity, intensity);
+      }
+   }
+
+   obj_s0->d.sprite.coords[0].x = obj_s0->d.sprite.coords[1].x = obj->x1.n;
+   obj_s0->d.sprite.coords[0].z = obj_s0->d.sprite.coords[1].z = obj->z1.n;
+   obj_s0->d.sprite.coords[0].y = obj_s0->d.sprite.coords[1].y = obj->y1.n + CV(1.5);
+   obj_s0->d.sprite.coords[2].x = D_80124EB4[5].vx + obj->x1.n;
+   obj_s0->d.sprite.coords[2].z = D_80124EB4[5].vz + obj->z1.n;
+   obj_s0->d.sprite.coords[2].y = obj->y1.n + CV(1.25);
+   obj_s0->d.sprite.coords[3].x = D_80124EB4[0].vx + obj->x1.n;
+   obj_s0->d.sprite.coords[3].z = D_80124EB4[0].vz + obj->z1.n;
+   obj_s0->d.sprite.coords[3].y = obj->y1.n + CV(1.25);
+
+   AddObjPrim4(gGraphicsPtr->ot, obj_s0);
+   if (obj->state2 != 0) {
+      poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+      setRGB0(poly, intensity, intensity, intensity);
+   }
+
+   obj_s0->functionIndex = OBJF_NULL;
+   OBJ.theta += DEG(2.8125);
+}
+
+#undef OBJF
+#define OBJF 540
+void Objf540_to_545_Map14_Scn15_CloudSpawner(Object *obj) {
+   Object *entitySprite;
+   Object *cloud;
+
+   entitySprite = obj->d.entitySpawn.entitySpriteParam;
+   cloud = Obj_GetUnused();
+   cloud->functionIndex = OBJF_CLOUD;
+   cloud->y1.n = entitySprite->y1.n;
+   cloud->x1.n = entitySprite->x1.n;
+   cloud->z1.n = entitySprite->z1.n;
+}
+
+#undef OBJF
+#define OBJF 535
+void Objf535_536_FadeLight(Object *obj) {
+   // 535: EVDATA85.DAT, EVDATA86.DAT
+   // 536: EVDATA86.DAT
+
+   switch (obj->state) {
+   case 0:
+      obj->state2 = (obj->functionIndex == OBJF_FADE_LIGHT_BRIGHTEN) ? 10 : 20;
+      obj->state++;
+      break;
+   }
+
+   switch (obj->state2) {
+   case 10:
+      gLightColor.r += 2;
+      if (gLightColor.r >= 128) {
+         gLightColor.r = 128;
+         obj->functionIndex = OBJF_NULL;
+      }
+      break;
+
+   case 20:
+      gLightColor.r -= 2;
+      if (gLightColor.r == 0) {
+         gLightColor.r = 0;
+         obj->functionIndex = OBJF_NULL;
+      }
+      break;
+   }
+
+   gLightColor.g = gLightColor.b = gLightColor.r;
+}
+
+#undef OBJF
+#define OBJF 256
+void Objf256_258_Map36_LeenaAndVillager(Object *obj) {
+   static TextureWindow texw[] = {{144, 0, 0, 0}, {192, 0, 0, 0}};
+
+   Object *sprite;
+   Object *forcefield;
+   s16 prevQuadIdx;
+   POLY_FT4 *poly;
+
+   switch (obj->state) {
+   case 0:
+      OBJ_TERRAIN(obj).s.terrain = TERRAIN_OBSTACLE;
+
+      switch (obj->functionIndex) {
+      case OBJF_MAP36_VILLAGER:
+         obj->y2.n = 48; // vram y ofs
+         break;
+
+      case OBJF_MAP36_LEENA:
+         sprite = CreatePositionedObj(obj, OBJF_NOOP);
+         sprite->z1.n += CV(0.5);
+         forcefield = CreatePositionedObj(sprite, OBJF_LEENA_FORCEFIELD);
+         forcefield->d.objf675.targetSprite = sprite;
+         sprite->d.objf675.targetSprite = obj; //?
+         break;
+
+      default:
+         obj->functionIndex = OBJF_NULL;
+         break;
+      }
+
+      OBJ.tpage = GetTPage(0, 0, 964, 256);
+      OBJ.clut_unused = CLUT_58;
+      obj->state++;
+      OBJ.gfxIdx = GFX_COLOR_15;
+      OBJ.clut = CLUT_58;
+      OBJ.boxIdx = 0;
+      OBJ.texwIdx = 0;
+
+   // fallthrough
+   case 1:
+
+      switch ((gCameraRotation.vy & 0xfff) >> 10) {
+      case CAM_DIR_SOUTH:
+         OBJ.texwIdx = 1;
+         OBJ.facingLeft = 0;
+         break;
+      case CAM_DIR_EAST:
+         OBJ.texwIdx = 1;
+         OBJ.facingLeft = 1;
+         break;
+      case CAM_DIR_NORTH:
+         OBJ.texwIdx = 0;
+         OBJ.facingLeft = 1;
+         break;
+      default:
+         OBJ.texwIdx = 0;
+         OBJ.facingLeft = 0;
+         break;
+      }
+
+      prevQuadIdx = gQuadIndex;
+      AddObjPrim6(gGraphicsPtr->ot, obj, 1);
+      if (prevQuadIdx != gQuadIndex) {
+         u8 x, y;
+         poly = &gGraphicsPtr->quads[gQuadIndex - 1];
+         poly->tpage = OBJ.tpage;
+         x = texw[OBJ.texwIdx].x;
+         y = texw[OBJ.texwIdx].y + obj->y2.n;
+         setUVWH(poly, x, y, 48, 48);
+      }
+      break;
+   }
+}

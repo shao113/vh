@@ -26,14 +26,14 @@ typedef enum TileAction {
    TA_PHYS_HIT = 1,
    TA_BLOCK = 2,
    TA_PHYS_DEFEAT = 3,
-   TA_X4 = 4,
+   TA_4 = 4,
    TA_MELEE_ATK = 5,
-   TA_X6 = 6, // ?: moving
+   TA_6 = 6, // ?: moving
    TA_CHOOSING_DIRECTION = 7,
    TA_CAST = 8,
-   TA_X9 = 9, // ?: after attacking, cancelled move dest
+   TA_9 = 9, // ?: after attacking, cancelled move dest
    TA_RANGED_ATK = 10,
-   TA_XB = 11,
+   TA_11 = 11,
    TA_MAG_DEFEAT = 12,
    TA_MAG_HIT = 13,
    TA_CRATE_PUSHED_PRE = 15,
@@ -43,17 +43,17 @@ typedef enum TileAction {
    TA_CHEST_2 = 19,
    TA_CHEST_3 = 20,
    TA_LEVEL_UP = 21,
-   TA_X16 = 22,
+   TA_22 = 22,
    TA_PHYS_DEFEAT_MSG = 23,
    TA_MAG_DEFEAT_MSG = 24,
-   TA_X19 = 25, // ?: Spawning
+   TA_25 = 25, // ?: Spawning
    TA_PUSHING_BOULDER = 26,
    TA_BOULDER_PUSHED = 27,
    TA_BOULDER_HIT = 28,
-   TA_X1D = 29,
-   TA_X1E = 30,
-   TA_X1F = 31,
-   TA_X20 = 32,
+   TA_29 = 29,
+   TA_30 = 30,
+   TA_31 = 31,
+   TA_32 = 32,
 } TileAction;
 
 // Used for objf052.type

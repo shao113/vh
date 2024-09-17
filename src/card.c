@@ -81,7 +81,7 @@ void State_FileSaveScreen(void) {
       break;
    case 1:
       obj = Obj_GetUnused();
-      obj->functionIndex = OBJF_FILE_SAVE_DIALOG;
+      obj->functionIndex = OBJF_FILE_SAVE_MENU;
       gState.D_8014053E = 0;
       gState.secondary++;
       break;
@@ -109,7 +109,7 @@ void State_FileLoadScreen(void) {
       break;
    case 1:
       obj = Obj_GetUnused();
-      obj->functionIndex = OBJF_FILE_LOAD_DIALOG;
+      obj->functionIndex = OBJF_FILE_LOAD_MENU;
       gState.D_8014053E = 0;
       gState.secondary++;
       break;
@@ -414,7 +414,7 @@ s32 Card_LoadRegularSave(u8 fileIdx) {
    return res;
 }
 
-void ReloadBattle(void) {
+s32 ReloadBattle(void) {
    /* Loads from gRegularSave as prepared by Card_PopulateRegularSave (@800406c0) */
    Card_LoadRegularSave_Internal();
 }

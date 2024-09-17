@@ -753,7 +753,7 @@ void Objf424_BattleEnder(Object *obj) {
          if (--OBJ.timer == 0) {
             gPlayerControlSuppressed = 1;
             newObj = Obj_GetUnused();
-            newObj->functionIndex = OBJF_FILE_LOAD_DIALOG_376;
+            newObj->functionIndex = OBJF_FILE_LOAD_MENU_DEFEAT;
             obj->state2++;
          }
          break;

@@ -143,7 +143,6 @@ typedef union CoordinateValue {
 } CoordinateValue;
 
 extern u8 gScratch1_801317c0[];
-extern u8 gScratch2_8013e054[];
 extern u8 gScratch3_80180210[];
 
 extern s32 gSavedPadState;
@@ -167,6 +166,8 @@ extern u8 gSignal5;
 extern s8 gText[];
 extern s8 *gTextPointers[101];
 extern u8 *gStringTable[100];
+extern s16 gEvtEntityData[4096];
+extern s16 *gEvtEntityDataPointers[100];
 
 s32 BigIntCompare(BigInt, BigInt);
 void BigIntAdd(BigInt, BigInt);

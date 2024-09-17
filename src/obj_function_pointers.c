@@ -185,6 +185,7 @@ void Objf252_LoadEvent05(Object *);
 void Objf253_SpawnGraveMarker(Object *);
 void Objf254_LoadEvent23(Object *);
 void Objf255_LoadEvent33(Object *);
+void Objf256_258_Map36_LeenaAndVillager(Object *);
 void Objf257_LoadEvent37(Object *);
 void Objf259_LoadEvent44(Object *);
 void Objf260_LoadEvent42(Object *);
@@ -260,6 +261,8 @@ void Objf336_Salamander_Segment(Object *);
 void Objf337_DaggerStorm_BloodSplatter(Object *);
 void Objf339_349_Rubble(Object *);
 void Objf340_Map48_Scn20_TBD(Object *);
+void Objf341_342_353_FileSaveMenu(Object *);
+void Objf343_Etc_FileLoadMenu(Object *);
 void Objf344_345_RomanFire_FX2_FX3(Object *);
 void Objf346_ButtonDepress(Object *);
 void Objf347_Map26(Object *);
@@ -426,6 +429,9 @@ void Objf522_LoadEvent26(Object *);
 void Objf523_LoadEvent07(Object *);
 void Objf524_LoadEvent20(Object *);
 void Objf525_LoadEvent47(Object *);
+void Objf530_Map61_Scn83_VandalHeartForcefield(Object *);
+void Objf535_536_FadeLight(Object *);
+void Objf540_to_545_Map14_Scn15_CloudSpawner(Object *);
 void Objf552_EvaluateBattle32(Object *);
 void Objf553_EvaluateBattle33(Object *);
 void Objf555_EvaluateBattle35(Object *);
@@ -496,6 +502,8 @@ void Objf679_EntityFlasher(Object *);
 void Objf680_LitDummySprite(Object *);
 void Objf681_StatBuffFx(Object *);
 void Objf682(Object *);
+void Objf683_AdjustFaceElevation(Object *);
+void Objf684_SlidingFace(Object *);
 void Objf685_RockSpurt(Object *);
 void Objf688_Noop(Object *);
 void Objf689_Fx_TBD(Object *);
@@ -549,6 +557,7 @@ void Objf754_Map39_Scn82(Object *);
 void Objf755_Map15_PirateStandIn(Object *);
 void Objf756_Map36_Scn75_Cinematic(Object *);
 void Objf757_PushedObjectSplash(Object *);
+void Objf758_Map44_Scn00_ShrinkDoorTex(Object *);
 void Objf759_RockSpurtParticle(Object *);
 void Objf760_EliteMeleeSparkles(Object *);
 void Objf762_Megaherb(Object *);
@@ -558,6 +567,7 @@ void Objf770_to_789_ItemSpell(Object *);
 void Objf790_Fx_TBD(Object *);
 void Objf794_DisableBlending(Object *);
 void Objf795_EventFade(Object *);
+void Objf796_MainMenu(Object *);
 void Objf797_Map47_Scn14_Dusk(Object *);
 void Objf798_ResetInputState(Object *);
 void Objf801_Fx_TBD(Object *);
@@ -827,9 +837,9 @@ ObjFunction gObjFunctionPointers[804] = {
     [253] = Objf253_SpawnGraveMarker,
     [254] = Objf254_LoadEvent23,
     [255] = Objf255_LoadEvent33,
-    [256] = (ObjFunction)0x800b2284,
+    [256] = Objf256_258_Map36_LeenaAndVillager,
     [257] = Objf257_LoadEvent37,
-    [258] = (ObjFunction)0x800b2284,
+    [258] = Objf256_258_Map36_LeenaAndVillager,
     [259] = Objf259_LoadEvent44,
     [260] = Objf260_LoadEvent42,
     [261] = (ObjFunction)NULL,
@@ -912,9 +922,9 @@ ObjFunction gObjFunctionPointers[804] = {
     [338] = Objf317_338_Avalanche_FX2_FX3,
     [339] = Objf339_349_Rubble,
     [340] = Objf340_Map48_Scn20_TBD,
-    [341] = (ObjFunction)0x800b2db8,
-    [342] = (ObjFunction)0x800b2db8,
-    [343] = (ObjFunction)0x800b40d4,
+    [341] = Objf341_342_353_FileSaveMenu,
+    [342] = Objf341_342_353_FileSaveMenu,
+    [343] = Objf343_Etc_FileLoadMenu,
     [344] = Objf344_345_RomanFire_FX2_FX3,
     [345] = Objf344_345_RomanFire_FX2_FX3,
     [346] = Objf346_ButtonDepress,
@@ -924,30 +934,30 @@ ObjFunction gObjFunctionPointers[804] = {
     [350] = Objf250_350_LoadEvent16,
     [351] = Objf351_MsgBoxText,
     [352] = Objf352_Map29,
-    [353] = (ObjFunction)0x800b2db8,
+    [353] = Objf341_342_353_FileSaveMenu,
     [354] = Objf354_Map19_DebugElevators,
     [355] = Objf355_356_Map19_Elevator,
     [356] = Objf355_356_Map19_Elevator,
     [357] = Objf357_Map19,
     [358] = Objf358_Map19_Elevator,
     [359] = Objf359_PhaseShift_MapScaler,
-    [360] = (ObjFunction)0x800b40d4,
+    [360] = Objf343_Etc_FileLoadMenu,
     [361] = Objf361_Map13_BridgeExplosion_Scene,
     [362] = Objf362_DrawbridgeButton,
     [363] = Objf363_Wyrmfang_FX1,
     [364] = Objf364_Map15_Plank,
     [365] = Objf365_Map17_Floodgate,
     [366] = Objf366_Map17_Button,
-    [367] = (ObjFunction)0x800b40d4,
+    [367] = Objf343_Etc_FileLoadMenu,
     [368] = Objf368_Map17_DrainingWater,
     [369] = Objf369_ScreenEffect,
     [370] = Objf322_370_371_372_MagicRestoration_FX2,
     [371] = Objf322_370_371_372_MagicRestoration_FX2,
     [372] = Objf322_370_371_372_MagicRestoration_FX2,
-    [373] = (ObjFunction)0x800b40d4,
-    [374] = (ObjFunction)0x800b40d4,
+    [373] = Objf343_Etc_FileLoadMenu,
+    [374] = Objf343_Etc_FileLoadMenu,
     [375] = Objf375_FlameBreath_Particle,
-    [376] = (ObjFunction)0x800b40d4,
+    [376] = Objf343_Etc_FileLoadMenu,
     [377] = Objf377_Fx_TBD,
     [378] = Objf378_PhaseShift_FX1,
     [379] = Objf379_EvilStream_Rock,
@@ -1101,22 +1111,22 @@ ObjFunction gObjFunctionPointers[804] = {
     [527] = (ObjFunction)NULL,
     [528] = (ObjFunction)NULL,
     [529] = (ObjFunction)NULL,
-    [530] = (ObjFunction)0x800b1994,
+    [530] = Objf530_Map61_Scn83_VandalHeartForcefield,
     [531] = (ObjFunction)NULL,
     [532] = (ObjFunction)NULL,
     [533] = (ObjFunction)NULL,
     [534] = (ObjFunction)NULL,
-    [535] = (ObjFunction)0x800b2190,
-    [536] = (ObjFunction)0x800b2190,
+    [535] = Objf535_536_FadeLight,
+    [536] = Objf535_536_FadeLight,
     [537] = (ObjFunction)NULL,
     [538] = (ObjFunction)NULL,
     [539] = (ObjFunction)NULL,
-    [540] = (ObjFunction)0x800b2138,
-    [541] = (ObjFunction)0x800b2138,
-    [542] = (ObjFunction)0x800b2138,
-    [543] = (ObjFunction)0x800b2138,
-    [544] = (ObjFunction)0x800b2138,
-    [545] = (ObjFunction)0x800b2138,
+    [540] = Objf540_to_545_Map14_Scn15_CloudSpawner,
+    [541] = Objf540_to_545_Map14_Scn15_CloudSpawner,
+    [542] = Objf540_to_545_Map14_Scn15_CloudSpawner,
+    [543] = Objf540_to_545_Map14_Scn15_CloudSpawner,
+    [544] = Objf540_to_545_Map14_Scn15_CloudSpawner,
+    [545] = Objf540_to_545_Map14_Scn15_CloudSpawner,
     [546] = (ObjFunction)NULL,
     [547] = (ObjFunction)NULL,
     [548] = (ObjFunction)NULL,
@@ -1254,8 +1264,8 @@ ObjFunction gObjFunctionPointers[804] = {
     [680] = Objf680_LitDummySprite,
     [681] = Objf681_StatBuffFx,
     [682] = Objf682,
-    [683] = (ObjFunction)0x800b2708,
-    [684] = (ObjFunction)0x800b2790,
+    [683] = Objf683_AdjustFaceElevation,
+    [684] = Objf684_SlidingFace,
     [685] = Objf685_RockSpurt,
     [686] = Objf206_686_BloodSpurtParticle,
     [687] = Objf676_687_Rainfall,
@@ -1329,7 +1339,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [755] = Objf755_Map15_PirateStandIn,
     [756] = Objf756_Map36_Scn75_Cinematic,
     [757] = Objf757_PushedObjectSplash,
-    [758] = (ObjFunction)0x800b28dc,
+    [758] = Objf758_Map44_Scn00_ShrinkDoorTex,
     [759] = Objf759_RockSpurtParticle,
     [760] = Objf760_EliteMeleeSparkles,
     [761] = Objf290_294_761_RevealItem,
@@ -1367,7 +1377,7 @@ ObjFunction gObjFunctionPointers[804] = {
     [793] = Objf306_791_792_793_Healing_FX2,
     [794] = Objf794_DisableBlending,
     [795] = Objf795_EventFade,
-    [796] = (ObjFunction)0x800b53e0,
+    [796] = Objf796_MainMenu,
     [797] = Objf797_Map47_Scn14_Dusk,
     [798] = Objf798_ResetInputState,
     [799] = Objf132_Etc_Fx_TBD,

@@ -182,7 +182,7 @@ void Objf582_MainMenu_Jpn(Object *obj) {
          if (gWindowChoice.raw == 0x3402) {
             CloseWindow(0x34);
             dialog = Obj_GetUnused();
-            dialog->functionIndex = OBJF_FILE_LOAD_DIALOG_360;
+            dialog->functionIndex = OBJF_FILE_LOAD_MENU_DEBUG;
             obj->state++;
             gState.D_8014053E = 0;
          }

@@ -15,6 +15,9 @@ typedef union WindowChoice {
    struct {
       s8 choice, windowId;
    } s;
+   struct {
+      u8 choice, windowId;
+   } u;
 } WindowChoice;
 
 extern u16 gWindowChoiceHeight, gWindowChoicesCount, gWindowChoicesTopMargin;
@@ -29,10 +32,10 @@ s32 WindowIsOffScreen(struct Object *);
 // void DrawSmallEquipmentWindow(u8);
 void DrawWindow(s16, s16, s16, s16, s16, s16, s16, u8, u8);
 s32 StringToGlyphs(u8 *, u8 *);
-void UpdateSkillStatusWindow(struct UnitStatus *);
+// void UpdateSkillStatusWindow(struct UnitStatus *);
 void ClearIcons(void);
-void UpdateCompactUnitInfoWindow(struct UnitStatus *, struct UnitStatus *, u8);
-void UpdateUnitInfoWindow(struct UnitStatus *);
+// void UpdateCompactUnitInfoWindow(struct UnitStatus *, struct UnitStatus *, u8);
+// void UpdateUnitInfoWindow(struct UnitStatus *);
 void DisplayBasicWindow(s32);
 void DisplayBasicWindowWithSetChoice(s32, s32);
 void DisplayCustomWindow(s32, u8, u8, u8, u8, u8);

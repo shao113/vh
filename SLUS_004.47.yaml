@@ -99,7 +99,7 @@ segments:
       - [0x0059c8, .rodata, text]                 # 0x800151c8
       - [0x005e48, .rodata, screen_effects]       # 0x80015648
       - [0x005e94, .rodata, split_09a268]         # 0x80015694
-      - [0x005ec0, rodata]                        # TODO
+      - [0x005ec0, .rodata, main_menu]            # 0x800156c0
       - [0x006574, .rodata, graphics]             # 0x80015d74
       - [0x006580, .rodata, audio]                # 0x80015d80 
       - [0x0069b0, rodata]                        # 0x800161b0 (library rdata)
@@ -162,8 +162,8 @@ segments:
       - [0x0992fc, c, screen_effects]             # 0x800a8afc SetScreenEffectOrdering ...
       # TODO: Redo split? split_09a268 has sbss at 0x801233a8
       - [0x09a268, c, split_09a268]               # 0x800a9a68 Objf391 ...
-      - [0x0a2194, asm]
-      
+      - [0x0a2ce0, c, split_0a2ce0]               # 0x800b24e0 UnpackMapFileData ...
+      - [0x0a3258, c, main_menu]                  # 0x800b2a58 DrawTextWindow ...
       - [0x0a6d54, c, events]                     # 0x800b6554 Objf417_LoadEvent03 ...
       - [0x0b0480, c, graphics]                   # 0x800bfc80 LoadDecodedUnitSprites ...
       - [0x0b4e60, c, audio]                      # 0x800c4660 SetSeqDataPtr ...
@@ -215,7 +215,11 @@ segments:
       - [0x0f182c, .data, text]                   # 0x8010102c
       - [0x0f1f64, data]                          # 0x80101764 (TODO)
       - [0x0f2020, .data, split_09a268]           # 0x80101820
-      - [0x0f222c, data]
+      - [0x0f2234, .data, spell_sounds]           # 0x80101a34
+      - [0x0f2354, .data, split_0a2ce0]           # 0x80101b54
+      - [0x0f290c, pad]                           # 0x8010210c
+      - [0x0f2aa4, .data, main_menu]              # 0x801022a4
+      - [0x0f2c48, data]
       
       - [0x0f7044, .data, graphics]               # 0x80106844
       - [0x0f76ec, .data, audio]                  # 0x80106eec
@@ -242,7 +246,7 @@ segments:
       - [0x1137a0, .sdata, map_effects_08f524]    # 0x80122fa0
       - [0x1137b0, .sdata, text]                  # 0x80122fb0
       - [0x113898, .sdata, split_09a268]          # 0x80123098
-      - [0x1138b4, sdata]                         # 
+      - [0x1138b4, .sdata, main_menu]             # 0x801230b4
       - [0x113928, .sdata, graphics]              # 0x80123128
       
       # (Reverted sbss migration for now since this also seems to work, without needing any ordering hacks.)

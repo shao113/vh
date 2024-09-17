@@ -146,7 +146,7 @@ void Objf014_BattleUnit(Object *obj) {
          OBJ_MAP_UNIT(sprite).s.unitIdx = OBJ.unitIdx;
          OBJ_MAP_UNIT(sprite).s.team = OBJ.team;
          OBJ.timer = rand() % 12 + 1;
-         if (OBJ_TILE_STATE(sprite).action == TA_X19) {
+         if (OBJ_TILE_STATE(sprite).action == TA_25) {
             OBJ_TILE_STATE(sprite).action = TA_NONE;
             SetElevationFromTerrain(sprite);
             sprite->d.sprite.hidden = 1;
@@ -170,7 +170,7 @@ void Objf014_BattleUnit(Object *obj) {
       if (OBJ_TILE_STATE(sprite).action == TA_NONE) {
          break;
       }
-      if (OBJ_TILE_STATE(sprite).action == TA_X6) {
+      if (OBJ_TILE_STATE(sprite).action == TA_6) {
          OBJ.pathIdx = 4;
          while (gPathBackToUnit[OBJ.pathIdx] != PATH_STEP_INVALID) {
             OBJ.pathIdx += 2;
@@ -216,7 +216,7 @@ void Objf014_BattleUnit(Object *obj) {
       } else if (OBJ_TILE_STATE(sprite).action == TA_MAG_DEFEAT) {
          obj->state = 13;
          obj->state2 = 0;
-      } else if (OBJ_TILE_STATE(sprite).action == TA_XB) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_11) {
          obj->state = 3;
          obj->state2 = 0;
       } else if (OBJ_TILE_STATE(sprite).action == TA_CHOOSING_DIRECTION) {
@@ -230,19 +230,19 @@ void Objf014_BattleUnit(Object *obj) {
       } else if (OBJ_TILE_STATE(sprite).action == TA_LEVEL_UP) {
          obj->state = 16;
          obj->state2 = 0;
-      } else if (OBJ_TILE_STATE(sprite).action == TA_X16) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_22) {
          obj->state = 17;
          obj->state2 = 0;
-      } else if (OBJ_TILE_STATE(sprite).action == TA_X1D) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_29) {
          obj->state = 23;
          obj->state2 = 0;
-      } else if (OBJ_TILE_STATE(sprite).action == TA_X1E) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_30) {
          obj->state = 24;
          obj->state2 = 0;
-      } else if (OBJ_TILE_STATE(sprite).action == TA_X1F) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_31) {
          obj->state = 25;
          obj->state2 = 0;
-      } else if (OBJ_TILE_STATE(sprite).action == TA_X20) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_32) {
          OBJ_TILE_STATE(sprite).action = TA_NONE;
          gState.msgFinished = 0;
          if (unit->name == UNIT_KURTZ) {
@@ -266,7 +266,7 @@ void Objf014_BattleUnit(Object *obj) {
                SetupBattleMsgBox(unit->name, (unit->name - 1) * 7 + 1, unit->name + 21);
             }
          }
-      } else if (OBJ_TILE_STATE(sprite).action == TA_X9) {
+      } else if (OBJ_TILE_STATE(sprite).action == TA_9) {
          OBJ_TILE_STATE(sprite).action = TA_NONE;
          OBJ_TARGET_MAP_UNIT(sprite).raw = 0;
          sprite->z1.s.hi = gPathBackToUnit[0];
@@ -591,7 +591,7 @@ void Objf014_BattleUnit(Object *obj) {
       break;
 
    case 11:
-      if (OBJ_TILE_STATE(sprite).action != TA_X4) {
+      if (OBJ_TILE_STATE(sprite).action != TA_4) {
          obj->state = 3;
          obj->state2 = 0;
       } else {

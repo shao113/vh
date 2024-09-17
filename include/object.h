@@ -187,8 +187,9 @@ typedef enum ObjFunctionIdx {
    OBJF_SALAMANDER_SEGMENT = 336,
    OBJF_DAGGER_STORM_BLOOD_SPLATTER = 337,
    OBJF_AVALANCHE_RUBBLE = 339,
-   OBJF_FILE_SAVE_DIALOG = 341,
-   OBJF_FILE_SAVE_DIALOG_IBS = 342,
+   OBJF_FILE_SAVE_MENU = 341,
+   OBJF_FILE_SAVE_MENU_IBS = 342,
+   OBJF_FILE_LOAD_MENU_343 = 343,
    OBJF_ROMAN_FIRE_FX2 = 344,
    OBJF_ROMAN_FIRE_FX3 = 345,
    OBJF_BUTTON_DEPRESS = 346,
@@ -196,26 +197,28 @@ typedef enum ObjFunctionIdx {
    OBJF_RUBBLE = 349,
    OBJF_MSGBOX_TEXT = 351,
    OBJF_MAP29 = 352,
+   OBJF_FILE_SAVE_MENU_UNK = 353,
    OBJF_MAP19_ELEVATOR_355 = 355,
    OBJF_MAP19_ELEVATOR_356 = 356,
    OBJF_MAP19 = 357,
    OBJF_MAP19_ELEVATOR = 358,
    OBJF_PHASE_SHIFT_MAP_SCALER = 359,
-   OBJF_FILE_LOAD_DIALOG_360 = 360,
+   OBJF_FILE_LOAD_MENU_DEBUG = 360,
    OBJF_MAP13_BRIDGE_EXPLOSION_IN_SCENE = 361,
    OBJF_DRAWBRIDGE_BUTTON = 362,
    OBJF_MAP15_PLANK = 364,
    OBJF_MAP17_FLOODGATE = 365,
    OBJF_MAP17_BUTTON = 366,
+   OBJF_FILE_LOAD_MENU_367 = 367,
    OBJF_MAP17_DRAINING_WATER = 368,
    OBJF_SCREEN_EFFECT = 369,
    OBJF_MAGE_OIL_FX2 = 370,
    OBJF_RESTORE_8_MP_UNK_FX2 = 371,
    OBJF_MAGIC_CHARGE_FX2 = 372, // + Mage Gem
-   OBJF_FILE_LOAD_DIALOG = 373,
-   OBJF_FILE_LOAD_DIALOG_IBS = 374,
+   OBJF_FILE_LOAD_MENU = 373,
+   OBJF_FILE_LOAD_MENU_IBS = 374,
    OBJF_FLAME_BREATH_PARTICLE = 375,
-   OBJF_FILE_LOAD_DIALOG_376 = 376,
+   OBJF_FILE_LOAD_MENU_DEFEAT = 376,
    OBJF_EVIL_STREAM_ROCK = 379,
    OBJF_LEVEL_UP_FX = 380,
    OBJF_FLAME_BREATH = 382,
@@ -272,6 +275,8 @@ typedef enum ObjFunctionIdx {
    OBJF_BATTLE_VICTORY_PARTICLE = 446,
    OBJF_UNIT_PORTRAIT = 447,
    OBJF_MAP_OBJECT_FLOWING_WATER = 449,
+   OBJF_FADE_LIGHT_BRIGHTEN = 535,
+   OBJF_FADE_LIGHT_DARKEN = 536,
    OBJF_EVALUATE_BATTLE_32 = 552,
    OBJF_EVALUATE_BATTLE_33 = 553,
    OBJF_EVALUATE_BATTLE_35 = 555,
@@ -396,6 +401,7 @@ typedef enum ObjFunctionIdx {
    OBJF_ULTRA_HEALING_FX2 = 792,
    OBJF_SUPREME_HEALING_FX2 = 793, // + Holy H2O
    OBJF_FADE = 795,
+   OBJF_MAIN_MENU = 796,
    OBJF_FX_TBD_799 = 799,
    OBJF_FX_TBD_800 = 800,
    OBJF_FX_TBD_801 = 801,
@@ -2067,6 +2073,24 @@ typedef struct Object_226 {
    /* :0x5C */ struct Object *orbSprite;
 } Object_226;
 
+/* Map 36 - Leena / Villager */
+typedef struct Object_256_258 {
+   /* :0x24 */ u8 unk_0x24;
+   /* :0x25 */ u8 facingLeft;
+   /* :0x26 */ u8 unk_0x26[2];
+   /* :0x28 */ s16 gfxIdx;
+   /* :0x2A */ u8 unk_0x2A[2];
+   /* :0x2C */ s16 clut;
+   /* :0x2E */ u8 unk_0x2E[6];
+   /* :0x34 */ s16 boxIdx;
+   /* :0x36 */ u8 unk_0x36[6];
+   /* :0x3C */ u16 tpage;
+   /* :0x3E */ s16 clut_unused;
+   /* :0x40 */ u8 unk_0x40[4];
+   /* :0x44 */ s16 texwIdx;
+   /* :0x46 */ u8 unk_0x46[26];
+} Object_256_258;
+
 /* Shrink & Warp Sprite */
 typedef struct Object_265_266_729 {
    /* :0x24 */ struct Object *entitySprite;
@@ -2496,6 +2520,28 @@ typedef struct Object_335_336 {
    /* :0x58 */ u8 unk_0x58[4];
    /* :0x5C */ struct Object *link; // objf334/objf335/objf336
 } Object_335_336;
+
+/* File Save Menu */
+typedef struct Object_341_342_353 {
+   /* :0x24 */ s32 error;
+   /* :0x28 */ s32 savedWindowId;
+   /* :0x2C */ s16 choice;
+   /* :0x2E */ u8 unk_0x2E[50];
+} Object_341_342_353;
+
+/* File Load Menu */
+typedef struct Object_343_Etc {
+   /* :0x24 */ s32 error;
+   /* :0x28 */ s32 savedWindowId;
+   /* :0x2C */ s16 choice;
+   /* :0x2E */ u8 unk_0x2E[2];
+   /* :0x30 */ s16 numChoices;
+   /* :0x32 */ u8 unk_0x32[2];
+   /* :0x34 */ s16 slotOccupied[4];
+   /* :0x3C */ u8 unk_0x3C[16];
+   /* :0x4C */ s16 savedSeqId;
+   /* :0x4E */ u8 unk_0x4E[18];
+} Object_343_Etc;
 
 /* Button Depress */
 typedef struct Object_346 {
@@ -3022,6 +3068,13 @@ typedef struct Object_447 {
    /* :0x2C */ struct Object *sprite;
    /* :0x30 */ u8 unk_0x30[48];
 } Object_447;
+
+/* Map 61 - Scene 83 - Vandal Heart Forcefield */
+typedef struct Object_530 {
+   /* :0x24 */ struct Object *entitySprite;
+   /* :0x28 */ s16 theta;
+   /* :0x2A */ u8 unk_0x2A[54];
+} Object_530;
 
 /* Map Object - Rippling Water/Lava (animated texture) */
 typedef struct Object_564_565_566 {
@@ -3592,6 +3645,16 @@ typedef struct Object_795 {
    /* :0x46 */ u8 unk_0x46[26];
 } Object_795;
 
+/* Main Menu */
+typedef struct Object_796 {
+   /* :0x24 */ s32 error;
+   /* :0x28 */ s32 numFreeBlocks;
+   /* :0x2C */ u8 unk_0x2C[32];
+   /* :0x4C */ s16 menuMem_main;
+   /* :0x4E */ s16 menuMem_options;
+   /* :0x50 */ u8 unk_0x50[16];
+} Object_796;
+
 /* Map Object - Generic */
 typedef struct Object_MapObject {
    /* :0x24 */ s16 param;
@@ -3837,6 +3900,7 @@ typedef struct Object {
       Object_224 objf224;         /* Thunder Ball - FX1 */
       Object_225 objf225;         /* Thunder Ball - Initial Orb */
       Object_226 objf226;         /* Thunder Ball - Child Orb */
+      Object_256_258 objf256;     /* Map 36 - Leena */
       Object_265_266_729 objf265; /* Shrink & Warp Sprite */
       Object_269 objf269;         /* FX - TBD */
       Object_270 objf270;         /* FX - TBD */
@@ -3881,6 +3945,8 @@ typedef struct Object {
       Object_335_336 objf335;     /* Salamander - Head */
       Object_335_336 objf336;     /* Salamander - Segment */
       Object_132_Etc objf344;     /* Roman Fire - FX2 / FX3 */
+      Object_341_342_353 objf341; /* File Save Menu */
+      Object_343_Etc objf343;     /* File Load Menu */
       Object_346 objf346;         /* Button Depress */
       Object_347 objf347;         /* Map 26 */
       Object_348 objf348;         /* FX - TBD */
@@ -3930,6 +3996,7 @@ typedef struct Object {
       Object_446 objf446;         /* Battle - Victory/Defeat Particle */
       Object_447 objf447;         /* Unit Portrait (in depot, dojo, etc.) */
       Object_564_565_566 objf564; /* Map Object - Rippling Water */
+      Object_530 objf530;         /* Map 61 - Scene 83 - Vandal Heart Forcefield */
       Object_567 objf567;         /* Opening Chest */
       Object_571 objf571;         /* Level Up - Camera Control, Sound */
       Object_573 objf573;         /* Battle Items List */
@@ -3990,6 +4057,7 @@ typedef struct Object {
       Object_760 objf760;         /* Elite Melee Sparkles */
       Object_290_294_761 objf761; /* Reveal Used Item */
       Object_795 objf795;         /* Event Fade */
+      Object_796 objf796;         /* Main Menu */
       Object_133_Etc objf801;     /* FX - TBD */
       Object_133_Etc objf802;     /* FX - TBD */
       Object_133_Etc objf803;     /* FX - TBD */
